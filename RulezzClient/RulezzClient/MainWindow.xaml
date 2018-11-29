@@ -1,0 +1,107 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RulezzClient" x:Name="window" x:Class="RulezzClient.MainWindow"
+        mc:Ignorable="d"
+        Title="MainWindow" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" WindowState="Maximized" Width="{x:Static SystemParameters.PrimaryScreenWidth}" Height="{x:Static SystemParameters.PrimaryScreenHeight}" MinWidth="{x:Static SystemParameters.PrimaryScreenWidth}" MinHeight="{x:Static SystemParameters.PrimaryScreenHeight}" MaxHeight="{x:Static SystemParameters.PrimaryScreenHeight}">
+    
+    <Window.Resources>
+        <Style TargetType="StackPanel" x:Key="ShowProductStackPanelStyle">
+            <Setter Property="Height" Value="{Binding ActualHeight, ElementName=window, Mode=OneWay}" />
+            <Setter Property="Width" Value="{Binding ActualWidth, ElementName=window, Mode=OneWay}"/>
+            <Setter Property="Margin" Value="0, 23, 0, 0" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="Orientation" Value="Vertical" />
+            <Style.Resources>
+                <Style TargetType="StackPanel">
+                    <Setter Property="Height" Value="20" />
+                    <Setter Property="Width" Value="{Binding ActualWidth, ElementName=window, Mode=OneWay}"/>
+                    <Setter Property="Margin" Value="0, 5, 0, 0" />
+                    <Setter Property="HorizontalAlignment" Value="Left" />
+                    <Setter Property="VerticalAlignment" Value="Top" />
+                    <Setter Property="Orientation" Value="Horizontal" />
+                    <Style.Resources>
+                        <Style TargetType="ComboBox">
+                            <Setter Property="VerticalAlignment" Value="Top" />
+                            <Setter Property="HorizontalAlignment" Value="Left" />
+                            <Setter Property="Margin" Value="10, 0, 0, 0"/>
+                            <Setter Property="MinWidth" Value="50"/>
+                            <Setter Property="MaxWidth" Value="120"/>
+                            <Setter Property="Width" Value="120"/>
+                        </Style>
+                    </Style.Resources>
+                </Style>
+
+                <Style TargetType="DataGrid">
+                    <Setter Property="Visibility" Value="Visible"/>
+                </Style>
+            </Style.Resources>
+        </Style>
+
+        <Style TargetType="StackPanel" x:Key="AddProductStackPanelStyle">
+            <Setter Property="Height" Value="{Binding ActualHeight, ElementName=window, Mode=OneWay}" />
+            <Setter Property="Width" Value="{Binding ActualWidth, ElementName=window, Mode=OneWay}"/>
+            <Setter Property="Margin" Value="0, 23, 0, 0" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="Orientation" Value="Vertical" />
+            <Style.Resources>
+                <Style TargetType="StackPanel">
+                    <Setter Property="Height" Value="100" />
+                    <Setter Property="Width" Value="{Binding ActualWidth, ElementName=window, Mode=OneWay}"/>
+                    <Setter Property="Margin" Value="0, 5, 0, 0" />
+                    <Setter Property="HorizontalAlignment" Value="Left" />
+                    <Setter Property="VerticalAlignment" Value="Top" />
+                    <Setter Property="Orientation" Value="Vertical" />
+                    <Style.Resources>
+                        <Style TargetType="ComboBox">
+                            <Setter Property="VerticalAlignment" Value="Top" />
+                            <Setter Property="HorizontalAlignment" Value="Left" />
+                            <Setter Property="Margin" Value="10, 5, 0, 0"/>
+                            <Setter Property="MinWidth" Value="50"/>
+                            <Setter Property="MaxWidth" Value="120"/>
+                            <Setter Property="Width" Value="120"/>
+                        </Style>
+                    </Style.Resources>
+                </Style>
+
+                <Style TargetType="DataGrid">
+                    <Setter Property="Visibility" Value="Hidden"></Setter>
+                </Style>
+            </Style.Resources>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Menu Height="23" Width="{Binding ActualWidth, ElementName=window, Mode=OneWay}" VerticalContentAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Top" HorizontalContentAlignment="Center">
+            <MenuItem AutomationProperties.Name="MICashierWorkplace" Height="20"  Margin="5,0,0,0" Header="Рабочее место кассира" AutomationProperties.IsColumnHeader="True" Click="MICashierWorkplace_Click"/>
+            <MenuItem AutomationProperties.Name="MIShowProduct" Height="20"  Margin="0,0,0,0" Header="Показать товар" AutomationProperties.IsColumnHeader="True" Click="MIShowProduct_Click"/>
+            <MenuItem Header="Добавить...">
+                <MenuItem x:Name="MiAddProduct" Header="Товар" Click="MiAddProduct_Click"/>
+            </MenuItem>
+        </Menu>
+        <StackPanel x:Name="ProductGroup" Visibility="Hidden">
+            <StackPanel>
+                <ComboBox x:Name="StoreComboBox" SelectionChanged="Store_SelectionChanged" IsEnabled="False"/>
+                <ComboBox x:Name="NomenclatureComboBox" SelectionChanged="Nomenclature_SelectionChanged"/>
+                <ComboBox x:Name="NomenclatureGroupComboBox" SelectionChanged="NomenclatureGroup_SelectionChanged"/>
+            </StackPanel>
+            <DataGrid  x:Name="ProductListView" Height="100" MinColumnWidth="100" MaxColumnWidth="150" HorizontalAlignment="Left" Margin="10,5,0,0" CanUserResizeRows="False" CanUserReorderColumns="False">
+                <DataGrid.DataContext>
+                    <local:ProductView/>
+                </DataGrid.DataContext>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Наименование" Binding="{Binding Title}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Артикул" Binding="{Binding VendorCode}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Цена" Binding="{Binding SalesPrice}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Гарантия" Binding="{Binding Warranty}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Кол-во на складе" Binding="{Binding Count}" IsReadOnly="True"/>
+                </DataGrid.Columns>
+            </DataGrid>
+
+        </StackPanel>
+    </Grid>
+</Window>
