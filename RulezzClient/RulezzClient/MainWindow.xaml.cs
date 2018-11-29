@@ -19,7 +19,7 @@ namespace RulezzClient
         //string port_server;
         //TODO переделать на создание строки из разных параметров
         public string ConnectionString =
-            @"Data Source=DESKTOP-L7JMEC9;Initial Catalog=Rul_base;Integrated Security=false;User Id=God;Password=Dog";
+            @"Data Source=DESKTOP-L7JMEC9;Initial Catalog=Rul_base;Integrated Security=true;User Id=DESKTOP-L7JMEC9\Demertal;Password=";
 
         public int IdStore, IdRole;
         private readonly SqlConnection _connection;
