@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.SqlClient;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -66,100 +67,77 @@ namespace RulezzClient
             }
         }
 
-        private void MIShowProduct_Click(object sender, RoutedEventArgs e)
-        {
-            ShowGroup(GroupForm.ShowProduct);
-            ShowFunctionAsync(0);
-        }
-
         private async void ShowFunctionAsync(int choise) //choise: 0 - все; 1 - магазин; 2 - номенклатура; 3 - номенклатурная группа
         {
             ProductListView.Items.Clear();
             switch (choise)
             {
                 case 0:
-                    StoreComboBox.Items.Clear();
-                    await ShowStoreFunction();
+                    await Task.Run(() => { ShowStoreFunction(); });
                     break;
                 case 1:
-                    NomenclatureComboBox.Items.Clear();
-                    await ShowNomenclatureFunction();
+                    await Task.Run(() => { ShowNomenclatureFunction(); });
                     break;
                 case 2:
-                    NomenclatureGroupComboBox.Items.Clear();
-                    await ShowNomenclatureGroupFunction();
+                    await Task.Run(() => { ShowNomenclatureGroupFunction(); });
                     break;
                 case 3:
-                    await ShowProductFunction();
+                    await Task.Run(() => { ShowProductFunction(); });
                     break;
             }
         }
 
-        private Task ShowStoreFunction()
+        private void ShowStoreFunction()
         {
-            Task t = new Task(() =>
+            Dispatcher.BeginInvoke((Action)(() => StoreComboBox.Items.Clear()));
+            string nameComm = $"select Store.title from Store where Store.ID = {IdStore}";
+            SqlCommand command = new SqlCommand(nameComm, _connection);
+            string title = (string)command.ExecuteScalar();
+            if (title != "")
             {
-                string nameComm = $"select Store.title from Store where Store.ID = {IdStore}";
-                SqlCommand command = new SqlCommand(nameComm, _connection);
-                string title = (string)command.ExecuteScalar();
-                if (title != "")
-                {
-                    Dispatcher.BeginInvoke((Action)(() => StoreComboBox.Items.Add(title)));
-                    Dispatcher.BeginInvoke((Action)(() => StoreComboBox.SelectedIndex = 0));
-                }
-            });
-            t.Start();
-            return t;
+                Dispatcher.BeginInvoke((Action)(() => StoreComboBox.Items.Add(title)));
+                Dispatcher.BeginInvoke((Action)(() => StoreComboBox.SelectedIndex = 0));
+            }
         }
 
-        private Task ShowNomenclatureFunction()
+        private void ShowNomenclatureFunction()
         {
-            Task t = new Task(() =>
+            Dispatcher.BeginInvoke((Action)(() => NomenclatureComboBox.Items.Clear()));
+            NomenclatureDataContext db = new NomenclatureDataContext(ConnectionString);
+            var nomenclature = db.GetNomenclature(IdStore);
+            foreach (var nom in nomenclature)
             {
-                NomenclatureDataContext db = new NomenclatureDataContext(ConnectionString);
-                foreach (var nom in db.GetNomenclature(IdStore))
-                {
-                    Dispatcher.BeginInvoke((Action)(() => NomenclatureComboBox.Items.Add(nom.Title)));
-                    Dispatcher.BeginInvoke((Action)(() => NomenclatureComboBox.SelectedIndex = 0));
-                }
-            });
-            t.Start();
-            return t;
+                Dispatcher.BeginInvoke((Action)(() => NomenclatureComboBox.Items.Add(nom.Title)));
+                //Thread.Sleep(8000);
+            }
+            Dispatcher.BeginInvoke((Action)(() => NomenclatureComboBox.SelectedIndex = 0));
         }
 
-        private Task ShowNomenclatureGroupFunction()
+        private void ShowNomenclatureGroupFunction()
         {
-            Task t = new Task(() =>
+            Dispatcher.BeginInvoke((Action)(() => NomenclatureGroupComboBox.Items.Clear()));
+            NomenclatureGroupeDataContext db = new NomenclatureGroupeDataContext(ConnectionString);
+            foreach (var nom in db.GetNomenclatureGroup(_selectedNomenclature))
             {
-                NomenclatureGroupeDataContext db = new NomenclatureGroupeDataContext(ConnectionString);
-                foreach (var nom in db.GetNomenclatureGroup(_selectedNomenclature))
-                {
-                    Dispatcher.BeginInvoke((Action)(() => NomenclatureGroupComboBox.Items.Add(nom.Title)));
-                    Dispatcher.BeginInvoke((Action)(() => NomenclatureGroupComboBox.SelectedIndex = 0));
-                }
-            });
-            t.Start();
-            return t;
+                Dispatcher.BeginInvoke((Action)(() => NomenclatureGroupComboBox.Items.Add(nom.Title)));
+                Dispatcher.BeginInvoke((Action)(() => NomenclatureGroupComboBox.SelectedIndex = 0));
+            }
         }
 
-        private Task ShowProductFunction()
+        private void ShowProductFunction()
         {
-            Task t = new Task(() =>
+            ProductDataContext db = new ProductDataContext(ConnectionString);
+            foreach (var pro in db.GetProduct(_selectedNomenclatureGroup))
             {
-                ProductDataContext db = new ProductDataContext(ConnectionString);
-                foreach (var pro in db.GetProduct(_selectedNomenclatureGroup))
-                {
-                    Dispatcher.BeginInvoke((Action)(() => ProductListView.Items.Add(pro)));
-                }
-            });
-            t.Start();
-            return t;
+                Dispatcher.BeginInvoke((Action)(() => ProductListView.Items.Add(pro)));
+            }
         }
 
         private void Store_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             //NomenclatureDataContext db = new NomenclatureDataContext(ConnectionString);
             //db.FindNomenclatureId(NomenclatureComboBox.Items[NomenclatureComboBox.SelectedIndex].ToString(), IdStore, ref _selectedNomenclature);
+            if (StoreComboBox.SelectedIndex == -1) return;
             ShowFunctionAsync(1);
         }
 
@@ -187,9 +165,16 @@ namespace RulezzClient
             ShowGroup(GroupForm.CashierWorkplace);
         }
 
+        private void MIShowProduct_Click(object sender, RoutedEventArgs e)
+        {
+            ShowGroup(GroupForm.ShowProduct);
+            ShowFunctionAsync(0);
+        }
+
         private void MiAddProduct_Click(object sender, RoutedEventArgs e)
         {
             ShowGroup(GroupForm.AddProduct);
+            ShowFunctionAsync(0);
         }
 
         //Блокировка перемещения окна
