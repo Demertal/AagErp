@@ -59,7 +59,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AddProduct.xaml.cs">
+      <DependentUpon>AddProduct.xaml</DependentUpon>
+    </Compile>
     <Compile Include="NomenclatureGroup.cs" />
+    <Page Include="AddProduct.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="AdminClient.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

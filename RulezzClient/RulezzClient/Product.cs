@@ -17,6 +17,9 @@ namespace RulezzClient
         [Column(Name = "count")]
         public int Count { get; set; }
 
+        [Column(Name = "unit_storage")]
+        public string UnitStorage { get; set; }
+
         [Column(Name = "sales_price")]
         public decimal SalesPrice { get; set; }
 

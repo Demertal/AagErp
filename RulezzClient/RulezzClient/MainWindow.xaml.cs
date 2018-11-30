@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,22 +24,22 @@ namespace RulezzClient
             @"Data Source=DESKTOP-L7JMEC9;Initial Catalog=Rul_base;Integrated Security=true;User Id=DESKTOP-L7JMEC9\Demertal;Password=";
 
         public int IdStore, IdRole;
-        private readonly SqlConnection _connection;
+        public readonly SqlConnection Connection;
         private int _selectedNomenclature = -1;
         private int _selectedNomenclatureGroup = -1;
 
-        public enum GroupForm : byte { ShowProduct, CashierWorkplace, AddProduct}
+        public enum GroupForm : byte { ShowProduct, CashierWorkplace}
 
         public MainWindow()
         {
             InitializeComponent();
             Authorization au = new Authorization(this);
             au.ShowDialog();
-            _connection = new SqlConnection(ConnectionString);
+            Connection = new SqlConnection(ConnectionString);
             SourceInitialized += Window1_SourceInitialized;
             try
             {
-                _connection.Open();
+                Connection.Open();
             }
             catch (Exception e)
             {
@@ -60,10 +61,6 @@ namespace RulezzClient
                 case GroupForm.CashierWorkplace:
                     ProductGroup.Visibility = Visibility.Hidden;
                     break;
-                case GroupForm.AddProduct:
-                    ProductGroup.Visibility = Visibility.Visible;
-                    ProductGroup.Style = (Style)window.FindResource("AddProductStackPanelStyle");
-                    break;
             }
         }
 
@@ -73,7 +70,7 @@ namespace RulezzClient
             switch (choise)
             {
                 case 0:
-                    await Task.Run(() => { ShowStoreFunction(); });
+                    await Task.Run(() => {  ShowStoreFunction(); });
                     break;
                 case 1:
                     await Task.Run(() => { ShowNomenclatureFunction(); });
@@ -91,7 +88,7 @@ namespace RulezzClient
         {
             Dispatcher.BeginInvoke((Action)(() => StoreComboBox.Items.Clear()));
             string nameComm = $"select Store.title from Store where Store.ID = {IdStore}";
-            SqlCommand command = new SqlCommand(nameComm, _connection);
+            SqlCommand command = new SqlCommand(nameComm, Connection);
             string title = (string)command.ExecuteScalar();
             if (title != "")
             {
@@ -108,7 +105,6 @@ namespace RulezzClient
             foreach (var nom in nomenclature)
             {
                 Dispatcher.BeginInvoke((Action)(() => NomenclatureComboBox.Items.Add(nom.Title)));
-                //Thread.Sleep(8000);
             }
             Dispatcher.BeginInvoke((Action)(() => NomenclatureComboBox.SelectedIndex = 0));
         }
@@ -119,9 +115,9 @@ namespace RulezzClient
             NomenclatureGroupeDataContext db = new NomenclatureGroupeDataContext(ConnectionString);
             foreach (var nom in db.GetNomenclatureGroup(_selectedNomenclature))
             {
-                Dispatcher.BeginInvoke((Action)(() => NomenclatureGroupComboBox.Items.Add(nom.Title)));
-                Dispatcher.BeginInvoke((Action)(() => NomenclatureGroupComboBox.SelectedIndex = 0));
+                Dispatcher.BeginInvoke((Action)(() => NomenclatureGroupComboBox.Items.Add(nom.Title)));                
             }
+            Dispatcher.BeginInvoke((Action)(() => NomenclatureGroupComboBox.SelectedIndex = 0));
         }
 
         private void ShowProductFunction()
@@ -173,8 +169,8 @@ namespace RulezzClient
 
         private void MiAddProduct_Click(object sender, RoutedEventArgs e)
         {
-            ShowGroup(GroupForm.AddProduct);
-            ShowFunctionAsync(0);
+            AddProduct ad = new AddProduct(this);
+            ad.ShowDialog();
         }
 
         //Блокировка перемещения окна

@@ -97,6 +97,7 @@
                     <DataGridTextColumn Header="Наименование" Binding="{Binding Title}" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Артикул" Binding="{Binding VendorCode}" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Цена" Binding="{Binding SalesPrice}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Тип хранения" Binding="{Binding UnitStorage}" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Гарантия" Binding="{Binding Warranty}" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Кол-во на складе" Binding="{Binding Count}" IsReadOnly="True"/>
                 </DataGrid.Columns>
