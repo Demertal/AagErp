@@ -30,9 +30,23 @@ namespace RulezzClient
 
         public AddProduct(MainWindow mw)
         {
+            this.Title = "Добавить товар";
             InitializeComponent();
             _mw = mw;
-            ReadGuaranteePeriodAsync().GetAwaiter();
+            ReadWuaranteePeriodAsync().GetAwaiter();
+            ReadUnitStorageAsync().GetAwaiter();
+            ShowFunctionAsync(1);
+        }
+
+        public AddProduct(MainWindow mw, int id_prod)
+        {
+            InitializeComponent();
+            this.Title = "Изменить товар";
+            _mw = mw;
+            ProductDataContext db = new ProductDataContext(_mw.ConnectionString);
+            db.GetListProduct(-1, id_prod);
+            ProductView product = db.GetListProduct(-1, id_prod).First();
+            ReadWuaranteePeriodAsync().GetAwaiter();
             ReadUnitStorageAsync().GetAwaiter();
             ShowFunctionAsync(1);
         }
@@ -61,28 +75,47 @@ namespace RulezzClient
             connection.Close();
         }
 
-        private async Task ReadGuaranteePeriodAsync()
+        private async Task ReadWuaranteePeriodAsync()
         {
-            SqlConnection connection = new SqlConnection(_mw.ConnectionString);
-            connection.Open();
-            const string nameComm = "select period from GuaranteePeriod";
-            SqlCommand command = new SqlCommand(nameComm, connection);
-            SqlDataReader reader = await command.ExecuteReaderAsync();
+            try
+            {
+                SqlConnection connection = new SqlConnection(_mw.ConnectionString);
+                connection.Open();
+                const string nameComm = "select * from FunViewWarrantyPeriod()";
+                SqlCommand command = new SqlCommand(nameComm, connection);
+                SqlDataReader reader = await command.ExecuteReaderAsync();
 
-            if (reader.HasRows)
-            {
-                while (reader.Read()) // построчно считываем данные
+                if (reader.HasRows)
                 {
-                    CbWarranty.Items.Add(reader.GetValue(0));
+                    while (reader.Read()) // построчно считываем данные
+                    {
+                        CbWarranty.Items.Add(reader.GetValue(0));
+                    }
                 }
+                reader.Close();
+                connection.Close();
+                //await Task.Run(() =>
+                //{
+                //    WarrantyPeriodDataContext db = new WarrantyPeriodDataContext(_mw.ConnectionString);
+                //    try
+                //    {
+                //        foreach (var war in db.GetListWarrantyPeriod())
+                //        {
+                //            Dispatcher.BeginInvoke((Action) (() => CbWarranty.Items.Add(war)));
+                //        }
+                //    }
+                //    catch (Exception e)
+                //    {
+                //        MessageBox.Show(e.Message, e.HResult.ToString(), MessageBoxButton.OK,
+                //            MessageBoxImage.Error);
+                //    }
+                //});
             }
-            reader.Close();
-            if (CbWarranty.Items.Count != 0)
+            catch (Exception e)
             {
-                CbWarranty.SelectedIndex = 0;
+                MessageBox.Show(e.Message, e.HResult.ToString(), MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
-            command.Cancel();
-            connection.Close();
         }
 
         private async void ShowFunctionAsync(int choise) //choise: 1 - номенклатура; 2 - номенклатурyная группа;
@@ -168,13 +201,13 @@ namespace RulezzClient
             GetIdUnitStorageAsync().GetAwaiter();
         }
 
-        private async Task GetIdGuaranteePeriodAsync()
+        private async Task GetIdWuaranteePeriodAsync()
         {
             using (SqlConnection connection = new SqlConnection(_mw.ConnectionString))
             {
                 connection.Open();
                 string nameComm =
-                    $"select ID from GuaranteePeriod where period = {CbWarranty.Items[CbWarranty.SelectedIndex]}";
+                    $"select ID from WuaranteePeriod where period = {CbWarranty.Items[CbWarranty.SelectedIndex]}";
                 SqlCommand command = new SqlCommand(nameComm, connection);
                 SqlDataReader reader = await command.ExecuteReaderAsync();
                 if (reader.HasRows)
@@ -194,7 +227,7 @@ namespace RulezzClient
         private void CbWarranty_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (CbWarranty.SelectedIndex == -1) return;
-            GetIdGuaranteePeriodAsync().GetAwaiter();
+            GetIdWuaranteePeriodAsync().GetAwaiter();
         }
 
         private void BAdd_Click(object sender, RoutedEventArgs e)

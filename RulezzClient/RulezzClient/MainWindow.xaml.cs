@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,32 +19,41 @@ namespace RulezzClient
         //string ip_server;
         //string port_server;
         //TODO переделать на создание строки из разных параметров
-        public string ConnectionString =
-            @"Data Source=DESKTOP-L7JMEC9;Initial Catalog=Rul_base;Integrated Security=true;User Id=DESKTOP-L7JMEC9\Demertal;Password=";
+        public string NameServer = "";
+        public string ConnectionString;
 
         public int IdStore, IdRole;
-        public readonly SqlConnection Connection;
         private int _selectedNomenclature = -1;
         private int _selectedNomenclatureGroup = -1;
 
-        public enum GroupForm : byte { ShowProduct, CashierWorkplace}
+        public enum GroupForm : byte
+        {
+            ShowProduct,
+            CashierWorkplace
+        }
 
         public MainWindow()
         {
             InitializeComponent();
+            Form1 f = new Form1(this);
+            f.ShowDialog();
+            ConnectionString =
+                $"Data Source={NameServer};Initial Catalog=Rul_base;Integrated Security=true";
             Authorization au = new Authorization(this);
             au.ShowDialog();
-            Connection = new SqlConnection(ConnectionString);
+            SqlConnection connection = new SqlConnection(ConnectionString);
             SourceInitialized += Window1_SourceInitialized;
             try
             {
-                Connection.Open();
+                connection.Open();
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, e.HResult.ToString(), MessageBoxButton.OK,
                     MessageBoxImage.Error);
             }
+
+            connection.Close();
         }
 
 
@@ -56,7 +64,7 @@ namespace RulezzClient
             {
                 case GroupForm.ShowProduct:
                     ProductGroup.Visibility = Visibility;
-                    ProductGroup.Style = (Style)window.FindResource("ShowProductStackPanelStyle");
+                    ProductGroup.Style = (Style) window.FindResource("ShowProductStackPanelStyle");
                     break;
                 case GroupForm.CashierWorkplace:
                     ProductGroup.Visibility = Visibility.Hidden;
@@ -66,11 +74,11 @@ namespace RulezzClient
 
         private async void ShowFunctionAsync(int choise) //choise: 0 - все; 1 - магазин; 2 - номенклатура; 3 - номенклатурная группа
         {
-            ProductListView.Items.Clear();
+            DgProducts.Items.Clear();
             switch (choise)
             {
                 case 0:
-                    await Task.Run(() => {  ShowStoreFunction(); });
+                    await Task.Run(() => { ShowStoreFunction(); });
                     break;
                 case 1:
                     await Task.Run(() => { ShowNomenclatureFunction(); });
@@ -86,53 +94,65 @@ namespace RulezzClient
 
         private void ShowStoreFunction()
         {
-            Dispatcher.BeginInvoke((Action)(() => StoreComboBox.Items.Clear()));
-            string nameComm = $"select Store.title from Store where Store.ID = {IdStore}";
-            SqlCommand command = new SqlCommand(nameComm, Connection);
-            string title = (string)command.ExecuteScalar();
-            if (title != "")
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
-                Dispatcher.BeginInvoke((Action)(() => StoreComboBox.Items.Add(title)));
-                Dispatcher.BeginInvoke((Action)(() => StoreComboBox.SelectedIndex = 0));
+                connection.Open();
+                Dispatcher.BeginInvoke((Action) (() => StoreComboBox.Items.Clear()));
+                string nameComm = $"select Store.title from Store where Store.ID = {IdStore}";
+                SqlCommand command = new SqlCommand(nameComm, connection);
+                string title = (string) command.ExecuteScalar();
+                if (title != "")
+                {
+                    Dispatcher.BeginInvoke((Action) (() => StoreComboBox.Items.Add(title)));
+                    Dispatcher.BeginInvoke((Action) (() => StoreComboBox.SelectedIndex = 0));
+                }
             }
         }
 
         private void ShowNomenclatureFunction()
         {
-            Dispatcher.BeginInvoke((Action)(() => NomenclatureComboBox.Items.Clear()));
+            Dispatcher.BeginInvoke((Action) (() => NomenclatureComboBox.Items.Clear()));
             NomenclatureDataContext db = new NomenclatureDataContext(ConnectionString);
             var nomenclature = db.GetNomenclature(IdStore);
             foreach (var nom in nomenclature)
             {
-                Dispatcher.BeginInvoke((Action)(() => NomenclatureComboBox.Items.Add(nom.Title)));
+                Dispatcher.BeginInvoke((Action) (() => NomenclatureComboBox.Items.Add(nom.Title)));
             }
-            Dispatcher.BeginInvoke((Action)(() => NomenclatureComboBox.SelectedIndex = 0));
+
+            Dispatcher.BeginInvoke((Action) (() => NomenclatureComboBox.SelectedIndex = 0));
         }
 
         private void ShowNomenclatureGroupFunction()
         {
-            Dispatcher.BeginInvoke((Action)(() => NomenclatureGroupComboBox.Items.Clear()));
+            Dispatcher.BeginInvoke((Action) (() => NomenclatureGroupComboBox.Items.Clear()));
             NomenclatureGroupeDataContext db = new NomenclatureGroupeDataContext(ConnectionString);
             foreach (var nom in db.GetNomenclatureGroup(_selectedNomenclature))
             {
-                Dispatcher.BeginInvoke((Action)(() => NomenclatureGroupComboBox.Items.Add(nom.Title)));                
+                Dispatcher.BeginInvoke((Action) (() => NomenclatureGroupComboBox.Items.Add(nom.Title)));
             }
-            Dispatcher.BeginInvoke((Action)(() => NomenclatureGroupComboBox.SelectedIndex = 0));
+
+            Dispatcher.BeginInvoke((Action) (() => NomenclatureGroupComboBox.SelectedIndex = 0));
         }
 
         private void ShowProductFunction()
         {
-            ProductDataContext db = new ProductDataContext(ConnectionString);
-            foreach (var pro in db.GetProduct(_selectedNomenclatureGroup))
+            try
             {
-                Dispatcher.BeginInvoke((Action)(() => ProductListView.Items.Add(pro)));
+                ProductDataContext db = new ProductDataContext(ConnectionString);
+                foreach (var pro in db.GetListProduct(_selectedNomenclatureGroup, -1))
+                {
+                    Dispatcher.BeginInvoke((Action) (() => DgProducts.Items.Add(pro)));
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, e.HResult.ToString(), MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
         }
 
         private void Store_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //NomenclatureDataContext db = new NomenclatureDataContext(ConnectionString);
-            //db.FindNomenclatureId(NomenclatureComboBox.Items[NomenclatureComboBox.SelectedIndex].ToString(), IdStore, ref _selectedNomenclature);
             if (StoreComboBox.SelectedIndex == -1) return;
             ShowFunctionAsync(1);
         }
@@ -155,7 +175,7 @@ namespace RulezzClient
                 _selectedNomenclature, ref _selectedNomenclatureGroup);
             ShowFunctionAsync(3);
         }
-        
+
         private void MICashierWorkplace_Click(object sender, RoutedEventArgs e)
         {
             ShowGroup(GroupForm.CashierWorkplace);
@@ -173,6 +193,16 @@ namespace RulezzClient
             ad.ShowDialog();
         }
 
+        private void MIChange_Click(object sender, RoutedEventArgs e)
+        {
+            int id = 0;
+            ProductView product = (ProductView)DgProducts.SelectedItem;
+            ProductDataContext db = new ProductDataContext(ConnectionString);
+            db.FindProductId(product.Title, _selectedNomenclatureGroup, ref id);
+            AddProduct ad = new AddProduct(this, id);
+            ad.ShowDialog();
+        }
+
         //Блокировка перемещения окна
         private void Window1_SourceInitialized(object sender, EventArgs e)
         {
@@ -183,7 +213,6 @@ namespace RulezzClient
 
         private const int WmSyscommand = 0x0112;
         private const int ScMove = 0xF010;
-
         private static IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
 
