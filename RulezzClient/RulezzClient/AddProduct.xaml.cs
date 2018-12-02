@@ -404,6 +404,7 @@ namespace RulezzClient
                             MessageBox.Show("Товар изменен.", "Успех", MessageBoxButton.OK,
                                 MessageBoxImage.Information);
                         }
+                        Close();
                     }
                     catch (Exception ex)
                     {

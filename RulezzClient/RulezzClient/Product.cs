@@ -57,6 +57,18 @@ namespace RulezzClient
             return (int)result.ReturnValue;
         }
 
+        //Удаление товара
+        [Function(Name = "DeleteProduct")]
+        [return: Parameter(DbType = "Int")]
+        public int Delete(
+            [Parameter(Name = "barcode", DbType = "nvarchar(13)")] string barcode,
+            [Parameter(Name = "id_nomeclature_subgroup", DbType = "int")] int idNomSub)
+        {
+            IExecuteResult result = ExecuteMethodCall(this, (MethodInfo)MethodBase.GetCurrentMethod(), barcode, idNomSub);
+            if (result == null) return -1;
+            return (int)result.ReturnValue;
+        }
+
         //Получение продукта по id номенклатурной подгруппы
         [Function(Name = "FunViewProduct", IsComposable = true)]
         public IQueryable<ProductView> GetListProduct(

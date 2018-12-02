@@ -191,6 +191,7 @@ namespace RulezzClient
         {
             AddProduct ad = new AddProduct(this);
             ad.ShowDialog();
+            ShowFunctionAsync(3);
         }
 
         private void MIChange_Click(object sender, RoutedEventArgs e)
@@ -201,6 +202,7 @@ namespace RulezzClient
             db.FindProductId(product.Barcode, _selectedNomenclatureSubgroup, ref id);
             AddProduct ad = new AddProduct(this, id);
             ad.ShowDialog();
+            ShowFunctionAsync(3);
         }
 
         private void MiDelete_Click(object sender, RoutedEventArgs e)
@@ -210,30 +212,46 @@ namespace RulezzClient
                 int id = 0;
                 ProductView product = (ProductView)DgProducts.SelectedItem;
                 ProductDataContext db = new ProductDataContext(ConnectionString);
-                db.FindProductId(product.Barcode, _selectedNomenclatureSubgroup, ref id);
-                using (SqlConnection connection = new SqlConnection(ConnectionString))
+                try
                 {
-                    connection.Open();
-                    SqlTransaction transaction = connection.BeginTransaction();
-                    try
-                    {
-                        SqlCommand command = connection.CreateCommand();
-                        command.Transaction = transaction;
-                        command.CommandText = $"DELETE Product where Product.ID = {id}";
-                        command.ExecuteNonQuery();
-                        transaction.Commit();
-                        MessageBox.Show("Товар удален.", "Успех", MessageBoxButton.OK,
-                            MessageBoxImage.Information);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK,
-                            MessageBoxImage.Error);
-                        transaction.Rollback();
-                    }
+                    db.Connection.Open();
+                    db.Transaction = db.Connection.BeginTransaction();
+                    db.Delete(product.Barcode, _selectedNomenclatureSubgroup);
+                    db.Transaction.Commit();
+                    MessageBox.Show("Товар удален.", "Успех", MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                    ShowFunctionAsync(3);
                 }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                    db.Transaction.Rollback();
+                }
+
+                //using (SqlConnection connection = new SqlConnection(ConnectionString))
+                //{
+                //    connection.Open();
+                //    SqlTransaction transaction = connection.BeginTransaction();
+                //    try
+                //    {
+                //        SqlCommand command = connection.CreateCommand();
+                //        command.Transaction = transaction;
+                //        command.CommandText = $"DELETE Product where Product.ID = {id}";
+                //        command.ExecuteNonQuery();
+                //        transaction.Commit();
+                //        MessageBox.Show("Товар удален.", "Успех", MessageBoxButton.OK,
+                //            MessageBoxImage.Information);
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK,
+                //            MessageBoxImage.Error);
+                //        transaction.Rollback();
+                //    }
+                //}
             }
-            catch (Exception ex)
+                catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK,
                     MessageBoxImage.Error);
