@@ -203,6 +203,43 @@ namespace RulezzClient
             ad.ShowDialog();
         }
 
+        private void MiDelete_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                int id = 0;
+                ProductView product = (ProductView)DgProducts.SelectedItem;
+                ProductDataContext db = new ProductDataContext(ConnectionString);
+                db.FindProductId(product.Barcode, _selectedNomenclatureSubgroup, ref id);
+                using (SqlConnection connection = new SqlConnection(ConnectionString))
+                {
+                    connection.Open();
+                    SqlTransaction transaction = connection.BeginTransaction();
+                    try
+                    {
+                        SqlCommand command = connection.CreateCommand();
+                        command.Transaction = transaction;
+                        command.CommandText = $"DELETE Product where Product.ID = {id}";
+                        command.ExecuteNonQuery();
+                        transaction.Commit();
+                        MessageBox.Show("Товар удален.", "Успех", MessageBoxButton.OK,
+                            MessageBoxImage.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK,
+                            MessageBoxImage.Error);
+                        transaction.Rollback();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
+
         //Блокировка перемещения окна
         private void Window1_SourceInitialized(object sender, EventArgs e)
         {
@@ -213,6 +250,7 @@ namespace RulezzClient
 
         private const int WmSyscommand = 0x0112;
         private const int ScMove = 0xF010;
+
         private static IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
 

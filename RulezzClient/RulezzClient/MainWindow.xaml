@@ -58,8 +58,8 @@
             <DataGrid  x:Name="DgProducts" Height="100" MinColumnWidth="100" MaxColumnWidth="150" HorizontalAlignment="Left" Margin="10,5,0,0" CanUserResizeRows="False" CanUserReorderColumns="False">
                 <DataGrid.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Name="MIChange" Header="Изменить" Click="MIChange_Click" />
-                        <MenuItem Header="Удалить" />
+                        <MenuItem Name="MiChange" Header="Изменить" Click="MIChange_Click" />
+                        <MenuItem Name="MiDelete" Header="Удалить" Click="MiDelete_Click" />
                     </ContextMenu>
                 </DataGrid.ContextMenu>
                 <DataGrid.DataContext>
