@@ -62,13 +62,14 @@
     <Compile Include="AddProduct.xaml.cs">
       <DependentUpon>AddProduct.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ExchangeRates.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="NomenclatureGroup.cs" />
+    <Compile Include="NomenclatureSubgroup.cs" />
     <Compile Include="Warranty.cs" />
     <Page Include="AddProduct.xaml">
       <SubType>Designer</SubType>
@@ -102,7 +103,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Nomenclature.cs" />
+    <Compile Include="NomenclatureGroup.cs" />
     <Compile Include="Product.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

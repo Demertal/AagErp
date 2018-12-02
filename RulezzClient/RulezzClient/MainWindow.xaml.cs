@@ -23,8 +23,8 @@ namespace RulezzClient
         public string ConnectionString;
 
         public int IdStore, IdRole;
-        private int _selectedNomenclature = -1;
         private int _selectedNomenclatureGroup = -1;
+        private int _selectedNomenclatureSubgroup = -1;
 
         public enum GroupForm : byte
         {
@@ -64,7 +64,7 @@ namespace RulezzClient
             {
                 case GroupForm.ShowProduct:
                     ProductGroup.Visibility = Visibility;
-                    ProductGroup.Style = (Style) window.FindResource("ShowProductStackPanelStyle");
+                    ProductGroup.Style = (Style)window.FindResource("ShowProductStackPanelStyle");
                     break;
                 case GroupForm.CashierWorkplace:
                     ProductGroup.Visibility = Visibility.Hidden;
@@ -81,10 +81,10 @@ namespace RulezzClient
                     await Task.Run(() => { ShowStoreFunction(); });
                     break;
                 case 1:
-                    await Task.Run(() => { ShowNomenclatureFunction(); });
+                    await Task.Run(() => { ShowNomenclatureGroupFunction(); });
                     break;
                 case 2:
-                    await Task.Run(() => { ShowNomenclatureGroupFunction(); });
+                    await Task.Run(() => { ShowNomenclatureSubgroupFunction(); });
                     break;
                 case 3:
                     await Task.Run(() => { ShowProductFunction(); });
@@ -97,41 +97,41 @@ namespace RulezzClient
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 connection.Open();
-                Dispatcher.BeginInvoke((Action) (() => StoreComboBox.Items.Clear()));
+                Dispatcher.BeginInvoke((Action) (() => CbStore.Items.Clear()));
                 string nameComm = $"select Store.title from Store where Store.ID = {IdStore}";
                 SqlCommand command = new SqlCommand(nameComm, connection);
                 string title = (string) command.ExecuteScalar();
                 if (title != "")
                 {
-                    Dispatcher.BeginInvoke((Action) (() => StoreComboBox.Items.Add(title)));
-                    Dispatcher.BeginInvoke((Action) (() => StoreComboBox.SelectedIndex = 0));
+                    Dispatcher.BeginInvoke((Action) (() => CbStore.Items.Add(title)));
+                    Dispatcher.BeginInvoke((Action) (() => CbStore.SelectedIndex = 0));
                 }
             }
         }
 
-        private void ShowNomenclatureFunction()
-        {
-            Dispatcher.BeginInvoke((Action) (() => NomenclatureComboBox.Items.Clear()));
-            NomenclatureDataContext db = new NomenclatureDataContext(ConnectionString);
-            var nomenclature = db.GetNomenclature(IdStore);
-            foreach (var nom in nomenclature)
-            {
-                Dispatcher.BeginInvoke((Action) (() => NomenclatureComboBox.Items.Add(nom.Title)));
-            }
-
-            Dispatcher.BeginInvoke((Action) (() => NomenclatureComboBox.SelectedIndex = 0));
-        }
-
         private void ShowNomenclatureGroupFunction()
         {
-            Dispatcher.BeginInvoke((Action) (() => NomenclatureGroupComboBox.Items.Clear()));
-            NomenclatureGroupeDataContext db = new NomenclatureGroupeDataContext(ConnectionString);
-            foreach (var nom in db.GetNomenclatureGroup(_selectedNomenclature))
+            Dispatcher.BeginInvoke((Action) (() => CbNomenclatureGroup.Items.Clear()));
+            NomenclatureGroupDataContext db = new NomenclatureGroupDataContext(ConnectionString);
+            var nomenclature = db.GetNomenclatureGroup(IdStore);
+            foreach (var nom in nomenclature)
             {
-                Dispatcher.BeginInvoke((Action) (() => NomenclatureGroupComboBox.Items.Add(nom.Title)));
+                Dispatcher.BeginInvoke((Action) (() => CbNomenclatureGroup.Items.Add(nom.Title)));
             }
 
-            Dispatcher.BeginInvoke((Action) (() => NomenclatureGroupComboBox.SelectedIndex = 0));
+            Dispatcher.BeginInvoke((Action) (() => CbNomenclatureGroup.SelectedIndex = 0));
+        }
+
+        private void ShowNomenclatureSubgroupFunction()
+        {
+            Dispatcher.BeginInvoke((Action) (() => CbNomenclatureSubgroup.Items.Clear()));
+            NomenclatureSubgroupDataContext db = new NomenclatureSubgroupDataContext(ConnectionString);
+            foreach (var nom in db.GetNomenclatureSubgroup(_selectedNomenclatureGroup))
+            {
+                Dispatcher.BeginInvoke((Action) (() => CbNomenclatureSubgroup.Items.Add(nom.Title)));
+            }
+
+            Dispatcher.BeginInvoke((Action) (() => CbNomenclatureSubgroup.SelectedIndex = 0));
         }
 
         private void ShowProductFunction()
@@ -139,7 +139,7 @@ namespace RulezzClient
             try
             {
                 ProductDataContext db = new ProductDataContext(ConnectionString);
-                foreach (var pro in db.GetListProduct(_selectedNomenclatureGroup, -1))
+                foreach (var pro in db.GetListProduct(_selectedNomenclatureSubgroup, -1))
                 {
                     Dispatcher.BeginInvoke((Action) (() => DgProducts.Items.Add(pro)));
                 }
@@ -151,28 +151,28 @@ namespace RulezzClient
             }
         }
 
-        private void Store_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void CbStore_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (StoreComboBox.SelectedIndex == -1) return;
+            if (CbStore.SelectedIndex == -1) return;
             ShowFunctionAsync(1);
         }
 
-        private void Nomenclature_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void CbNomenclatureGroup_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (NomenclatureComboBox.SelectedIndex == -1) return;
-            NomenclatureDataContext db = new NomenclatureDataContext(ConnectionString);
-            db.FindNomenclatureId(NomenclatureComboBox.Items[NomenclatureComboBox.SelectedIndex].ToString(),
-                IdStore, ref _selectedNomenclature);
+            if (CbNomenclatureGroup.SelectedIndex == -1) return;
+            NomenclatureGroupDataContext db = new NomenclatureGroupDataContext(ConnectionString);
+            db.FindNomenclatureGroupId(CbNomenclatureGroup.Items[CbNomenclatureGroup.SelectedIndex].ToString(),
+                IdStore, ref _selectedNomenclatureGroup);
             ShowFunctionAsync(2);
         }
 
-        private void NomenclatureGroup_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void CbNomenclatureSubgroup_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (NomenclatureGroupComboBox.SelectedIndex == -1) return;
-            NomenclatureGroupeDataContext db = new NomenclatureGroupeDataContext(ConnectionString);
-            db.FindNomenclatureGroupId(
-                NomenclatureGroupComboBox.Items[NomenclatureGroupComboBox.SelectedIndex].ToString(),
-                _selectedNomenclature, ref _selectedNomenclatureGroup);
+            if (CbNomenclatureSubgroup.SelectedIndex == -1) return;
+            NomenclatureSubgroupDataContext db = new NomenclatureSubgroupDataContext(ConnectionString);
+            db.FindNomenclatureSubgroupId(
+                CbNomenclatureSubgroup.Items[CbNomenclatureSubgroup.SelectedIndex].ToString(),
+                _selectedNomenclatureGroup, ref _selectedNomenclatureSubgroup);
             ShowFunctionAsync(3);
         }
 
@@ -198,7 +198,7 @@ namespace RulezzClient
             int id = 0;
             ProductView product = (ProductView)DgProducts.SelectedItem;
             ProductDataContext db = new ProductDataContext(ConnectionString);
-            db.FindProductId(product.Title, _selectedNomenclatureGroup, ref id);
+            db.FindProductId(product.Barcode, _selectedNomenclatureSubgroup, ref id);
             AddProduct ad = new AddProduct(this, id);
             ad.ShowDialog();
         }

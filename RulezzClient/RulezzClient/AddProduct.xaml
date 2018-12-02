@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RulezzClient"
         mc:Ignorable="d"
-        Title="Добавить новый товар" Height="300" Width="300">
-    <Grid>
+        Title="Добавить новый товар" Height="300" MinHeight="300" MaxHeight="300" Width="300">
+    <Grid MinHeight="269">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -23,24 +23,27 @@
             <ColumnDefinition Width="Auto"></ColumnDefinition>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <Label Content="Номенклатуа" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" />
-        <ComboBox x:Name="CbNomenclature" Grid.Row="0" Grid.Column="1" SelectionChanged="Nomenclature_SelectionChanged" Width="120" HorizontalAlignment="Center" VerticalAlignment="Top" HorizontalContentAlignment="Center"/>
-        <Label Content="Номенклатурная группа" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" />
-        <ComboBox x:Name="NomenclatureGroupComboBox" Grid.Row="1" Grid.Column="1" SelectionChanged="NomenclatureGroup_SelectionChanged" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Top" Width="120"/>
+        <Label Content="Номенклатура группа" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" />
+        <ComboBox x:Name="CbNomenclatureGroup" Grid.Row="0" Grid.Column="1" SelectionChanged="CbNomenclatureGroup_SelectionChanged" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Center"/>
+        <Label Content="Номенклатурная подгруппа" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" />
+        <ComboBox x:Name="CbNomenclatureSubgroup" Grid.Row="1" Grid.Column="1" SelectionChanged="CbNomenclatureSubgroup_SelectionChanged" HorizontalAlignment="Left" HorizontalContentAlignment="Center" VerticalAlignment="Top"/>
         <Label Content="Наименование товара" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" />
-        <TextBox x:Name="TbName" HorizontalAlignment="Center" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Grid.Row="2" Grid.Column="1" HorizontalContentAlignment="Center"/>
+        <TextBox x:Name="TbName" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Row="2" Grid.Column="1" HorizontalContentAlignment="Center" MinWidth="100" VerticalContentAlignment="Center"/>
         <Label Content="Артикул товара" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Center" />
-        <TextBox x:Name="TbItemNum" HorizontalAlignment="Center" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Grid.Row="3" Grid.Column="1" HorizontalContentAlignment="Center"/>
+        <TextBox x:Name="TbItemNum" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Row="3" Grid.Column="1" HorizontalContentAlignment="Center" MinWidth="100" VerticalContentAlignment="Center"/>
         <Label Content="Штрих код" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Center" />
-        <TextBox x:Name="TbBarcode" HorizontalAlignment="Center" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Grid.Row="4" Grid.Column="1" HorizontalContentAlignment="Center"/>
+        <TextBox x:Name="TbBarcode" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Row="4" Grid.Column="1" HorizontalContentAlignment="Center" MinWidth="100" VerticalContentAlignment="Center"/>
         <Label Content="Тип хранения" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Center" />
-        <ComboBox x:Name="CbUnitSt" Grid.Column="1" HorizontalAlignment="Center" Grid.Row="5" VerticalAlignment="Top" Width="120" HorizontalContentAlignment="Center" SelectionChanged="CbUnitSt_SelectionChanged"/>
+        <ComboBox x:Name="CbUnitSt" Grid.Column="1" HorizontalAlignment="Left" Grid.Row="5" VerticalAlignment="Top" HorizontalContentAlignment="Center" SelectionChanged="CbUnitSt_SelectionChanged"/>
         <Label Content="Закупочная цена" Grid.Row="6" Grid.Column="0" HorizontalAlignment="Center" />
-        <TextBox x:Name="TbPurchasePrice" HorizontalAlignment="Center" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Grid.Row="6" Grid.Column="1" HorizontalContentAlignment="Center"/>
+        <StackPanel Grid.Column="1" HorizontalAlignment="Left" Grid.Row="6" Grid.RowSpan="4" VerticalAlignment="Top" Orientation="Horizontal">
+            <TextBox x:Name="TbPurchasePrice" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top"  HorizontalContentAlignment="Center" MinWidth="70" VerticalContentAlignment="Center"/>
+            <ComboBox x:Name="CbExRates" HorizontalAlignment="Left" VerticalAlignment="Top" SelectionChanged="CbExRates_SelectionChanged" Margin="10, 0, 0, 0"/>
+        </StackPanel>
         <Label Content="Цена продажи" Grid.Row="7" Grid.Column="0" HorizontalAlignment="Center" />
-        <TextBox x:Name="TbSalesPrice" HorizontalAlignment="Center" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Grid.Row="7" Grid.Column="1" HorizontalContentAlignment="Center"/>
+        <TextBox x:Name="TbSalesPrice" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Row="7" Grid.Column="1" HorizontalContentAlignment="Center" MinWidth="70" VerticalContentAlignment="Center"/>
         <Label Content="Гарантия" Grid.Row="8" Grid.Column="0" HorizontalAlignment="Center" />
-        <ComboBox x:Name="CbWarranty" Grid.Column="1" HorizontalAlignment="Center" Grid.Row="8" VerticalAlignment="Top" Width="120" HorizontalContentAlignment="Center" SelectionChanged="CbWarranty_SelectionChanged"/>
+        <ComboBox x:Name="CbWarranty" Grid.Column="1" HorizontalAlignment="Left" Grid.Row="8" VerticalAlignment="Top" HorizontalContentAlignment="Center" SelectionChanged="CbWarranty_SelectionChanged"/>
         <Button x:Name="BAdd" Grid.Column="1" Content="Добавить" HorizontalAlignment="Left" Grid.Row="9" VerticalAlignment="Top" Width="75" Click="BAdd_Click"/>
     </Grid>
 </Window>

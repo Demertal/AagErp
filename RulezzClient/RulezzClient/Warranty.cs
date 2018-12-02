@@ -22,24 +22,31 @@ namespace RulezzClient
         {
 
         }
-        //Получение продукта по id номенклатурной группы
-        [Function(Name = "FindWarrantyPeriod")]
-        [return: Parameter(DbType = "nvarchar")]
-        public string GetWarrantyPeriod(
-            [Parameter(Name = "id", DbType = "int")] int id,
-            [Parameter(Name = "period", DbType = "nvarchar(4)")] ref string period)
+
+        public void GetWarrantyPeriodId(string period, ref int id)
         {
-            IExecuteResult result = ExecuteMethodCall(this, (MethodInfo)MethodBase.GetCurrentMethod(), id, period);
-            if (result == null) return "";
-            period = (string)result.GetParameterValue(2);
-            return (string)result.ReturnValue;
+            int setPer = period == "Нет" ? 0 : int.Parse(period);
+            FindWarrantyPeriodId(setPer, ref id);
+        }
+
+        //Получение id гарантии по названию периода
+        [Function(Name = "FindWarrantyPeriodId")]
+        [return: Parameter(DbType = "int")]
+        public int FindWarrantyPeriodId(
+            [Parameter(Name = "period", DbType = "int")] int period,
+            [Parameter(Name = "id", DbType = "int")] ref int id)
+        {
+            IExecuteResult result = ExecuteMethodCall(this, (MethodInfo)MethodBase.GetCurrentMethod(), period, id);
+            if (result == null) return -1;
+            id = (int)result.GetParameterValue(1);
+            return (int)result.ReturnValue;
         }
 
         //Получение периода
         [Function(Name = "FunViewWarrantyPeriod", IsComposable = true)]
-        public IQueryable<WarrantyPeriod> GetListWarrantyPeriod()
+        public IQueryable<WarrantyPeriod> GetListWarrantyPeriod([Parameter(Name = "id_war", DbType = "int")] int idWar)
         {
-            return CreateMethodCallQuery<WarrantyPeriod>(this, (MethodInfo)MethodBase.GetCurrentMethod());
+            return CreateMethodCallQuery<WarrantyPeriod>(this, (MethodInfo)MethodBase.GetCurrentMethod(), idWar);
         }
     }
 }

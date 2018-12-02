@@ -6,7 +6,6 @@
         xmlns:local="clr-namespace:RulezzClient" x:Name="window" x:Class="RulezzClient.MainWindow"
         mc:Ignorable="d"
         Title="MainWindow" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" WindowState="Maximized" Width="{x:Static SystemParameters.PrimaryScreenWidth}" Height="{x:Static SystemParameters.PrimaryScreenHeight}" MinWidth="{x:Static SystemParameters.PrimaryScreenWidth}" MinHeight="{x:Static SystemParameters.PrimaryScreenHeight}" MaxHeight="{x:Static SystemParameters.PrimaryScreenHeight}">
-    
     <Window.Resources>
         <Style TargetType="StackPanel" x:Key="ShowProductStackPanelStyle">
             <Setter Property="Height" Value="{Binding ActualHeight, ElementName=window, Mode=OneWay}" />
@@ -52,9 +51,9 @@
         </Menu>
         <StackPanel x:Name="ProductGroup" Visibility="Hidden">
             <StackPanel>
-                <ComboBox x:Name="StoreComboBox" SelectionChanged="Store_SelectionChanged" IsEnabled="False"/>
-                <ComboBox x:Name="NomenclatureComboBox" SelectionChanged="Nomenclature_SelectionChanged"/>
-                <ComboBox x:Name="NomenclatureGroupComboBox" SelectionChanged="NomenclatureGroup_SelectionChanged"/>
+                <ComboBox x:Name="CbStore" SelectionChanged="CbStore_SelectionChanged" IsEnabled="False"/>
+                <ComboBox x:Name="CbNomenclatureGroup" SelectionChanged="CbNomenclatureGroup_SelectionChanged"/>
+                <ComboBox x:Name="CbNomenclatureSubgroup" SelectionChanged="CbNomenclatureSubgroup_SelectionChanged"/>
             </StackPanel>
             <DataGrid  x:Name="DgProducts" Height="100" MinColumnWidth="100" MaxColumnWidth="150" HorizontalAlignment="Left" Margin="10,5,0,0" CanUserResizeRows="False" CanUserReorderColumns="False">
                 <DataGrid.ContextMenu>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -23,18 +24,22 @@ namespace RulezzClient
     public partial class AddProduct : Window
     {
         private readonly MainWindow _mw;
-        private int _selectedNomenclature;
         private int _selectedNomenclatureGroup;
+        private int _selectedNomenclatureSubgroup;
         private int _selectedUnitSt;
         private int _selectedWarranty;
+        private int _selectedExchangeRates;
+        private ProductView _product;
 
         public AddProduct(MainWindow mw)
         {
             this.Title = "Добавить товар";
             InitializeComponent();
+            BAdd.Content = "Добавить";
             _mw = mw;
             ReadWuaranteePeriodAsync().GetAwaiter();
             ReadUnitStorageAsync().GetAwaiter();
+            ReadExchangeRatesAsync().GetAwaiter();
             ShowFunctionAsync(1);
         }
 
@@ -42,46 +47,39 @@ namespace RulezzClient
         {
             InitializeComponent();
             this.Title = "Изменить товар";
+            BAdd.Content = "Изменить";
             _mw = mw;
-            ProductDataContext db = new ProductDataContext(_mw.ConnectionString);
-            db.GetListProduct(-1, id_prod);
-            ProductView product = db.GetListProduct(-1, id_prod).First();
-            ReadWuaranteePeriodAsync().GetAwaiter();
-            ReadUnitStorageAsync().GetAwaiter();
-            ShowFunctionAsync(1);
+            try
+            {
+                ProductDataContext db = new ProductDataContext(_mw.ConnectionString);
+                db.GetListProduct(-1, id_prod);
+                _product = db.GetListProduct(-1, id_prod).First();
+                ReadWuaranteePeriodAsync().GetAwaiter();
+                ReadUnitStorageAsync().GetAwaiter();
+                ReadExchangeRatesAsync().GetAwaiter();
+                ShowFunctionAsync(1);
+                TbName.Text = _product.Title;
+                TbItemNum.Text = _product.VendorCode;
+                TbBarcode.Text = _product.Barcode;
+                TbPurchasePrice.Text = _product.PurchasePrice.ToString(CultureInfo.InvariantCulture);
+                TbSalesPrice.Text = _product.SalesPrice.ToString(CultureInfo.InvariantCulture);
+                TbName.Text = _product.Title;
+               
+            }
+            catch(Exception e)
+            {
+                MessageBox.Show(e.Message, e.HResult.ToString(), MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
         }
 
         private async Task ReadUnitStorageAsync()
-        {
-            SqlConnection connection = new SqlConnection(_mw.ConnectionString);
-            connection.Open();
-            const string nameComm = "select title from UnitStorage";
-            SqlCommand command = new SqlCommand(nameComm, connection);
-            SqlDataReader reader = await command.ExecuteReaderAsync();
-
-            if (reader.HasRows)
-            {
-                while (reader.Read()) // построчно считываем данные
-                {
-                    CbUnitSt.Items.Add(reader.GetValue(0));
-                }
-            }
-            reader.Close();
-            if (CbUnitSt.Items.Count != 0)
-            {
-                CbUnitSt.SelectedIndex = 0;
-            }
-            command.Cancel();
-            connection.Close();
-        }
-
-        private async Task ReadWuaranteePeriodAsync()
         {
             try
             {
                 SqlConnection connection = new SqlConnection(_mw.ConnectionString);
                 connection.Open();
-                const string nameComm = "select * from FunViewWarrantyPeriod()";
+                const string nameComm = "select title from UnitStorage";
                 SqlCommand command = new SqlCommand(nameComm, connection);
                 SqlDataReader reader = await command.ExecuteReaderAsync();
 
@@ -89,27 +87,107 @@ namespace RulezzClient
                 {
                     while (reader.Read()) // построчно считываем данные
                     {
-                        CbWarranty.Items.Add(reader.GetValue(0));
+                        CbUnitSt.Items.Add(reader.GetValue(0));
                     }
                 }
+
                 reader.Close();
+                if (CbUnitSt.Items.Count != 0)
+                {
+                    CbUnitSt.SelectedIndex = 0;
+                }
+                if (_product != null)
+                {
+                    for (int i = 0; i < CbUnitSt.Items.Count; i++)
+                    {
+                        if ((string)CbUnitSt.Items[i] == _product.UnitStorage)
+                            CbWarranty.SelectedIndex = i;
+                    }
+                }
+
+                command.Cancel();
                 connection.Close();
-                //await Task.Run(() =>
-                //{
-                //    WarrantyPeriodDataContext db = new WarrantyPeriodDataContext(_mw.ConnectionString);
-                //    try
-                //    {
-                //        foreach (var war in db.GetListWarrantyPeriod())
-                //        {
-                //            Dispatcher.BeginInvoke((Action) (() => CbWarranty.Items.Add(war)));
-                //        }
-                //    }
-                //    catch (Exception e)
-                //    {
-                //        MessageBox.Show(e.Message, e.HResult.ToString(), MessageBoxButton.OK,
-                //            MessageBoxImage.Error);
-                //    }
-                //});
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, e.HResult.ToString(), MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
+
+        private async Task ReadWuaranteePeriodAsync()
+        {
+            try
+            {
+                await Task.Run(() =>
+                {
+                    WarrantyPeriodDataContext db = new WarrantyPeriodDataContext(_mw.ConnectionString);
+                    try
+                    {
+                        foreach (var war in db.GetListWarrantyPeriod(-1))
+                        {
+                            Dispatcher.BeginInvoke((Action)(() => CbWarranty.Items.Add(war.Period)));
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        MessageBox.Show(e.Message, e.HResult.ToString(), MessageBoxButton.OK,
+                            MessageBoxImage.Error);
+                    }
+                });
+                if (CbWarranty.Items.Count != 0)
+                {
+                    CbWarranty.SelectedIndex = 0;
+                }
+
+                if (_product != null)
+                {
+                    for (int i = 0; i < CbWarranty.Items.Count; i++)
+                    {
+                        if ((string) CbWarranty.Items[i] == _product.Warranty)
+                            CbWarranty.SelectedIndex = i;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, e.HResult.ToString(), MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
+
+        private async Task ReadExchangeRatesAsync()
+        {
+            try
+            {
+                await Task.Run(() =>
+                {
+                    ExchangeRatesDataContext db = new ExchangeRatesDataContext(_mw.ConnectionString);
+                    try
+                    {
+                        foreach (var ex in db.GetListExchangeRates())
+                        {
+                            Dispatcher.BeginInvoke((Action)(() => CbExRates.Items.Add(ex.Currency)));
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        MessageBox.Show(e.Message, e.HResult.ToString(), MessageBoxButton.OK,
+                            MessageBoxImage.Error);
+                    }
+                });
+                if (CbExRates.Items.Count != 0)
+                {
+                    CbExRates.SelectedIndex = 0;
+                }
+                if (_product != null)
+                {
+                    for (int i = 0; i < CbExRates.Items.Count; i++)
+                    {
+                        if ((string)CbExRates.Items[i] == _product.ExchangeRates)
+                            CbExRates.SelectedIndex = i;
+                    }
+                }
             }
             catch (Exception e)
             {
@@ -120,142 +198,242 @@ namespace RulezzClient
 
         private async void ShowFunctionAsync(int choise) //choise: 1 - номенклатура; 2 - номенклатурyная группа;
         {
-            switch (choise)
+            try
             {
-                case 1:
-                    await Task.Run(() => { ShowNomenclatureFunction(); });
-                    break;
-                case 2:
-                    await Task.Run(() => { ShowNomenclatureGroupFunction(); });
-                    break;
+                switch (choise)
+                {
+                    case 1:
+                        await Task.Run(() => { ShowNomenclatureFunction(); });
+                        break;
+                    case 2:
+                        await Task.Run(() => { ShowNomenclatureGroupFunction(); });
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, e.HResult.ToString(), MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
         }
 
         private void ShowNomenclatureFunction()
         {
-            Dispatcher.BeginInvoke((Action)(() => CbNomenclature.Items.Clear()));
-            NomenclatureDataContext db = new NomenclatureDataContext(_mw.ConnectionString);
-            var nomenclature = db.GetNomenclature(_mw.IdStore);
-            foreach (var nom in nomenclature)
+            try
             {
-                Dispatcher.BeginInvoke((Action)(() => CbNomenclature.Items.Add(nom.Title)));
+                Dispatcher.BeginInvoke((Action) (() => CbNomenclatureGroup.Items.Clear()));
+                NomenclatureGroupDataContext db = new NomenclatureGroupDataContext(_mw.ConnectionString);
+                var nomenclature = db.GetNomenclatureGroup(_mw.IdStore);
+                foreach (var nom in nomenclature)
+                {
+                    Dispatcher.BeginInvoke((Action) (() => CbNomenclatureGroup.Items.Add(nom.Title)));
+                }
+
+                Dispatcher.BeginInvoke((Action) (() => CbNomenclatureGroup.SelectedIndex = 0));
             }
-            Dispatcher.BeginInvoke((Action)(() => CbNomenclature.SelectedIndex = 0));
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, e.HResult.ToString(), MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
         }
 
         private void ShowNomenclatureGroupFunction()
         {
-            Dispatcher.BeginInvoke((Action)(() => NomenclatureGroupComboBox.Items.Clear()));
-            NomenclatureGroupeDataContext db = new NomenclatureGroupeDataContext(_mw.ConnectionString);
-            foreach (var nom in db.GetNomenclatureGroup(_selectedNomenclature))
+            try
             {
-                Dispatcher.BeginInvoke((Action)(() => NomenclatureGroupComboBox.Items.Add(nom.Title)));
+                Dispatcher.BeginInvoke((Action) (() => CbNomenclatureSubgroup.Items.Clear()));
+                NomenclatureSubgroupDataContext db = new NomenclatureSubgroupDataContext(_mw.ConnectionString);
+                foreach (var nom in db.GetNomenclatureSubgroup(_selectedNomenclatureGroup))
+                {
+                    Dispatcher.BeginInvoke((Action) (() => CbNomenclatureSubgroup.Items.Add(nom.Title)));
+                }
+
+                Dispatcher.BeginInvoke((Action) (() => CbNomenclatureSubgroup.SelectedIndex = 0));
             }
-            Dispatcher.BeginInvoke((Action)(() => NomenclatureGroupComboBox.SelectedIndex = 0));
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, e.HResult.ToString(), MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
         }
 
-        private void Nomenclature_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void CbNomenclatureGroup_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (CbNomenclature.SelectedIndex == -1) return;
-            NomenclatureDataContext db = new NomenclatureDataContext(_mw.ConnectionString);
-            db.FindNomenclatureId(CbNomenclature.Items[CbNomenclature.SelectedIndex].ToString(),
-                _mw.IdStore, ref _selectedNomenclature);
-            ShowFunctionAsync(2);
+            try
+            {
+                if (CbNomenclatureGroup.SelectedIndex == -1) return;
+                NomenclatureGroupDataContext db = new NomenclatureGroupDataContext(_mw.ConnectionString);
+                db.FindNomenclatureGroupId(CbNomenclatureGroup.Items[CbNomenclatureGroup.SelectedIndex].ToString(),
+                    _mw.IdStore, ref _selectedNomenclatureGroup);
+                ShowFunctionAsync(2);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, ex.HResult.ToString(), MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
         }
 
-        private void NomenclatureGroup_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void CbNomenclatureSubgroup_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (NomenclatureGroupComboBox.SelectedIndex == -1) return;
-            NomenclatureGroupeDataContext db = new NomenclatureGroupeDataContext(_mw.ConnectionString);
-            db.FindNomenclatureGroupId(
-                NomenclatureGroupComboBox.Items[NomenclatureGroupComboBox.SelectedIndex].ToString(),
-                _selectedNomenclature, ref _selectedNomenclatureGroup);
+            try
+            {
+                if (CbNomenclatureSubgroup.SelectedIndex == -1) return;
+                NomenclatureSubgroupDataContext db = new NomenclatureSubgroupDataContext(_mw.ConnectionString);
+                db.FindNomenclatureSubgroupId(
+                    CbNomenclatureSubgroup.Items[CbNomenclatureSubgroup.SelectedIndex].ToString(),
+                    _selectedNomenclatureGroup, ref _selectedNomenclatureSubgroup);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, ex.HResult.ToString(), MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
         }
 
         private async Task GetIdUnitStorageAsync()
         {
-            using (SqlConnection connection = new SqlConnection(_mw.ConnectionString))
+            try
             {
-                connection.Open();
-                string nameComm =
-                    $"select ID from UnitStorage where title = '{CbUnitSt.Items[CbUnitSt.SelectedIndex]}'";
-                SqlCommand command = new SqlCommand(nameComm, connection);
-                SqlDataReader reader = await command.ExecuteReaderAsync();
-                if (reader.HasRows)
+                using (SqlConnection connection = new SqlConnection(_mw.ConnectionString))
                 {
-                    while (reader.Read()) // построчно считываем данные
+                    connection.Open();
+                    string nameComm =
+                        $"select ID from UnitStorage where title = '{CbUnitSt.Items[CbUnitSt.SelectedIndex]}'";
+                    SqlCommand command = new SqlCommand(nameComm, connection);
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
+                    if (reader.HasRows)
                     {
-                        _selectedUnitSt = (int) reader.GetValue(0);
-                        reader.Close();
-                        return;
+                        while (reader.Read()) // построчно считываем данные
+                        {
+                            _selectedUnitSt = (int) reader.GetValue(0);
+                            reader.Close();
+                            return;
+                        }
                     }
-                }
 
-                reader.Close();
+                    reader.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, ex.HResult.ToString(), MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
         }
 
         private void CbUnitSt_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (CbUnitSt.SelectedIndex == -1) return;
-            GetIdUnitStorageAsync().GetAwaiter();
+            try
+            {
+                if (CbUnitSt.SelectedIndex == -1) return;
+                GetIdUnitStorageAsync().GetAwaiter();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, ex.HResult.ToString(), MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
         }
 
-        private async Task GetIdWuaranteePeriodAsync()
+        private async Task GetIdWarrantyAsync(string warranty)
         {
-            using (SqlConnection connection = new SqlConnection(_mw.ConnectionString))
+            try
             {
-                connection.Open();
-                string nameComm =
-                    $"select ID from WuaranteePeriod where period = {CbWarranty.Items[CbWarranty.SelectedIndex]}";
-                SqlCommand command = new SqlCommand(nameComm, connection);
-                SqlDataReader reader = await command.ExecuteReaderAsync();
-                if (reader.HasRows)
+                await Task.Run(() =>
                 {
-                    while (reader.Read()) // построчно считываем данные
-                    {
-                        _selectedWarranty = (int) reader.GetValue(0);
-                        reader.Close();
-                        return;
-                    }
-                }
-
-                reader.Close();
+                    WarrantyPeriodDataContext db = new WarrantyPeriodDataContext(_mw.ConnectionString);
+                    db.GetWarrantyPeriodId(warranty, ref _selectedWarranty);
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, ex.HResult.ToString(), MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
         }
 
         private void CbWarranty_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (CbWarranty.SelectedIndex == -1) return;
-            GetIdWuaranteePeriodAsync().GetAwaiter();
+            try
+            {
+                if (CbWarranty.SelectedIndex == -1) return;
+                GetIdWarrantyAsync(CbWarranty.Items[CbWarranty.SelectedIndex].ToString()).GetAwaiter();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, ex.HResult.ToString(), MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
         }
 
         private void BAdd_Click(object sender, RoutedEventArgs e)
         {
-            using (SqlConnection connection = new SqlConnection(_mw.ConnectionString))
+            try
             {
-                connection.Open();
-                SqlTransaction transaction = connection.BeginTransaction();
-
-                SqlCommand command = connection.CreateCommand();
-                command.Transaction = transaction;
-
-                try
+                using (SqlConnection connection = new SqlConnection(_mw.ConnectionString))
                 {
-                    command.CommandText =
-                        "INSERT INTO Product (id_nomenclature_group, title, vendor_code, barcode, id_unit_storage, count, purchase_price, id_exchange_rates, warranty, sales_price)" +
-                        $" VALUES({_selectedNomenclatureGroup}, '{TbName.Text}', '{TbItemNum.Text}', '{TbBarcode.Text}', {_selectedUnitSt}, 0, {TbPurchasePrice.Text}, 1, 1, {TbSalesPrice.Text})";
-                    command.ExecuteNonQuery();
-                    transaction.Commit();
-                    MessageBox.Show("Товар добавлен.", "Успех", MessageBoxButton.OK,
-                        MessageBoxImage.Information);
+                    connection.Open();
+                    SqlTransaction transaction = connection.BeginTransaction();
+
+                    SqlCommand command = connection.CreateCommand();
+                    command.Transaction = transaction;
+
+                    try
+                    {
+                        if (_product == null)
+                        {
+                            command.CommandText =
+                                "INSERT INTO Product (id_nomenclature_subgroup, title, vendor_code, barcode, id_unit_storage, count, purchase_price, id_exchange_rates, id_warranty, sales_price)" +
+                                $" VALUES({_selectedNomenclatureSubgroup}, '{TbName.Text}', '{TbItemNum.Text}', '{TbBarcode.Text}', {_selectedUnitSt}, 0, {TbPurchasePrice.Text}, {_selectedExchangeRates}, {_selectedWarranty}, {TbSalesPrice.Text})";
+                            command.ExecuteNonQuery();
+                            transaction.Commit();
+                            MessageBox.Show("Товар добавлен.", "Успех", MessageBoxButton.OK,
+                                MessageBoxImage.Information);
+                        }
+                        else
+                        {
+                            int id = 0;
+                            ProductDataContext db = new ProductDataContext(_mw.ConnectionString);
+                            db.FindProductId(_product.Barcode, _selectedNomenclatureSubgroup, ref id);
+                            command.CommandText =
+                                $"UPDATE Product Set id_nomenclature_subgroup = {_selectedNomenclatureSubgroup}, title = '{TbName.Text}', vendor_code = '{TbItemNum.Text}', barcode = '{TbBarcode.Text}', id_unit_storage = {_selectedUnitSt}, purchase_price = {TbPurchasePrice.Text}, id_exchange_rates = {_selectedExchangeRates}, id_warranty = {_selectedWarranty}, sales_price = {TbSalesPrice.Text} where id = {id}";
+                            command.ExecuteNonQuery();
+                            transaction.Commit();
+                            MessageBox.Show("Товар изменен.", "Успех", MessageBoxButton.OK,
+                                MessageBoxImage.Information);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK,
+                            MessageBoxImage.Error);
+                        transaction.Rollback();
+                    }
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK,
-                        MessageBoxImage.Error);
-                    transaction.Rollback();
-                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, ex.HResult.ToString(), MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
+
+        private void CbExRates_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                if (CbExRates.SelectedIndex == -1) return;
+                ExchangeRatesDataContext db = new ExchangeRatesDataContext(_mw.ConnectionString);
+                db.FindExchangeRatesId(
+                    CbExRates.Items[CbExRates.SelectedIndex].ToString(),
+                    ref _selectedExchangeRates);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, ex.HResult.ToString(), MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
         }
     }

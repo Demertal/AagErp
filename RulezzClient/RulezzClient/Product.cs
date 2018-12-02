@@ -43,27 +43,27 @@ namespace RulezzClient
         {
 
         }
-        //Получение id продукта по id номенклатурной группы
+        //Получение id продукта по id номенклатурной подгруппы
         [Function(Name = "FindIdProduct")]
         [return: Parameter(DbType = "Int")]
         public int FindProductId(
-            [Parameter(Name = "barcode", DbType = "nvarchar(13)")] string title,
-            [Parameter(Name = "@id_nomenclature_group", DbType = "int")] int idNomGroup,
+            [Parameter(Name = "barcode", DbType = "nvarchar(13)")] string barcode,
+            [Parameter(Name = "id_nomenclature_subgroup", DbType = "int")] int idNomSub,
             [Parameter(Name = "id", DbType = "int")] ref int id)
         {
-            IExecuteResult result = ExecuteMethodCall(this, (MethodInfo)MethodBase.GetCurrentMethod(), title, idNomGroup, id);
+            IExecuteResult result = ExecuteMethodCall(this, (MethodInfo)MethodBase.GetCurrentMethod(), barcode, idNomSub, id);
             if (result == null) return -1;
             id = (int)result.GetParameterValue(2);
             return (int)result.ReturnValue;
         }
 
-        //Получение продукта по id номенклатурной группы
+        //Получение продукта по id номенклатурной подгруппы
         [Function(Name = "FunViewProduct", IsComposable = true)]
         public IQueryable<ProductView> GetListProduct(
-            [Parameter(Name = "id_nomenclature_group", DbType = "int")] int idNomenclatureGroup,
+            [Parameter(Name = "id_nomenclature_subgroup", DbType = "int")] int idNomSub,
             [Parameter(Name = "id_prod", DbType = "int")] int idProd)
         {
-            return CreateMethodCallQuery<ProductView>(this, (MethodInfo)MethodBase.GetCurrentMethod(), idNomenclatureGroup, idProd);
+            return CreateMethodCallQuery<ProductView>(this, (MethodInfo)MethodBase.GetCurrentMethod(), idNomSub, idProd);
         }
     }
 }
