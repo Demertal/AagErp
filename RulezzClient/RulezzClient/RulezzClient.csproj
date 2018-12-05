@@ -59,9 +59,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AddNomenclatureSubgroup.xaml.cs">
+      <DependentUpon>AddNomenclatureSubgroup.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AddProduct.xaml.cs">
       <DependentUpon>AddProduct.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="ViewModel.cs" />
     <Compile Include="ExchangeRates.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -71,6 +76,10 @@
     </Compile>
     <Compile Include="NomenclatureSubgroup.cs" />
     <Compile Include="Warranty.cs" />
+    <Page Include="AddNomenclatureSubgroup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="AddProduct.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

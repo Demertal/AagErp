@@ -16,7 +16,7 @@
             <Setter Property="Orientation" Value="Vertical" />
             <Style.Resources>
                 <Style TargetType="StackPanel">
-                    <Setter Property="Height" Value="20" />
+                    <Setter Property="Height" Value="Auto" />
                     <Setter Property="Width" Value="{Binding ActualWidth, ElementName=window, Mode=OneWay}"/>
                     <Setter Property="Margin" Value="0, 5, 0, 0" />
                     <Setter Property="HorizontalAlignment" Value="Left" />
@@ -26,6 +26,7 @@
                         <Style TargetType="ComboBox">
                             <Setter Property="VerticalAlignment" Value="Top" />
                             <Setter Property="HorizontalAlignment" Value="Left" />
+                            <Setter Property="VerticalContentAlignment" Value="Center" />
                             <Setter Property="Margin" Value="10, 0, 0, 0"/>
                             <Setter Property="MinWidth" Value="50"/>
                             <Setter Property="MaxWidth" Value="120"/>
@@ -47,34 +48,37 @@
             <MenuItem AutomationProperties.Name="MIShowProduct" Height="20"  Margin="0,0,0,0" Header="Показать товар" AutomationProperties.IsColumnHeader="True" Click="MIShowProduct_Click"/>
             <MenuItem Header="Добавить...">
                 <MenuItem x:Name="MiAddProduct" Header="Товар" Click="MiAddProduct_Click"/>
+                <MenuItem x:Name="MiAddNomenclatureSubgroup" Header="Номенклатурная подгруппа" Click="MiAddNomenclatureSubgroup_Click"/>
+            </MenuItem>
+            <MenuItem Header="Действия с...">
+                <MenuItem x:Name="MiShowNomenclatureSubgroup" Header="Номенклатурной подгруппой" Click="MiShowNomenclatureSubgroup_Click"/>
+                <!--<MenuItem x:Name="MiAddNomenclatureSubgroup" Header="Номенклатурная подгруппа" Click="MiAddNomenclatureSubgroup_Click"/>-->
             </MenuItem>
         </Menu>
         <StackPanel x:Name="ProductGroup" Visibility="Hidden">
             <StackPanel>
-                <ComboBox x:Name="CbStore" SelectionChanged="CbStore_SelectionChanged" IsEnabled="False"/>
-                <ComboBox x:Name="CbNomenclatureGroup" SelectionChanged="CbNomenclatureGroup_SelectionChanged"/>
-                <ComboBox x:Name="CbNomenclatureSubgroup" SelectionChanged="CbNomenclatureSubgroup_SelectionChanged"/>
+                <ComboBox x:Name="CbStore" SelectionChanged="CbStore_SelectionChanged" IsEnabled="False" VerticalContentAlignment="Center"/>
+                <ComboBox x:Name="CbNomenclatureGroup" SelectionChanged="CbNomenclatureGroup_SelectionChanged" VerticalContentAlignment="Center" ItemsSource="{Binding NomenclatureGroups}" SelectedItem="{Binding SelectedNomenclatureGroup}" DisplayMemberPath="Title"/>
+                <ComboBox x:Name="CbNomenclatureSubgroup" SelectionChanged="CbNomenclatureSubgroup_SelectionChanged" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" ItemsSource="{Binding NomenclatureSubgroups}" SelectedItem="{Binding SelectedNomenclatureSubgroup}" DisplayMemberPath="Title"/>
             </StackPanel>
-            <DataGrid  x:Name="DgProducts" Height="100" MinColumnWidth="100" MaxColumnWidth="150" HorizontalAlignment="Left" Margin="10,5,0,0" CanUserResizeRows="False" CanUserReorderColumns="False">
+            <DataGrid  x:Name="DgProducts" Height="100" MinColumnWidth="100" MaxColumnWidth="150" HorizontalAlignment="Left" Margin="10,5,0,0" CanUserResizeRows="False" CanUserReorderColumns="False" ItemsSource="{Binding Products}" SelectedItem="{Binding SelectedProduct}" AutoGenerateColumns="False">
                 <DataGrid.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Name="MiChange" Header="Изменить" Click="MIChange_Click" />
-                        <MenuItem Name="MiDelete" Header="Удалить" Click="MiDelete_Click" />
+                        <MenuItem Name="MiChangeProduct" Header="Изменить" Click="MIChangeProduct_Click" />
+                        <MenuItem Name="MiDeleteProduct" Header="Удалить" Click="MiDeleteProduct_Click" />
                     </ContextMenu>
                 </DataGrid.ContextMenu>
-                <DataGrid.DataContext>
-                    <local:ProductView/>
-                </DataGrid.DataContext>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Наименование" Binding="{Binding Title}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Артикул" Binding="{Binding VendorCode}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Цена" Binding="{Binding SalesPrice}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Тип хранения" Binding="{Binding UnitStorage}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Гарантия" Binding="{Binding Warranty}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Кол-во на складе" Binding="{Binding Count}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Наименование" Binding="{Binding Path=Title}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Артикул" Binding="{Binding Path=VendorCode}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Цена" Binding="{Binding Path=SalesPrice}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Ед. хранения" Binding="{Binding Path=UnitStorage}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Гарантия" Binding="{Binding Path=Warranty}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Кол-во на складе" Binding="{Binding Path=Count}" IsReadOnly="True"/>
                 </DataGrid.Columns>
             </DataGrid>
 
         </StackPanel>
+        <TreeView x:Name="TvShowGroup" HorizontalAlignment="Left" Height="100" Margin="14,33,0,0" VerticalAlignment="Top" Width="100" Visibility="Hidden"/>
     </Grid>
 </Window>

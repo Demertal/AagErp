@@ -1,70 +1,53 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Globalization;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace RulezzClient
 {
     /// <summary>
     /// Логика взаимодействия для AddProduct.xaml
     /// </summary>
-    public partial class AddProduct : Window
+    public partial class AddProduct
     {
         private readonly MainWindow _mw;
         private int _selectedNomenclatureGroup;
         private int _selectedNomenclatureSubgroup;
         private int _selectedUnitSt;
         private int _selectedWarranty;
-        private int _selectedExchangeRates;
-        private ProductView _product;
+        private readonly Product _product;
 
         public AddProduct(MainWindow mw)
         {
-            this.Title = "Добавить товар";
+            Title = "Добавить товар";
             InitializeComponent();
             BAdd.Content = "Добавить";
             _mw = mw;
             ReadWuaranteePeriodAsync().GetAwaiter();
             ReadUnitStorageAsync().GetAwaiter();
-            ReadExchangeRatesAsync().GetAwaiter();
             ShowFunctionAsync(1);
         }
 
-        public AddProduct(MainWindow mw, int id_prod)
+        public AddProduct(MainWindow mw, int idProd)
         {
             InitializeComponent();
-            this.Title = "Изменить товар";
+            Title = "Изменить товар";
             BAdd.Content = "Изменить";
             _mw = mw;
             try
             {
                 ProductDataContext db = new ProductDataContext(_mw.ConnectionString);
-                db.GetListProduct(-1, id_prod);
-                _product = db.GetListProduct(-1, id_prod).First();
+                db.GetListProduct(-1, idProd);
+                _product = db.GetListProduct(-1, idProd).First();
                 ReadWuaranteePeriodAsync().GetAwaiter();
                 ReadUnitStorageAsync().GetAwaiter();
-                ReadExchangeRatesAsync().GetAwaiter();
                 ShowFunctionAsync(1);
                 TbName.Text = _product.Title;
                 TbItemNum.Text = _product.VendorCode;
                 TbBarcode.Text = _product.Barcode;
-                TbPurchasePrice.Text = _product.PurchasePrice.ToString(CultureInfo.InvariantCulture);
-                TbSalesPrice.Text = _product.SalesPrice.ToString(CultureInfo.InvariantCulture);
                 TbName.Text = _product.Title;
-               
             }
             catch(Exception e)
             {
@@ -156,46 +139,6 @@ namespace RulezzClient
             }
         }
 
-        private async Task ReadExchangeRatesAsync()
-        {
-            try
-            {
-                await Task.Run(() =>
-                {
-                    ExchangeRatesDataContext db = new ExchangeRatesDataContext(_mw.ConnectionString);
-                    try
-                    {
-                        foreach (var ex in db.GetListExchangeRates())
-                        {
-                            Dispatcher.BeginInvoke((Action)(() => CbExRates.Items.Add(ex.Currency)));
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        MessageBox.Show(e.Message, e.HResult.ToString(), MessageBoxButton.OK,
-                            MessageBoxImage.Error);
-                    }
-                });
-                if (CbExRates.Items.Count != 0)
-                {
-                    CbExRates.SelectedIndex = 0;
-                }
-                if (_product != null)
-                {
-                    for (int i = 0; i < CbExRates.Items.Count; i++)
-                    {
-                        if ((string)CbExRates.Items[i] == _product.ExchangeRates)
-                            CbExRates.SelectedIndex = i;
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message, e.HResult.ToString(), MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-            }
-        }
-
         private async void ShowFunctionAsync(int choise) //choise: 1 - номенклатура; 2 - номенклатурyная группа;
         {
             try
@@ -203,10 +146,10 @@ namespace RulezzClient
                 switch (choise)
                 {
                     case 1:
-                        await Task.Run(() => { ShowNomenclatureFunction(); });
+                        await Task.Run(() => { ShowNomenclatureGroupFunction(); });
                         break;
                     case 2:
-                        await Task.Run(() => { ShowNomenclatureGroupFunction(); });
+                        await Task.Run(() => { ShowNomenclatureSubgroupFunction(); });
                         break;
                 }
             }
@@ -217,7 +160,7 @@ namespace RulezzClient
             }
         }
 
-        private void ShowNomenclatureFunction()
+        private void ShowNomenclatureGroupFunction()
         {
             try
             {
@@ -238,7 +181,7 @@ namespace RulezzClient
             }
         }
 
-        private void ShowNomenclatureGroupFunction()
+        private void ShowNomenclatureSubgroupFunction()
         {
             try
             {
@@ -262,11 +205,11 @@ namespace RulezzClient
         {
             try
             {
-                if (CbNomenclatureGroup.SelectedIndex == -1) return;
-                NomenclatureGroupDataContext db = new NomenclatureGroupDataContext(_mw.ConnectionString);
-                db.FindNomenclatureGroupId(CbNomenclatureGroup.Items[CbNomenclatureGroup.SelectedIndex].ToString(),
-                    _mw.IdStore, ref _selectedNomenclatureGroup);
-                ShowFunctionAsync(2);
+                //if (CbNomenclatureGroup.SelectedIndex == -1) return;
+                //NomenclatureGroupDataContext db = new NomenclatureGroupDataContext(_mw.ConnectionString);
+                //db.FindNomenclatureGroupId(CbNomenclatureGroup.Items[CbNomenclatureGroup.SelectedIndex].ToString(),
+                //    _mw.IdStore, ref _selectedNomenclatureGroup);
+                //ShowFunctionAsync(2);
             }
             catch (Exception ex)
             {
@@ -280,10 +223,10 @@ namespace RulezzClient
             try
             {
                 if (CbNomenclatureSubgroup.SelectedIndex == -1) return;
-                NomenclatureSubgroupDataContext db = new NomenclatureSubgroupDataContext(_mw.ConnectionString);
-                db.FindNomenclatureSubgroupId(
-                    CbNomenclatureSubgroup.Items[CbNomenclatureSubgroup.SelectedIndex].ToString(),
-                    _selectedNomenclatureGroup, ref _selectedNomenclatureSubgroup);
+                //NomenclatureSubgroupDataContext db = new NomenclatureSubgroupDataContext(_mw.ConnectionString);
+                //db.FindNomenclatureSubgroupId(
+                //    CbNomenclatureSubgroup.Items[CbNomenclatureSubgroup.SelectedIndex].ToString(),
+                //    _selectedNomenclatureGroup, ref _selectedNomenclatureSubgroup);
             }
             catch (Exception ex)
             {
@@ -384,13 +327,26 @@ namespace RulezzClient
                     {
                         if (_product == null)
                         {
+                            int id = 0;
+                            ExchangeRatesDataContext db = new ExchangeRatesDataContext(_mw.ConnectionString);
+                            db.FindExchangeRatesId("грн", ref id);
+
                             command.CommandText =
                                 "INSERT INTO Product (id_nomenclature_subgroup, title, vendor_code, barcode, id_unit_storage, count, purchase_price, id_exchange_rates, id_warranty, sales_price)" +
-                                $" VALUES({_selectedNomenclatureSubgroup}, '{TbName.Text}', '{TbItemNum.Text}', '{TbBarcode.Text}', {_selectedUnitSt}, 0, {TbPurchasePrice.Text}, {_selectedExchangeRates}, {_selectedWarranty}, {TbSalesPrice.Text})";
-                            command.ExecuteNonQuery();
-                            transaction.Commit();
-                            MessageBox.Show("Товар добавлен.", "Успех", MessageBoxButton.OK,
-                                MessageBoxImage.Information);
+                                $" VALUES({_selectedNomenclatureSubgroup}, '{TbName.Text}', '{TbItemNum.Text}', '{TbBarcode.Text}', {_selectedUnitSt}, 0, 0, {id}, {_selectedWarranty}, 0)";
+                            if (command.ExecuteNonQuery() == 1)
+                            {
+                                command.ExecuteNonQuery();
+                                transaction.Commit();
+                                MessageBox.Show("Товар добавлен.", "Успех", MessageBoxButton.OK,
+                                    MessageBoxImage.Information);
+                            }
+                            else
+                            {
+                                MessageBox.Show("При попытке добавить товар произошла ошибка.", "Ошибка", MessageBoxButton.OK,
+                                    MessageBoxImage.Error);
+                                transaction.Rollback();
+                            }
                         }
                         else
                         {
@@ -398,11 +354,20 @@ namespace RulezzClient
                             ProductDataContext db = new ProductDataContext(_mw.ConnectionString);
                             db.FindProductId(_product.Barcode, _selectedNomenclatureSubgroup, ref id);
                             command.CommandText =
-                                $"UPDATE Product Set id_nomenclature_subgroup = {_selectedNomenclatureSubgroup}, title = '{TbName.Text}', vendor_code = '{TbItemNum.Text}', barcode = '{TbBarcode.Text}', id_unit_storage = {_selectedUnitSt}, purchase_price = {TbPurchasePrice.Text}, id_exchange_rates = {_selectedExchangeRates}, id_warranty = {_selectedWarranty}, sales_price = {TbSalesPrice.Text} where id = {id}";
-                            command.ExecuteNonQuery();
-                            transaction.Commit();
-                            MessageBox.Show("Товар изменен.", "Успех", MessageBoxButton.OK,
-                                MessageBoxImage.Information);
+                                $"UPDATE Product Set id_nomenclature_subgroup = {_selectedNomenclatureSubgroup}, title = '{TbName.Text}', vendor_code = '{TbItemNum.Text}', barcode = '{TbBarcode.Text}', id_unit_storage = {_selectedUnitSt}, id_warranty = {_selectedWarranty} where id = {id}";
+
+                            if (command.ExecuteNonQuery() == 1)
+                            {
+                                transaction.Commit();
+                                MessageBox.Show("Товар изменен.", "Успех", MessageBoxButton.OK,
+                                    MessageBoxImage.Information);
+                            }
+                            else
+                            {
+                                MessageBox.Show("При попытке изенить товар произошла ошибка.", "Ошибка", MessageBoxButton.OK,
+                                    MessageBoxImage.Error);
+                                transaction.Rollback();
+                            }
                         }
                         Close();
                     }
@@ -413,23 +378,6 @@ namespace RulezzClient
                         transaction.Rollback();
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, ex.HResult.ToString(), MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-            }
-        }
-
-        private void CbExRates_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            try
-            {
-                if (CbExRates.SelectedIndex == -1) return;
-                ExchangeRatesDataContext db = new ExchangeRatesDataContext(_mw.ConnectionString);
-                db.FindExchangeRatesId(
-                    CbExRates.Items[CbExRates.SelectedIndex].ToString(),
-                    ref _selectedExchangeRates);
             }
             catch (Exception ex)
             {

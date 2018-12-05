@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
+using System.Windows.Threading;
 using MessageBox = System.Windows.MessageBox;
 
 namespace RulezzClient
@@ -23,13 +25,15 @@ namespace RulezzClient
         public string ConnectionString;
 
         public int IdStore, IdRole;
-        private int _selectedNomenclatureGroup = -1;
+        //private int _selectedNomenclatureGroup = -1;
         private int _selectedNomenclatureSubgroup = -1;
+        private readonly ViewModel _viewModel;
 
         public enum GroupForm : byte
         {
             ShowProduct,
-            CashierWorkplace
+            CashierWorkplace,
+            ShowNomenclatureSubgroup
         }
 
         public MainWindow()
@@ -54,6 +58,8 @@ namespace RulezzClient
             }
 
             connection.Close();
+            _viewModel = new ViewModel(Dispatcher.CurrentDispatcher);
+            DataContext = _viewModel;
         }
 
 
@@ -64,17 +70,22 @@ namespace RulezzClient
             {
                 case GroupForm.ShowProduct:
                     ProductGroup.Visibility = Visibility;
-                    ProductGroup.Style = (Style)window.FindResource("ShowProductStackPanelStyle");
+                    ProductGroup.Style = (Style) window.FindResource("ShowProductStackPanelStyle");
                     break;
                 case GroupForm.CashierWorkplace:
                     ProductGroup.Visibility = Visibility.Hidden;
                     break;
+                case GroupForm.ShowNomenclatureSubgroup:
+                    ProductGroup.Visibility = Visibility.Hidden;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(gf), gf, null);
             }
         }
 
         private async void ShowFunctionAsync(int choise) //choise: 0 - все; 1 - магазин; 2 - номенклатура; 3 - номенклатурная группа
         {
-            DgProducts.Items.Clear();
+            //DgProducts.Items.Clear();
             switch (choise)
             {
                 case 0:
@@ -84,10 +95,10 @@ namespace RulezzClient
                     await Task.Run(() => { ShowNomenclatureGroupFunction(); });
                     break;
                 case 2:
-                    await Task.Run(() => { ShowNomenclatureSubgroupFunction(); });
+                    //await Task.Run(() => { ShowNomenclatureSubgroupFunction(); });
                     break;
                 case 3:
-                    await Task.Run(() => { ShowProductFunction(); });
+                   // await Task.Run(() => { ShowProductFunction(); });
                     break;
             }
         }
@@ -111,44 +122,17 @@ namespace RulezzClient
 
         private void ShowNomenclatureGroupFunction()
         {
-            Dispatcher.BeginInvoke((Action) (() => CbNomenclatureGroup.Items.Clear()));
+            bool check = false;
+            Dispatcher.BeginInvoke((Action)(() => _viewModel.NomenclatureGroups.Clear()));
             NomenclatureGroupDataContext db = new NomenclatureGroupDataContext(ConnectionString);
             var nomenclature = db.GetNomenclatureGroup(IdStore);
             foreach (var nom in nomenclature)
             {
-                Dispatcher.BeginInvoke((Action) (() => CbNomenclatureGroup.Items.Add(nom.Title)));
+                Dispatcher.BeginInvoke((Action)(() => _viewModel.NomenclatureGroups.Add(nom)));
+                check = true;
             }
-
-            Dispatcher.BeginInvoke((Action) (() => CbNomenclatureGroup.SelectedIndex = 0));
-        }
-
-        private void ShowNomenclatureSubgroupFunction()
-        {
-            Dispatcher.BeginInvoke((Action) (() => CbNomenclatureSubgroup.Items.Clear()));
-            NomenclatureSubgroupDataContext db = new NomenclatureSubgroupDataContext(ConnectionString);
-            foreach (var nom in db.GetNomenclatureSubgroup(_selectedNomenclatureGroup))
-            {
-                Dispatcher.BeginInvoke((Action) (() => CbNomenclatureSubgroup.Items.Add(nom.Title)));
-            }
-
-            Dispatcher.BeginInvoke((Action) (() => CbNomenclatureSubgroup.SelectedIndex = 0));
-        }
-
-        private void ShowProductFunction()
-        {
-            try
-            {
-                ProductDataContext db = new ProductDataContext(ConnectionString);
-                foreach (var pro in db.GetListProduct(_selectedNomenclatureSubgroup, -1))
-                {
-                    Dispatcher.BeginInvoke((Action) (() => DgProducts.Items.Add(pro)));
-                }
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message, e.HResult.ToString(), MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-            }
+            if(check)
+                Dispatcher.BeginInvoke((Action)(() => _viewModel.SelectedNomenclatureGroup = _viewModel.NomenclatureGroups[0]));
         }
 
         private void CbStore_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -160,20 +144,21 @@ namespace RulezzClient
         private void CbNomenclatureGroup_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (CbNomenclatureGroup.SelectedIndex == -1) return;
-            NomenclatureGroupDataContext db = new NomenclatureGroupDataContext(ConnectionString);
-            db.FindNomenclatureGroupId(CbNomenclatureGroup.Items[CbNomenclatureGroup.SelectedIndex].ToString(),
-                IdStore, ref _selectedNomenclatureGroup);
-            ShowFunctionAsync(2);
+           // ShowNomenclatureSubgroupFunction();
+            //NomenclatureGroupDataContext db = new NomenclatureGroupDataContext(ConnectionString);
+            //db.FindNomenclatureGroupId(CbNomenclatureGroup.Items[CbNomenclatureGroup.SelectedIndex].ToString(),
+            //    IdStore, ref _selectedNomenclatureGroup);
+            //ShowFunctionAsync(2);
         }
 
         private void CbNomenclatureSubgroup_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (CbNomenclatureSubgroup.SelectedIndex == -1) return;
-            NomenclatureSubgroupDataContext db = new NomenclatureSubgroupDataContext(ConnectionString);
-            db.FindNomenclatureSubgroupId(
-                CbNomenclatureSubgroup.Items[CbNomenclatureSubgroup.SelectedIndex].ToString(),
-                _selectedNomenclatureGroup, ref _selectedNomenclatureSubgroup);
-            ShowFunctionAsync(3);
+            //NomenclatureSubgroupDataContext db = new NomenclatureSubgroupDataContext(ConnectionString);
+            //db.FindNomenclatureSubgroupId(
+            //    CbNomenclatureSubgroup.Items[CbNomenclatureSubgroup.SelectedIndex].ToString(),
+            //    _viewModel.SelectedNomenclatureGroup.Id, ref _selectedNomenclatureSubgroup);
+            //ShowFunctionAsync(3);
         }
 
         private void MICashierWorkplace_Click(object sender, RoutedEventArgs e)
@@ -194,29 +179,31 @@ namespace RulezzClient
             ShowFunctionAsync(3);
         }
 
-        private void MIChange_Click(object sender, RoutedEventArgs e)
+        private void MIChangeProduct_Click(object sender, RoutedEventArgs e)
         {
             int id = 0;
-            ProductView product = (ProductView)DgProducts.SelectedItem;
+            Product product = (Product) DgProducts.SelectedItem;
             ProductDataContext db = new ProductDataContext(ConnectionString);
-            db.FindProductId(product.Barcode, _selectedNomenclatureSubgroup, ref id);
+            db.FindProductId(product.Title, _selectedNomenclatureSubgroup, ref id);
             AddProduct ad = new AddProduct(this, id);
             ad.ShowDialog();
             ShowFunctionAsync(3);
         }
 
-        private void MiDelete_Click(object sender, RoutedEventArgs e)
+        private void MiDeleteProduct_Click(object sender, RoutedEventArgs e)
         {
+            if (MessageBox.Show("Вы уверены что хотите удалить товар?", "Удаление", MessageBoxButton.YesNo,
+                    MessageBoxImage.Question) != MessageBoxResult.Yes) return;
             try
             {
                 int id = 0;
-                ProductView product = (ProductView)DgProducts.SelectedItem;
+                Product product = (Product) DgProducts.SelectedItem;
                 ProductDataContext db = new ProductDataContext(ConnectionString);
                 try
                 {
                     db.Connection.Open();
                     db.Transaction = db.Connection.BeginTransaction();
-                    db.Delete(product.Barcode, _selectedNomenclatureSubgroup);
+                    db.Delete(product.Title, _selectedNomenclatureSubgroup);
                     db.Transaction.Commit();
                     MessageBox.Show("Товар удален.", "Успех", MessageBoxButton.OK,
                         MessageBoxImage.Information);
@@ -228,37 +215,29 @@ namespace RulezzClient
                         MessageBoxImage.Error);
                     db.Transaction.Rollback();
                 }
-
-                //using (SqlConnection connection = new SqlConnection(ConnectionString))
-                //{
-                //    connection.Open();
-                //    SqlTransaction transaction = connection.BeginTransaction();
-                //    try
-                //    {
-                //        SqlCommand command = connection.CreateCommand();
-                //        command.Transaction = transaction;
-                //        command.CommandText = $"DELETE Product where Product.ID = {id}";
-                //        command.ExecuteNonQuery();
-                //        transaction.Commit();
-                //        MessageBox.Show("Товар удален.", "Успех", MessageBoxButton.OK,
-                //            MessageBoxImage.Information);
-                //    }
-                //    catch (Exception ex)
-                //    {
-                //        MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK,
-                //            MessageBoxImage.Error);
-                //        transaction.Rollback();
-                //    }
-                //}
             }
-                catch (Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK,
                     MessageBoxImage.Error);
             }
         }
 
-        //Блокировка перемещения окна
+        private void MiAddNomenclatureSubgroup_Click(object sender, RoutedEventArgs e)
+        {
+            AddNomenclatureSubgroup add = new AddNomenclatureSubgroup(this);
+            add.ShowDialog();
+            ShowFunctionAsync(0);
+        }
+
+        private void MiShowNomenclatureSubgroup_Click(object sender, RoutedEventArgs e)
+        {
+            ShowGroup(GroupForm.ShowNomenclatureSubgroup);
+            //TvShowGroup.Items.Add();
+        }
+
+        #region Блокировка перемещения окна
+
         private void Window1_SourceInitialized(object sender, EventArgs e)
         {
             WindowInteropHelper helper = new WindowInteropHelper(this);
@@ -287,5 +266,7 @@ namespace RulezzClient
             return IntPtr.Zero;
         }
 
+
+        #endregion
     }
 }
