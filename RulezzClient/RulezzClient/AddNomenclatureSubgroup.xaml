@@ -19,7 +19,7 @@
             <ColumnDefinition Width="Auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <Label Content="Номенклатурная группа" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" Visibility="Collapsed" />
+        <!--<Label Content="Номенклатурная группа" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" Visibility="Collapsed" />
         <ComboBox x:Name="CbNomenclatureGroupOld" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Center" SelectionChanged="CbNomenclatureGroupNew_SelectionChanged" Visibility="Collapsed"/>
         <Label Content="Номенклатурная подгруппа" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" />
         <TextBox x:Name="TbNameOld" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Row="1" Grid.Column="1" HorizontalContentAlignment="Center" MinWidth="100" VerticalContentAlignment="Center"/>
@@ -28,6 +28,6 @@
         <ComboBox x:Name="CbNomenclatureGroupNew" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Center" SelectionChanged="CbNomenclatureGroupNew_SelectionChanged"/>
         <Label Content="Номенклатурная подгруппа" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Center" />
         <TextBox x:Name="TbNameNew" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Row="3" Grid.Column="1" HorizontalContentAlignment="Center" MinWidth="100" VerticalContentAlignment="Center"/>
-        <Button x:Name="BAdd" Grid.Column="1" Content="Добавить" HorizontalAlignment="Left" Grid.Row="4" VerticalAlignment="Top" Width="75" Click="BAdd_Click"/>
+        <Button x:Name="BAdd" Grid.Column="1" Content="Добавить" HorizontalAlignment="Left" Grid.Row="4" VerticalAlignment="Top" Width="75" Click="BAdd_Click"/>-->
     </Grid>
 </Window>

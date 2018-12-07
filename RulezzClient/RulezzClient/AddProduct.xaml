@@ -22,9 +22,9 @@
             <ColumnDefinition Width="Auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Label Content="Номенклатура группа" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" />
-        <ComboBox x:Name="CbNomenclatureGroup" Grid.Row="0" Grid.Column="1" SelectionChanged="CbNomenclatureGroup_SelectionChanged" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Center"/>
+        <ComboBox x:Name="CbNomenclatureGroup" Grid.Row="0" Grid.Column="1" ItemsSource="{Binding NomenclatureGroups}" SelectedItem="{Binding SelectedNomenclatureGroup, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Title" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Center"/>
         <Label Content="Номенклатурная подгруппа" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" />
-        <ComboBox x:Name="CbNomenclatureSubgroup" Grid.Row="1" Grid.Column="1" SelectionChanged="CbNomenclatureSubgroup_SelectionChanged" HorizontalAlignment="Left" HorizontalContentAlignment="Center" VerticalAlignment="Top"/>
+        <ComboBox x:Name="CbNomenclatureSubgroup" Grid.Row="1" Grid.Column="1" ItemsSource="{Binding NomenclatureSubgroups}" SelectedItem="{Binding SelectedNomenclatureSubgroup, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Title" HorizontalAlignment="Left" HorizontalContentAlignment="Center" VerticalAlignment="Top"/>
         <Label Content="Наименование товара" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" />
         <TextBox x:Name="TbName" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Row="2" Grid.Column="1" HorizontalContentAlignment="Center" MinWidth="100" VerticalContentAlignment="Center"/>
         <Label Content="Артикул товара" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Center" />
@@ -32,9 +32,10 @@
         <Label Content="Штрих код" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Center" />
         <TextBox x:Name="TbBarcode" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Row="4" Grid.Column="1" HorizontalContentAlignment="Center" MinWidth="100" VerticalContentAlignment="Center"/>
         <Label Content="Ед. хранения" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Center" />
-        <ComboBox x:Name="CbUnitSt" Grid.Column="1" HorizontalAlignment="Left" Grid.Row="5" VerticalAlignment="Top" HorizontalContentAlignment="Center" SelectionChanged="CbUnitSt_SelectionChanged"/>
+        <ComboBox x:Name="CbUnitSt" Grid.Column="1" HorizontalAlignment="Left" Grid.Row="5" VerticalAlignment="Top" HorizontalContentAlignment="Center" ItemsSource="{Binding UnitStorages, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedUnitStorage}" DisplayMemberPath="Title"/>
         <Label Content="Гарантия" Grid.Row="6" Grid.Column="0" HorizontalAlignment="Center" />
-        <ComboBox x:Name="CbWarranty" Grid.Column="1" HorizontalAlignment="Left" Grid.Row="6" VerticalAlignment="Top" HorizontalContentAlignment="Center" SelectionChanged="CbWarranty_SelectionChanged"/>
-        <Button x:Name="BAdd" Grid.Column="1" Content="Добавить" HorizontalAlignment="Left" Grid.Row="7" VerticalAlignment="Top" Width="75" Click="BAdd_Click"/>
+        <ComboBox x:Name="CbWarranty" Grid.Column="1" HorizontalAlignment="Left" Grid.Row="6" VerticalAlignment="Top" HorizontalContentAlignment="Center" ItemsSource="{Binding WarrantyPeriods, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedWarrantyPeriod}" DisplayMemberPath="Period"/>
+        <Button x:Name="BAdd" Grid.Column="1" Content="Добавить" HorizontalAlignment="Left" Grid.Row="7" VerticalAlignment="Top" Width="75" Command="{Binding AddProductommand}"
+                CommandParameter="{Binding ElementName=TbName, Path=Text}"/>
     </Grid>
 </Window>

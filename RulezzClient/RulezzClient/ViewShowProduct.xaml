@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="RulezzClient.ViewShowProduct"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left">
+
+    <StackPanel x:Name="ProductGroup" Visibility="{Binding IsProductGroupVisible}" Height="{Binding ActualHeight, ElementName=Window, Mode=OneWay}" HorizontalAlignment="Left" VerticalAlignment="Top">
+        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Orientation="Horizontal">
+            <ComboBox x:Name="CbStore" ItemsSource="{Binding Stores}" SelectedItem="{Binding SelectedStore, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Title" VerticalContentAlignment="Center" Width="Auto" VerticalAlignment="Top" HorizontalAlignment="Left" HorizontalContentAlignment="Center"  MinWidth="50" MaxWidth="120"/>
+            <ComboBox x:Name="CbNomenclatureGroup" VerticalContentAlignment="Center" ItemsSource="{Binding NomenclatureGroups, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedNomenclatureGroup}" DisplayMemberPath="Title" Width="Auto" Margin =" 10, 0, 0, 0" HorizontalAlignment="Left" HorizontalContentAlignment="Center" VerticalAlignment="Top" MinWidth="50" MaxWidth="120"/>
+            <ComboBox x:Name="CbNomenclatureSubgroup" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" ItemsSource="{Binding NomenclatureSubgroups, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedNomenclatureSubgroup}" DisplayMemberPath="Title" Width="Auto" Margin =" 10, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="50" MaxWidth="120"/>
+        </StackPanel>
+        <DataGrid  x:Name="DgProducts" MinColumnWidth="100" MaxColumnWidth="150" HorizontalAlignment="Left" Margin="0,5,0,0" CanUserResizeRows="False" CanUserReorderColumns="False" ItemsSource="{Binding Products, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedProduct}" AutoGenerateColumns="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Top">
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <!--<MenuItem Name="MiChangeProduct" Header="Изменить" Click="MIChangeProduct_Click" />
+                    <MenuItem Name="MiDeleteProduct" Header="Удалить" Click="MiDeleteProduct_Click" />-->
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Наименование" Binding="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" MaxWidth="100"/>
+                <DataGridTextColumn Header="Артикул" Binding="{Binding Path=VendorCode, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" MaxWidth="100"/>
+                <DataGridTextColumn Header="Цена" Binding="{Binding Path=SalesPrice, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" MaxWidth="100"/>
+                <DataGridTextColumn Header="Ед. хранения" Binding="{Binding Path=UnitStorage, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" MaxWidth="80" MinWidth="80" CanUserResize="False"/>
+                <DataGridTextColumn Header="Гарантия" Binding="{Binding Path=Warranty, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" MaxWidth="60" MinWidth="60" CanUserResize="False"/>
+                <DataGridTextColumn Header="Кол-во на складе" Binding="{Binding Path=Count, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" MaxWidth="125"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </StackPanel>
+
+</UserControl>

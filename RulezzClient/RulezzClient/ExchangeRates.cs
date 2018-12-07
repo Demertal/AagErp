@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Linq;
+﻿using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RulezzClient
 {
@@ -40,7 +36,7 @@ namespace RulezzClient
 
         //Получение валюты по id
         [Function(Name = "FunViewExchangeRates", IsComposable = true)]
-        public IQueryable<ExchangeRates> GetListExchangeRates()
+        public IQueryable<ExchangeRates> Load()
         {
             return CreateMethodCallQuery<ExchangeRates>(this, (MethodInfo)MethodBase.GetCurrentMethod());
         }

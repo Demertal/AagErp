@@ -92,8 +92,8 @@ namespace RulezzClient
             {
                 while (reader.Read()) // построчно считываем данные
                 {
-                    _mw.IdStore = (int)reader.GetValue(0);
-                    _mw.IdRole = (int)reader.GetValue(1);
+                    //_mw.IdStore = (int)reader.GetValue(0);
+                    //_mw.IdRole = (int)reader.GetValue(1);
                     _loginSuccess = true;
                     _connection.Close();
                     reader.Close();

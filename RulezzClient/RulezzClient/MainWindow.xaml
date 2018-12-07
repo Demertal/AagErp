@@ -3,82 +3,24 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:RulezzClient" x:Name="window" x:Class="RulezzClient.MainWindow"
+        xmlns:rulezzClient="clr-namespace:RulezzClient"
+        x:Name="Window" x:Class="RulezzClient.MainWindow"
         mc:Ignorable="d"
         Title="MainWindow" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" WindowState="Maximized" Width="{x:Static SystemParameters.PrimaryScreenWidth}" Height="{x:Static SystemParameters.PrimaryScreenHeight}" MinWidth="{x:Static SystemParameters.PrimaryScreenWidth}" MinHeight="{x:Static SystemParameters.PrimaryScreenHeight}" MaxHeight="{x:Static SystemParameters.PrimaryScreenHeight}">
-    <Window.Resources>
-        <Style TargetType="StackPanel" x:Key="ShowProductStackPanelStyle">
-            <Setter Property="Height" Value="{Binding ActualHeight, ElementName=window, Mode=OneWay}" />
-            <Setter Property="Width" Value="{Binding ActualWidth, ElementName=window, Mode=OneWay}"/>
-            <Setter Property="Margin" Value="0, 23, 0, 0" />
-            <Setter Property="HorizontalAlignment" Value="Left" />
-            <Setter Property="VerticalAlignment" Value="Top" />
-            <Setter Property="Orientation" Value="Vertical" />
-            <Style.Resources>
-                <Style TargetType="StackPanel">
-                    <Setter Property="Height" Value="Auto" />
-                    <Setter Property="Width" Value="{Binding ActualWidth, ElementName=window, Mode=OneWay}"/>
-                    <Setter Property="Margin" Value="0, 5, 0, 0" />
-                    <Setter Property="HorizontalAlignment" Value="Left" />
-                    <Setter Property="VerticalAlignment" Value="Top" />
-                    <Setter Property="Orientation" Value="Horizontal" />
-                    <Style.Resources>
-                        <Style TargetType="ComboBox">
-                            <Setter Property="VerticalAlignment" Value="Top" />
-                            <Setter Property="HorizontalAlignment" Value="Left" />
-                            <Setter Property="VerticalContentAlignment" Value="Center" />
-                            <Setter Property="Margin" Value="10, 0, 0, 0"/>
-                            <Setter Property="MinWidth" Value="50"/>
-                            <Setter Property="MaxWidth" Value="120"/>
-                            <Setter Property="Width" Value="120"/>
-                        </Style>
-                    </Style.Resources>
-                </Style>
-
-                <Style TargetType="DataGrid">
-                    <Setter Property="Visibility" Value="Visible"/>
-                </Style>
-            </Style.Resources>
-        </Style>
-    </Window.Resources>
-
     <Grid>
-        <Menu Height="23" Width="{Binding ActualWidth, ElementName=window, Mode=OneWay}" VerticalContentAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Top" HorizontalContentAlignment="Center">
-            <MenuItem AutomationProperties.Name="MICashierWorkplace" Height="20"  Margin="5,0,0,0" Header="Рабочее место кассира" AutomationProperties.IsColumnHeader="True" Click="MICashierWorkplace_Click"/>
-            <MenuItem AutomationProperties.Name="MIShowProduct" Height="20"  Margin="0,0,0,0" Header="Показать товар" AutomationProperties.IsColumnHeader="True" Click="MIShowProduct_Click"/>
+        <Menu Height="23" Width="{Binding ActualWidth, ElementName=Window, Mode=OneWay}" VerticalContentAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Top" HorizontalContentAlignment="Center">
+            <MenuItem AutomationProperties.Name="MICashierWorkplace" Height="20"  Margin="5,0,0,0" Header="Рабочее место кассира" AutomationProperties.IsColumnHeader="True"/>
+            <MenuItem AutomationProperties.Name="MIShowProduct" Height="20"  Margin="0,0,0,0" Header="Показать товар" AutomationProperties.IsColumnHeader="True" Command="{Binding ShowProductCommand}"/>
             <MenuItem Header="Добавить...">
-                <MenuItem x:Name="MiAddProduct" Header="Товар" Click="MiAddProduct_Click"/>
+                <MenuItem x:Name="MiAddProduct" Header="Товар" Command="{Binding AddProductMainCommand}"/>
                 <MenuItem x:Name="MiAddNomenclatureSubgroup" Header="Номенклатурная подгруппа" Click="MiAddNomenclatureSubgroup_Click"/>
             </MenuItem>
             <MenuItem Header="Действия с...">
-                <MenuItem x:Name="MiShowNomenclatureSubgroup" Header="Номенклатурной подгруппой" Click="MiShowNomenclatureSubgroup_Click"/>
+                <MenuItem x:Name="MiShowNomenclatureSubgroup" Header="Номенклатурной подгруппой"/>
                 <!--<MenuItem x:Name="MiAddNomenclatureSubgroup" Header="Номенклатурная подгруппа" Click="MiAddNomenclatureSubgroup_Click"/>-->
             </MenuItem>
         </Menu>
-        <StackPanel x:Name="ProductGroup" Visibility="Hidden">
-            <StackPanel>
-                <ComboBox x:Name="CbStore" SelectionChanged="CbStore_SelectionChanged" IsEnabled="False" VerticalContentAlignment="Center"/>
-                <ComboBox x:Name="CbNomenclatureGroup" SelectionChanged="CbNomenclatureGroup_SelectionChanged" VerticalContentAlignment="Center" ItemsSource="{Binding NomenclatureGroups}" SelectedItem="{Binding SelectedNomenclatureGroup}" DisplayMemberPath="Title"/>
-                <ComboBox x:Name="CbNomenclatureSubgroup" SelectionChanged="CbNomenclatureSubgroup_SelectionChanged" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" ItemsSource="{Binding NomenclatureSubgroups}" SelectedItem="{Binding SelectedNomenclatureSubgroup}" DisplayMemberPath="Title"/>
-            </StackPanel>
-            <DataGrid  x:Name="DgProducts" Height="100" MinColumnWidth="100" MaxColumnWidth="150" HorizontalAlignment="Left" Margin="10,5,0,0" CanUserResizeRows="False" CanUserReorderColumns="False" ItemsSource="{Binding Products}" SelectedItem="{Binding SelectedProduct}" AutoGenerateColumns="False">
-                <DataGrid.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Name="MiChangeProduct" Header="Изменить" Click="MIChangeProduct_Click" />
-                        <MenuItem Name="MiDeleteProduct" Header="Удалить" Click="MiDeleteProduct_Click" />
-                    </ContextMenu>
-                </DataGrid.ContextMenu>
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Наименование" Binding="{Binding Path=Title}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Артикул" Binding="{Binding Path=VendorCode}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Цена" Binding="{Binding Path=SalesPrice}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Ед. хранения" Binding="{Binding Path=UnitStorage}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Гарантия" Binding="{Binding Path=Warranty}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Кол-во на складе" Binding="{Binding Path=Count}" IsReadOnly="True"/>
-                </DataGrid.Columns>
-            </DataGrid>
-
-        </StackPanel>
+        <rulezzClient:ViewShowProduct Margin="10, 28, 0, 0"/>
         <TreeView x:Name="TvShowGroup" HorizontalAlignment="Left" Height="100" Margin="14,33,0,0" VerticalAlignment="Top" Width="100" Visibility="Hidden"/>
     </Grid>
 </Window>
