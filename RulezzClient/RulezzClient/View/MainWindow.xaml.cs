@@ -2,7 +2,6 @@
 using System.Data.SqlClient;
 using System.Windows;
 using System.Windows.Interop;
-using System.Windows.Threading;
 using MessageBox = System.Windows.MessageBox;
 
 namespace RulezzClient
@@ -42,7 +41,7 @@ namespace RulezzClient
             }
 
             connection.Close();
-            DataContext = new MainViewVm(Dispatcher.CurrentDispatcher, ConnectionString);
+            DataContext = new MainVm(ConnectionString);
         }
 
         private void MiAddProduct_Click(object sender, RoutedEventArgs e)

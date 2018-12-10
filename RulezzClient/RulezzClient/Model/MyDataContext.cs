@@ -1,5 +1,4 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.Linq;
@@ -7,7 +6,7 @@ using RulezzClient.Annotations;
 
 namespace RulezzClient
 {
-    public abstract class MyDataContext : DataContext
+    public abstract class MyDataContext<T> : DataContext
     {
         protected MyDataContext([NotNull] string fileOrServerOrConnection) : base(fileOrServerOrConnection)
         {
@@ -25,6 +24,8 @@ namespace RulezzClient
         {
         }
 
-        public abstract IQueryable<Type> Load(int id);
+        public abstract IQueryable<T> Load(int id);
+
+        public abstract IQueryable<T> Load();
     }
 }

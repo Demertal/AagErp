@@ -3,7 +3,7 @@ using System.Data.Linq.Mapping;
 using System.Linq;
 using System.Reflection;
 
-namespace RulezzClient
+namespace RulezzClient.Model
 {
     public class ExchangeRates
     {

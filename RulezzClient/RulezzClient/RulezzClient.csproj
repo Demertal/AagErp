@@ -73,74 +73,79 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AddNomenclatureSubgroup.xaml.cs">
+    <Compile Include="ViewModel\NomenclatureGroupVM.cs" />
+    <Compile Include="ViewModel\NomenclatureSubgroupVM.cs" />
+    <Compile Include="ViewModel\ProductVM.cs" />
+    <Compile Include="ViewModel\StoreVM.cs" />
+    <Compile Include="View\AddNomenclatureSubgroup.xaml.cs">
       <DependentUpon>AddNomenclatureSubgroup.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AddProduct.xaml.cs">
+    <Compile Include="View\AddProduct.xaml.cs">
       <DependentUpon>AddProduct.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MyDataContext.cs" />
-    <Compile Include="IObject.cs" />
-    <Compile Include="MMain.cs" />
+    <Compile Include="Model\Model.cs" />
+    <Compile Include="Model\MyDataContext.cs" />
+    <Compile Include="Model\IObject.cs" />
+    <Compile Include="Model\MMain.cs" />
     <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="Store.cs" />
-    <Compile Include="ViewShowProduct.xaml.cs">
+    <Compile Include="Model\Store.cs" />
+    <Compile Include="View\ViewShowProduct.xaml.cs">
       <DependentUpon>ViewShowProduct.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UnitStorage.cs" />
-    <Compile Include="MainViewVM.cs" />
-    <Compile Include="ExchangeRates.cs" />
+    <Compile Include="Model\UnitStorage.cs" />
+    <Compile Include="ViewModel\MainVm.cs" />
+    <Compile Include="Model\ExchangeRates.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="NomenclatureSubgroup.cs" />
-    <Compile Include="VmAddProduct.cs" />
-    <Compile Include="Warranty.cs" />
-    <Page Include="AddNomenclatureSubgroup.xaml">
+    <Compile Include="Model\NomenclatureSubgroup.cs" />
+    <Compile Include="ViewModel\VmAddProduct.cs" />
+    <Compile Include="Model\Warranty.cs" />
+    <Page Include="View\AddNomenclatureSubgroup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="AddProduct.xaml">
+    <Page Include="View\AddProduct.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="AdminClient.xaml">
+    <Page Include="View\AdminClient.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Authorization.xaml">
+    <Page Include="View\Authorization.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainWindow.xaml">
+    <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="AdminClient.xaml.cs">
+    <Compile Include="View\AdminClient.xaml.cs">
       <DependentUpon>AdminClient.xaml</DependentUpon>
     </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Authorization.xaml.cs">
+    <Compile Include="View\Authorization.xaml.cs">
       <DependentUpon>Authorization.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="ViewShowProduct.xaml">
+    <Page Include="View\ViewShowProduct.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NomenclatureGroup.cs" />
-    <Compile Include="Product.cs" />
+    <Compile Include="Model\NomenclatureGroup.cs" />
+    <Compile Include="Model\Product.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
