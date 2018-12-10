@@ -2,6 +2,7 @@
 using System.Data.SqlClient;
 using System.Windows;
 using System.Windows.Interop;
+using RulezzClient.Properties;
 using MessageBox = System.Windows.MessageBox;
 
 namespace RulezzClient
@@ -25,11 +26,9 @@ namespace RulezzClient
             SourceInitialized += Window1_SourceInitialized;
             //Form1 f = new Form1(this);
             //f.ShowDialog();
-            ConnectionString =
-                $"Data Source=;Initial Catalog=Rul_base;Integrated Security=true";
-            Authorization au = new Authorization(this);
-            au.ShowDialog();
-            SqlConnection connection = new SqlConnection(ConnectionString);
+            //Authorization au = new Authorization(this);
+            //au.ShowDialog();
+            SqlConnection connection = new SqlConnection(Settings.Default.СconnectionString);
             try
             {
                 connection.Open();
@@ -41,7 +40,6 @@ namespace RulezzClient
             }
 
             connection.Close();
-            DataContext = new MainVm(ConnectionString);
         }
 
         private void MiAddProduct_Click(object sender, RoutedEventArgs e)

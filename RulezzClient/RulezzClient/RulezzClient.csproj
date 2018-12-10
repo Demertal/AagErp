@@ -76,6 +76,7 @@
     <Compile Include="ViewModel\NomenclatureGroupVM.cs" />
     <Compile Include="ViewModel\NomenclatureSubgroupVM.cs" />
     <Compile Include="ViewModel\ProductVM.cs" />
+    <Compile Include="ViewModel\ShowProductVM.cs" />
     <Compile Include="ViewModel\StoreVM.cs" />
     <Compile Include="View\AddNomenclatureSubgroup.xaml.cs">
       <DependentUpon>AddNomenclatureSubgroup.xaml</DependentUpon>

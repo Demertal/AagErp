@@ -16,9 +16,9 @@ namespace RulezzClient
             Stores = new ReadOnlyObservableCollection<StoreVm>(_storeList);
         }
 
-        public async Task<List<StoreVm>> GetListStore(string connectionString)
+        public async Task<List<StoreVm>> GetListStore()
         {
-            List<Store> tempM =  await Task.Run(() => Store.AsyncLoad(connectionString));
+            List<Store> tempM =  await Task.Run(() => Store.AsyncLoad(Properties.Settings.Default.СconnectionString));
             List<StoreVm> tempVm = new List<StoreVm>();
             if (tempM == null){ _storeList.Clear(); return tempVm;}
             tempVm = new List<StoreVm>(tempM.Select(t => new StoreVm(t)));

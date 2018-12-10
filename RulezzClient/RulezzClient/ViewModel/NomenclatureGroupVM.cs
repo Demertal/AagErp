@@ -16,10 +16,10 @@ namespace RulezzClient
             NomenclatureGroups = new ReadOnlyObservableCollection<NomenclatureGroupVm>(_nomenclatureGroupList);
         }
 
-        public async Task<List<NomenclatureGroupVm>> GetListNomenclatureGroup(string connectionString, int idStore)
+        public async Task<List<NomenclatureGroupVm>> GetListNomenclatureGroup(int idStore)
         {
             List<NomenclatureGroup> tempM =
-                await Task.Run(() => NomenclatureGroup.AsyncLoad(connectionString, idStore));
+                await Task.Run(() => NomenclatureGroup.AsyncLoad(Properties.Settings.Default.СconnectionString, idStore));
             List<NomenclatureGroupVm> tempVm = new List<NomenclatureGroupVm>();
             if (tempM == null){ _nomenclatureGroupList.Clear(); return tempVm;}
             tempVm = new List<NomenclatureGroupVm>(tempM.Select(t => new NomenclatureGroupVm(t)));

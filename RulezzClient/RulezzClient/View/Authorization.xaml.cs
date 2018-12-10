@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Data.SqlClient;
 using System.Windows.Media;
+using RulezzClient.Properties;
 
 namespace RulezzClient
 {
@@ -22,7 +23,7 @@ namespace RulezzClient
             _mw = mw;
             //GetIP_Port();
                         // Создание подключения
-            _connection = new SqlConnection(_mw.ConnectionString);
+            _connection = new SqlConnection(Settings.Default.СconnectionString);
             try
             {
                 // Открываем подключение

@@ -18,10 +18,10 @@ namespace RulezzClient
             Products = new ReadOnlyObservableCollection<ProductVm>(_productList);
         }
 
-        public async Task<List<ProductVm>> GetListProduct(string connectionString, int idNomenclatureSubgroup)
+        public async Task<List<ProductVm>> GetListProduct(int idNomenclatureSubgroup)
         {
             List<Product> tempM =
-                await Task.Run(() => Product.AsyncLoad(connectionString, idNomenclatureSubgroup));
+                await Task.Run(() => Product.AsyncLoad(Properties.Settings.Default.СconnectionString, idNomenclatureSubgroup));
             List<ProductVm> tempVm = new List<ProductVm>();
             if (tempM == null){ _productList.Clear(); return tempVm;}
             tempVm = new List<ProductVm>(tempM.Select(t => new ProductVm(t)));

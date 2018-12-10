@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left">
 
-    <StackPanel Visibility="{Binding IsProductGroupVisible}" Height="{Binding ActualHeight, ElementName=Window, Mode=OneWay}" HorizontalAlignment="Left" VerticalAlignment="Top">
+    <StackPanel Height="{Binding ActualHeight, ElementName=Window, Mode=OneWay}" HorizontalAlignment="Left" VerticalAlignment="Top" DataContext="{Binding ShowProduct}">
         <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Orientation="Horizontal">
             <ComboBox ItemsSource="{Binding Stores,                 UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedStore, UpdateSourceTrigger=PropertyChanged}"                IsSynchronizedWithCurrentItem="True" DisplayMemberPath="Title" VerticalContentAlignment="Center" Width="Auto" VerticalAlignment="Top" HorizontalAlignment="Left" HorizontalContentAlignment="Center"  MinWidth="50" MaxWidth="120"/>
             <ComboBox ItemsSource="{Binding NomenclatureGroups,     UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedNomenclatureGroup, UpdateSourceTrigger=PropertyChanged}"    IsSynchronizedWithCurrentItem="True" DisplayMemberPath="Title" VerticalContentAlignment="Center" Width="Auto" Margin =" 10, 0, 0, 0" HorizontalAlignment="Left" HorizontalContentAlignment="Center" VerticalAlignment="Top" MinWidth="50" MaxWidth="120"/>

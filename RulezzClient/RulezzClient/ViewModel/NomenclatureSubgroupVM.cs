@@ -16,10 +16,10 @@ namespace RulezzClient
             NomenclatureSubgroups = new ReadOnlyObservableCollection<NomenclatureSubgroupVm>(_nomenclatureSubgroupList);
         }
 
-        public async Task<List<NomenclatureSubgroupVm>> GetListNomenclatureSubgroup(string connectionString, int idNomenclatureGroup)
+        public async Task<List<NomenclatureSubgroupVm>> GetListNomenclatureSubgroup(int idNomenclatureGroup)
         {
             List<NomenclatureSubgroup> tempM =
-                await Task.Run(() => NomenclatureSubgroup.AsyncLoad(connectionString, idNomenclatureGroup));
+                await Task.Run(() => NomenclatureSubgroup.AsyncLoad(Properties.Settings.Default.СconnectionString, idNomenclatureGroup));
             List<NomenclatureSubgroupVm> tempVm = new List<NomenclatureSubgroupVm>();
             if (tempM == null){ _nomenclatureSubgroupList.Clear(); return tempVm;}
             tempVm = new List<NomenclatureSubgroupVm>(tempM.Select(t => new NomenclatureSubgroupVm(t)));
