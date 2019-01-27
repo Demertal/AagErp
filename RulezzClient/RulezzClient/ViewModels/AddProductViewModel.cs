@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Prism.Commands;
 using Prism.Mvvm;
-using RulezzClient.Model;
 using RulezzClient.Properties;
 
 namespace RulezzClient.ViewModels
@@ -21,7 +20,7 @@ namespace RulezzClient.ViewModels
 
         private Store _selectedStore;
         private NomenclatureGroup _selectedNomenclatureGroup;
-        private NomenclatureSubgroup _selectedNomenclatureSubgroup;
+        private NomenclatureSubGroup _selectedNomenclatureSubgroup;
         private UnitStorage _selectedUnitStorage;
         private WarrantyPeriod _selectedWarrantyPeriod;
 
@@ -34,7 +33,7 @@ namespace RulezzClient.ViewModels
 
         public ReadOnlyObservableCollection<Store> Stores => StoreList.Stores;
         public ReadOnlyObservableCollection<NomenclatureGroup> NomenclatureGroups => NomenclatureGroupList.NomenclatureGroups;
-        public ReadOnlyObservableCollection<NomenclatureSubgroup> NomenclatureSubgroups => NomenclatureSubgroupList.NomenclatureSubgroups;
+        public ReadOnlyObservableCollection<NomenclatureSubGroup> NomenclatureSubGroups => NomenclatureSubgroupList.NomenclatureSubGroups;
         public ReadOnlyObservableCollection<UnitStorage> UnitStorages => UnitStorageList.UnitStorages;
         public ReadOnlyObservableCollection<WarrantyPeriod> WarrantyPeriods => WarrantyPeriodList.WarrantyPeriods;
 
@@ -45,7 +44,7 @@ namespace RulezzClient.ViewModels
             Update(ChoiceUpdate.WarrantyPeriod);
             AddProduct = new DelegateCommand(() =>
             {
-                if (Product.Add(Settings.Default.СconnectionString));
+                //if (Product.Add(Settings.Default.СconnectionString));
             });
         }
 
@@ -73,29 +72,29 @@ namespace RulezzClient.ViewModels
             }
         }
 
-        public NomenclatureSubgroup SelectedNomenclatureSubgroup
-        {
-            get => _selectedNomenclatureSubgroup;
-            set
-            {
-                _selectedNomenclatureSubgroup = value;
-                if (_selectedNomenclatureSubgroup != null) Product.IdNomenclatureSubgroup = _selectedNomenclatureSubgroup.Id;
-                RaisePropertyChanged();
-                RaisePropertyChanged("IsButtonAddEnabled");
-            }
-        }
+        //public NomenclatureSubgroup SelectedNomenclatureSubGroup
+        //{
+        //    get => _selectedNomenclatureSubgroup;
+        //    set
+        //    {
+        //        _selectedNomenclatureSubgroup = value;
+        //        if (_selectedNomenclatureSubgroup != null) Product.IdNomenclatureSubgroup = _selectedNomenclatureSubgroup.Id;
+        //        RaisePropertyChanged();
+        //        RaisePropertyChanged("IsButtonAddEnabled");
+        //    }
+        //}
 
-        public UnitStorage SelectedUnitStorage
-        {
-            get => _selectedUnitStorage;
-            set
-            {
-                _selectedUnitStorage = value;
-                if (_selectedUnitStorage != null) Product.UnitStorage = _selectedUnitStorage.Id.ToString();
-                RaisePropertyChanged();
-                RaisePropertyChanged("IsButtonAddEnabled");
-            }
-        }
+        //public UnitStorage SelectedUnitStorage
+        //{
+        //    get => _selectedUnitStorage;
+        //    set
+        //    {
+        //        _selectedUnitStorage = value;
+        //        if (_selectedUnitStorage != null) Product.UnitStorage = _selectedUnitStorage.Id.ToString();
+        //        RaisePropertyChanged();
+        //        RaisePropertyChanged("IsButtonAddEnabled");
+        //    }
+        //}
 
         public WarrantyPeriod SelectedWarrantyPeriod
         {
@@ -103,13 +102,13 @@ namespace RulezzClient.ViewModels
             set
             {
                 _selectedWarrantyPeriod = value;
-                if (_selectedWarrantyPeriod != null) Product.Warranty = _selectedWarrantyPeriod.Id.ToString();
+                //if (_selectedWarrantyPeriod != null) Product.Warranty = _selectedWarrantyPeriod.Id.ToString();
                 RaisePropertyChanged();
                 RaisePropertyChanged("IsButtonAddEnabled");
             }
         }
 
-        public bool IsButtonAddEnabled => SelectedStore != null && SelectedNomenclatureGroup != null && SelectedNomenclatureSubgroup != null && SelectedUnitStorage != null && SelectedWarrantyPeriod != null && Product.Title != null && Product.Title != "" && Product.Title != "" && Product.VendorCode.Length <= 20 && Product.Barcode.Length <= 13;
+        //public bool IsButtonAddEnabled => SelectedStore != null && SelectedNomenclatureGroup != null && SelectedNomenclatureSubGroup != null && SelectedUnitStorage != null && SelectedWarrantyPeriod != null && Product.Title != null && Product.Title != "" && Product.Title != "" && Product.VendorCode.Length <= 20 && Product.Barcode.Length <= 13;
 
         public string Title
         {
@@ -174,35 +173,35 @@ namespace RulezzClient.ViewModels
             }
         }
 
-        private void CheckSelectedSelectedNomenclatureSubgroup()
-        {
-            if (SelectedNomenclatureSubgroup == null)
-            {
-                if (NomenclatureSubgroups.Count != 0)
-                {
-                    SelectedNomenclatureSubgroup = NomenclatureSubgroups[0];
-                }
-            }
-            else
-            {
-                if (!NomenclatureSubgroups.Contains(SelectedNomenclatureSubgroup)) SelectedNomenclatureSubgroup = null;
-            }
-        }
+        //private void CheckSelectedSelectedNomenclatureSubgroup()
+        //{
+        //    if (SelectedNomenclatureSubGroup == null)
+        //    {
+        //        if (NomenclatureSubGroups.Count != 0)
+        //        {
+        //            SelectedNomenclatureSubGroup = NomenclatureSubGroups[0];
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if (!NomenclatureSubGroups.Contains(SelectedNomenclatureSubGroup)) SelectedNomenclatureSubGroup = null;
+        //    }
+        //}
 
-        private void CheckSelectedSelectedUnitStorage()
-        {
-            if (SelectedUnitStorage == null)
-            {
-                if (UnitStorages.Count != 0)
-                {
-                    SelectedUnitStorage = UnitStorages[0];
-                }
-            }
-            else
-            {
-                if (!UnitStorages.Contains(SelectedUnitStorage)) SelectedUnitStorage = null;
-            }
-        }
+        //private void CheckSelectedSelectedUnitStorage()
+        //{
+        //    if (SelectedUnitStorage == null)
+        //    {
+        //        if (UnitStorages.Count != 0)
+        //        {
+        //            SelectedUnitStorage = UnitStorages[0];
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if (!UnitStorages.Contains(SelectedUnitStorage)) SelectedUnitStorage = null;
+        //    }
+        //}
 
         private void CheckSelectedSelectedWarrantyPeriod()
         {
@@ -221,25 +220,25 @@ namespace RulezzClient.ViewModels
             switch (choice)
             {
                 case ChoiceUpdate.Store:
-                    await StoreList.GetListStore();
+                    await StoreList.Load();
                     CheckSelectedStore();
                     break;
                 case ChoiceUpdate.NomenclatureGroup:
-                    if (_selectedStore == null) await NomenclatureGroupList.GetListNomenclatureGroup(-1);
-                    else await NomenclatureGroupList.GetListNomenclatureGroup(_selectedStore.Id);
+                    //if (_selectedStore == null) await NomenclatureGroupList.GetListNomenclatureGroup(-1);
+                    //else await NomenclatureGroupList.GetListNomenclatureGroup(_selectedStore.Id);
                     CheckSelectedSelectedNomenclatureGroup();
                     break;
                 case ChoiceUpdate.NomenclatureSubgroup:
-                    if (_selectedNomenclatureGroup == null) await NomenclatureSubgroupList.GetListNomenclatureSubgroup(-1);
-                    else await NomenclatureSubgroupList.GetListNomenclatureSubgroup(_selectedNomenclatureGroup.Id);
-                    CheckSelectedSelectedNomenclatureSubgroup();
+                    if (_selectedNomenclatureGroup == null) await NomenclatureSubgroupList.Load(-1);
+                    else await NomenclatureSubgroupList.Load(_selectedNomenclatureGroup.Id);
+                    //CheckSelectedSelectedNomenclatureSubgroup();
                     break;
                 case ChoiceUpdate.UnitStorage:
-                    await UnitStorageList.GetListUnitStorage();
-                    CheckSelectedSelectedUnitStorage();
+                    await UnitStorageList.Load();
+                    //CheckSelectedSelectedUnitStorage();
                     break;
                 case ChoiceUpdate.WarrantyPeriod:
-                    await WarrantyPeriodList.GetListWarrantyPeriod();
+                    await WarrantyPeriodList.Load();
                     CheckSelectedSelectedWarrantyPeriod();
                     break;
                 default:

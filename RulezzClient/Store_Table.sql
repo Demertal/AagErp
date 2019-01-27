@@ -145,7 +145,7 @@ GO
 */
 CREATE TABLE PropertyValue(
 	Id INT PRIMARY KEY IDENTITY,
-	Value SQL_VARIANT NOT NULL,
+	Value NVARCHAR(50) NOT NULL,
 	IdPropertyName INT NOT NULL,
 	FOREIGN KEY (IdPropertyName) REFERENCES PropertyName (Id),
 	CONSTRAINT UQ_PropertyValue_ValueIdPropertyName UNIQUE (Value, IdPropertyName)

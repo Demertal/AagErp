@@ -37,6 +37,9 @@
     <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.2.0.4\lib\net45\CommonServiceLocator.dll</HintPath>
     </Reference>
+    <Reference Include="DryIoc, Version=3.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DryIoc.dll.3.0.2\lib\net45\DryIoc.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -56,8 +59,8 @@
     <Reference Include="Prism, Version=7.1.0.431, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Core.7.1.0.431\lib\net45\Prism.dll</HintPath>
     </Reference>
-    <Reference Include="Prism.Unity.Wpf, Version=7.1.0.431, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
-      <HintPath>..\packages\Prism.Unity.7.1.0.431\lib\net45\Prism.Unity.Wpf.dll</HintPath>
+    <Reference Include="Prism.DryIoc.Wpf, Version=7.1.0.431, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Prism.DryIoc.7.1.0.431\lib\net45\Prism.DryIoc.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="Prism.Wpf, Version=7.1.0.431, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Wpf.7.1.0.431\lib\net45\Prism.Wpf.dll</HintPath>
@@ -71,6 +74,8 @@
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard1.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
     </Reference>
@@ -89,12 +94,6 @@
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="UIAutomationProvider" />
-    <Reference Include="Unity.Abstractions, Version=4.0.2.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.Abstractions.4.0.2\lib\net45\Unity.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Container, Version=5.9.2.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.Container.5.9.2\lib\net45\Unity.Container.dll</HintPath>
-    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -107,7 +106,70 @@
     </ApplicationDefinition>
     <Compile Include="Bootstrapper .cs" />
     <Compile Include="DialogService .cs" />
+    <Compile Include="ExchangeRate.cs">
+      <DependentUpon>StoreModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="IUiDialogService.cs" />
+    <Compile Include="NomenclatureGroup.cs">
+      <DependentUpon>StoreModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NomenclatureSubGroup.cs">
+      <DependentUpon>StoreModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PriceGroup.cs">
+      <DependentUpon>StoreModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Product.cs">
+      <DependentUpon>StoreModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyName.cs">
+      <DependentUpon>StoreModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyProduct.cs">
+      <DependentUpon>StoreModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyValue.cs">
+      <DependentUpon>StoreModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PurchaseInfo.cs">
+      <DependentUpon>StoreModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PurchaseReport.cs">
+      <DependentUpon>StoreModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SalesInfo.cs">
+      <DependentUpon>StoreModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SalesReport.cs">
+      <DependentUpon>StoreModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SerialNumber.cs">
+      <DependentUpon>StoreModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Store.cs">
+      <DependentUpon>StoreModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="StoreModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>StoreModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="StoreModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>StoreModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="StoreModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>StoreModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Supplier.cs">
+      <DependentUpon>StoreModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UnitStorage.cs">
+      <DependentUpon>StoreModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\NomenclatureGroupVM.cs" />
     <Compile Include="ViewModels\NomenclatureSubgroupVM.cs" />
     <Compile Include="ViewModels\ProductVM.cs" />
@@ -122,11 +184,7 @@
     <Compile Include="Views\AddProduct.xaml.cs">
       <DependentUpon>AddProduct.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Model\Model.cs" />
-    <Compile Include="Model\IObject.cs" />
-    <Compile Include="Model\MMain.cs" />
     <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="Model\Store.cs" />
     <Compile Include="Views\Shell.xaml.cs">
       <DependentUpon>Shell.xaml</DependentUpon>
     </Compile>
@@ -136,18 +194,20 @@
     <Compile Include="Views\ViewShowProduct.xaml.cs">
       <DependentUpon>ViewShowProduct.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Model\UnitStorage.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
-    <Compile Include="Model\ExchangeRates.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Model\NomenclatureSubgroup.cs" />
     <Compile Include="ViewModels\AddProductViewModel.cs" />
-    <Compile Include="Model\Warranty.cs" />
+    <Compile Include="Warranty.cs">
+      <DependentUpon>StoreModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WarrantyPeriod.cs">
+      <DependentUpon>StoreModel.tt</DependentUpon>
+    </Compile>
     <Page Include="Views\AddNomenclatureSubgroup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -188,8 +248,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\NomenclatureGroup.cs" />
-    <Compile Include="Model\Product.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -215,11 +273,33 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <EntityDeploy Include="StoreModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>StoreModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="StoreModel.edmx.diagram">
+      <DependentUpon>StoreModel.edmx</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="StoreModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>StoreModel.edmx</DependentUpon>
+      <LastGenOutput>StoreModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="StoreModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>StoreModel.edmx</DependentUpon>
+      <LastGenOutput>StoreModel.cs</LastGenOutput>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

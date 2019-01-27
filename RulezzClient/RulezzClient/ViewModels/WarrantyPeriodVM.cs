@@ -1,42 +1,38 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using Prism.Mvvm;
-using RulezzClient.Model;
 
 namespace RulezzClient.ViewModels
 {
     class WarrantyPeriodListVm : BindableBase
     {
-        private readonly ObservableCollection<WarrantyPeriod> _warrantyPeriodList = new ObservableCollection<WarrantyPeriod>();
+        private readonly ObservableCollection<WarrantyPeriod> _warrantyPeriods = new ObservableCollection<WarrantyPeriod>();
         public ReadOnlyObservableCollection<WarrantyPeriod> WarrantyPeriods;
 
         public WarrantyPeriodListVm()
         {
-            WarrantyPeriods = new ReadOnlyObservableCollection<WarrantyPeriod>(_warrantyPeriodList);
+            WarrantyPeriods = new ReadOnlyObservableCollection<WarrantyPeriod>(_warrantyPeriods);
         }
 
-        public async Task<List<WarrantyPeriod>> GetListWarrantyPeriod()
+        public async Task<List<WarrantyPeriod>> Load()
         {
-            List<WarrantyPeriod> tempM = await Task.Run(() => WarrantyPeriod.AsyncLoad(Properties.Settings.Default.СconnectionString));
-            if (tempM == null) { _warrantyPeriodList.Clear(); return null; }
-            for (int i = 0; i < _warrantyPeriodList.Count; i++)
+            List<WarrantyPeriod> temp = await Task.Run(() =>
             {
-                if (tempM.Contains(_warrantyPeriodList[i])) tempM.Remove(_warrantyPeriodList[i]);
-                else
+                using (StoreEntities db = new StoreEntities())
                 {
-                    _warrantyPeriodList.Remove(_warrantyPeriodList[i]);
-                    i--;
+                    return db.WarrantyPeriod.SqlQuery("Select * From WarrantyPeriod").ToList();
                 }
-                if (_warrantyPeriodList.Count == 0) break;
-            }
+            });
 
-            foreach (var warrantyPeriod in tempM)
+            _warrantyPeriods.Clear();
+            foreach (var warrantyPeriod in temp)
             {
-                if (!_warrantyPeriodList.Contains(warrantyPeriod)) _warrantyPeriodList.Add(warrantyPeriod);
+                _warrantyPeriods.Add(warrantyPeriod);
             }
-
-            return tempM;
+            return temp;
         }
+        
     }
 }

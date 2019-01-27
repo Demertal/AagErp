@@ -1,7 +1,7 @@
 ﻿using System.Windows;
+using Prism.DryIoc;
 using Prism.Ioc;
 using Prism.Modularity;
-using Prism.Unity;
 using RulezzClient.Views;
 
 namespace RulezzClient

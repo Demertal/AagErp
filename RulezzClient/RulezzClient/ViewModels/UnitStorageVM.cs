@@ -1,42 +1,37 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using Prism.Mvvm;
-using RulezzClient.Model;
 
 namespace RulezzClient.ViewModels
 {
     class UnitStorageListVm : BindableBase
     {
-        private readonly ObservableCollection<UnitStorage> _unitStorageList = new ObservableCollection<UnitStorage>();
+        private readonly ObservableCollection<UnitStorage> _unitStorages = new ObservableCollection<UnitStorage>();
         public ReadOnlyObservableCollection<UnitStorage> UnitStorages;
 
         public UnitStorageListVm()
         {
-            UnitStorages = new ReadOnlyObservableCollection<UnitStorage>(_unitStorageList);
+            UnitStorages = new ReadOnlyObservableCollection<UnitStorage>(_unitStorages);
         }
 
-        public async Task<List<UnitStorage>> GetListUnitStorage()
+        public async Task<List<UnitStorage>> Load()
         {
-            List<UnitStorage> tempM = await Task.Run(() => UnitStorage.AsyncLoad(Properties.Settings.Default.СconnectionString));
-            if (tempM == null) { _unitStorageList.Clear(); return null; }
-            for (int i = 0; i < _unitStorageList.Count; i++)
+            List<UnitStorage> temp = await Task.Run(() =>
             {
-                if (tempM.Contains(_unitStorageList[i])) tempM.Remove(_unitStorageList[i]);
-                else
+                using (StoreEntities db = new StoreEntities())
                 {
-                    _unitStorageList.Remove(_unitStorageList[i]);
-                    i--;
+                    return db.UnitStorage.SqlQuery("Select * From UnitStorage").ToList();
                 }
-                if (_unitStorageList.Count == 0) break;
-            }
+            });
 
-            foreach (var unitStorage in tempM)
+            _unitStorages.Clear();
+            foreach (var unitStorage in temp)
             {
-                if (!_unitStorageList.Contains(unitStorage)) _unitStorageList.Add(unitStorage);
+                _unitStorages.Add(unitStorage);
             }
-
-            return tempM;
+            return temp;
         }
     }
 }

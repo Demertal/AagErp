@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using Prism.Commands;
 using Prism.Mvvm;
-using RulezzClient.Model;
 using RulezzClient.Properties;
 
 namespace RulezzClient.ViewModels
@@ -21,7 +20,7 @@ namespace RulezzClient.ViewModels
         private readonly IUiDialogService _dialogService = new DialogService();
         private Store _selectedStore;
         private NomenclatureGroup _selectedNomenclatureGroup;
-        private NomenclatureSubgroup _selectedNomenclatureSubgroup;
+        private NomenclatureSubGroup _selectedNomenclatureSubGroup;
         private Product _selectedProduct;
 
         public StoreListVm StoreList = new StoreListVm();
@@ -31,7 +30,7 @@ namespace RulezzClient.ViewModels
 
         public ReadOnlyObservableCollection<Store> Stores => StoreList.Stores;
         public ReadOnlyObservableCollection<NomenclatureGroup> NomenclatureGroups => NomenclatureGroupList.NomenclatureGroups;
-        public ReadOnlyObservableCollection<NomenclatureSubgroup> NomenclatureSubgroups => NomenclatureSubgroupList.NomenclatureSubgroups;
+        public ReadOnlyObservableCollection<NomenclatureSubGroup> NomenclatureSubGroups => NomenclatureSubgroupList.NomenclatureSubGroups;
         public ReadOnlyObservableCollection<Product> Products => ProductList.Products;
 
         public ShowProductViewModel()
@@ -47,7 +46,7 @@ namespace RulezzClient.ViewModels
                         MessageBoxImage.Question) != MessageBoxResult.Yes) return;
                 try
                 {
-                    SelectedProduct.Delete(Settings.Default.СconnectionString);
+                    ProductList.Delete(SelectedProduct.Id);
                     Update(ChoiceUpdate.Product);
                 }
                 catch (Exception ex)
@@ -59,8 +58,8 @@ namespace RulezzClient.ViewModels
             UpdateProduct = new DelegateCommand(() =>
             {
                 if(SelectedProduct == null) return;
-                UpdateProductViewModel viewModel = new UpdateProductViewModel(SelectedProduct, SelectedNomenclatureSubgroup, SelectedNomenclatureGroup, SelectedStore);
-                _dialogService.ShowDialog(DialogService.ChoiceView.UpdateProduct, viewModel, true, b => { });
+                //UpdateProductViewModel viewModel = new UpdateProductViewModel(SelectedProduct, SelectedNomenclatureSubGroup, SelectedNomenclatureGroup, SelectedStore);
+                //_dialogService.ShowDialog(DialogService.ChoiceView.UpdateProduct, viewModel, true, b => { });
             });
         }
 
@@ -87,12 +86,12 @@ namespace RulezzClient.ViewModels
             }
         }
 
-        public NomenclatureSubgroup SelectedNomenclatureSubgroup
+        public NomenclatureSubGroup SelectedNomenclatureSubGroup
         {
-            get => _selectedNomenclatureSubgroup;
+            get => _selectedNomenclatureSubGroup;
             set
             {
-                _selectedNomenclatureSubgroup = value;
+                _selectedNomenclatureSubGroup = value;
                 Update(ChoiceUpdate.Product);
                 RaisePropertyChanged();
             }
@@ -140,16 +139,16 @@ namespace RulezzClient.ViewModels
 
         private void CheckSelectedSelectedNomenclatureSubgroup()
         {
-            if (SelectedNomenclatureSubgroup == null)
+            if (SelectedNomenclatureSubGroup == null)
             {
-                if (NomenclatureSubgroups.Count != 0)
+                if (NomenclatureSubGroups.Count != 0)
                 {
-                    SelectedNomenclatureSubgroup = NomenclatureSubgroups[0];
+                    SelectedNomenclatureSubGroup = NomenclatureSubGroups[0];
                 }
             }
             else
             {
-                if (!NomenclatureSubgroups.Contains(SelectedNomenclatureSubgroup)) SelectedNomenclatureSubgroup = null;
+                if (!NomenclatureSubGroups.Contains(SelectedNomenclatureSubGroup)) SelectedNomenclatureSubGroup = null;
             }
         }
 
@@ -158,22 +157,22 @@ namespace RulezzClient.ViewModels
             switch (choice)
             {
                 case ChoiceUpdate.Store:
-                    await StoreList.GetListStore();
+                    await StoreList.Load();
                     CheckSelectedStore();
                     break;
                 case ChoiceUpdate.NomenclatureGroup:
-                    if (_selectedStore == null) await NomenclatureGroupList.GetListNomenclatureGroup(-1);
-                    else await NomenclatureGroupList.GetListNomenclatureGroup(Settings.Default.SelectedStoreID);
+                    if (_selectedStore == null) await NomenclatureGroupList.Load(-1);
+                    else await NomenclatureGroupList.Load(Settings.Default.SelectedStoreID);
                     CheckSelectedSelectedNomenclatureGroup();
                     break;
                 case ChoiceUpdate.NomenclatureSubgroup:
-                    if (_selectedNomenclatureGroup == null) await NomenclatureSubgroupList.GetListNomenclatureSubgroup(-1);
-                    else await NomenclatureSubgroupList.GetListNomenclatureSubgroup(_selectedNomenclatureGroup.Id);
+                    if (_selectedNomenclatureGroup == null) await NomenclatureSubgroupList.Load(-1);
+                    else await NomenclatureSubgroupList.Load(_selectedNomenclatureGroup.Id);
                     CheckSelectedSelectedNomenclatureSubgroup();
                     break;
                 case ChoiceUpdate.Product:
-                    if (_selectedNomenclatureSubgroup == null) await ProductList.GetListProduct(-1);
-                    else await ProductList.GetListProduct(_selectedNomenclatureSubgroup.Id);
+                    if (_selectedNomenclatureSubGroup == null) await ProductList.Load(-1);
+                    else await ProductList.Load(_selectedNomenclatureSubGroup.Id);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(choice), choice, null);

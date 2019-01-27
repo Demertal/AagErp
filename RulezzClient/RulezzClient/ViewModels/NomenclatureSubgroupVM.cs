@@ -1,45 +1,39 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Prism.Mvvm;
-using RulezzClient.Model;
 
 namespace RulezzClient.ViewModels
 {
     class NomenclatureSubgroupListVm : BindableBase
     {
-        private readonly ObservableCollection<NomenclatureSubgroup> _nomenclatureSubgroupList = new ObservableCollection<NomenclatureSubgroup>();
-        public ReadOnlyObservableCollection<NomenclatureSubgroup> NomenclatureSubgroups;
+        private readonly ObservableCollection<NomenclatureSubGroup> _nomenclatureSubGroups = new ObservableCollection<NomenclatureSubGroup>();
+        public ReadOnlyObservableCollection<NomenclatureSubGroup> NomenclatureSubGroups;
 
         public NomenclatureSubgroupListVm()
         {
-            NomenclatureSubgroups = new ReadOnlyObservableCollection<NomenclatureSubgroup>(_nomenclatureSubgroupList);
+            NomenclatureSubGroups = new ReadOnlyObservableCollection<NomenclatureSubGroup>(_nomenclatureSubGroups);
         }
 
-        public async Task<List<NomenclatureSubgroup>> GetListNomenclatureSubgroup(int idNomenclatureGroup)
+        public async Task<List<NomenclatureSubGroup>> Load(int idNomenclatureGroup)
         {
-            List<NomenclatureSubgroup> tempM =
-                await Task.Run(() => NomenclatureSubgroup.AsyncLoad(Properties.Settings.Default.СconnectionString, idNomenclatureGroup));
-            List<NomenclatureSubgroup> tempVm = new List<NomenclatureSubgroup>();
-            if (tempM == null){ _nomenclatureSubgroupList.Clear(); return tempVm;}
-            tempVm = new List<NomenclatureSubgroup>(tempM.Select(t => new NomenclatureSubgroup(t)));
-            for (int i = 0; i < _nomenclatureSubgroupList.Count; i++)
+            List<NomenclatureSubGroup> temp = await Task.Run(() =>
             {
-                if (tempVm.Contains(_nomenclatureSubgroupList[i])) tempVm.Remove(_nomenclatureSubgroupList[i]);
-                else
+                using (StoreEntities db = new StoreEntities())
                 {
-                    _nomenclatureSubgroupList.Remove(_nomenclatureSubgroupList[i]);
-                    i--;
+                    return db.NomenclatureSubGroup.SqlQuery("Select * From NomenclatureSubGroup WHERE NomenclatureSubGroup.IdNomenclatureGroup = @idNomenclatureGroup",
+                        new SqlParameter("@idNomenclatureGroup", idNomenclatureGroup)).ToList();
                 }
-                if (_nomenclatureSubgroupList.Count == 0) break;
-            }
+            });
 
-            foreach (var store in tempVm)
+            _nomenclatureSubGroups.Clear();
+            foreach (var nomenclatureSubGroup in temp)
             {
-                if (!_nomenclatureSubgroupList.Contains(store)) _nomenclatureSubgroupList.Add(store);
+                _nomenclatureSubGroups.Add(nomenclatureSubGroup);
             }
-            return tempVm;
+            return temp;
         }
     }
 }
