@@ -34,5 +34,17 @@ namespace RulezzClient.Properties {
                 this["СconnectionString"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-1")]
+        public int SelectedStoreID {
+            get {
+                return ((int)(this["SelectedStoreID"]));
+            }
+            set {
+                this["SelectedStoreID"] = value;
+            }
+        }
     }
 }
