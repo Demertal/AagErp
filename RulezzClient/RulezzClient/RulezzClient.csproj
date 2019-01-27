@@ -37,8 +37,21 @@
     <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.2.0.4\lib\net45\CommonServiceLocator.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Prism.4.1.0.0\lib\NET40\Microsoft.Expression.Interactions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Prism, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Prism.4.1.0.0\lib\NET40\Microsoft.Practices.Prism.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Prism.Interactivity, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Prism.4.1.0.0\lib\NET40\Microsoft.Practices.Prism.Interactivity.dll</HintPath>
+    </Reference>
     <Reference Include="Prism, Version=7.1.0.431, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Core.7.1.0.431\lib\net45\Prism.dll</HintPath>
+    </Reference>
+    <Reference Include="Prism.Unity.Wpf, Version=7.1.0.431, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
+      <HintPath>..\packages\Prism.Unity.7.1.0.431\lib\net45\Prism.Unity.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="Prism.Wpf, Version=7.1.0.431, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Wpf.7.1.0.431\lib\net45\Prism.Wpf.dll</HintPath>
@@ -63,6 +76,12 @@
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="UIAutomationProvider" />
+    <Reference Include="Unity.Abstractions, Version=3.3.1.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.Abstractions.3.3.1\lib\net45\Unity.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Container, Version=5.8.13.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.Container.5.8.13\lib\net45\Unity.Container.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -73,28 +92,39 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ViewModel\NomenclatureGroupVM.cs" />
-    <Compile Include="ViewModel\NomenclatureSubgroupVM.cs" />
-    <Compile Include="ViewModel\ProductVM.cs" />
-    <Compile Include="ViewModel\ShowProductVM.cs" />
-    <Compile Include="ViewModel\StoreVM.cs" />
-    <Compile Include="View\AddNomenclatureSubgroup.xaml.cs">
+    <Compile Include="Bootstrapper .cs" />
+    <Compile Include="DialogService .cs" />
+    <Compile Include="IUiDialogService.cs" />
+    <Compile Include="ViewModels\NomenclatureGroupVM.cs" />
+    <Compile Include="ViewModels\NomenclatureSubgroupVM.cs" />
+    <Compile Include="ViewModels\ProductVM.cs" />
+    <Compile Include="ViewModels\ShowProductViewModel.cs" />
+    <Compile Include="ViewModels\StoreVM.cs" />
+    <Compile Include="ViewModels\UnitStorageVM.cs" />
+    <Compile Include="ViewModels\UpdateProductViewModel.cs" />
+    <Compile Include="ViewModels\WarrantyPeriodVM.cs" />
+    <Compile Include="Views\AddNomenclatureSubgroup.xaml.cs">
       <DependentUpon>AddNomenclatureSubgroup.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\AddProduct.xaml.cs">
+    <Compile Include="Views\AddProduct.xaml.cs">
       <DependentUpon>AddProduct.xaml</DependentUpon>
     </Compile>
     <Compile Include="Model\Model.cs" />
-    <Compile Include="Model\MyDataContext.cs" />
     <Compile Include="Model\IObject.cs" />
     <Compile Include="Model\MMain.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Model\Store.cs" />
-    <Compile Include="View\ViewShowProduct.xaml.cs">
+    <Compile Include="Views\Shell.xaml.cs">
+      <DependentUpon>Shell.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UpdateProduct.xaml.cs">
+      <DependentUpon>UpdateProduct.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ViewShowProduct.xaml.cs">
       <DependentUpon>ViewShowProduct.xaml</DependentUpon>
     </Compile>
     <Compile Include="Model\UnitStorage.cs" />
-    <Compile Include="ViewModel\MainVm.cs" />
+    <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="Model\ExchangeRates.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -103,43 +133,43 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Model\NomenclatureSubgroup.cs" />
-    <Compile Include="ViewModel\VmAddProduct.cs" />
+    <Compile Include="ViewModels\AddProductViewModel.cs" />
     <Compile Include="Model\Warranty.cs" />
-    <Page Include="View\AddNomenclatureSubgroup.xaml">
+    <Page Include="Views\AddNomenclatureSubgroup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AddProduct.xaml">
+    <Page Include="Views\AddProduct.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AdminClient.xaml">
+    <Page Include="Views\AdminClient.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\Authorization.xaml">
+    <Page Include="Views\Authorization.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="View\AdminClient.xaml.cs">
+    <Compile Include="Views\AdminClient.xaml.cs">
       <DependentUpon>AdminClient.xaml</DependentUpon>
     </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="View\Authorization.xaml.cs">
+    <Compile Include="Views\Authorization.xaml.cs">
       <DependentUpon>Authorization.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Page Include="View\ViewShowProduct.xaml">
+    <Page Include="Views\Shell.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\UpdateProduct.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ViewShowProduct.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
