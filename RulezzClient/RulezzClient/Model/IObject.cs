@@ -1,6 +1,6 @@
 ﻿using System.Data.Linq.Mapping;
 
-namespace RulezzClient
+namespace RulezzClient.Model
 {
     interface IObject
     {
