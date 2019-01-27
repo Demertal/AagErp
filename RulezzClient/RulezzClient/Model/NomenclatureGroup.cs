@@ -6,17 +6,68 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
+using Prism.Mvvm;
 
-namespace RulezzClient
+namespace RulezzClient.Model
 {
-   public class NomenclatureGroup : IObject
-    {
-        public string Title { get; set; }
+   public class NomenclatureGroup : BindableBase, IObject
+   {
+        private string _title;
 
-        public int Id { get; set; }
+        private int _id;
+
+        private int _idStore;
+
+        public NomenclatureGroup()
+        {
+            Id = -1;
+            Title = "";
+            IdStore = -1;
+        }
+
+        public NomenclatureGroup(NomenclatureGroup nomenclatureGroup)
+        {
+            Id = nomenclatureGroup.Id;
+            Title = nomenclatureGroup.Title;
+            IdStore = nomenclatureGroup.IdStore;
+        }
+
+        public string Title
+        {
+            get => _title;
+            set
+            {
+                _title = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public int Id
+        {
+            get => _id;
+            set
+            {
+                _id = value;
+                RaisePropertyChanged();
+            }
+        }
 
         [Column(Name = "id_store")]
-        public int IdStore { get; set; }
+        public int IdStore
+        {
+            get => _idStore;
+            set
+            {
+                _idStore = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool Equals(NomenclatureGroup other)
+        {
+            if (other == null) return false;
+            return Id == other.Id && Title == other.Title && IdStore == other.IdStore;
+        }
 
         private static List<NomenclatureGroup> Load(string connectionString, int idStore)
         {
