@@ -3,7 +3,7 @@ using System.Collections.Specialized;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 
-namespace RulezzClient
+namespace RulezzClient.Model
 {
     public abstract class Model<T>
     {
