@@ -6,14 +6,47 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
+using Prism.Mvvm;
 
-namespace RulezzClient
+namespace RulezzClient.Model
 {
-    public class Store : IObject, IEquatable<Store>
+    public class Store : BindableBase, IObject
     {
-        public string Title { get; set; }
+        private string _title;
 
-        public int Id { get; set; }
+        private int _id;
+
+        public Store()
+        {
+            Title = "";
+            Id = -1;
+        }
+
+        public Store(Store store)
+        {
+            Id = store.Id;
+            Title = store.Title;
+        }
+
+        public string Title
+        {
+            get => _title;
+            set
+            {
+                _title = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public int Id
+        {
+            get => _id;
+            set
+            {
+                _id = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public bool Equals(Store other)
         {
