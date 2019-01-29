@@ -1,0 +1,65 @@
+﻿<UserControl x:Class="RulezzClient.Views.ShowGroup"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:RulezzClient"
+             xmlns:viewModels="clr-namespace:RulezzClient.ViewModels"
+             mc:Ignorable="d"  
+             VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left">
+
+    <StackPanel DataContext="{Binding ShowStructur}">
+        <StackPanel.Resources>
+            <local:BindingProxy x:Key="Proxy" Data="{Binding}" />
+            <ContextMenu x:Key="TreeViewContex">
+                <MenuItem Header="Добавить магазин" Command="{Binding Source={StaticResource Proxy}, Path = Data.AddStore}"/>
+            </ContextMenu>
+        </StackPanel.Resources>
+        <local:ExtendedTreeView ItemsSource="{Binding Groups, UpdateSourceTrigger=PropertyChanged}" SelectedItem ="{Binding SelectedObject, Mode=TwoWay}" MinWidth="200" MinHeight="200" MaxHeight="400" ContextMenu="{StaticResource TreeViewContex}">
+            <local:ExtendedTreeView.ItemContainerStyle>
+                <Style TargetType="{x:Type TreeViewItem}">
+                    <EventSetter Event="PreviewMouseRightButtonDown" Handler="TreeViewItem_PreviewMouseRightButtonDown"/>
+                </Style>
+            </local:ExtendedTreeView.ItemContainerStyle>
+            <local:ExtendedTreeView.Resources>
+                <ContextMenu x:Key="TreeViewContexStore">
+                    <MenuItem Header="Изменить"                       Command="{Binding Source={StaticResource Proxy}, Path = Data.UpdateStore}"/>
+                    <MenuItem Header="Добавить номенклатурную группу" Command="{Binding Source={StaticResource Proxy}, Path = Data.AddNomenclatureGroup}"/>
+                    <MenuItem Header="Удалить"                        Command="{Binding Source={StaticResource Proxy}, Path = Data.DeleteStore}"/>
+                </ContextMenu>
+                <ContextMenu x:Key="TreeViewContextNomenclatureGroup">
+                    <MenuItem Header="Изменить"                          Command="{Binding Source={StaticResource Proxy}, Path = Data.UpdateNomenclatureGroup}"/>
+                    <MenuItem Header="Добавить номенклатурную подгруппу" Command="{Binding Source={StaticResource Proxy}, Path = Data.AddNomenclatureSubGroup}"/>
+                    <MenuItem Header="Удалить"                           Command="{Binding Source={StaticResource Proxy}, Path = Data.DeleteNomenclatureGroup}"/>
+                </ContextMenu>
+                <ContextMenu x:Key="TreeViewContextNomenclatureSubGroup">
+                    <MenuItem Header="Изменить" Command="{Binding Source={StaticResource Proxy}, Path = Data.UpdateNomenclatureSubGroup}"/>
+                    <MenuItem Header="Удалить"  Command="{Binding Source={StaticResource Proxy}, Path = Data.DeleteNomenclatureSubGroup}"/>
+                </ContextMenu>
+            </local:ExtendedTreeView.Resources>
+
+            <local:ExtendedTreeView.ItemTemplate>
+                <HierarchicalDataTemplate ItemsSource="{Binding NomenclatureGroups}" DataType="{x:Type viewModels:NodeStore}">
+                    <TextBlock Text="{Binding Path=Store.Title}" MinWidth="200" ContextMenu="{StaticResource TreeViewContexStore}"/>
+                    <HierarchicalDataTemplate.ItemTemplate>
+                        <HierarchicalDataTemplate ItemsSource="{Binding NomenclatureSubGroups}" DataType="{x:Type viewModels:NodeNomenclatureGroup}">
+                            <TextBlock Text="{Binding Path=NomenclatureGroup.Title}" MinWidth="200" ContextMenu="{StaticResource TreeViewContextNomenclatureGroup}" />
+                            <HierarchicalDataTemplate.ItemTemplate>
+                                <DataTemplate DataType="{x:Type local:NomenclatureSubGroup}">
+                                    <TextBlock Text="{Binding Path=Title}" MinWidth="200" ContextMenu="{StaticResource TreeViewContextNomenclatureSubGroup}" />
+                                </DataTemplate>
+                            </HierarchicalDataTemplate.ItemTemplate>
+                        </HierarchicalDataTemplate>
+                    </HierarchicalDataTemplate.ItemTemplate>
+                </HierarchicalDataTemplate>
+            </local:ExtendedTreeView.ItemTemplate>
+        </local:ExtendedTreeView>
+    </StackPanel>
+</UserControl>
+
+
+
+
+
+
+

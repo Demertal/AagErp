@@ -21,7 +21,7 @@ namespace RulezzClient.ViewModels
         private Store _selectedStore;
         private NomenclatureGroup _selectedNomenclatureGroup;
         private NomenclatureSubGroup _selectedNomenclatureSubGroup;
-        private Product _selectedProduct;
+        private ProductView_Result _selectedProduct;
 
         public StoreListVm StoreList = new StoreListVm();
         public NomenclatureGroupListVm NomenclatureGroupList = new NomenclatureGroupListVm();
@@ -31,7 +31,7 @@ namespace RulezzClient.ViewModels
         public ReadOnlyObservableCollection<Store> Stores => StoreList.Stores;
         public ReadOnlyObservableCollection<NomenclatureGroup> NomenclatureGroups => NomenclatureGroupList.NomenclatureGroups;
         public ReadOnlyObservableCollection<NomenclatureSubGroup> NomenclatureSubGroups => NomenclatureSubgroupList.NomenclatureSubGroups;
-        public ReadOnlyObservableCollection<Product> Products => ProductList.Products;
+        public ReadOnlyObservableCollection<ProductView_Result> Products => ProductList.Products;
 
         public ShowProductViewModel()
         {
@@ -57,9 +57,14 @@ namespace RulezzClient.ViewModels
             });
             UpdateProduct = new DelegateCommand(() =>
             {
-                if(SelectedProduct == null) return;
-                //UpdateProductViewModel viewModel = new UpdateProductViewModel(SelectedProduct, SelectedNomenclatureSubGroup, SelectedNomenclatureGroup, SelectedStore);
-                //_dialogService.ShowDialog(DialogService.ChoiceView.UpdateProduct, viewModel, true, b => { });
+                if (SelectedProduct == null) return;
+                object []param = new object[4];
+                param[0] = SelectedProduct;
+                param[1] = SelectedNomenclatureSubGroup;
+                param[2] = SelectedNomenclatureGroup;
+                param[3] = SelectedStore;
+                _dialogService.ShowDialog(DialogService.ChoiceView.UpdateProduct, param, true, b => { });
+                Update(ChoiceUpdate.Product);
             });
         }
 
@@ -97,7 +102,7 @@ namespace RulezzClient.ViewModels
             }
         }
 
-        public Product SelectedProduct
+        public ProductView_Result SelectedProduct
         {
             get => _selectedProduct;
             set

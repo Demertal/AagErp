@@ -12,7 +12,7 @@ namespace RulezzClient
     using System;
     using System.Collections.Generic;
     
-    public partial class Store
+    public partial class Store : IEquatable<Store>
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Store()
@@ -34,5 +34,11 @@ namespace RulezzClient
         public virtual ICollection<SalesReport> SalesReport { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Supplier> Supplier { get; set; }
+
+        public bool Equals(Store obj)
+        {
+            if (this.Id == obj.Id && this.Title == obj.Title) return true;
+            else return false;
+        }
     }
 }

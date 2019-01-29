@@ -8,21 +8,30 @@ namespace RulezzClient.ViewModels
     {
         private readonly IUiDialogService _dialogService = new DialogService();
         private Visibility _isProductGroupVisible;
+        private Visibility _isStructGroupVisible;
         private ShowProductViewModel _showProduct;
+        private ShowStructurVM _showStructur;
 
         public ShellViewModel()
         {
             IsProductGroupVisible = Visibility.Collapsed;
+            IsStructGroupVisible = Visibility.Collapsed;
             ShowProductCommand = new DelegateCommand(() =>
             {
+                IsStructGroupVisible = Visibility.Collapsed;
                 IsProductGroupVisible = Visibility.Visible;
                 ShowProduct = new ShowProductViewModel();
             });
             AddProductMainCommand = new DelegateCommand(() =>
             {
-                AddProductViewModel viewModel = new AddProductViewModel();
-                _dialogService.ShowDialog(DialogService.ChoiceView.AddProduct, viewModel, true, b => { });
+                _dialogService.ShowDialog(DialogService.ChoiceView.AddProduct, null, true, b => { });
                 if (IsProductGroupVisible == Visibility.Visible) ShowProduct.Update(ShowProductViewModel.ChoiceUpdate.Product);
+            });
+            ShowStructCommand = new DelegateCommand(() =>
+            {
+                IsProductGroupVisible = Visibility.Collapsed;
+                IsStructGroupVisible = Visibility.Visible;
+                ShowStructur = new ShowStructurVM();
             });
         }
 
@@ -32,6 +41,16 @@ namespace RulezzClient.ViewModels
             set
             {
                 _isProductGroupVisible = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public Visibility IsStructGroupVisible
+        {
+            get => _isStructGroupVisible;
+            set
+            {
+                _isStructGroupVisible = value;
                 RaisePropertyChanged();
             }
         }
@@ -46,7 +65,19 @@ namespace RulezzClient.ViewModels
             }
         }
 
+        public ShowStructurVM ShowStructur
+        {
+            get => _showStructur;
+            set
+            {
+                _showStructur = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public DelegateCommand ShowProductCommand { get; }
+
+        public DelegateCommand ShowStructCommand { get; }
 
         public DelegateCommand AddProductMainCommand { get; }
     }

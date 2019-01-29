@@ -12,6 +12,8 @@ namespace RulezzClient
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
+    using System.Data.Entity.Core.Objects;
+    using System.Linq;
     
     public partial class StoreEntities : DbContext
     {
@@ -43,5 +45,15 @@ namespace RulezzClient
         public virtual DbSet<UnitStorage> UnitStorage { get; set; }
         public virtual DbSet<Warranty> Warranty { get; set; }
         public virtual DbSet<WarrantyPeriod> WarrantyPeriod { get; set; }
+    
+        [DbFunction("StoreEntities", "ProductView")]
+        public virtual IQueryable<ProductView_Result> ProductView(Nullable<int> idNomenclatureSubGroup)
+        {
+            var idNomenclatureSubGroupParameter = idNomenclatureSubGroup.HasValue ?
+                new ObjectParameter("idNomenclatureSubGroup", idNomenclatureSubGroup) :
+                new ObjectParameter("idNomenclatureSubGroup", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<ProductView_Result>("[StoreEntities].[ProductView](@idNomenclatureSubGroup)", idNomenclatureSubGroupParameter);
+        }
     }
 }

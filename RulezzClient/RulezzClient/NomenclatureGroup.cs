@@ -12,7 +12,7 @@ namespace RulezzClient
     using System;
     using System.Collections.Generic;
     
-    public partial class NomenclatureGroup
+    public partial class NomenclatureGroup : IEquatable<NomenclatureGroup>
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public NomenclatureGroup()
@@ -30,5 +30,11 @@ namespace RulezzClient
         public virtual Store Store { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PropertyName> PropertyName { get; set; }
+
+        public bool Equals(NomenclatureGroup obj)
+        {
+            if (this.Id == obj.Id && this.Title == obj.Title && this.IdStore == obj.IdStore) return true;
+            else return false;
+        }
     }
 }

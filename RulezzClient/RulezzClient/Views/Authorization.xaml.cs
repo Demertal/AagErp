@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Data.SqlClient;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media;
-using RulezzClient.Properties;
 
 namespace RulezzClient.Views
 {
@@ -13,7 +9,7 @@ namespace RulezzClient.Views
         //private string _loginAdminKlient = "AdminKlient";
         //private string _passwordAdminKlient = "AdminKlient";
         bool _loginSuccess;
-        private readonly SqlConnection _connection;
+        //private readonly SqlConnection _connection;
         //private readonly MainWindow _mw;
 
         public Authorization()
@@ -23,23 +19,23 @@ namespace RulezzClient.Views
             //_mw = mw;
             //GetIP_Port();
                         // Создание подключения
-            _connection = new SqlConnection(Settings.Default.СconnectionString);
-            try
-            {
-                // Открываем подключение
-                _connection.Open();
-                status_conect_ellipse.Fill = new SolidColorBrush(Colors.Green);
-            }
-            catch
-            {
-                // закрываем подключение
-                _connection.Close();
-            }
+          //  _connection = new SqlConnection(Settings.Default.СconnectionString);
+            //try
+            //{
+            //    // Открываем подключение
+            //    _connection.Open();
+            //    status_conect_ellipse.Fill = new SolidColorBrush(Colors.Green);
+            //}
+            //catch
+            //{
+            //    // закрываем подключение
+            //    _connection.Close();
+            //}
 
             //TODO удалить потом
             LoginTextBox.Text = "u1";
             PasswordPasswordBox.Password = "u1";
-            ReadUsersAsync().GetAwaiter();
+            //ReadUsersAsync().GetAwaiter();
         }
 
         //TODO переделать на чтение из файла
@@ -78,38 +74,38 @@ namespace RulezzClient.Views
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            ReadUsersAsync().GetAwaiter();
+            //ReadUsersAsync().GetAwaiter();
         }
 
-        private async Task ReadUsersAsync()
-        {
-            const string nameComm = "select * from UserAuthorization(@name,@password)";
-            SqlCommand command = new SqlCommand(nameComm, _connection);
-            command.Parameters.AddWithValue("@name", LoginTextBox.Text);
-            command.Parameters.AddWithValue("@password", PasswordPasswordBox.Password);
-            SqlDataReader reader = await command.ExecuteReaderAsync();
+        //private async Task ReadUsersAsync()
+        //{
+        //    const string nameComm = "select * from UserAuthorization(@name,@password)";
+        //   // SqlCommand command = new SqlCommand(nameComm, _connection);
+        //    //command.Parameters.AddWithValue("@name", LoginTextBox.Text);
+        //   // command.Parameters.AddWithValue("@password", PasswordPasswordBox.Password);
+        //    //SqlDataReader reader = await command.ExecuteReaderAsync();
 
-            if (reader.HasRows)
-            {
-                while (reader.Read()) // построчно считываем данные
-                {
-                    //_mw.IdStore = (int)reader.GetValue(0);
-                    //_mw.IdRole = (int)reader.GetValue(1);
-                    _loginSuccess = true;
-                    _connection.Close();
-                    reader.Close();
-                    Close();
-                }
-            }
-            else
-                MessageBox.Show("Неверный логин или пароль.", "Ошибка аторизации.", MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-            reader.Close();
-        }
+        //    //if (reader.HasRows)
+        //    //{
+        //    //    while (reader.Read()) // построчно считываем данные
+        //    //    {
+        //    //        //_mw.IdStore = (int)reader.GetValue(0);
+        //    //        //_mw.IdRole = (int)reader.GetValue(1);
+        //    //        _loginSuccess = true;
+        //    //        _connection.Close();
+        //    //        reader.Close();
+        //    //        Close();
+        //    //    }
+        //    //}
+        //    //else
+        //    //    MessageBox.Show("Неверный логин или пароль.", "Ошибка аторизации.", MessageBoxButton.OK,
+        //    //        MessageBoxImage.Error);
+        //    //reader.Close();
+        //}
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            if(!_loginSuccess) Application.Current.Shutdown();
+            if (!_loginSuccess) Application.Current.Shutdown();
         }
     }
 }

@@ -3,11 +3,11 @@
 namespace RulezzClient.Views
 {
     /// <summary>
-    /// Логика взаимодействия для ViewShowProduct.xaml
+    /// Логика взаимодействия для AddStore.xaml
     /// </summary>
-    public partial class ViewShowProduct : UserControl
+    public partial class AddStore : UserControl
     {
-        public ViewShowProduct()
+        public AddStore()
         {
             InitializeComponent();
         }

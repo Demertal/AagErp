@@ -5,7 +5,7 @@ namespace RulezzClient
 {
     public interface IUiDialogService
     {
-        void ShowDialog(object view, object dataContext, bool isModal, Action<bool?> closeAction);
+        void ShowDialog(object view, object[] param, bool isModal, Action<bool?> closeAction);
 
         MessageBoxResult ShowMessageBox(
             string messageBoxText,

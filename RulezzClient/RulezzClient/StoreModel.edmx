@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="Хранилище StoreModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="Хранилище StoreModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="ExchangeRate">
           <Key>
             <PropertyRef Name="Id" />
@@ -443,6 +443,25 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="ProductView" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idNomenclatureSubGroup" Type="int" Mode="In" />
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="Id" Type="int" Nullable="false" />
+                <Property Name="Barcode" Type="nvarchar" MaxLength="13" />
+                <Property Name="Count" Type="int" Nullable="false" />
+                <Property Name="ExchangeRate" Type="nvarchar" MaxLength="10" />
+                <Property Name="UnitStorage" Type="nvarchar" MaxLength="20" />
+                <Property Name="WarrantyPeriod" Type="int" />
+                <Property Name="PurchasePrice" Type="money" Nullable="false" />
+                <Property Name="SalesPrice" Type="money" Nullable="false" />
+                <Property Name="Title" Type="nvarchar" MaxLength="120" Nullable="false" />
+                <Property Name="VendorCode" Type="nvarchar" MaxLength="20" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
         <EntityContainer Name="Хранилище StoreModelContainer">
           <EntitySet Name="ExchangeRate" EntityType="Self.ExchangeRate" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NomenclatureGroup" EntityType="Self.NomenclatureGroup" Schema="dbo" store:Type="Tables" />
@@ -555,8 +574,7 @@
             <End Role="Warranty" EntitySet="Warranty" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="StoreModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -1155,7 +1173,22 @@
             <End Role="Supplier" EntitySet="Supplier" />
             <End Role="Warranty" EntitySet="Warranty" />
           </AssociationSet>
+          <FunctionImport Name="ProductView" IsComposable="true" ReturnType="Collection(StoreModel.ProductView_Result)" >
+            <Parameter Name="idNomenclatureSubGroup" Mode="In" Type="Int32" />
+          </FunctionImport>
         </EntityContainer>
+        <ComplexType Name="ProductView_Result">
+          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="String" Name="Barcode" Nullable="true" MaxLength="13" />
+          <Property Type="Int32" Name="Count" Nullable="false" />
+          <Property Type="String" Name="ExchangeRate" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="UnitStorage" Nullable="true" MaxLength="20" />
+          <Property Type="Int32" Name="WarrantyPeriod" Nullable="true" />
+          <Property Type="Decimal" Name="PurchasePrice" Nullable="false" Precision="19" Scale="4" />
+          <Property Type="Decimal" Name="SalesPrice" Nullable="false" Precision="19" Scale="4" />
+          <Property Type="String" Name="Title" Nullable="false" MaxLength="120" />
+          <Property Type="String" Name="VendorCode" Nullable="true" MaxLength="20" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1342,6 +1375,22 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="ProductView" FunctionName="Хранилище StoreModel.ProductView">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="StoreModel.ProductView_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Barcode" ColumnName="Barcode" />
+                <ScalarProperty Name="Count" ColumnName="Count" />
+                <ScalarProperty Name="ExchangeRate" ColumnName="ExchangeRate" />
+                <ScalarProperty Name="UnitStorage" ColumnName="UnitStorage" />
+                <ScalarProperty Name="WarrantyPeriod" ColumnName="WarrantyPeriod" />
+                <ScalarProperty Name="PurchasePrice" ColumnName="PurchasePrice" />
+                <ScalarProperty Name="SalesPrice" ColumnName="SalesPrice" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="VendorCode" ColumnName="VendorCode" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

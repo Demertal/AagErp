@@ -10,30 +10,27 @@
 namespace RulezzClient
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class WarrantyPeriod
+    public partial class ProductView_Result
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public WarrantyPeriod()
-        {
-            this.Product = new HashSet<Product>();
-        }
-    
         public int Id { get; set; }
-        public int Period { get; set; }
+        public string Barcode { get; set; }
+        public int Count { get; set; }
+        public string ExchangeRate { get; set; }
+        public string UnitStorage { get; set; }
+        public Nullable<int> WarrantyPeriod { get; set; }
+        public decimal PurchasePrice { get; set; }
+        public decimal SalesPrice { get; set; }
+        public string Title { get; set; }
+        public string VendorCode { get; set; }
 
         public string PeriodString
         {
             get
             {
-                if (Period == 0) return "Нет";
-                else return Period.ToString();
+                if (WarrantyPeriod == null || WarrantyPeriod == 0) return "Нет";
+                else return WarrantyPeriod.ToString();
             }
         }
-
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Product> Product { get; set; }
     }
 }

@@ -1,27 +1,8 @@
 ﻿using System.Windows;
-using Prism.DryIoc;
-using Prism.Ioc;
-using Prism.Modularity;
-using RulezzClient.Views;
 
 namespace RulezzClient
 {
-    internal partial class App : PrismApplication
+    public partial class App : Application
     {
-        //protected override void OnStartup(StartupEventArgs e)
-        //{
-        //    base.OnStartup(e);
-        //    Bootstrapper bootstrapper = new Bootstrapper();
-        //    bootstrapper.Run();
-        //}
-        protected override void RegisterTypes(IContainerRegistry containerRegistry)
-        {
-            //throw new System.NotImplementedException();
-        }
-
-        protected override Window CreateShell()
-        {
-            return Container.Resolve<Shell>();
-        }
     }
 }

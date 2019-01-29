@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Data.Entity;
 using System.Linq;
+using System.Windows;
 using Prism.Commands;
 using Prism.Mvvm;
 
@@ -17,53 +19,98 @@ namespace RulezzClient.ViewModels
             WarrantyPeriod
         }
 
-        private readonly Product _oldProduct;
+        private readonly ProductView_Result _oldProduct;
 
-        public string OldStore { get; }
-        public string OldNomenclatureGroup { get; }
-        public string OldNomenclatureSubgroup { get; }
+        public Store _oldStore { get; }
+        public NomenclatureGroup _oldNomenclatureGroup { get; }
+        public NomenclatureSubGroup _oldNomenclatureSubGroup { get; }
         public string OldTitle => _oldProduct.Title;
         public string OldBarcode => _oldProduct.Barcode;
         public string OldVendorCode => _oldProduct.VendorCode;
-        //public string OldUnitStorage => _oldProduct.UnitStorage;
-        //public string OldWarranty => _oldProduct.Warranty;
+        public string OldUnitStorage => _oldProduct.UnitStorage;
+        public string OldWarranty => _oldProduct.PeriodString;
 
         private Store _selectedStore;
         private NomenclatureGroup _selectedNomenclatureGroup;
-       // private NomenclatureSubgroup _selectedNomenclatureSubgroup;
+        private NomenclatureSubGroup _selectedNomenclatureSubGroup;
         private UnitStorage _selectedUnitStorage;
         private WarrantyPeriod _selectedWarrantyPeriod;
+
+        private Store _tempStore;
+        private NomenclatureGroup _tempNomenclatureGroup;
+        private NomenclatureSubGroup _tempNomenclatureSubGroup;
 
         public StoreListVm StoreList = new StoreListVm();
         public NomenclatureGroupListVm NomenclatureGroupList = new NomenclatureGroupListVm();
         public NomenclatureSubgroupListVm NomenclatureSubgroupList = new NomenclatureSubgroupListVm();
         public UnitStorageListVm UnitStorageList = new UnitStorageListVm();
         public WarrantyPeriodListVm WarrantyPeriodList = new WarrantyPeriodListVm();
-        public Product Product = new Product();
+        public Product Product;
 
         public ReadOnlyObservableCollection<Store> Stores => StoreList.Stores;
         public ReadOnlyObservableCollection<NomenclatureGroup> NomenclatureGroups => NomenclatureGroupList.NomenclatureGroups;
-        //public ReadOnlyObservableCollection<NomenclatureSubgroup> NomenclatureSubGroups => NomenclatureSubgroupList.NomenclatureSubGroups;
+        public ReadOnlyObservableCollection<NomenclatureSubGroup> NomenclatureSubGroups => NomenclatureSubgroupList.NomenclatureSubGroups;
         public ReadOnlyObservableCollection<UnitStorage> UnitStorages => UnitStorageList.UnitStorages;
         public ReadOnlyObservableCollection<WarrantyPeriod> WarrantyPeriods => WarrantyPeriodList.WarrantyPeriods;
 
-        //public UpdateProductViewModel(Product product, NomenclatureSubgroup nomenclatureSubgroup, NomenclatureGroup nomenclatureGroup, Store store)
-        //{
-        //    _oldProduct = product;
-        //    OldNomenclatureSubgroup = nomenclatureSubgroup.Title;
-        //    OldNomenclatureGroup = nomenclatureGroup.Title;
-        //    OldStore = store.Title;
-        //    Update(AddProductViewModel.ChoiceUpdate.Store);
-        //    Update(AddProductViewModel.ChoiceUpdate.WarrantyPeriod);
-        //    Update(AddProductViewModel.ChoiceUpdate.UnitStorage);
-        //    SelectedStore = new Store(store);
-        //    SelectedNomenclatureGroup = new NomenclatureGroup(nomenclatureGroup);
-        //    SelectedNomenclatureSubGroup = new NomenclatureSubgroup(nomenclatureSubgroup);
-        //    //AddProduct = new DelegateCommand(() =>
-        //    //{
-        //    //    if (product.Add());
-        //    //});
-        //}
+        public UpdateProductViewModel(ProductView_Result product, NomenclatureSubGroup nomenclatureSubgroup, NomenclatureGroup nomenclatureGroup, Store store, Window wnd)
+        {
+            using (StoreEntities db = new StoreEntities())
+            {
+                Product = db.Product.Find(product.Id);
+            }
+            _oldProduct = product;
+            _oldNomenclatureSubGroup = nomenclatureSubgroup;
+            _oldNomenclatureGroup = nomenclatureGroup;
+            _oldStore = store;
+            _tempStore = store;
+            _tempNomenclatureGroup = nomenclatureGroup;
+            _tempNomenclatureSubGroup = nomenclatureSubgroup;
+            Update(AddProductViewModel.ChoiceUpdate.Store);
+            Update(AddProductViewModel.ChoiceUpdate.WarrantyPeriod);
+            Update(AddProductViewModel.ChoiceUpdate.UnitStorage);
+            AddProduct = new DelegateCommand(() =>
+            {
+                bool sucsuccess = false;
+                using (StoreEntities db = new StoreEntities())
+                {
+                    Product old = db.Product.Find(_oldProduct.Id);
+                    if (Product == old) return;
+                    using (var transaction = db.Database.BeginTransaction())
+                    {
+                        try
+                        {
+                            old.Title = Product.Title;
+                            old.Barcode = Product.Barcode;
+                            old.VendorCode = Product.VendorCode;
+                            old.IdUnitStorage = Product.IdUnitStorage;
+                            old.IdWarrantyPeriod = Product.IdWarrantyPeriod;
+                            old.IdExchangeRate = Product.IdExchangeRate;
+                            old.IdNomenclatureSubGroup = Product.IdNomenclatureSubGroup;
+                            db.Entry(old).State = EntityState.Modified;
+                            db.SaveChanges();
+                            transaction.Commit();
+                            sucsuccess = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            transaction.Rollback();
+                            MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK,
+                                MessageBoxImage.Error);
+                        }
+                        if (!sucsuccess) return;
+                        MessageBox.Show("Товар изменен", "Успех", MessageBoxButton.OK);
+                        wnd.Close();
+                    }
+                }
+            });
+        }
+
+        public string OldStore => _oldStore.Title;
+
+        public string OldNomenclatureGroup => _oldNomenclatureGroup.Title;
+
+        public string OldNomenclatureSubGroup => _oldNomenclatureSubGroup.Title;
 
         public Store SelectedStore
         {
@@ -89,17 +136,17 @@ namespace RulezzClient.ViewModels
             }
         }
 
-        //public NomenclatureSubgroup SelectedNomenclatureSubGroup
-        //{
-        //    get => _selectedNomenclatureSubgroup;
-        //    set
-        //    {
-        //        _selectedNomenclatureSubgroup = value;
-        //        if (_selectedNomenclatureSubgroup != null) Product.IdNomenclatureSubgroup = _selectedNomenclatureSubgroup.Id;
-        //        RaisePropertyChanged();
-        //        RaisePropertyChanged("IsButtonAddEnabled");
-        //    }
-        //}
+        public NomenclatureSubGroup SelectedNomenclatureSubGroup
+        {
+            get => _selectedNomenclatureSubGroup;
+            set
+            {
+                _selectedNomenclatureSubGroup = value;
+                if (_selectedNomenclatureSubGroup != null) Product.IdNomenclatureSubGroup = _selectedNomenclatureSubGroup.Id;
+                RaisePropertyChanged();
+                RaisePropertyChanged("IsButtonAddEnabled");
+            }
+        }
 
         public UnitStorage SelectedUnitStorage
         {
@@ -107,7 +154,7 @@ namespace RulezzClient.ViewModels
             set
             {
                 _selectedUnitStorage = value;
-                //if (_selectedUnitStorage != null) Product.UnitStorage = _selectedUnitStorage.Id.ToString();
+                if (_selectedUnitStorage != null) Product.IdUnitStorage = _selectedUnitStorage.Id;
                 RaisePropertyChanged();
                 RaisePropertyChanged("IsButtonAddEnabled");
             }
@@ -119,13 +166,13 @@ namespace RulezzClient.ViewModels
             set
             {
                 _selectedWarrantyPeriod = value;
-               // if (_selectedWarrantyPeriod != null) Product.Warranty = _selectedWarrantyPeriod.Id.ToString();
+                if (_selectedWarrantyPeriod != null) Product.IdWarrantyPeriod = _selectedWarrantyPeriod.Id;
                 RaisePropertyChanged();
                 RaisePropertyChanged("IsButtonAddEnabled");
             }
         }
 
-       // public bool IsButtonAddEnabled => SelectedStore != null && SelectedNomenclatureGroup != null && SelectedNomenclatureSubGroup != null && SelectedUnitStorage != null && SelectedWarrantyPeriod != null && Product.Title != null && Product.Title != "" && Product.Title != "" && Product.VendorCode.Length <= 20 && Product.Barcode.Length <= 13;
+        public bool IsButtonAddEnabled => SelectedStore != null && SelectedNomenclatureGroup != null && SelectedNomenclatureSubGroup != null && SelectedUnitStorage != null && SelectedWarrantyPeriod != null && Product.Title != null && Product.Title != "";
 
         public string Title
         {
@@ -190,20 +237,20 @@ namespace RulezzClient.ViewModels
             }
         }
 
-        //private void CheckSelectedSelectedNomenclatureSubgroup()
-        //{
-        //    if (SelectedNomenclatureSubGroup == null)
-        //    {
-        //        if (NomenclatureSubGroups.Count != 0)
-        //        {
-        //            SelectedNomenclatureSubGroup = NomenclatureSubGroups[0];
-        //        }
-        //    }
-        //    else
-        //    {
-        //        if (!NomenclatureSubGroups.Contains(SelectedNomenclatureSubGroup)) SelectedNomenclatureSubGroup = null;
-        //    }
-        //}
+        private void CheckSelectedSelectedNomenclatureSubGroup()
+        {
+            if (SelectedNomenclatureSubGroup == null)
+            {
+                if (NomenclatureSubGroups.Count != 0)
+                {
+                    SelectedNomenclatureSubGroup = NomenclatureSubGroups[0];
+                }
+            }
+            else
+            {
+                if (!NomenclatureSubGroups.Contains(SelectedNomenclatureSubGroup)) SelectedNomenclatureSubGroup = null;
+            }
+        }
 
         private void CheckSelectedSelectedUnitStorage()
         {
@@ -238,17 +285,32 @@ namespace RulezzClient.ViewModels
             {
                 case AddProductViewModel.ChoiceUpdate.Store:
                     await StoreList.Load();
+                    if (_tempStore != null)
+                    {
+                        SelectedStore = _tempStore;
+                        _tempStore = null;
+                    }
                     CheckSelectedStore();
                     break;
                 case AddProductViewModel.ChoiceUpdate.NomenclatureGroup:
-                    //if (_selectedStore == null) await NomenclatureGroupList.GetListNomenclatureGroup(-1);
-                    //else await NomenclatureGroupList.GetListNomenclatureGroup(_selectedStore.Id);
+                    if (_selectedStore == null) await NomenclatureGroupList.Load(-1);
+                    else await NomenclatureGroupList.Load(_selectedStore.Id);
+                    if (_tempNomenclatureGroup != null)
+                    {
+                        SelectedNomenclatureGroup = _tempNomenclatureGroup;
+                        _tempNomenclatureGroup = null;
+                    }
                     CheckSelectedSelectedNomenclatureGroup();
                     break;
                 case AddProductViewModel.ChoiceUpdate.NomenclatureSubgroup:
                     if (_selectedNomenclatureGroup == null) await NomenclatureSubgroupList.Load(-1);
                     else await NomenclatureSubgroupList.Load(_selectedNomenclatureGroup.Id);
-                   // CheckSelectedSelectedNomenclatureSubgroup();
+                    if (_tempNomenclatureSubGroup != null)
+                    {
+                        SelectedNomenclatureSubGroup = _tempNomenclatureSubGroup;
+                        _tempNomenclatureSubGroup = null;
+                    }
+                    CheckSelectedSelectedNomenclatureSubGroup();
                     break;
                 case AddProductViewModel.ChoiceUpdate.UnitStorage:
                     await UnitStorageList.Load();

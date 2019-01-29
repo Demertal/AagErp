@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Entity;
-using System.Data.SqlClient;
-using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -13,26 +11,24 @@ namespace RulezzClient.ViewModels
 {
     class ProductListVm : BindableBase
     {
-        private readonly ObservableCollection<Product> _products = new ObservableCollection<Product>();
+        private readonly ObservableCollection<ProductView_Result> _products = new ObservableCollection<ProductView_Result>();
 
-        public ReadOnlyObservableCollection<Product> Products;
+        public ReadOnlyObservableCollection<ProductView_Result> Products;
 
         public ProductListVm()
         {
-            Products = new ReadOnlyObservableCollection<Product>(_products);
+            Products = new ReadOnlyObservableCollection<ProductView_Result>(_products);
         }
 
-        public async Task<List<Product>> Load(int idNomenclatureSubGroup)
+        public async Task<List<ProductView_Result>> Load(int idNomenclatureSubGroup)
         {
-            List<Product> temp = await Task.Run(() =>
+            List<ProductView_Result> temp = await Task.Run(() =>
             {
                 using (StoreEntities db = new StoreEntities())
                 {
-                    return db.Product.SqlQuery("Select * From Product WHERE Product.IdNomenclatureSubGroup = @idNomenclatureSubGroup",
-                        new SqlParameter("@idNomenclatureSubGroup", idNomenclatureSubGroup)).ToList();
+                    return db.ProductView(idNomenclatureSubGroup).ToList();
                 }
             });
-
 
             _products.Clear();
             foreach (var t in temp)
