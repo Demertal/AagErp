@@ -19,8 +19,8 @@ namespace RulezzClient
         {
             this.PropertyProduct = new HashSet<PropertyProduct>();
             this.PurchaseInfo = new HashSet<PurchaseInfo>();
-            this.SalesInfo = new HashSet<SalesInfo>();
             this.RevaluationProduct = new HashSet<RevaluationProduct>();
+            this.SalesInfo = new HashSet<SalesInfo>();
         }
     
         public int Id { get; set; }
@@ -44,8 +44,8 @@ namespace RulezzClient
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PurchaseInfo> PurchaseInfo { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<SalesInfo> SalesInfo { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RevaluationProduct> RevaluationProduct { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<SalesInfo> SalesInfo { get; set; }
     }
 }

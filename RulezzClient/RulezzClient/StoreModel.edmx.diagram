@@ -4,25 +4,26 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="eff167f9b94c4e93bea35a288c0d62f8" Name="Diagram1">
-        <EntityTypeShape EntityType="StoreModel.ExchangeRate" Width="1.5" PointX="5.25" PointY="6.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.NomenclatureGroup" Width="1.5" PointX="3" PointY="9.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.NomenclatureSubGroup" Width="1.5" PointX="5.25" PointY="9.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.PriceGroup" Width="1.5" PointX="3" PointY="7.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.Product" Width="1.5" PointX="7.5" PointY="7.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.PropertyName" Width="1.5" PointX="5.25" PointY="13.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.PropertyProduct" Width="1.5" PointX="9.75" PointY="10.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.PropertyValue" Width="1.5" PointX="7.5" PointY="13.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.PurchaseInfo" Width="1.5" PointX="9.75" PointY="14" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.PurchaseReport" Width="1.5" PointX="5.25" PointY="16.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.SalesInfo" Width="1.5" PointX="12.75" PointY="11.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.SalesReport" Width="1.5" PointX="3" PointY="16" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.SerialNumber" Width="1.5" PointX="10.5" PointY="6.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.Store" Width="1.5" PointX="0.75" PointY="12.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.Supplier" Width="1.5" PointX="3" PointY="18.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.UnitStorage" Width="1.5" PointX="5.25" PointY="3.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.Warranty" Width="1.5" PointX="5.25" PointY="20.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.WarrantyPeriod" Width="1.5" PointX="5.25" PointY="0.75" IsExpanded="true" />
+      <Diagram DiagramId="6910c8a9eeb74ce4a33aae5f5aefcefe" Name="Diagram1">
+        <EntityTypeShape EntityType="StoreModel.ExchangeRate" Width="1.5" PointX="5.25" PointY="7" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.NomenclatureGroup" Width="1.5" PointX="3" PointY="10.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.NomenclatureSubGroup" Width="1.5" PointX="5.25" PointY="10.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.PriceGroup" Width="1.5" PointX="3" PointY="7.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.Product" Width="1.5" PointX="7.5" PointY="8" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.PropertyName" Width="1.5" PointX="5.25" PointY="13.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.PropertyProduct" Width="1.5" PointX="9.75" PointY="10.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.PropertyValue" Width="1.5" PointX="7.5" PointY="13.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.PurchaseInfo" Width="1.5" PointX="12.75" PointY="12.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.PurchaseReport" Width="1.5" PointX="5.25" PointY="16.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.RevaluationProduct" Width="1.5" PointX="9.75" PointY="15.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.SalesInfo" Width="1.5" PointX="12.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.SalesReport" Width="1.5" PointX="3" PointY="16.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.SerialNumber" Width="1.5" PointX="10.5" PointY="7" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.Store" Width="1.5" PointX="0.75" PointY="13" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.Supplier" Width="1.5" PointX="3" PointY="19" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.UnitStorage" Width="1.5" PointX="5.25" PointY="3.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.Warranty" Width="1.5" PointX="5.25" PointY="20.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.WarrantyPeriod" Width="1.5" PointX="5.25" PointY="1" IsExpanded="true" />
         <AssociationConnector Association="StoreModel.FK__Product__IdExcha__60A75C0F" ManuallyRouted="false" />
         <AssociationConnector Association="StoreModel.FK__PurchaseI__IdExc__7D439ABD" ManuallyRouted="false" />
         <AssociationConnector Association="StoreModel.FK__Nomenclat__IdNom__4CA06362" ManuallyRouted="false" />
@@ -34,6 +35,7 @@
         <AssociationConnector Association="StoreModel.FK__Product__IdWarra__619B8048" ManuallyRouted="false" />
         <AssociationConnector Association="StoreModel.FK__PropertyP__IdPro__6E01572D" ManuallyRouted="false" />
         <AssociationConnector Association="StoreModel.FK__PurchaseI__IdPro__7C4F7684" ManuallyRouted="false" />
+        <AssociationConnector Association="StoreModel.FK__Revaluati__IdPro__160F4887" ManuallyRouted="false" />
         <AssociationConnector Association="StoreModel.FK__SalesInfo__IdPro__0A9D95DB" ManuallyRouted="false" />
         <AssociationConnector Association="StoreModel.FK__PropertyV__IdPro__6A30C649" ManuallyRouted="false" />
         <AssociationConnector Association="StoreModel.FK__PropertyP__IdPro__6EF57B66" ManuallyRouted="false" />
@@ -46,8 +48,6 @@
         <AssociationConnector Association="StoreModel.FK__Warranty__IdSeri__114A936A" ManuallyRouted="false" />
         <AssociationConnector Association="StoreModel.FK__Supplier__IdStor__72C60C4A" ManuallyRouted="false" />
         <AssociationConnector Association="StoreModel.FK__Warranty__IdSupp__10566F31" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="StoreModel.RevaluationProduct" Width="1.5" PointX="9.75" PointY="3" />
-        <AssociationConnector Association="StoreModel.FK__Revaluati__IdPro__160F4887" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

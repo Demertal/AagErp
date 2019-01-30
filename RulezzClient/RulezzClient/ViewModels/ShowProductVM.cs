@@ -24,8 +24,9 @@ namespace RulezzClient.ViewModels
         private Store _selectedStore;
         private NomenclatureGroup _selectedNomenclatureGroup;
         private NomenclatureSubGroup _selectedNomenclatureSubGroup;
-        private ProductView_Result _selectedProduct;
+        private ProductView _selectedProduct;
         private Visibility _isSelectedProduct;
+        private Visibility _isNotSelectedProduct;
         private SelectionMode _selectionMode;
         private Visibility _isEnableFilter;
 
@@ -37,13 +38,14 @@ namespace RulezzClient.ViewModels
         public ReadOnlyObservableCollection<Store> Stores => StoreList.Stores;
         public ReadOnlyObservableCollection<NomenclatureGroup> NomenclatureGroups => NomenclatureGroupList.NomenclatureGroups;
         public ReadOnlyObservableCollection<NomenclatureSubGroup> NomenclatureSubGroups => NomenclatureSubgroupList.NomenclatureSubGroups;
-        public ReadOnlyObservableCollection<ProductView_Result> Products => ProductList.Products;
+        public ReadOnlyObservableCollection<ProductView> Products => ProductList.Products;
 
         public ShowProductViewModel()
         {
             EnableFilter = false;
             SelectionMode = SelectionMode.Single;
             IsSelectedProduct = Visibility.Collapsed;
+            IsNotSelectedProduct = Visibility.Visible;
             SelectedProductCommand = null;
             StoreList.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
             NomenclatureGroupList.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
@@ -83,6 +85,7 @@ namespace RulezzClient.ViewModels
             EnableFilter = false;
             SelectionMode = SelectionMode.Multiple;
             IsSelectedProduct = Visibility.Visible;
+            IsNotSelectedProduct = Visibility.Collapsed;
             StoreList.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
             NomenclatureGroupList.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
             NomenclatureSubgroupList.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
@@ -96,7 +99,7 @@ namespace RulezzClient.ViewModels
                 {
                     foreach (var item in (IList)sel)
                     {
-                        RevaluationProductModel revItem = new RevaluationProductModel(db.Product.Find((item as ProductView_Result).Id));
+                        RevaluationProductModel revItem = new RevaluationProductModel(db.Product.Find((item as ProductView).Id));
                         if(rev.AllProduct.Contains(revItem))continue;
                         rev.AllProduct.Add(revItem);
                     }
@@ -111,7 +114,15 @@ namespace RulezzClient.ViewModels
             set
             {
                 _enableFilter = value;
-                IsEnableFilter = _enableFilter ? Visibility.Visible : Visibility.Collapsed;
+                if (_enableFilter)
+                {
+                    IsEnableFilter = Visibility.Visible;
+                    Update(ChoiceUpdate.NomenclatureGroup);
+                }
+                else
+                {
+                    IsEnableFilter = Visibility.Collapsed;
+                }
                 RaisePropertyChanged();
             }
         }
@@ -171,7 +182,7 @@ namespace RulezzClient.ViewModels
             }
         }
 
-        public ProductView_Result SelectedProduct
+        public ProductView SelectedProduct
         {
             get => _selectedProduct;
             set
@@ -187,6 +198,16 @@ namespace RulezzClient.ViewModels
             set
             {
                 _isSelectedProduct = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public Visibility IsNotSelectedProduct
+        {
+            get => _isNotSelectedProduct;
+            set
+            {
+                _isNotSelectedProduct = value;
                 RaisePropertyChanged();
             }
         }
@@ -257,12 +278,12 @@ namespace RulezzClient.ViewModels
                 case ChoiceUpdate.Product:
                     if (EnableFilter)
                     {
-                        if (_selectedNomenclatureSubGroup == null) await ProductList.Load(-2);
-                        else await ProductList.Load(_selectedNomenclatureSubGroup.Id);
+                        if (_selectedNomenclatureSubGroup == null) await ProductList.LoadByNomenclatureSubGroup(-2);
+                        else await ProductList.LoadByNomenclatureSubGroup(_selectedNomenclatureSubGroup.Id);
                     }
                     else
                     {
-                        await ProductList.Load(-1);
+                        await ProductList.LoadByNomenclatureSubGroup(-1);
                     }
                     break;
                 default:

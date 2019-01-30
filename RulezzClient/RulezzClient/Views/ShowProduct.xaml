@@ -9,8 +9,8 @@
              VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Padding="10,5,5,10">
 
     <UserControl.Resources>
-        <ContextMenu  x:Key="RowMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-            <MenuItem Header="Изменить" CommandParameter="{Binding}"
+        <ContextMenu  x:Key="RowMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}" Visibility="{Binding DataContext.IsNotSelectedProduct, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}">
+            <MenuItem Header="Изменить" CommandParameter="{Binding}" 
                       Command="{Binding DataContext.UpdateProduct, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
             <MenuItem Header="Удалить" CommandParameter="{Binding}"
                       Command="{Binding DataContext.DeleteProduct, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />

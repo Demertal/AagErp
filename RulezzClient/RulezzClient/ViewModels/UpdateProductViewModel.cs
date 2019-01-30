@@ -19,7 +19,7 @@ namespace RulezzClient.ViewModels
             WarrantyPeriod
         }
 
-        private readonly ProductView_Result _oldProduct;
+        private readonly ProductView _oldProduct;
 
         public Store _oldStore { get; }
         public NomenclatureGroup _oldNomenclatureGroup { get; }
@@ -53,7 +53,7 @@ namespace RulezzClient.ViewModels
         public ReadOnlyObservableCollection<UnitStorage> UnitStorages => UnitStorageList.UnitStorages;
         public ReadOnlyObservableCollection<WarrantyPeriod> WarrantyPeriods => WarrantyPeriodList.WarrantyPeriods;
 
-        public UpdateProductViewModel(ProductView_Result product, NomenclatureSubGroup nomenclatureSubgroup, NomenclatureGroup nomenclatureGroup, Store store, Window wnd)
+        public UpdateProductViewModel(ProductView product, NomenclatureSubGroup nomenclatureSubgroup, NomenclatureGroup nomenclatureGroup, Store store, Window wnd)
         {
             using (StoreEntities db = new StoreEntities())
             {

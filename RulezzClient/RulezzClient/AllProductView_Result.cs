@@ -11,7 +11,7 @@ namespace RulezzClient
 {
     using System;
     
-    public partial class ProductView_Result
+    public partial class AllProductView_Result
     {
         public int Id { get; set; }
         public string Barcode { get; set; }
@@ -23,6 +23,5 @@ namespace RulezzClient
         public decimal SalesPrice { get; set; }
         public string Title { get; set; }
         public string VendorCode { get; set; }
-        public int IdNomenclatureSubGroup { get; set; }
     }
 }

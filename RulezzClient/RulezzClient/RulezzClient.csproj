@@ -88,6 +88,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AllProductView_Result.cs">
+      <DependentUpon>StoreModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="BindingProxy.cs" />
     <Compile Include="CurrencyConverter.cs" />
     <Compile Include="DialogService .cs" />
@@ -108,6 +111,7 @@
     <Compile Include="Product.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="ProductView.cs" />
     <Compile Include="ProductView_Result.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
@@ -139,29 +143,6 @@
     <Compile Include="SerialNumber.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\AddNomenclatureGroupVM.cs" />
-    <Compile Include="ViewModels\AddNomenclatureSubGroupVM.cs" />
-    <Compile Include="ViewModels\AddStoreVM.cs" />
-    <Compile Include="ViewModels\RevaluationVM.cs" />
-    <Compile Include="ViewModels\ShowStructurVM.cs" />
-    <Compile Include="ViewModels\UpdateNomenclatureGroupVM.cs" />
-    <Compile Include="ViewModels\UpdateNomenclatureSubGroupVM.cs" />
-    <Compile Include="ViewModels\UpdateStoreVM.cs" />
-    <Compile Include="Views\AddNomenclatureGroup.xaml.cs">
-      <DependentUpon>AddNomenclatureGroup.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\AddNomenclatureSubGroup.xaml.cs">
-      <DependentUpon>AddNomenclatureSubGroup.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\AddStore.xaml.cs">
-      <DependentUpon>AddStore.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Revaluation.xaml.cs">
-      <DependentUpon>Revaluation.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ShowGroup.xaml.cs">
-      <DependentUpon>ShowGroup.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Store.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
@@ -185,6 +166,29 @@
     </Compile>
     <Compile Include="UnitStorage.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\AddNomenclatureGroupVM.cs" />
+    <Compile Include="ViewModels\AddNomenclatureSubGroupVM.cs" />
+    <Compile Include="ViewModels\AddStoreVM.cs" />
+    <Compile Include="ViewModels\RevaluationVM.cs" />
+    <Compile Include="ViewModels\ShowStructurVM.cs" />
+    <Compile Include="ViewModels\UpdateNomenclatureGroupVM.cs" />
+    <Compile Include="ViewModels\UpdateNomenclatureSubGroupVM.cs" />
+    <Compile Include="ViewModels\UpdateStoreVM.cs" />
+    <Compile Include="Views\AddNomenclatureGroup.xaml.cs">
+      <DependentUpon>AddNomenclatureGroup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddNomenclatureSubGroup.xaml.cs">
+      <DependentUpon>AddNomenclatureSubGroup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddStore.xaml.cs">
+      <DependentUpon>AddStore.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Revaluation.xaml.cs">
+      <DependentUpon>Revaluation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ShowGroup.xaml.cs">
+      <DependentUpon>ShowGroup.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\NomenclatureGroupVM.cs" />
     <Compile Include="ViewModels\NomenclatureSubgroupVM.cs" />

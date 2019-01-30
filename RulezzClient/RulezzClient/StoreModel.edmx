@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="Хранилище StoreModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="Хранилище StoreModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="ExchangeRate">
           <Key>
             <PropertyRef Name="Id" />
@@ -465,6 +465,24 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="AllProductView" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="Id" Type="int" Nullable="false" />
+                <Property Name="Barcode" Type="nvarchar" MaxLength="13" />
+                <Property Name="Count" Type="int" Nullable="false" />
+                <Property Name="ExchangeRate" Type="nvarchar" MaxLength="10" />
+                <Property Name="UnitStorage" Type="nvarchar" MaxLength="20" />
+                <Property Name="WarrantyPeriod" Type="int" />
+                <Property Name="PurchasePrice" Type="money" Nullable="false" />
+                <Property Name="SalesPrice" Type="money" Nullable="false" />
+                <Property Name="Title" Type="nvarchar" MaxLength="120" Nullable="false" />
+                <Property Name="VendorCode" Type="nvarchar" MaxLength="20" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
         <Function Name="ProductView" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="idNomenclatureSubGroup" Type="int" Mode="In" />
           <ReturnType>
@@ -480,6 +498,7 @@
                 <Property Name="SalesPrice" Type="money" Nullable="false" />
                 <Property Name="Title" Type="nvarchar" MaxLength="120" Nullable="false" />
                 <Property Name="VendorCode" Type="nvarchar" MaxLength="20" />
+                <Property Name="IdNomenclatureSubGroup" Type="int" Nullable="false" />
               </RowType>
             </CollectionType>
           </ReturnType>
@@ -601,10 +620,36 @@
             <End Role="Warranty" EntitySet="Warranty" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="StoreModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <ComplexType Name="AllProductView_Result">
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Barcode" Type="String" MaxLength="13" FixedLength="false" Unicode="true" />
+          <Property Name="Count" Type="Int32" Nullable="false" />
+          <Property Name="ExchangeRate" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="UnitStorage" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="WarrantyPeriod" Type="Int32" />
+          <Property Name="PurchasePrice" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="SalesPrice" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="120" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="VendorCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </ComplexType>
+        <ComplexType Name="ProductView_Result">
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Barcode" Type="String" MaxLength="13" FixedLength="false" Unicode="true" />
+          <Property Name="Count" Type="Int32" Nullable="false" />
+          <Property Name="ExchangeRate" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="UnitStorage" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="WarrantyPeriod" Type="Int32" />
+          <Property Name="PurchasePrice" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="SalesPrice" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="120" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="VendorCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="IdNomenclatureSubGroup" Type="Int32" Nullable="false" />
+        </ComplexType>
         <EntityType Name="ExchangeRate">
           <Key>
             <PropertyRef Name="Id" />
@@ -667,8 +712,8 @@
           <NavigationProperty Name="WarrantyPeriod" Relationship="Self.FK__Product__IdWarra__619B8048" FromRole="Product" ToRole="WarrantyPeriod" />
           <NavigationProperty Name="PropertyProduct" Relationship="Self.FK__PropertyP__IdPro__6E01572D" FromRole="Product" ToRole="PropertyProduct" />
           <NavigationProperty Name="PurchaseInfo" Relationship="Self.FK__PurchaseI__IdPro__7C4F7684" FromRole="Product" ToRole="PurchaseInfo" />
+          <NavigationProperty Name="RevaluationProduct" Relationship="Self.FK__Revaluati__IdPro__160F4887" FromRole="Product" ToRole="RevaluationProduct" />
           <NavigationProperty Name="SalesInfo" Relationship="Self.FK__SalesInfo__IdPro__0A9D95DB" FromRole="Product" ToRole="SalesInfo" />
-          <NavigationProperty Name="RevaluationProduct" Relationship="StoreModel.FK__Revaluati__IdPro__160F4887" FromRole="Product" ToRole="RevaluationProduct" />
         </EntityType>
         <EntityType Name="PropertyName">
           <Key>
@@ -725,6 +770,17 @@
           <NavigationProperty Name="PurchaseInfo" Relationship="Self.FK__PurchaseI__IdPur__7B5B524B" FromRole="PurchaseReport" ToRole="PurchaseInfo" />
           <NavigationProperty Name="Store" Relationship="Self.FK__PurchaseR__IdSto__75A278F5" FromRole="PurchaseReport" ToRole="Store" />
           <NavigationProperty Name="Supplier" Relationship="Self.FK__PurchaseR__IdSup__76969D2E" FromRole="PurchaseReport" ToRole="Supplier" />
+        </EntityType>
+        <EntityType Name="RevaluationProduct">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdProduct" Type="Int32" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="OldSalesPrice" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="NewSalesPrice" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <NavigationProperty Name="Product" Relationship="Self.FK__Revaluati__IdPro__160F4887" FromRole="RevaluationProduct" ToRole="Product" />
         </EntityType>
         <EntityType Name="SalesInfo">
           <Key>
@@ -946,6 +1002,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__Revaluati__IdPro__160F4887">
+          <End Role="Product" Type="Self.Product" Multiplicity="1" />
+          <End Role="RevaluationProduct" Type="Self.RevaluationProduct" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="RevaluationProduct">
+              <PropertyRef Name="IdProduct" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__SalesInfo__IdPro__0A9D95DB">
           <End Role="Product" Type="Self.Product" Multiplicity="1" />
           <End Role="SalesInfo" Type="Self.SalesInfo" Multiplicity="*" />
@@ -1101,6 +1169,7 @@
           <EntitySet Name="PropertyValue" EntityType="Self.PropertyValue" />
           <EntitySet Name="PurchaseInfo" EntityType="Self.PurchaseInfo" />
           <EntitySet Name="PurchaseReport" EntityType="Self.PurchaseReport" />
+          <EntitySet Name="RevaluationProduct" EntityType="Self.RevaluationProduct" />
           <EntitySet Name="SalesInfo" EntityType="Self.SalesInfo" />
           <EntitySet Name="SalesReport" EntityType="Self.SalesReport" />
           <EntitySet Name="SerialNumber" EntityType="Self.SerialNumber" />
@@ -1153,6 +1222,10 @@
             <End Role="Product" EntitySet="Product" />
             <End Role="PurchaseInfo" EntitySet="PurchaseInfo" />
           </AssociationSet>
+          <AssociationSet Name="FK__Revaluati__IdPro__160F4887" Association="Self.FK__Revaluati__IdPro__160F4887">
+            <End Role="Product" EntitySet="Product" />
+            <End Role="RevaluationProduct" EntitySet="RevaluationProduct" />
+          </AssociationSet>
           <AssociationSet Name="FK__SalesInfo__IdPro__0A9D95DB" Association="Self.FK__SalesInfo__IdPro__0A9D95DB">
             <End Role="Product" EntitySet="Product" />
             <End Role="SalesInfo" EntitySet="SalesInfo" />
@@ -1201,50 +1274,11 @@
             <End Role="Supplier" EntitySet="Supplier" />
             <End Role="Warranty" EntitySet="Warranty" />
           </AssociationSet>
-          <FunctionImport Name="ProductView" IsComposable="true" ReturnType="Collection(StoreModel.ProductView_Result)" >
-          <Parameter Name="idNomenclatureSubGroup" Mode="In" Type="Int32" />
+          <FunctionImport Name="AllProductView" IsComposable="true" ReturnType="Collection(StoreModel.AllProductView_Result)" />
+          <FunctionImport Name="ProductView" IsComposable="true" ReturnType="Collection(StoreModel.ProductView_Result)">
+            <Parameter Name="idNomenclatureSubGroup" Mode="In" Type="Int32" />
           </FunctionImport>
-          <EntitySet Name="RevaluationProduct" EntityType="StoreModel.RevaluationProduct" />
-          <AssociationSet Name="FK__Revaluati__IdPro__160F4887" Association="StoreModel.FK__Revaluati__IdPro__160F4887">
-            <End Role="Product" EntitySet="Product" />
-            <End Role="RevaluationProduct" EntitySet="RevaluationProduct" />
-          </AssociationSet>
         </EntityContainer>
-        <ComplexType Name="ProductView_Result">
-          <Property Type="Int32" Name="Id" Nullable="false" />
-          <Property Type="String" Name="Barcode" Nullable="true" MaxLength="13" />
-          <Property Type="Int32" Name="Count" Nullable="false" />
-          <Property Type="String" Name="ExchangeRate" Nullable="true" MaxLength="10" />
-          <Property Type="String" Name="UnitStorage" Nullable="true" MaxLength="20" />
-          <Property Type="Int32" Name="WarrantyPeriod" Nullable="true" />
-          <Property Type="Decimal" Name="PurchasePrice" Nullable="false" Precision="19" Scale="4" />
-          <Property Type="Decimal" Name="SalesPrice" Nullable="false" Precision="19" Scale="4" />
-          <Property Type="String" Name="Title" Nullable="false" MaxLength="120" />
-          <Property Type="String" Name="VendorCode" Nullable="true" MaxLength="20" />
-        </ComplexType>
-        <EntityType Name="RevaluationProduct">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="IdProduct" Type="Int32" Nullable="false" />
-          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="OldSalesPrice" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
-          <Property Name="NewSalesPrice" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
-          <NavigationProperty Name="Product" Relationship="StoreModel.FK__Revaluati__IdPro__160F4887" FromRole="RevaluationProduct" ToRole="Product" />
-        </EntityType>
-        <Association Name="FK__Revaluati__IdPro__160F4887">
-          <End Type="StoreModel.Product" Role="Product" Multiplicity="1" />
-          <End Type="StoreModel.RevaluationProduct" Role="RevaluationProduct" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Product">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="RevaluationProduct">
-              <PropertyRef Name="IdProduct" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1353,6 +1387,17 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="RevaluationProduct">
+            <EntityTypeMapping TypeName="StoreModel.RevaluationProduct">
+              <MappingFragment StoreEntitySet="RevaluationProduct">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="IdProduct" ColumnName="IdProduct" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="OldSalesPrice" ColumnName="OldSalesPrice" />
+                <ScalarProperty Name="NewSalesPrice" ColumnName="NewSalesPrice" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="SalesInfo">
             <EntityTypeMapping TypeName="StoreModel.SalesInfo">
               <MappingFragment StoreEntitySet="SalesInfo">
@@ -1431,9 +1476,9 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="ProductView" FunctionName="Хранилище StoreModel.ProductView">
+          <FunctionImportMapping FunctionName="Хранилище StoreModel.AllProductView" FunctionImportName="AllProductView">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="StoreModel.ProductView_Result">
+              <ComplexTypeMapping TypeName="StoreModel.AllProductView_Result">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Barcode" ColumnName="Barcode" />
                 <ScalarProperty Name="Count" ColumnName="Count" />
@@ -1447,17 +1492,23 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <EntitySetMapping Name="RevaluationProduct">
-            <EntityTypeMapping TypeName="StoreModel.RevaluationProduct">
-              <MappingFragment StoreEntitySet="RevaluationProduct">
-                <ScalarProperty Name="NewSalesPrice" ColumnName="NewSalesPrice" />
-                <ScalarProperty Name="OldSalesPrice" ColumnName="OldSalesPrice" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
-                <ScalarProperty Name="IdProduct" ColumnName="IdProduct" />
+          <FunctionImportMapping FunctionName="Хранилище StoreModel.ProductView" FunctionImportName="ProductView">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="StoreModel.ProductView_Result">
                 <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
+                <ScalarProperty Name="Barcode" ColumnName="Barcode" />
+                <ScalarProperty Name="Count" ColumnName="Count" />
+                <ScalarProperty Name="ExchangeRate" ColumnName="ExchangeRate" />
+                <ScalarProperty Name="UnitStorage" ColumnName="UnitStorage" />
+                <ScalarProperty Name="WarrantyPeriod" ColumnName="WarrantyPeriod" />
+                <ScalarProperty Name="PurchasePrice" ColumnName="PurchasePrice" />
+                <ScalarProperty Name="SalesPrice" ColumnName="SalesPrice" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="VendorCode" ColumnName="VendorCode" />
+                <ScalarProperty Name="IdNomenclatureSubGroup" ColumnName="IdNomenclatureSubGroup" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

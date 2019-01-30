@@ -37,6 +37,7 @@ namespace RulezzClient
         public virtual DbSet<PropertyValue> PropertyValue { get; set; }
         public virtual DbSet<PurchaseInfo> PurchaseInfo { get; set; }
         public virtual DbSet<PurchaseReport> PurchaseReport { get; set; }
+        public virtual DbSet<RevaluationProduct> RevaluationProduct { get; set; }
         public virtual DbSet<SalesInfo> SalesInfo { get; set; }
         public virtual DbSet<SalesReport> SalesReport { get; set; }
         public virtual DbSet<SerialNumber> SerialNumber { get; set; }
@@ -45,7 +46,12 @@ namespace RulezzClient
         public virtual DbSet<UnitStorage> UnitStorage { get; set; }
         public virtual DbSet<Warranty> Warranty { get; set; }
         public virtual DbSet<WarrantyPeriod> WarrantyPeriod { get; set; }
-        public virtual DbSet<RevaluationProduct> RevaluationProduct { get; set; }
+    
+        [DbFunction("StoreEntities", "AllProductView")]
+        public virtual IQueryable<AllProductView_Result> AllProductView()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<AllProductView_Result>("[StoreEntities].[AllProductView]()");
+        }
     
         [DbFunction("StoreEntities", "ProductView")]
         public virtual IQueryable<ProductView_Result> ProductView(Nullable<int> idNomenclatureSubGroup)

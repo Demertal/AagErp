@@ -55,7 +55,7 @@ namespace RulezzClient
                     bo.Child = a;
                     gr.Children[gr.Children.Count - 1] = bo;
                     control.Content = gr;
-                    control.DataContext = new UpdateProductViewModel((ProductView_Result)param[0], (NomenclatureSubGroup)param[1], (NomenclatureGroup)param[2], (Store)param[3], wnd);
+                    control.DataContext = new UpdateProductViewModel((ProductView)param[0], (NomenclatureSubGroup)param[1], (NomenclatureGroup)param[2], (Store)param[3], wnd);
                     break;
                 }
                 case ChoiceView.AddStore:
