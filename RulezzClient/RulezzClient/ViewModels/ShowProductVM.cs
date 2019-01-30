@@ -99,7 +99,7 @@ namespace RulezzClient.ViewModels
                 {
                     foreach (var item in (IList)sel)
                     {
-                        RevaluationProductModel revItem = new RevaluationProductModel(db.Product.Find((item as ProductView).Id));
+                        RevaluationProductModel revItem = new RevaluationProductModel(db.Product.Find((item as ProductView)?.Id));
                         if(rev.AllProduct.Contains(revItem))continue;
                         rev.AllProduct.Add(revItem);
                     }
@@ -122,6 +122,7 @@ namespace RulezzClient.ViewModels
                 else
                 {
                     IsEnableFilter = Visibility.Collapsed;
+                    Update(ChoiceUpdate.Product);
                 }
                 RaisePropertyChanged();
             }
@@ -283,7 +284,8 @@ namespace RulezzClient.ViewModels
                     }
                     else
                     {
-                        await ProductList.LoadByNomenclatureSubGroup(-1);
+                        if (_selectedStore == null) await ProductList.LoadAll(-1);
+                        else await ProductList.LoadAll(Settings.Default.SelectedStoreID);
                     }
                     break;
                 default:

@@ -57,7 +57,7 @@ namespace RulezzClient.ViewModels
             {
                 using (StoreEntities db = new StoreEntities())
                 {
-                    return db.ProductView(idNomenclatureSubGroup).Select(obj => new ProductView
+                    return db.AllProductView(idStore).Select(obj => new ProductView
                     {
                         Id = obj.Id,
                         Barcode = obj.Barcode,

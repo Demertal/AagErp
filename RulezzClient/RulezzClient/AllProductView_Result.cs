@@ -23,5 +23,6 @@ namespace RulezzClient
         public decimal SalesPrice { get; set; }
         public string Title { get; set; }
         public string VendorCode { get; set; }
+        public int IdNomenclatureSubGroup { get; set; }
     }
 }

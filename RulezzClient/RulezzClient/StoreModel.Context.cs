@@ -48,9 +48,13 @@ namespace RulezzClient
         public virtual DbSet<WarrantyPeriod> WarrantyPeriod { get; set; }
     
         [DbFunction("StoreEntities", "AllProductView")]
-        public virtual IQueryable<AllProductView_Result> AllProductView()
+        public virtual IQueryable<AllProductView_Result> AllProductView(Nullable<int> idStore)
         {
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<AllProductView_Result>("[StoreEntities].[AllProductView]()");
+            var idStoreParameter = idStore.HasValue ?
+                new ObjectParameter("idStore", idStore) :
+                new ObjectParameter("idStore", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<AllProductView_Result>("[StoreEntities].[AllProductView](@idStore)", idStoreParameter);
         }
     
         [DbFunction("StoreEntities", "ProductView")]

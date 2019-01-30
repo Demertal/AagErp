@@ -466,6 +466,7 @@
           </ReferentialConstraint>
         </Association>
         <Function Name="AllProductView" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idStore" Type="int" Mode="In" />
           <ReturnType>
             <CollectionType>
               <RowType>
@@ -479,6 +480,7 @@
                 <Property Name="SalesPrice" Type="money" Nullable="false" />
                 <Property Name="Title" Type="nvarchar" MaxLength="120" Nullable="false" />
                 <Property Name="VendorCode" Type="nvarchar" MaxLength="20" />
+                <Property Name="IdNomenclatureSubGroup" Type="int" Nullable="false" />
               </RowType>
             </CollectionType>
           </ReturnType>
@@ -636,6 +638,7 @@
           <Property Name="SalesPrice" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
           <Property Name="Title" Type="String" MaxLength="120" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="VendorCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="IdNomenclatureSubGroup" Type="Int32" Nullable="false" />
         </ComplexType>
         <ComplexType Name="ProductView_Result">
           <Property Name="Id" Type="Int32" Nullable="false" />
@@ -1274,7 +1277,9 @@
             <End Role="Supplier" EntitySet="Supplier" />
             <End Role="Warranty" EntitySet="Warranty" />
           </AssociationSet>
-          <FunctionImport Name="AllProductView" IsComposable="true" ReturnType="Collection(StoreModel.AllProductView_Result)" />
+          <FunctionImport Name="AllProductView" IsComposable="true" ReturnType="Collection(StoreModel.AllProductView_Result)">
+            <Parameter Name="idStore" Mode="In" Type="Int32" />
+          </FunctionImport>
           <FunctionImport Name="ProductView" IsComposable="true" ReturnType="Collection(StoreModel.ProductView_Result)">
             <Parameter Name="idNomenclatureSubGroup" Mode="In" Type="Int32" />
           </FunctionImport>
@@ -1489,6 +1494,7 @@
                 <ScalarProperty Name="SalesPrice" ColumnName="SalesPrice" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="VendorCode" ColumnName="VendorCode" />
+                <ScalarProperty Name="IdNomenclatureSubGroup" ColumnName="IdNomenclatureSubGroup" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
