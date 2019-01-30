@@ -45,6 +45,7 @@ namespace RulezzClient
         public virtual DbSet<UnitStorage> UnitStorage { get; set; }
         public virtual DbSet<Warranty> Warranty { get; set; }
         public virtual DbSet<WarrantyPeriod> WarrantyPeriod { get; set; }
+        public virtual DbSet<RevaluationProduct> RevaluationProduct { get; set; }
     
         [DbFunction("StoreEntities", "ProductView")]
         public virtual IQueryable<ProductView_Result> ProductView(Nullable<int> idNomenclatureSubGroup)

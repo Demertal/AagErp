@@ -3,11 +3,11 @@
 namespace RulezzClient.Views
 {
     /// <summary>
-    /// Логика взаимодействия для UpdateStore.xaml
+    /// Логика взаимодействия для Revaluation.xaml
     /// </summary>
-    public partial class UpdateStore : UserControl
+    public partial class Revaluation : UserControl
     {
-        public UpdateStore()
+        public Revaluation()
         {
             InitializeComponent();
         }

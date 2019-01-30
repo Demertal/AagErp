@@ -97,6 +97,16 @@
           <Property Name="IdStore" Type="int" Nullable="false" />
           <Property Name="IdSupplier" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="RevaluationProduct">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdProduct" Type="int" Nullable="false" />
+          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="OldSalesPrice" Type="money" Nullable="false" />
+          <Property Name="NewSalesPrice" Type="money" Nullable="false" />
+        </EntityType>
         <EntityType Name="SalesInfo">
           <Key>
             <PropertyRef Name="Id" />
@@ -359,6 +369,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__Revaluati__IdPro__160F4887">
+          <End Role="Product" Type="Self.Product" Multiplicity="1" />
+          <End Role="RevaluationProduct" Type="Self.RevaluationProduct" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="RevaluationProduct">
+              <PropertyRef Name="IdProduct" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__SalesInfo__IdPro__0A9D95DB">
           <End Role="Product" Type="Self.Product" Multiplicity="1" />
           <End Role="SalesInfo" Type="Self.SalesInfo" Multiplicity="*" />
@@ -473,6 +495,7 @@
           <EntitySet Name="PropertyValue" EntityType="Self.PropertyValue" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PurchaseInfo" EntityType="Self.PurchaseInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PurchaseReport" EntityType="Self.PurchaseReport" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RevaluationProduct" EntityType="Self.RevaluationProduct" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SalesInfo" EntityType="Self.SalesInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SalesReport" EntityType="Self.SalesReport" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SerialNumber" EntityType="Self.SerialNumber" Schema="dbo" store:Type="Tables" />
@@ -544,6 +567,10 @@
           <AssociationSet Name="FK__PurchaseR__IdSup__76969D2E" Association="Self.FK__PurchaseR__IdSup__76969D2E">
             <End Role="Supplier" EntitySet="Supplier" />
             <End Role="PurchaseReport" EntitySet="PurchaseReport" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Revaluati__IdPro__160F4887" Association="Self.FK__Revaluati__IdPro__160F4887">
+            <End Role="Product" EntitySet="Product" />
+            <End Role="RevaluationProduct" EntitySet="RevaluationProduct" />
           </AssociationSet>
           <AssociationSet Name="FK__SalesInfo__IdPro__0A9D95DB" Association="Self.FK__SalesInfo__IdPro__0A9D95DB">
             <End Role="Product" EntitySet="Product" />
@@ -641,6 +668,7 @@
           <NavigationProperty Name="PropertyProduct" Relationship="Self.FK__PropertyP__IdPro__6E01572D" FromRole="Product" ToRole="PropertyProduct" />
           <NavigationProperty Name="PurchaseInfo" Relationship="Self.FK__PurchaseI__IdPro__7C4F7684" FromRole="Product" ToRole="PurchaseInfo" />
           <NavigationProperty Name="SalesInfo" Relationship="Self.FK__SalesInfo__IdPro__0A9D95DB" FromRole="Product" ToRole="SalesInfo" />
+          <NavigationProperty Name="RevaluationProduct" Relationship="StoreModel.FK__Revaluati__IdPro__160F4887" FromRole="Product" ToRole="RevaluationProduct" />
         </EntityType>
         <EntityType Name="PropertyName">
           <Key>
@@ -1174,8 +1202,13 @@
             <End Role="Warranty" EntitySet="Warranty" />
           </AssociationSet>
           <FunctionImport Name="ProductView" IsComposable="true" ReturnType="Collection(StoreModel.ProductView_Result)" >
-            <Parameter Name="idNomenclatureSubGroup" Mode="In" Type="Int32" />
+          <Parameter Name="idNomenclatureSubGroup" Mode="In" Type="Int32" />
           </FunctionImport>
+          <EntitySet Name="RevaluationProduct" EntityType="StoreModel.RevaluationProduct" />
+          <AssociationSet Name="FK__Revaluati__IdPro__160F4887" Association="StoreModel.FK__Revaluati__IdPro__160F4887">
+            <End Role="Product" EntitySet="Product" />
+            <End Role="RevaluationProduct" EntitySet="RevaluationProduct" />
+          </AssociationSet>
         </EntityContainer>
         <ComplexType Name="ProductView_Result">
           <Property Type="Int32" Name="Id" Nullable="false" />
@@ -1189,6 +1222,29 @@
           <Property Type="String" Name="Title" Nullable="false" MaxLength="120" />
           <Property Type="String" Name="VendorCode" Nullable="true" MaxLength="20" />
         </ComplexType>
+        <EntityType Name="RevaluationProduct">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdProduct" Type="Int32" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="OldSalesPrice" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="NewSalesPrice" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <NavigationProperty Name="Product" Relationship="StoreModel.FK__Revaluati__IdPro__160F4887" FromRole="RevaluationProduct" ToRole="Product" />
+        </EntityType>
+        <Association Name="FK__Revaluati__IdPro__160F4887">
+          <End Type="StoreModel.Product" Role="Product" Multiplicity="1" />
+          <End Type="StoreModel.RevaluationProduct" Role="RevaluationProduct" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="RevaluationProduct">
+              <PropertyRef Name="IdProduct" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1391,6 +1447,17 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <EntitySetMapping Name="RevaluationProduct">
+            <EntityTypeMapping TypeName="StoreModel.RevaluationProduct">
+              <MappingFragment StoreEntitySet="RevaluationProduct">
+                <ScalarProperty Name="NewSalesPrice" ColumnName="NewSalesPrice" />
+                <ScalarProperty Name="OldSalesPrice" ColumnName="OldSalesPrice" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="IdProduct" ColumnName="IdProduct" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

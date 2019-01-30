@@ -6,7 +6,7 @@
              xmlns:rulezzClient="clr-namespace:RulezzClient"
              xmlns:viewModels="clr-namespace:RulezzClient.ViewModels"
              mc:Ignorable="d" 
-             VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left">
+             VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Padding="10,5,5,10">
 
     <UserControl.Resources>
         <ContextMenu  x:Key="RowMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
@@ -20,16 +20,11 @@
         </Style>
     </UserControl.Resources>
 
-    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" DataContext="{Binding ShowProduct}">
-        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Orientation="Horizontal">
-            <ComboBox ItemsSource="{Binding Stores,                 UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedStore, UpdateSourceTrigger=PropertyChanged}"                IsSynchronizedWithCurrentItem="True" DisplayMemberPath="Title" VerticalContentAlignment="Center" Width="Auto" VerticalAlignment="Top" HorizontalAlignment="Left" HorizontalContentAlignment="Center"  MinWidth="50" MaxWidth="120"/>
-            <ComboBox ItemsSource="{Binding NomenclatureGroups,     UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedNomenclatureGroup, UpdateSourceTrigger=PropertyChanged}"    IsSynchronizedWithCurrentItem="True" DisplayMemberPath="Title" VerticalContentAlignment="Center" Width="Auto" Margin =" 10, 0, 0, 0" HorizontalAlignment="Left" HorizontalContentAlignment="Center" VerticalAlignment="Top" MinWidth="50" MaxWidth="120"/>
-            <ComboBox ItemsSource="{Binding NomenclatureSubGroups,  UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedNomenclatureSubGroup, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True" DisplayMemberPath="Title" VerticalContentAlignment="Center" Width="Auto" HorizontalContentAlignment="Center"     Margin =" 10, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="50" MaxWidth="120"/>
-        </StackPanel>
-        <DataGrid ItemsSource="{Binding Products, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedProduct, UpdateSourceTrigger=PropertyChanged}"
+    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" DataContext="{Binding ShowProduct}" Orientation="Horizontal">
+        <DataGrid x:Name="ProductData" ItemsSource="{Binding Products, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedProduct, UpdateSourceTrigger=PropertyChanged}"
                   IsSynchronizedWithCurrentItem="True" MinColumnWidth="100" MaxColumnWidth="150" HorizontalAlignment="Left" Margin="0,5,0,0" CanUserResizeRows="False"
                   CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Top"
-                  MinHeight="200" MaxHeight="500" RowStyle="{StaticResource DefaultRowStyle}" SelectionMode="Single">
+                  MinHeight="200" MaxHeight="500" RowStyle="{StaticResource DefaultRowStyle}" SelectionMode="{Binding SelectionMode}">
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
                     <Setter Property="BorderThickness" Value="0"/>
@@ -39,12 +34,25 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Наименование"     Binding="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}"       IsReadOnly="True" MaxWidth="100"/>
                 <DataGridTextColumn Header="Артикул"          Binding="{Binding Path=VendorCode, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True" MaxWidth="100"/>
-                <DataGridTextColumn Header="Цена"             Binding="{Binding Path=SalesPrice, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True" MaxWidth="100"/>
+                <DataGridTextColumn Header="Цена"             Binding="{Binding Path=SalesPrice, UpdateSourceTrigger=PropertyChanged, StringFormat=C, ConverterCulture='ua-UA'}"  IsReadOnly="True" MaxWidth="100"/>
                 <DataGridTextColumn Header="Ед. хранения"     Binding="{Binding Path=UnitStorage, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" MaxWidth="80" MinWidth="80" CanUserResize="False"/>
-                <DataGridTextColumn Header="Гарантия"         Binding="{Binding Path=Warranty, UpdateSourceTrigger=PropertyChanged}"    IsReadOnly="True" MaxWidth="60" MinWidth="60" CanUserResize="False"/>
+                <DataGridTextColumn Header="Гарантия"         Binding="{Binding Path=PeriodString, UpdateSourceTrigger=PropertyChanged}"    IsReadOnly="True" MaxWidth="60" MinWidth="60" CanUserResize="False"/>
                 <DataGridTextColumn Header="Кол-во на складе" Binding="{Binding Path=Count, UpdateSourceTrigger=PropertyChanged}"       IsReadOnly="True" MaxWidth="125"/>
             </DataGrid.Columns>
         </DataGrid>
+        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left">
+            <ComboBox ItemsSource="{Binding Stores, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedStore, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True" DisplayMemberPath="Title" VerticalContentAlignment="Center" Width="Auto" Margin =" 5, 5, 0, 0" VerticalAlignment="Top" HorizontalAlignment="Center" HorizontalContentAlignment="Center"  MinWidth="50" MaxWidth="120"/>
+            <CheckBox Content="Включить фильтр" IsChecked="{Binding EnableFilter, UpdateSourceTrigger=PropertyChanged}" Margin="5,5,0,0"/>
+            <TextBox  Text="{Binding FindString,  UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Center" Height="23" TextWrapping="Wrap" VerticalAlignment="Center"
+                      HorizontalContentAlignment="Center" MinWidth="100" VerticalContentAlignment="Center" Margin =" 5, 5, 5, 0" Padding="0,0,5,0" Visibility="{Binding IsEnableFilter}"/>
+            <ComboBox ItemsSource="{Binding NomenclatureGroups, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedNomenclatureGroup, UpdateSourceTrigger=PropertyChanged}" 
+                      IsSynchronizedWithCurrentItem="True" DisplayMemberPath="Title" VerticalContentAlignment="Center" Width="Auto" Margin =" 5, 5, 0, 0" HorizontalAlignment="Center"
+                      HorizontalContentAlignment="Center" VerticalAlignment="Top" MinWidth="50" MaxWidth="120" Visibility="{Binding IsEnableFilter}"/>
+            <ComboBox ItemsSource="{Binding NomenclatureSubGroups, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedNomenclatureSubGroup, UpdateSourceTrigger=PropertyChanged}"
+                      IsSynchronizedWithCurrentItem="True" DisplayMemberPath="Title" VerticalContentAlignment="Center" Width="Auto" HorizontalContentAlignment="Center" Margin =" 5, 5, 0, 0"
+                      HorizontalAlignment="Center" VerticalAlignment="Top" MinWidth="50" MaxWidth="120" Visibility="{Binding IsEnableFilter}"/>
+            <Button Content="Добавить" HorizontalAlignment="Center" VerticalAlignment="Center" Width="75" CommandParameter="{Binding ElementName=ProductData, Path = SelectedItems}" Command="{Binding SelectedProductCommand}" Visibility="{Binding IsSelectedProduct}" Margin="5,5,0,0"/>
+        </StackPanel>
     </StackPanel>
 
 </UserControl>

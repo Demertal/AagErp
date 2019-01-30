@@ -11,7 +11,7 @@ INSERT INTO NomenclatureSubGroup (Title, IdNomenclatureGroup, IdPriceGroup) VALU
 
  INSERT INTO UnitStorage VALUES ('רע')
 
- INSERT INTO ExchangeRate VALUES ('דנם', 1)
+ INSERT INTO ExchangeRate VALUES ('דנם', 1), ('USD', 20)
 
  INSERT INTO Product (Title, VendorCode, Barcode, PurchasePrice, SalesPrice, IdNomenclatureSubGroup, IdUnitStorage, IdExchangeRate, IdWarrantyPeriod)
  VALUES ('asd', 'asd', 'asd',  2, 2, 4, 1, 1, 1)

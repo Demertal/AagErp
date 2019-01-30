@@ -289,3 +289,13 @@ CREATE TABLE Warranty(
 	FOREIGN KEY (IdSerialNumber) REFERENCES SerialNumber (Id)
 )
 GO
+
+CREATE TABLE RevaluationProduct(
+	Id INT PRIMARY KEY IDENTITY,
+	IdProduct INT NOT NULL,
+	Date DATE NOT NULL,
+	OldSalesPrice MONEY NOT NULL,
+	NewSalesPrice MONEY NOT NULL,
+	FOREIGN KEY (IdProduct) REFERENCES Product (Id),
+)
+GO

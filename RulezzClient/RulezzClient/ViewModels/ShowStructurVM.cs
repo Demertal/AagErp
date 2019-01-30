@@ -11,7 +11,7 @@ namespace RulezzClient.ViewModels
     {
         public NodeStore()
         {
-            DeleteStore = new DelegateCommand<object>((c) =>
+            DeleteStore = new DelegateCommand<object>(c =>
             {
                 if (MessageBox.Show("Вы уверены что хотите удалить магазин?", "Удаление", MessageBoxButton.YesNo,
                         MessageBoxImage.Question) != MessageBoxResult.Yes) return;

@@ -89,6 +89,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="BindingProxy.cs" />
+    <Compile Include="CurrencyConverter.cs" />
     <Compile Include="DialogService .cs" />
     <Compile Include="ExchangeRate.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
@@ -125,6 +126,10 @@
     <Compile Include="PurchaseReport.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="RevaluationProduct.cs">
+      <DependentUpon>StoreModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="RevaluationProductModel.cs" />
     <Compile Include="SalesInfo.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
@@ -137,6 +142,7 @@
     <Compile Include="ViewModels\AddNomenclatureGroupVM.cs" />
     <Compile Include="ViewModels\AddNomenclatureSubGroupVM.cs" />
     <Compile Include="ViewModels\AddStoreVM.cs" />
+    <Compile Include="ViewModels\RevaluationVM.cs" />
     <Compile Include="ViewModels\ShowStructurVM.cs" />
     <Compile Include="ViewModels\UpdateNomenclatureGroupVM.cs" />
     <Compile Include="ViewModels\UpdateNomenclatureSubGroupVM.cs" />
@@ -149,6 +155,9 @@
     </Compile>
     <Compile Include="Views\AddStore.xaml.cs">
       <DependentUpon>AddStore.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Revaluation.xaml.cs">
+      <DependentUpon>Revaluation.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ShowGroup.xaml.cs">
       <DependentUpon>ShowGroup.xaml</DependentUpon>
@@ -230,6 +239,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\AddStore.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Revaluation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

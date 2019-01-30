@@ -24,17 +24,17 @@ namespace RulezzClient
         public int Id { get; set; }
         public string Title { get; set; }
         public int IdStore { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<NomenclatureSubGroup> NomenclatureSubGroup { get; set; }
-        public virtual Store Store { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PropertyName> PropertyName { get; set; }
 
         public bool Equals(NomenclatureGroup obj)
         {
             if (this.Id == obj.Id && this.Title == obj.Title && this.IdStore == obj.IdStore) return true;
             else return false;
         }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<NomenclatureSubGroup> NomenclatureSubGroup { get; set; }
+        public virtual Store Store { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PropertyName> PropertyName { get; set; }
     }
 }

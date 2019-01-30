@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using RulezzClient.ViewModels;
+using RulezzClient.Views;
 
 namespace RulezzClient
 {
@@ -15,7 +17,9 @@ namespace RulezzClient
             AddNomenclatureSubGroup,
             UpdateStore,
             UpdateNomenclatureGroup,
-            UpdateNomenclatureSubGroup
+            UpdateNomenclatureSubGroup,
+            ProductSelection,
+            Revaluation
         }
 
         public void ShowDialog(object view, object[] param, bool isModal, Action<bool?> closeAction)
@@ -26,23 +30,23 @@ namespace RulezzClient
             {
                 case ChoiceView.AddProduct:
                 {
-                    control = new Views.AddProduct();
+                    control = new AddProduct();
                     wnd.Title = "Добавить товар";
                     Grid gr = (Grid) control.Content;
                     Button b = (Button)gr.Children[gr.Children.Count - 1];
                     b.Content = "Добавить";
                     gr.Children[gr.Children.Count - 1] = b;
                     control.Content = gr;
-                    control.DataContext = new ViewModels.AddProductViewModel();
+                    control.DataContext = new AddProductViewModel();
                     break;
                 }
                 case ChoiceView.UpdateProduct:
                 {
-                    control = new Views.UpdateProduct();
+                    control = new UpdateProduct();
                     wnd.Title = "Изменить товар";
                     Grid gr = (Grid) control.Content;
                     Border bo = (Border)gr.Children[gr.Children.Count - 1];
-                    Views.AddProduct a = (Views.AddProduct)bo.Child;
+                    AddProduct a = (AddProduct)bo.Child;
                     Grid gr2 = (Grid)a.Content;
                     Button b = (Button)gr2.Children[gr2.Children.Count - 1];
                     b.Content = "Изменить";
@@ -51,28 +55,28 @@ namespace RulezzClient
                     bo.Child = a;
                     gr.Children[gr.Children.Count - 1] = bo;
                     control.Content = gr;
-                    control.DataContext = new ViewModels.UpdateProductViewModel((ProductView_Result)param[0], (NomenclatureSubGroup)param[1], (NomenclatureGroup)param[2], (Store)param[3], wnd);
+                    control.DataContext = new UpdateProductViewModel((ProductView_Result)param[0], (NomenclatureSubGroup)param[1], (NomenclatureGroup)param[2], (Store)param[3], wnd);
                     break;
                 }
                 case ChoiceView.AddStore:
                 {
-                    control = new Views.AddStore();
+                    control = new AddStore();
                     wnd.Title = "Добавить магазин";
                     Grid gr = (Grid)control.Content;
                     Button b = (Button)gr.Children[gr.Children.Count - 1];
                     b.Content = "Добавить";
                     gr.Children[gr.Children.Count - 1] = b;
                     control.Content = gr;
-                    control.DataContext = new ViewModels.AddStoreVM(wnd);
+                    control.DataContext = new AddStoreVM(wnd);
                     break;
                 }
                 case ChoiceView.UpdateStore:
                 {
-                    control = new Views.UpdateStore();
+                    control = new UpdateStore();
                     wnd.Title = "Изменить магазин";
                     Grid gr = (Grid)control.Content;
                     Border bo = (Border)gr.Children[gr.Children.Count - 1];
-                    Views.AddStore a = (Views.AddStore)bo.Child;
+                    AddStore a = (AddStore)bo.Child;
                     Grid gr2 = (Grid)a.Content;
                     Button b = (Button)gr2.Children[gr2.Children.Count - 1];
                     b.Content = "Изменить";
@@ -81,28 +85,28 @@ namespace RulezzClient
                     bo.Child = a;
                     gr.Children[gr.Children.Count - 1] = bo;
                     control.Content = gr;
-                    control.DataContext = new ViewModels.UpdateStoreVM((Store)param[0], wnd);
+                    control.DataContext = new UpdateStoreVM((Store)param[0], wnd);
                     break;
                 }
                 case ChoiceView.AddNomenclatureGroup:
                 {
-                    control = new Views.AddNomenclatureGroup();
+                    control = new AddNomenclatureGroup();
                     wnd.Title = "Добавить номенклатурную группу";
                     Grid gr = (Grid)control.Content;
                     Button b = (Button)gr.Children[gr.Children.Count - 1];
                     b.Content = "Добавить";
                     gr.Children[gr.Children.Count - 1] = b;
                     control.Content = gr;
-                    control.DataContext = new ViewModels.AddNomenclatureGroupVM((Store)param[0], wnd);
+                    control.DataContext = new AddNomenclatureGroupVM((Store)param[0], wnd);
                     break;
                 }
                 case ChoiceView.UpdateNomenclatureGroup:
                 {
-                    control = new Views.UpdateNomenclatureGroup();
+                    control = new UpdateNomenclatureGroup();
                     wnd.Title = "Изменить номенклатурную группу";
                     Grid gr = (Grid)control.Content;
                     Border bo = (Border)gr.Children[gr.Children.Count - 1];
-                    Views.AddNomenclatureGroup a = (Views.AddNomenclatureGroup)bo.Child;
+                    AddNomenclatureGroup a = (AddNomenclatureGroup)bo.Child;
                     Grid gr2 = (Grid)a.Content;
                     Button b = (Button)gr2.Children[gr2.Children.Count - 1];
                     b.Content = "Изменить";
@@ -111,28 +115,28 @@ namespace RulezzClient
                     bo.Child = a;
                     gr.Children[gr.Children.Count - 1] = bo;
                     control.Content = gr;
-                    control.DataContext = new ViewModels.UpdateNomenclatureGroupVM((NomenclatureGroup)param[0], (Store)param[1], wnd);
+                    control.DataContext = new UpdateNomenclatureGroupVM((NomenclatureGroup)param[0], (Store)param[1], wnd);
                     break;
                 }
                 case ChoiceView.AddNomenclatureSubGroup:
                 {
-                    control = new Views.AddNomenclatureSubGroup();
+                    control = new AddNomenclatureSubGroup();
                     wnd.Title = "Добавить номенклатурную подгруппу";
                     Grid gr = (Grid)control.Content;
                     Button b = (Button)gr.Children[gr.Children.Count - 1];
                     b.Content = "Добавить";
                     gr.Children[gr.Children.Count - 1] = b;
                     control.Content = gr;
-                    control.DataContext = new ViewModels.AddNomenclatureSubGroupVM((NomenclatureGroup)param[0], wnd);
+                    control.DataContext = new AddNomenclatureSubGroupVM((NomenclatureGroup)param[0], wnd);
                     break;
                 }
                 case ChoiceView.UpdateNomenclatureSubGroup:
                 {
-                    control = new Views.UpdateNomenclatureSubGroup();
+                    control = new UpdateNomenclatureSubGroup();
                     wnd.Title = "Изменить номенклатурную подгруппу";
                     Grid gr = (Grid)control.Content;
                     Border bo = (Border)gr.Children[gr.Children.Count - 1];
-                    Views.AddNomenclatureSubGroup a = (Views.AddNomenclatureSubGroup)bo.Child;
+                    AddNomenclatureSubGroup a = (AddNomenclatureSubGroup)bo.Child;
                     Grid gr2 = (Grid)a.Content;
                     Button b = (Button)gr2.Children[gr2.Children.Count - 1];
                     b.Content = "Изменить";
@@ -141,7 +145,25 @@ namespace RulezzClient
                     bo.Child = a;
                     gr.Children[gr.Children.Count - 1] = bo;
                     control.Content = gr;
-                    control.DataContext = new ViewModels.UpdateNomenclatureSubGroupVM((NomenclatureSubGroup)param[0], (NomenclatureGroup)param[1], wnd);
+                    control.DataContext = new UpdateNomenclatureSubGroupVM((NomenclatureSubGroup)param[0], (NomenclatureGroup)param[1], wnd);
+                    break;
+                }
+                case ChoiceView.ProductSelection:
+                {
+                    control = new ShowProduct();
+                    wnd.Title = "Выбрать товар";
+                    StackPanel s = (StackPanel)control.Content;
+                    s.DataContext = new ShowProductViewModel((RevaluationVM)param[0], wnd);
+                    control.Content = s;
+                    break;
+                }
+                case ChoiceView.Revaluation:
+                {
+                    control = new Revaluation();
+                    wnd.Title = "Переоценка";
+                    StackPanel s = (StackPanel)control.Content;
+                    s.DataContext = new RevaluationVM(wnd);
+                    control.Content = s;
                     break;
                 }
                 default:

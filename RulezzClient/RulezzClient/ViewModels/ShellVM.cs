@@ -32,6 +32,12 @@ namespace RulezzClient.ViewModels
                 IsProductGroupVisible = Visibility.Collapsed;
                 IsStructGroupVisible = Visibility.Visible;
                 ShowStructur = new ShowStructurVM();
+                if (IsProductGroupVisible == Visibility.Visible) ShowProduct.Update(ShowProductViewModel.ChoiceUpdate.Product);
+            });
+            RevaluationCommand = new DelegateCommand(() =>
+            {
+                _dialogService.ShowDialog(DialogService.ChoiceView.Revaluation, null, true, b => { });
+                if (IsProductGroupVisible == Visibility.Visible) ShowProduct.Update(ShowProductViewModel.ChoiceUpdate.Product);
             });
         }
 
@@ -80,5 +86,7 @@ namespace RulezzClient.ViewModels
         public DelegateCommand ShowStructCommand { get; }
 
         public DelegateCommand AddProductMainCommand { get; }
+
+        public DelegateCommand RevaluationCommand { get; }
     }
 }

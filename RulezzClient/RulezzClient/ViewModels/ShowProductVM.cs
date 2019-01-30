@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Controls;
 using Prism.Commands;
 using Prism.Mvvm;
 using RulezzClient.Properties;
@@ -17,11 +19,15 @@ namespace RulezzClient.ViewModels
             Product
         }
 
+        private bool _enableFilter;
         private readonly IUiDialogService _dialogService = new DialogService();
         private Store _selectedStore;
         private NomenclatureGroup _selectedNomenclatureGroup;
         private NomenclatureSubGroup _selectedNomenclatureSubGroup;
         private ProductView_Result _selectedProduct;
+        private Visibility _isSelectedProduct;
+        private SelectionMode _selectionMode;
+        private Visibility _isEnableFilter;
 
         public StoreListVm StoreList = new StoreListVm();
         public NomenclatureGroupListVm NomenclatureGroupList = new NomenclatureGroupListVm();
@@ -35,6 +41,10 @@ namespace RulezzClient.ViewModels
 
         public ShowProductViewModel()
         {
+            EnableFilter = false;
+            SelectionMode = SelectionMode.Single;
+            IsSelectedProduct = Visibility.Collapsed;
+            SelectedProductCommand = null;
             StoreList.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
             NomenclatureGroupList.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
             NomenclatureSubgroupList.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
@@ -68,6 +78,64 @@ namespace RulezzClient.ViewModels
             });
         }
 
+        public ShowProductViewModel(RevaluationVM rev, Window wnd)
+        {
+            EnableFilter = false;
+            SelectionMode = SelectionMode.Multiple;
+            IsSelectedProduct = Visibility.Visible;
+            StoreList.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
+            NomenclatureGroupList.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
+            NomenclatureSubgroupList.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
+            ProductList.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
+            Update(ChoiceUpdate.Store);
+            DeleteProduct = null;
+            UpdateProduct = null;
+            SelectedProductCommand = new DelegateCommand<object>(sel =>
+            {
+                using (StoreEntities db = new StoreEntities())
+                {
+                    foreach (var item in (IList)sel)
+                    {
+                        RevaluationProductModel revItem = new RevaluationProductModel(db.Product.Find((item as ProductView_Result).Id));
+                        if(rev.AllProduct.Contains(revItem))continue;
+                        rev.AllProduct.Add(revItem);
+                    }
+                }
+                wnd.Close();
+            });
+        }
+
+        public bool EnableFilter
+        {
+            get => _enableFilter;
+            set
+            {
+                _enableFilter = value;
+                IsEnableFilter = _enableFilter ? Visibility.Visible : Visibility.Collapsed;
+                RaisePropertyChanged();
+            }
+        }
+
+        public Visibility IsEnableFilter
+        {
+            get => _isEnableFilter;
+            set
+            {
+                _isEnableFilter = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public SelectionMode SelectionMode
+        {
+            get => _selectionMode;
+            set
+            {
+                _selectionMode = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public Store SelectedStore
         {
             get => _selectedStore;
@@ -75,7 +143,8 @@ namespace RulezzClient.ViewModels
             {
                 _selectedStore = value;
                 Settings.Default.SelectedStoreID = _selectedStore.Id;
-                Update(ChoiceUpdate.NomenclatureGroup);
+                if(EnableFilter) Update(ChoiceUpdate.NomenclatureGroup);
+                else Update(ChoiceUpdate.Product);
                 RaisePropertyChanged();
             }
         }
@@ -108,6 +177,16 @@ namespace RulezzClient.ViewModels
             set
             {
                 _selectedProduct = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public Visibility IsSelectedProduct
+        {
+            get => _isSelectedProduct;
+            set
+            {
+                _isSelectedProduct = value;
                 RaisePropertyChanged();
             }
         }
@@ -176,8 +255,15 @@ namespace RulezzClient.ViewModels
                     CheckSelectedSelectedNomenclatureSubgroup();
                     break;
                 case ChoiceUpdate.Product:
-                    if (_selectedNomenclatureSubGroup == null) await ProductList.Load(-1);
-                    else await ProductList.Load(_selectedNomenclatureSubGroup.Id);
+                    if (EnableFilter)
+                    {
+                        if (_selectedNomenclatureSubGroup == null) await ProductList.Load(-2);
+                        else await ProductList.Load(_selectedNomenclatureSubGroup.Id);
+                    }
+                    else
+                    {
+                        await ProductList.Load(-1);
+                    }
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(choice), choice, null);
@@ -187,5 +273,7 @@ namespace RulezzClient.ViewModels
         public DelegateCommand DeleteProduct { get; }
 
         public DelegateCommand UpdateProduct { get; }
+
+        public DelegateCommand<object> SelectedProductCommand { get; }
     }
 }

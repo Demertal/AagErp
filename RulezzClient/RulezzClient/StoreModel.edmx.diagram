@@ -46,6 +46,8 @@
         <AssociationConnector Association="StoreModel.FK__Warranty__IdSeri__114A936A" ManuallyRouted="false" />
         <AssociationConnector Association="StoreModel.FK__Supplier__IdStor__72C60C4A" ManuallyRouted="false" />
         <AssociationConnector Association="StoreModel.FK__Warranty__IdSupp__10566F31" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="StoreModel.RevaluationProduct" Width="1.5" PointX="9.75" PointY="3" />
+        <AssociationConnector Association="StoreModel.FK__Revaluati__IdPro__160F4887" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

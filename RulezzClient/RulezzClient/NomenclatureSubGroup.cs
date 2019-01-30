@@ -24,16 +24,16 @@ namespace RulezzClient
         public string Title { get; set; }
         public int IdNomenclatureGroup { get; set; }
         public int IdPriceGroup { get; set; }
-    
-        public virtual NomenclatureGroup NomenclatureGroup { get; set; }
-        public virtual PriceGroup PriceGroup { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Product> Product { get; set; }
 
         public bool Equals(NomenclatureSubGroup obj)
         {
             if (this.Id == obj.Id && this.Title == obj.Title && this.IdNomenclatureGroup == obj.IdNomenclatureGroup && this.IdPriceGroup == obj.IdPriceGroup) return true;
             else return false;
         }
+
+        public virtual NomenclatureGroup NomenclatureGroup { get; set; }
+        public virtual PriceGroup PriceGroup { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Product> Product { get; set; }
     }
 }

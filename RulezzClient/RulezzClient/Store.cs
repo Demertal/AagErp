@@ -25,7 +25,13 @@ namespace RulezzClient
     
         public int Id { get; set; }
         public string Title { get; set; }
-    
+
+        public bool Equals(Store obj)
+        {
+            if (this.Id == obj.Id && this.Title == obj.Title) return true;
+            else return false;
+        }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<NomenclatureGroup> NomenclatureGroup { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -34,11 +40,5 @@ namespace RulezzClient
         public virtual ICollection<SalesReport> SalesReport { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Supplier> Supplier { get; set; }
-
-        public bool Equals(Store obj)
-        {
-            if (this.Id == obj.Id && this.Title == obj.Title) return true;
-            else return false;
-        }
     }
 }
