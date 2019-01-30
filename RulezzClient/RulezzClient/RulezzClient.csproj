@@ -173,8 +173,10 @@
     <Compile Include="ViewModels\AddNomenclatureGroupVM.cs" />
     <Compile Include="ViewModels\AddNomenclatureSubGroupVM.cs" />
     <Compile Include="ViewModels\AddStoreVM.cs" />
+    <Compile Include="ViewModels\AddUnitStorageVM.cs" />
     <Compile Include="ViewModels\RevaluationVM.cs" />
     <Compile Include="ViewModels\ShowStructurVM.cs" />
+    <Compile Include="ViewModels\ShowUnitStorageVM.cs" />
     <Compile Include="ViewModels\UpdateNomenclatureGroupVM.cs" />
     <Compile Include="ViewModels\UpdateNomenclatureSubGroupVM.cs" />
     <Compile Include="ViewModels\UpdateStoreVM.cs" />
@@ -186,6 +188,9 @@
     </Compile>
     <Compile Include="Views\AddStore.xaml.cs">
       <DependentUpon>AddStore.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddUnitStorage.xaml.cs">
+      <DependentUpon>AddUnitStorage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Revaluation.xaml.cs">
       <DependentUpon>Revaluation.xaml</DependentUpon>
@@ -210,6 +215,9 @@
     </Compile>
     <Compile Include="Views\ShowProduct.xaml.cs">
       <DependentUpon>ShowProduct.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ShowUnitStorage.xaml.cs">
+      <DependentUpon>ShowUnitStorage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\UpdateNomenclatureGroup.xaml.cs">
       <DependentUpon>UpdateNomenclatureGroup.xaml</DependentUpon>
@@ -249,6 +257,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\AddUnitStorage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Revaluation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -284,6 +296,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ShowProduct.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ShowUnitStorage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

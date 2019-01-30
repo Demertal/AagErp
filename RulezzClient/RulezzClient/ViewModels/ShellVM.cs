@@ -9,15 +9,19 @@ namespace RulezzClient.ViewModels
         private readonly IUiDialogService _dialogService = new DialogService();
         private Visibility _isProductGroupVisible;
         private Visibility _isStructGroupVisible;
+        private Visibility _isUnitStorageVisible;
         private ShowProductViewModel _showProduct;
         private ShowStructurVM _showStructur;
+        private ShowUnitStorageVM _showUnitStorage;
 
         public ShellViewModel()
         {
             IsProductGroupVisible = Visibility.Collapsed;
             IsStructGroupVisible = Visibility.Collapsed;
+            IsUnitStorageVisible = Visibility.Collapsed;
             ShowProductCommand = new DelegateCommand(() =>
             {
+                IsUnitStorageVisible = Visibility.Collapsed;
                 IsStructGroupVisible = Visibility.Collapsed;
                 IsProductGroupVisible = Visibility.Visible;
                 ShowProduct = new ShowProductViewModel();
@@ -29,15 +33,22 @@ namespace RulezzClient.ViewModels
             });
             ShowStructCommand = new DelegateCommand(() =>
             {
+                IsUnitStorageVisible = Visibility.Collapsed;
                 IsProductGroupVisible = Visibility.Collapsed;
                 IsStructGroupVisible = Visibility.Visible;
                 ShowStructur = new ShowStructurVM();
-                if (IsProductGroupVisible == Visibility.Visible) ShowProduct.Update(ShowProductViewModel.ChoiceUpdate.Product);
             });
             RevaluationCommand = new DelegateCommand(() =>
             {
-                _dialogService.ShowDialog(DialogService.ChoiceView.Revaluation, null, true, b => { });
+                _dialogService.ShowDialog(DialogService.ChoiceView.Revaluation, null, false, b => { });
                 if (IsProductGroupVisible == Visibility.Visible) ShowProduct.Update(ShowProductViewModel.ChoiceUpdate.Product);
+            });
+            ShowUnitStorageCommand = new DelegateCommand(() =>
+            {
+                IsProductGroupVisible = Visibility.Collapsed;
+                IsStructGroupVisible = Visibility.Collapsed;
+                IsUnitStorageVisible = Visibility.Visible;
+                ShowUnitStorage = new ShowUnitStorageVM();
             });
         }
 
@@ -57,6 +68,16 @@ namespace RulezzClient.ViewModels
             set
             {
                 _isStructGroupVisible = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public Visibility IsUnitStorageVisible
+        {
+            get => _isUnitStorageVisible;
+            set
+            {
+                _isUnitStorageVisible = value;
                 RaisePropertyChanged();
             }
         }
@@ -81,9 +102,21 @@ namespace RulezzClient.ViewModels
             }
         }
 
+        public ShowUnitStorageVM ShowUnitStorage
+        {
+            get => _showUnitStorage;
+            set
+            {
+                _showUnitStorage = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public DelegateCommand ShowProductCommand { get; }
 
         public DelegateCommand ShowStructCommand { get; }
+
+        public DelegateCommand ShowUnitStorageCommand { get; }
 
         public DelegateCommand AddProductMainCommand { get; }
 

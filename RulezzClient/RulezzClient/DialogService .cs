@@ -19,11 +19,23 @@ namespace RulezzClient
             UpdateNomenclatureGroup,
             UpdateNomenclatureSubGroup,
             ProductSelection,
-            Revaluation
+            Revaluation,
+            AddUnitStorage
         }
 
         public void ShowDialog(object view, object[] param, bool isModal, Action<bool?> closeAction)
         {
+            if (!isModal)
+            {
+                foreach (Window w in Application.Current.Windows)
+                {
+                    if (w.Title == "Переоценка")
+                    {
+                        w.Activate();
+                        return;
+                    }
+                }
+            }
             UserControl control;
             Window wnd = new Window { SizeToContent = SizeToContent.WidthAndHeight };
             switch (view)
@@ -164,6 +176,18 @@ namespace RulezzClient
                     StackPanel s = (StackPanel)control.Content;
                     s.DataContext = new RevaluationVM(wnd);
                     control.Content = s;
+                    break;
+                }
+                case ChoiceView.AddUnitStorage:
+                {
+                    control = new AddUnitStorage();
+                    wnd.Title = "Добавить ед. хранения";
+                    Grid gr = (Grid)control.Content;
+                    Button b = (Button)gr.Children[gr.Children.Count - 1];
+                    b.Content = "Добавить";
+                    gr.Children[gr.Children.Count - 1] = b;
+                    control.Content = gr;
+                    control.DataContext = new AddUnitStorageVM(wnd);
                     break;
                 }
                 default:

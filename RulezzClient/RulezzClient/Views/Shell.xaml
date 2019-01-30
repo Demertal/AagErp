@@ -15,10 +15,14 @@
             <MenuItem Height="20"  Header="Рабочее место кассира"/>
             <MenuItem Height="20"  Header="Показать товар" Command="{Binding ShowProductCommand}"/>
             <MenuItem Header="Добавить товар" Command="{Binding AddProductMainCommand}"/>
-            <MenuItem Header="Показать структуру" Command="{Binding ShowStructCommand}"/>
+            <MenuItem Header="Действия с...">
+                <MenuItem Header="Структурой" Command="{Binding ShowStructCommand}"/>
+                <MenuItem Header="Ед. хранения" Command="{Binding ShowUnitStorageCommand}"/>
+            </MenuItem>
             <MenuItem Header="Переоценка товара" Command="{Binding RevaluationCommand}"/>
         </Menu>
         <views:ShowProduct Margin="10, 28, 0, 0" Visibility="{Binding IsProductGroupVisible}"/>
         <views:ShowGroup Margin="10, 28, 0, 0" Visibility="{Binding IsStructGroupVisible}" Padding="0,0,10,0"/>
+        <views:ShowUnitStorage Margin="10, 28, 0, 0" Visibility="{Binding IsUnitStorageVisible}" Padding="0,0,10,0"/>
     </Grid>
 </Window>
