@@ -83,6 +83,38 @@ namespace RulezzClient.ViewModels
             return temp;
         }
 
+        public async Task<List<ProductView>> LoadByFindString(int idStore, string findString)
+        {
+            List<ProductView> temp = await Task.Run(() =>
+            {
+                using (StoreEntities db = new StoreEntities())
+                {
+                    return db.ProductViewByTitle(idStore, findString).Select(obj => new ProductView
+                    {
+                        Id = obj.Id,
+                        Barcode = obj.Barcode,
+                        Count = obj.Count,
+                        ExchangeRate = obj.ExchangeRate,
+                        UnitStorage = obj.UnitStorage,
+                        WarrantyPeriod = obj.WarrantyPeriod,
+                        PurchasePrice = obj.PurchasePrice,
+                        SalesPrice = obj.SalesPrice,
+                        Title = obj.Title,
+                        VendorCode = obj.VendorCode,
+                        IdNomenclatureSubGroup = obj.IdNomenclatureSubGroup
+                    }).ToList();
+                }
+            });
+
+            _products.Clear();
+            foreach (var t in temp)
+            {
+                _products.Add(t);
+            }
+
+            return temp;
+        }
+
         public void Delete(int id)
         {
             using (StoreEntities db = new StoreEntities())

@@ -66,5 +66,19 @@ namespace RulezzClient
     
             return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<ProductView_Result>("[StoreEntities].[ProductView](@idNomenclatureSubGroup)", idNomenclatureSubGroupParameter);
         }
+    
+        [DbFunction("StoreEntities", "ProductViewByTitle")]
+        public virtual IQueryable<ProductViewByTitle_Result> ProductViewByTitle(Nullable<int> idStore, string findStr)
+        {
+            var idStoreParameter = idStore.HasValue ?
+                new ObjectParameter("idStore", idStore) :
+                new ObjectParameter("idStore", typeof(int));
+    
+            var findStrParameter = findStr != null ?
+                new ObjectParameter("findStr", findStr) :
+                new ObjectParameter("findStr", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<ProductViewByTitle_Result>("[StoreEntities].[ProductViewByTitle](@idStore, @findStr)", idStoreParameter, findStrParameter);
+        }
     }
 }

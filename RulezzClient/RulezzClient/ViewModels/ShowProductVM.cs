@@ -29,6 +29,7 @@ namespace RulezzClient.ViewModels
         private Visibility _isNotSelectedProduct;
         private SelectionMode _selectionMode;
         private Visibility _isEnableFilter;
+        private string _findString;
 
         public StoreListVm StoreList = new StoreListVm();
         public NomenclatureGroupListVm NomenclatureGroupList = new NomenclatureGroupListVm();
@@ -42,6 +43,7 @@ namespace RulezzClient.ViewModels
 
         public ShowProductViewModel()
         {
+            FindString = "";
             EnableFilter = false;
             SelectionMode = SelectionMode.Single;
             IsSelectedProduct = Visibility.Collapsed;
@@ -82,6 +84,7 @@ namespace RulezzClient.ViewModels
 
         public ShowProductViewModel(RevaluationVM rev, Window wnd)
         {
+            FindString = "";
             EnableFilter = false;
             SelectionMode = SelectionMode.Multiple;
             IsSelectedProduct = Visibility.Visible;
@@ -106,6 +109,17 @@ namespace RulezzClient.ViewModels
                 }
                 wnd.Close();
             });
+        }
+
+        public string FindString
+        {
+            get => _findString;
+            set
+            {
+                _findString = value;
+                RaisePropertyChanged();
+                Update(ChoiceUpdate.Product);
+            }
         }
 
         public bool EnableFilter
@@ -155,8 +169,7 @@ namespace RulezzClient.ViewModels
             {
                 _selectedStore = value;
                 Settings.Default.SelectedStoreID = _selectedStore.Id;
-                if(EnableFilter) Update(ChoiceUpdate.NomenclatureGroup);
-                else Update(ChoiceUpdate.Product);
+                Update(EnableFilter ? ChoiceUpdate.NomenclatureGroup : ChoiceUpdate.Product);
                 RaisePropertyChanged();
             }
         }
@@ -279,14 +292,23 @@ namespace RulezzClient.ViewModels
                 case ChoiceUpdate.Product:
                     if (EnableFilter)
                     {
-                        if (_selectedNomenclatureSubGroup == null) await ProductList.LoadByNomenclatureSubGroup(-2);
-                        else await ProductList.LoadByNomenclatureSubGroup(_selectedNomenclatureSubGroup.Id);
+                        if (FindString == "")
+                        {
+                            if (_selectedNomenclatureSubGroup == null) await ProductList.LoadByNomenclatureSubGroup(-1);
+                            else await ProductList.LoadByNomenclatureSubGroup(_selectedNomenclatureSubGroup.Id);
+                        }
+                        else
+                        {
+                            if (_selectedStore == null) await ProductList.LoadByFindString(-1, FindString);
+                            else await ProductList.LoadByFindString(Settings.Default.SelectedStoreID, FindString);
+                        }
                     }
                     else
                     {
                         if (_selectedStore == null) await ProductList.LoadAll(-1);
                         else await ProductList.LoadAll(Settings.Default.SelectedStoreID);
                     }
+                    RaisePropertyChanged("Products");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(choice), choice, null);

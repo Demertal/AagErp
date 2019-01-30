@@ -112,6 +112,9 @@
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
     <Compile Include="ProductView.cs" />
+    <Compile Include="ProductViewByTitle_Result.cs">
+      <DependentUpon>StoreModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="ProductView_Result.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
