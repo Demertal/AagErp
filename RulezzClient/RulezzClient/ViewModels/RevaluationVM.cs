@@ -9,6 +9,8 @@ namespace RulezzClient.ViewModels
 {
     class RevaluationVM : BindableBase
     {
+        private int _selectedIndexProducts;
+
         private readonly IUiDialogService _dialogService = new DialogService();
 
         private bool _bringPurchasePrice;
@@ -65,6 +67,10 @@ namespace RulezzClient.ViewModels
                     }
                 }
             });
+            DeleteProduct = new DelegateCommand(() =>
+            {
+                AllProduct.RemoveAt(SelectedIndexProducts);
+            });
         }
 
         public ObservableCollection<RevaluationProductModel> AllProduct { get; } = new ObservableCollection<RevaluationProductModel>();
@@ -80,7 +86,18 @@ namespace RulezzClient.ViewModels
             }
         }
 
+        public int SelectedIndexProducts
+        {
+            get => _selectedIndexProducts;
+            set
+            {
+                _selectedIndexProducts = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public DelegateCommand AddProductComand { get; }
         public DelegateCommand RevaluationComand { get; }
+        public DelegateCommand DeleteProduct { get; }
     }
 }

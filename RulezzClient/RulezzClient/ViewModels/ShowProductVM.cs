@@ -43,17 +43,13 @@ namespace RulezzClient.ViewModels
 
         public ShowProductViewModel()
         {
-            FindString = "";
-            EnableFilter = false;
             SelectionMode = SelectionMode.Single;
             IsSelectedProduct = Visibility.Collapsed;
             IsNotSelectedProduct = Visibility.Visible;
             SelectedProductCommand = null;
-            StoreList.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
-            NomenclatureGroupList.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
-            NomenclatureSubgroupList.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
-            ProductList.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
             Update(ChoiceUpdate.Store);
+            FindString = "";
+            EnableFilter = false;
             DeleteProduct = new DelegateCommand(() =>
             {
                 if (MessageBox.Show("Вы уверены что хотите удалить товар?", "Удаление", MessageBoxButton.YesNo,
@@ -82,18 +78,14 @@ namespace RulezzClient.ViewModels
             });
         }
 
-        public ShowProductViewModel(RevaluationVM rev, Window wnd)
+        public ShowProductViewModel(object obj, Window wnd)
         {
-            FindString = "";
-            EnableFilter = false;
             SelectionMode = SelectionMode.Multiple;
             IsSelectedProduct = Visibility.Visible;
             IsNotSelectedProduct = Visibility.Collapsed;
-            StoreList.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
-            NomenclatureGroupList.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
-            NomenclatureSubgroupList.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
-            ProductList.PropertyChanged += (s, e) => { RaisePropertyChanged(e.PropertyName); };
             Update(ChoiceUpdate.Store);
+            FindString = "";
+            EnableFilter = false;
             DeleteProduct = null;
             UpdateProduct = null;
             SelectedProductCommand = new DelegateCommand<object>(sel =>
@@ -102,10 +94,22 @@ namespace RulezzClient.ViewModels
                 {
                     foreach (var item in (IList)sel)
                     {
-                        RevaluationProductModel revItem = new RevaluationProductModel(db.Product.Find((item as ProductView)?.Id));
-                        if(rev.AllProduct.Contains(revItem))continue;
-                        rev.AllProduct.Add(revItem);
-                    }
+                        if (obj.GetType().ToString() == "RulezzClient.ViewModels.RevaluationVM")
+                        {
+                            RevaluationProductModel revItem =
+                                new RevaluationProductModel(db.Product.Find((item as ProductView)?.Id));
+                            if ((obj as RevaluationVM).AllProduct.Contains(revItem)) continue;
+                            (obj as RevaluationVM).AllProduct.Add(revItem);
+                        }
+                        else if (obj.GetType().ToString() == "RulezzClient.ViewModels.PurchaseInvoiceVM")
+                        {
+                            PurchaseInvoiceProductVM purItem =
+                                new PurchaseInvoiceProductVM(
+                                    new PurchaseInvoiceProductModel(db.Product.Find((item as ProductView)?.Id)));
+                            if ((obj as PurchaseInvoiceVM).AllProduct.Contains(purItem)) continue;
+                            (obj as PurchaseInvoiceVM).AllProduct.Add(purItem);
+                        }
+    }
                 }
                 wnd.Close();
             });

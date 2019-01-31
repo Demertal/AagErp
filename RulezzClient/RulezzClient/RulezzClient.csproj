@@ -130,6 +130,7 @@
     <Compile Include="PurchaseInfo.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="PurchaseInvoiceProductModel.cs" />
     <Compile Include="PurchaseReport.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
@@ -174,6 +175,8 @@
     <Compile Include="ViewModels\AddNomenclatureSubGroupVM.cs" />
     <Compile Include="ViewModels\AddStoreVM.cs" />
     <Compile Include="ViewModels\AddUnitStorageVM.cs" />
+    <Compile Include="ViewModels\PurchaseInvoiceProductVM.cs" />
+    <Compile Include="ViewModels\PurchaseInvoiceVM.cs" />
     <Compile Include="ViewModels\RevaluationVM.cs" />
     <Compile Include="ViewModels\ShowStructurVM.cs" />
     <Compile Include="ViewModels\ShowUnitStorageVM.cs" />
@@ -191,6 +194,9 @@
     </Compile>
     <Compile Include="Views\AddUnitStorage.xaml.cs">
       <DependentUpon>AddUnitStorage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PurchaseInvoice.xaml.cs">
+      <DependentUpon>PurchaseInvoice.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Revaluation.xaml.cs">
       <DependentUpon>Revaluation.xaml</DependentUpon>
@@ -258,6 +264,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\AddUnitStorage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PurchaseInvoice.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

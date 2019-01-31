@@ -50,6 +50,11 @@ namespace RulezzClient.ViewModels
                 IsUnitStorageVisible = Visibility.Visible;
                 ShowUnitStorage = new ShowUnitStorageVM();
             });
+            PurchaseInvoiceCommand = new DelegateCommand(() =>
+            {
+                _dialogService.ShowDialog(DialogService.ChoiceView.PurchaseInvoice, null, false, b => { });
+                if (IsProductGroupVisible == Visibility.Visible) ShowProduct.Update(ShowProductViewModel.ChoiceUpdate.Product);
+            });
         }
 
         public Visibility IsProductGroupVisible
@@ -121,5 +126,7 @@ namespace RulezzClient.ViewModels
         public DelegateCommand AddProductMainCommand { get; }
 
         public DelegateCommand RevaluationCommand { get; }
+
+        public DelegateCommand PurchaseInvoiceCommand { get; }
     }
 }

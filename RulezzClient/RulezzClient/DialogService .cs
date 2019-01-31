@@ -20,7 +20,8 @@ namespace RulezzClient
             UpdateNomenclatureSubGroup,
             ProductSelection,
             Revaluation,
-            AddUnitStorage
+            AddUnitStorage,
+            PurchaseInvoice
         }
 
         public void ShowDialog(object view, object[] param, bool isModal, Action<bool?> closeAction)
@@ -165,7 +166,14 @@ namespace RulezzClient
                     control = new ShowProduct();
                     wnd.Title = "Выбрать товар";
                     StackPanel s = (StackPanel)control.Content;
-                    s.DataContext = new ShowProductViewModel((RevaluationVM)param[0], wnd);
+                    if (param[0].GetType().ToString() == "RulezzClient.ViewModels.RevaluationVM")
+                    {
+                        s.DataContext = new ShowProductViewModel((RevaluationVM) param[0], wnd);
+                    }
+                    else if (param[0].GetType().ToString() == "RulezzClient.ViewModels.PurchaseInvoiceVM")
+                    {
+                        s.DataContext = new ShowProductViewModel((PurchaseInvoiceVM)param[0], wnd);
+                    }
                     control.Content = s;
                     break;
                 }
@@ -188,6 +196,15 @@ namespace RulezzClient
                     gr.Children[gr.Children.Count - 1] = b;
                     control.Content = gr;
                     control.DataContext = new AddUnitStorageVM(wnd);
+                    break;
+                }
+                case ChoiceView.PurchaseInvoice:
+                {
+                    control = new PurchaseInvoice();
+                    wnd.Title = "Прием товара";
+                    StackPanel s = (StackPanel)control.Content;
+                    s.DataContext = new PurchaseInvoiceVM(wnd);
+                    control.Content = s;
                     break;
                 }
                 default:
