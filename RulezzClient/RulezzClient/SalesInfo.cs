@@ -10,7 +10,8 @@
 namespace RulezzClient
 {
     using System;
-
+    using System.Collections.Generic;
+    
     public partial class SalesInfo
     {
         public int Id { get; set; }

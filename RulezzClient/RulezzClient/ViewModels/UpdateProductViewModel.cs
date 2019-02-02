@@ -28,7 +28,7 @@ namespace RulezzClient.ViewModels
         public string OldBarcode => _oldProduct.Barcode;
         public string OldVendorCode => _oldProduct.VendorCode;
         public string OldUnitStorage => _oldProduct.UnitStorage;
-        public string OldWarranty => _oldProduct.PeriodString;
+        public string OldWarranty => _oldProduct.WarrantyPeriod;
 
         private Store _selectedStore;
         private NomenclatureGroup _selectedNomenclatureGroup;
@@ -53,19 +53,19 @@ namespace RulezzClient.ViewModels
         public ReadOnlyObservableCollection<UnitStorage> UnitStorages => UnitStorageList.UnitStorages;
         public ReadOnlyObservableCollection<WarrantyPeriod> WarrantyPeriods => WarrantyPeriodList.WarrantyPeriods;
 
-        public UpdateProductViewModel(ProductView product, NomenclatureSubGroup nomenclatureSubgroup, NomenclatureGroup nomenclatureGroup, Store store, Window wnd)
+        public UpdateProductViewModel(ProductView product, Window wnd)
         {
             using (StoreEntities db = new StoreEntities())
             {
                 Product = db.Product.Find(product.Id);
+                _oldNomenclatureSubGroup = db.NomenclatureSubGroup.Find(Product.IdNomenclatureSubGroup);
+                _oldNomenclatureGroup = db.NomenclatureGroup.Find(_oldNomenclatureSubGroup.IdNomenclatureGroup);
+                _oldStore = db.Store.Find(_oldNomenclatureGroup.IdStore);
             }
             _oldProduct = product;
-            _oldNomenclatureSubGroup = nomenclatureSubgroup;
-            _oldNomenclatureGroup = nomenclatureGroup;
-            _oldStore = store;
-            _tempStore = store;
-            _tempNomenclatureGroup = nomenclatureGroup;
-            _tempNomenclatureSubGroup = nomenclatureSubgroup;
+            _tempStore = _oldStore;
+            _tempNomenclatureGroup = _oldNomenclatureGroup;
+            _tempNomenclatureSubGroup = _oldNomenclatureSubGroup;
             Update(AddProductViewModel.ChoiceUpdate.Store);
             Update(AddProductViewModel.ChoiceUpdate.WarrantyPeriod);
             Update(AddProductViewModel.ChoiceUpdate.UnitStorage);

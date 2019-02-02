@@ -42,11 +42,16 @@ namespace RulezzClient.ViewModels
             Update(ChoiceUpdate.Store);
             Update(ChoiceUpdate.UnitStorage);
             Update(ChoiceUpdate.WarrantyPeriod);
+            using (StoreEntities db = new StoreEntities())
+            {
+                ExchangeRate exchange = db.ExchangeRate.FirstOrDefault(r => r.Title == "грн");
+                Product.IdExchangeRate = exchange.Id;
+            }
+
             AddProduct = new DelegateCommand(() =>
             {
                 using (StoreEntities db = new StoreEntities())
                 {
-                    Product.IdExchangeRate = db.ExchangeRate.FirstOrDefault(r => r.Title == "грн").Id;
                     using (var transaction = db.Database.BeginTransaction())
                     {
                         try
@@ -54,6 +59,7 @@ namespace RulezzClient.ViewModels
                             db.Product.Add(Product);
                             db.SaveChanges();
                             transaction.Commit();
+                            Product.Id = 0;
                             MessageBox.Show("Товар добавлен", "Успех", MessageBoxButton.OK);
                         }
                         catch (Exception ex)

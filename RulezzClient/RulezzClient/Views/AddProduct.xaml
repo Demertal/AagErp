@@ -36,7 +36,7 @@
         <Label Content="Ед. хранения" Grid.Row="6" Grid.Column="0" HorizontalAlignment="Center" />
         <ComboBox ItemsSource="{Binding UnitStorages, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedUnitStorage, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Title" Grid.Column="1" HorizontalAlignment="Center" Grid.Row="6" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" MinWidth="50"/>
         <Label Content="Гарантия" Grid.Row="7" Grid.Column="0" HorizontalAlignment="Center" />
-        <ComboBox ItemsSource="{Binding WarrantyPeriods, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedWarrantyPeriod, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="PeriodString" Grid.Column="1" HorizontalAlignment="Center" Grid.Row="7" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" MinWidth="50"/>
+        <ComboBox ItemsSource="{Binding WarrantyPeriods, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedWarrantyPeriod, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Period" Grid.Column="1" HorizontalAlignment="Center" Grid.Row="7" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" MinWidth="50"/>
         <Button Grid.Column="1" Content="Добавить" HorizontalAlignment="Center" Grid.Row="8" VerticalAlignment="Center" Width="75" Command="{Binding AddProduct}" IsEnabled="{Binding IsButtonAddEnabled}"/>
     </Grid>
 </UserControl>

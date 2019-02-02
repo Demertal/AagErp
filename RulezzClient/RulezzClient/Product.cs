@@ -9,8 +9,9 @@
 
 namespace RulezzClient
 {
+    using System;
     using System.Collections.Generic;
-
+    
     public partial class Product
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -20,6 +21,7 @@ namespace RulezzClient
             this.PurchaseInfo = new HashSet<PurchaseInfo>();
             this.RevaluationProduct = new HashSet<RevaluationProduct>();
             this.SalesInfo = new HashSet<SalesInfo>();
+            this.SerialNumber = new HashSet<SerialNumber>();
         }
     
         public int Id { get; set; }
@@ -46,5 +48,7 @@ namespace RulezzClient
         public virtual ICollection<RevaluationProduct> RevaluationProduct { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SalesInfo> SalesInfo { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<SerialNumber> SerialNumber { get; set; }
     }
 }

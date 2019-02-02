@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Windows;
 using Prism.Mvvm;
 
 namespace RulezzClient.ViewModels
@@ -7,13 +11,24 @@ namespace RulezzClient.ViewModels
     {
         private PurchaseInvoiceProductModel _product;
 
+        private Visibility _serialNumbersVisibility;
+
+        private readonly ObservableCollection<SerialNumberVM> _serialNumbers = new ObservableCollection<SerialNumberVM>();
+
+        private readonly ReadOnlyObservableCollection<SerialNumberVM> _serial;
+
+        public ReadOnlyObservableCollection<SerialNumberVM> SerialNumbers => _serial;
+
         public PurchaseInvoiceProductVM()
         {
-
+            _serialNumbers.CollectionChanged += this.OnCollectionChanged;
+            _serial = new ReadOnlyObservableCollection<SerialNumberVM>(_serialNumbers);
         }
 
         public PurchaseInvoiceProductVM(PurchaseInvoiceProductModel obj)
         {
+            _serialNumbers.CollectionChanged += this.OnCollectionChanged;
+            _serial = new ReadOnlyObservableCollection<SerialNumberVM>(_serialNumbers);
             Product = obj;
         }
 
@@ -26,6 +41,8 @@ namespace RulezzClient.ViewModels
                 RaisePropertyChanged();
             }
         }
+
+        public Visibility SerialNumbersVisibility => _product.IdWarrantyPeriod == 1 ? Visibility.Collapsed : Visibility.Visible;
 
         public int Id
         {
@@ -69,6 +86,28 @@ namespace RulezzClient.ViewModels
             set
             {
                 _product.Count = value;
+                if (IdWarrantyPeriod != 1)
+                {
+                    while (_serialNumbers.Count < Count)
+                    {
+                        _serialNumbers.Add(new SerialNumberVM(new SerialNumber{IdProduct = Id, PurchaseDate = DateTime.Today, Value = ""}));
+                    }
+
+                    while (_serialNumbers.Count > Count)
+                    {
+                        bool remove = false;
+                        foreach (var serial in _serialNumbers)
+                        {
+                            if (serial.Value != "") continue;
+                            _serialNumbers.Remove(serial);
+                            remove = true;
+                            break;
+                        }
+                        if(remove) continue;
+                        _serialNumbers.RemoveAt(_serialNumbers.Count-1);
+                    }
+                    RaisePropertyChanged("SerialNumbers");
+                }
                 RaisePropertyChanged();
             }
         }
@@ -139,6 +178,32 @@ namespace RulezzClient.ViewModels
         public bool Equals(PurchaseInvoiceProductVM other)
         {
             return _product.Equals(other?.Product);
+        }
+
+        void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (SerialNumberVM item in e.OldItems)
+                {
+                    //Removed items
+                    item.PropertyChanged -= EntityViewModelPropertyChanged;
+                }
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (SerialNumberVM item in e.NewItems)
+                {
+                    //Added items
+                    item.PropertyChanged += EntityViewModelPropertyChanged;
+                }
+            }
+            RaisePropertyChanged("SerialNumbers");
+        }
+
+        public void EntityViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            RaisePropertyChanged("SerialNumbers");
         }
     }
 }

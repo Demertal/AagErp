@@ -55,20 +55,14 @@ namespace RulezzClient
                 }
                 case ChoiceView.UpdateProduct:
                 {
-                    control = new UpdateProduct();
+                    control = new AddProduct();
                     wnd.Title = "Изменить товар";
-                    Grid gr = (Grid) control.Content;
-                    Border bo = (Border)gr.Children[gr.Children.Count - 1];
-                    AddProduct a = (AddProduct)bo.Child;
-                    Grid gr2 = (Grid)a.Content;
-                    Button b = (Button)gr2.Children[gr2.Children.Count - 1];
+                    Grid gr = (Grid)control.Content;
+                    Button b = (Button)gr.Children[gr.Children.Count - 1];
                     b.Content = "Изменить";
-                    gr2.Children[gr2.Children.Count - 1] = b;
-                    a.Content = gr2;
-                    bo.Child = a;
-                    gr.Children[gr.Children.Count - 1] = bo;
+                    gr.Children[gr.Children.Count - 1] = b;
                     control.Content = gr;
-                    control.DataContext = new UpdateProductViewModel((ProductView)param[0], (NomenclatureSubGroup)param[1], (NomenclatureGroup)param[2], (Store)param[3], wnd);
+                        control.DataContext = new UpdateProductViewModel((ProductView)param[0], wnd);
                     break;
                 }
                 case ChoiceView.AddStore:
@@ -85,18 +79,12 @@ namespace RulezzClient
                 }
                 case ChoiceView.UpdateStore:
                 {
-                    control = new UpdateStore();
+                    control = new AddStore();
                     wnd.Title = "Изменить магазин";
                     Grid gr = (Grid)control.Content;
-                    Border bo = (Border)gr.Children[gr.Children.Count - 1];
-                    AddStore a = (AddStore)bo.Child;
-                    Grid gr2 = (Grid)a.Content;
-                    Button b = (Button)gr2.Children[gr2.Children.Count - 1];
+                    Button b = (Button)gr.Children[gr.Children.Count - 1];
                     b.Content = "Изменить";
-                    gr2.Children[gr2.Children.Count - 1] = b;
-                    a.Content = gr2;
-                    bo.Child = a;
-                    gr.Children[gr.Children.Count - 1] = bo;
+                    gr.Children[gr.Children.Count - 1] = b;
                     control.Content = gr;
                     control.DataContext = new UpdateStoreVM((Store)param[0], wnd);
                     break;
@@ -115,18 +103,12 @@ namespace RulezzClient
                 }
                 case ChoiceView.UpdateNomenclatureGroup:
                 {
-                    control = new UpdateNomenclatureGroup();
+                    control = new AddNomenclatureGroup();
                     wnd.Title = "Изменить номенклатурную группу";
                     Grid gr = (Grid)control.Content;
-                    Border bo = (Border)gr.Children[gr.Children.Count - 1];
-                    AddNomenclatureGroup a = (AddNomenclatureGroup)bo.Child;
-                    Grid gr2 = (Grid)a.Content;
-                    Button b = (Button)gr2.Children[gr2.Children.Count - 1];
+                    Button b = (Button)gr.Children[gr.Children.Count - 1];
                     b.Content = "Изменить";
-                    gr2.Children[gr2.Children.Count - 1] = b;
-                    a.Content = gr2;
-                    bo.Child = a;
-                    gr.Children[gr.Children.Count - 1] = bo;
+                    gr.Children[gr.Children.Count - 1] = b;
                     control.Content = gr;
                     control.DataContext = new UpdateNomenclatureGroupVM((NomenclatureGroup)param[0], (Store)param[1], wnd);
                     break;
@@ -145,18 +127,12 @@ namespace RulezzClient
                 }
                 case ChoiceView.UpdateNomenclatureSubGroup:
                 {
-                    control = new UpdateNomenclatureSubGroup();
+                    control = new AddNomenclatureSubGroup();
                     wnd.Title = "Изменить номенклатурную подгруппу";
                     Grid gr = (Grid)control.Content;
-                    Border bo = (Border)gr.Children[gr.Children.Count - 1];
-                    AddNomenclatureSubGroup a = (AddNomenclatureSubGroup)bo.Child;
-                    Grid gr2 = (Grid)a.Content;
-                    Button b = (Button)gr2.Children[gr2.Children.Count - 1];
+                    Button b = (Button)gr.Children[gr.Children.Count - 1];
                     b.Content = "Изменить";
-                    gr2.Children[gr2.Children.Count - 1] = b;
-                    a.Content = gr2;
-                    bo.Child = a;
-                    gr.Children[gr.Children.Count - 1] = bo;
+                    gr.Children[gr.Children.Count - 1] = b;
                     control.Content = gr;
                     control.DataContext = new UpdateNomenclatureSubGroupVM((NomenclatureSubGroup)param[0], (NomenclatureGroup)param[1], wnd);
                     break;

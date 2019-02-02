@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Data.Entity;
 using System.Windows;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -16,6 +17,8 @@ namespace RulezzClient.ViewModels
 
         private bool _isEnabledPurchaseInvoice;
 
+        private Visibility _isRevaluationVisibility;
+
         private readonly IUiDialogService _dialogService = new DialogService();
 
         private readonly ReadOnlyObservableCollection<PurchaseInvoiceProductVM> _rproducts;
@@ -24,6 +27,7 @@ namespace RulezzClient.ViewModels
 
         public PurchaseInvoiceVM(Window wnd)
         {
+            IsRevaluationVisibility = Visibility.Collapsed;
             AllProduct.CollectionChanged += this.OnCollectionChanged;
             _rproducts = new ReadOnlyObservableCollection<PurchaseInvoiceProductVM>(AllProduct);
             AddProductComand = new DelegateCommand(() =>
@@ -75,25 +79,26 @@ namespace RulezzClient.ViewModels
             {
                 AllProduct.RemoveAt(SelectedIndexProducts);
             });
-            //CellChanged = new DelegateCommand(() =>
-            //{
-            //    if (SelectedProducts.PurchasePrice == 0) IsEnabledPurchaseInvoice = false;
-            //});
         }
 
+        public Visibility IsRevaluationVisibility
+        {
+            get => _isRevaluationVisibility;
+            set
+            {
+                _isRevaluationVisibility = value;
+                RaisePropertyChanged();
+            }
+        }
         public ObservableCollection<PurchaseInvoiceProductVM> AllProduct { get; } = new ObservableCollection<PurchaseInvoiceProductVM>();
 
         public bool IsEnabledPurchaseInvoice
         {
-            get
+            get => _isEnabledPurchaseInvoice;
+            set
             {
-                if (AllProduct.Count == 0) return false;
-                foreach (var pr in AllProduct)
-                {
-                    if (pr.PurchasePrice == 0 || pr.Count == 0) return false;
-                }
-
-                return true;
+                _isEnabledPurchaseInvoice = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -144,7 +149,38 @@ namespace RulezzClient.ViewModels
 
         public void EntityViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            RaisePropertyChanged("IsEnabledPurchaseInvoice");
+            if (AllProduct.Count == 0)
+            {
+                IsEnabledPurchaseInvoice = false;
+                IsRevaluationVisibility = Visibility.Collapsed;
+                return;
+            }
+            foreach (var pr in AllProduct)
+            {
+                if (pr.PurchasePrice == 0 || pr.Count == 0)
+                {
+                    IsEnabledPurchaseInvoice = false;
+                    IsRevaluationVisibility = Visibility.Collapsed;
+                    return;
+                }
+                foreach (var ser in pr.SerialNumbers)
+                {
+                    if (ser.Value == String.Empty)
+                    {
+                        IsEnabledPurchaseInvoice = false;
+                        IsRevaluationVisibility = Visibility.Collapsed;
+                        return;
+                    }
+                }
+                if (pr.PurchasePrice != pr.OldPurchasePrice || pr.SalesPrice == 0)
+                {
+                    IsRevaluationVisibility = Visibility.Visible;
+                    IsEnabledPurchaseInvoice = false;
+                    return;
+                }
+            }
+            IsEnabledPurchaseInvoice = true;
+            IsRevaluationVisibility = Visibility.Collapsed;
         }
     }
 }

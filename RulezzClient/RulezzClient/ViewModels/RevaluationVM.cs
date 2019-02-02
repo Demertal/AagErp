@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Windows;
@@ -67,9 +68,12 @@ namespace RulezzClient.ViewModels
                     }
                 }
             });
-            DeleteProduct = new DelegateCommand(() =>
+            DeleteProduct = new DelegateCommand<object>(obj =>
             {
-                AllProduct.RemoveAt(SelectedIndexProducts);
+                for(int i = 0; i < (obj as IList).Count;)
+                {
+                    AllProduct.Remove((RevaluationProductModel)(obj as IList)[i]);
+                }
             });
         }
 
@@ -98,6 +102,6 @@ namespace RulezzClient.ViewModels
 
         public DelegateCommand AddProductComand { get; }
         public DelegateCommand RevaluationComand { get; }
-        public DelegateCommand DeleteProduct { get; }
+        public DelegateCommand<object> DeleteProduct { get; }
     }
 }

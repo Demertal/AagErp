@@ -88,7 +88,7 @@ GO
 */
 CREATE TABLE WarrantyPeriod(
 	Id INT PRIMARY KEY IDENTITY,
-	Period INT NOT NULL UNIQUE CHECK(Period >= 0),
+	Period NVARCHAR(20) NOT NULL UNIQUE CHECK(Period != ''),
 )
 GO
 
@@ -107,7 +107,7 @@ GO
 */
 CREATE TABLE Product(
 	Id INT PRIMARY KEY IDENTITY,
-	Title NVARCHAR(120) NOT NULL CHECK(Title !=''),
+	Title NVARCHAR(120) NOT NULL CHECK(Title !='') UNIQUE,
 	VendorCode NVARCHAR(20) NULL,
 	Barcode NVARCHAR(13) NULL,
 	Count INT NOT NULL DEFAULT 0 CHECK(Count >= 0),
@@ -228,7 +228,9 @@ CREATE TABLE SerialNumber(
 	Id INT PRIMARY KEY IDENTITY,
 	Value VARCHAR(20) NOT NULL UNIQUE CHECK (Value != ''),
 	SelleDate DATE NULL,	
-	PurchaseDate DATE NOT NULL
+	PurchaseDate DATE NOT NULL,
+	IdProduct INT NOT NULL,
+	FOREIGN KEY (IdProduct) REFERENCES Product (Id) 
 )
 GO
 

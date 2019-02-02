@@ -33,7 +33,6 @@
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Наименование"        Binding="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}"       IsReadOnly="True" MaxWidth="100"/>
                         <DataGridTextColumn Header="Артикул"             Binding="{Binding Path=VendorCode, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True" MaxWidth="80"/>
-                        <DataGridTextColumn Header="Штрихкод"            Binding="{Binding Path=Barcode, UpdateSourceTrigger=PropertyChanged}"     IsReadOnly="True" MaxWidth="80" MinWidth="80" CanUserResize="False"/>
                         <DataGridTextColumn Header="Цена закупки"        MaxWidth="100">
                             <DataGridTextColumn.Binding>
                                 <MultiBinding Converter="{StaticResource CurrencyConverter}" ValidatesOnExceptions="True">
@@ -44,8 +43,25 @@
                         </DataGridTextColumn>
                         <DataGridTextColumn Header="Кол-во" Binding="{Binding Path=Count, UpdateSourceTrigger=PropertyChanged}"/>
                     </DataGrid.Columns>
+                    <DataGrid.RowDetailsTemplate>
+                        <DataTemplate>
+                            <Border BorderThickness="0" Visibility="{Binding Path=SerialNumbersVisibility}" MaxHeight="200" ScrollViewer.HorizontalScrollBarVisibility="Hidden">
+                                <DataGrid ItemsSource="{Binding SerialNumbers, UpdateSourceTrigger=PropertyChanged}"
+                                        IsSynchronizedWithCurrentItem="True" HorizontalAlignment="Left" CanUserResizeRows="False" Margin="10,0,0,0"
+                                        CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Top"
+                                        SelectionMode="Single">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Серийный номер" Binding="{Binding Path=Value, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Border>
+                        </DataTemplate>
+                    </DataGrid.RowDetailsTemplate>
                 </DataGrid>
-                <Button Content="Добавить товар" HorizontalAlignment="Center" VerticalAlignment="Center" Command="{Binding AddProductComand}" Margin="0,5,0,5"/>
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Переоценить" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding IsRevaluationVisibility}" Command="{Binding RevaluationCommand}" Margin="50,5,0,5"/>
+                    <Button Content="Добавить товар" HorizontalAlignment="Center" VerticalAlignment="Center" Command="{Binding AddProductComand}" Margin="30,5,0,5"/>
+                </StackPanel>
             </StackPanel>
         </Border>
         <Button Content="Провести" HorizontalAlignment="Center" VerticalAlignment="Center" Command="{Binding PurchaseInvoiceCommand}" IsEnabled="{Binding IsEnabledPurchaseInvoice}" Margin="0,5,0,0"/>

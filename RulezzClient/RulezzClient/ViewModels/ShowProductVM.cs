@@ -68,11 +68,8 @@ namespace RulezzClient.ViewModels
             UpdateProduct = new DelegateCommand(() =>
             {
                 if (SelectedProduct == null) return;
-                object []param = new object[4];
+                object []param = new object[1];
                 param[0] = SelectedProduct;
-                param[1] = SelectedNomenclatureSubGroup;
-                param[2] = SelectedNomenclatureGroup;
-                param[3] = SelectedStore;
                 _dialogService.ShowDialog(DialogService.ChoiceView.UpdateProduct, param, true, b => { });
                 Update(ChoiceUpdate.Product);
             });
@@ -87,7 +84,26 @@ namespace RulezzClient.ViewModels
             FindString = "";
             EnableFilter = false;
             DeleteProduct = null;
-            UpdateProduct = null;
+            UpdateProduct = new DelegateCommand(() =>
+            {
+                using (StoreEntities db = new StoreEntities())
+                {
+                    if (obj.GetType().ToString() == "RulezzClient.ViewModels.RevaluationVM")
+                    {
+                        RevaluationProductModel revItem =
+                            new RevaluationProductModel(db.Product.Find(SelectedProduct?.Id));
+                        if (!(obj as RevaluationVM).AllProduct.Contains(revItem)) (obj as RevaluationVM).AllProduct.Add(revItem);
+                    }
+                    else if (obj.GetType().ToString() == "RulezzClient.ViewModels.PurchaseInvoiceVM")
+                    {
+                        PurchaseInvoiceProductVM purItem =
+                            new PurchaseInvoiceProductVM(
+                                new PurchaseInvoiceProductModel(db.Product.Find(SelectedProduct?.Id)));
+                        if (!(obj as PurchaseInvoiceVM).AllProduct.Contains(purItem)) (obj as PurchaseInvoiceVM).AllProduct.Add(purItem);
+                    }
+                }
+                wnd.Close();
+            });
             SelectedProductCommand = new DelegateCommand<object>(sel =>
             {
                 using (StoreEntities db = new StoreEntities())
@@ -109,7 +125,7 @@ namespace RulezzClient.ViewModels
                             if ((obj as PurchaseInvoiceVM).AllProduct.Contains(purItem)) continue;
                             (obj as PurchaseInvoiceVM).AllProduct.Add(purItem);
                         }
-    }
+                    }
                 }
                 wnd.Close();
             });

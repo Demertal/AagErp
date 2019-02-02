@@ -111,7 +111,6 @@
     <Compile Include="Product.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="ProductView.cs" />
     <Compile Include="ProductViewByTitle_Result.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
@@ -130,14 +129,14 @@
     <Compile Include="PurchaseInfo.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="PurchaseInvoiceProductModel.cs" />
+    <Compile Include="Models\PurchaseInvoiceProductModel.cs" />
     <Compile Include="PurchaseReport.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
     <Compile Include="RevaluationProduct.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="RevaluationProductModel.cs" />
+    <Compile Include="Models\RevaluationProductModel.cs" />
     <Compile Include="SalesInfo.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
@@ -178,6 +177,7 @@
     <Compile Include="ViewModels\PurchaseInvoiceProductVM.cs" />
     <Compile Include="ViewModels\PurchaseInvoiceVM.cs" />
     <Compile Include="ViewModels\RevaluationVM.cs" />
+    <Compile Include="ViewModels\SerialNumberVM.cs" />
     <Compile Include="ViewModels\ShowStructurVM.cs" />
     <Compile Include="ViewModels\ShowUnitStorageVM.cs" />
     <Compile Include="ViewModels\UpdateNomenclatureGroupVM.cs" />
@@ -225,15 +225,6 @@
     <Compile Include="Views\ShowUnitStorage.xaml.cs">
       <DependentUpon>ShowUnitStorage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\UpdateNomenclatureGroup.xaml.cs">
-      <DependentUpon>UpdateNomenclatureGroup.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\UpdateNomenclatureSubGroup.xaml.cs">
-      <DependentUpon>UpdateNomenclatureSubGroup.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\UpdateProduct.xaml.cs">
-      <DependentUpon>UpdateProduct.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ViewModels\ShellVM.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -242,9 +233,6 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\AddProductViewModel.cs" />
-    <Compile Include="Views\UpdateStore.xaml.cs">
-      <DependentUpon>UpdateStore.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Warranty.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
@@ -310,22 +298,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ShowUnitStorage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\UpdateNomenclatureGroup.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\UpdateNomenclatureSubGroup.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\UpdateProduct.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\UpdateStore.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

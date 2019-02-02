@@ -4,15 +4,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:rulezzClient="clr-namespace:RulezzClient"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:interactivity="http://prismlibrary.com/"
              mc:Ignorable="d"
              Padding="0,0,10,5">
 
     <UserControl.Resources>
-        <rulezzClient:CurrencyConverter x:Key="CurrencyConverter" />
-        <ContextMenu  x:Key="RowMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-            <MenuItem Header="Исключить" CommandParameter="{Binding}" Command="{Binding DataContext.DeleteProduct, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>
+        <rulezzClient:CurrencyConverter x:Key="CurrencyConverter"/>
+        <ContextMenu  x:Key="RowMenu" >
+            <MenuItem Header="Исключить" CommandParameter="{Binding Path=SelectedItems, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Command="{Binding DataContext.DeleteProduct, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>
         </ContextMenu>
         <Style x:Key="DefaultRowStyle" TargetType="{x:Type DataGridRow}">
             <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
@@ -25,7 +23,7 @@
                 <DataGrid x:Name="ProductData" ItemsSource="{Binding Products, UpdateSourceTrigger=PropertyChanged}" SelectedIndex="{Binding SelectedIndexProducts , UpdateSourceTrigger=PropertyChanged}"
                   IsSynchronizedWithCurrentItem="True" MinColumnWidth="100" MaxColumnWidth="150" HorizontalAlignment="Left" Margin="5,5,5,0" CanUserResizeRows="False"
                   CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Top"
-                  MinHeight="200" MaxHeight="500" SelectionMode="Single" RowStyle="{StaticResource DefaultRowStyle}">
+                  MinHeight="200" MaxHeight="500" RowStyle="{StaticResource DefaultRowStyle}">
                     <DataGrid.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Setter Property="BorderThickness" Value="0"/>
@@ -35,7 +33,6 @@
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Наименование"        Binding="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}"       IsReadOnly="True" MaxWidth="100"/>
                         <DataGridTextColumn Header="Артикул"             Binding="{Binding Path=VendorCode, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True" MaxWidth="80"/>
-                        <DataGridTextColumn Header="Штрихкод"            Binding="{Binding Path=Barcode, UpdateSourceTrigger=PropertyChanged}"     IsReadOnly="True" MaxWidth="80" MinWidth="80" CanUserResize="False"/>
                         <DataGridTextColumn Header="Цена закупки"        IsReadOnly="True" MaxWidth="100">
                             <DataGridTextColumn.Binding>
                                 <MultiBinding Converter="{StaticResource CurrencyConverter}">
@@ -50,7 +47,7 @@
                 </DataGrid>
                 <Grid>
                     <CheckBox x:Name="BringPurchasePriceCh" Content="Привести закупочную цену к гривне" IsChecked="{Binding BringPurchasePrice, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,5"/>
-                    <Button Content="Добавить товар" HorizontalAlignment="Center" VerticalAlignment="Center" Command="{Binding AddProductComand}" Margin="0,5,0,5"/>
+                    <Button Content="Добавить товар" HorizontalAlignment="Center" VerticalAlignment="Center" Command="{Binding AddProductComand}" Margin="10,5,0,5"/>
                 </Grid>
             </StackPanel>
         </Border>

@@ -7,7 +7,7 @@ INSERT INTO PriceGroup VALUES (1)
 INSERT INTO NomenclatureSubGroup (Title, IdNomenclatureGroup, IdPriceGroup) VALUES ('Группа1', 2, 1), ('Группа2', 2, 1), ('Группа3', 3, 1), ('Группа4', 3, 1),
  ('Группа5', 4, 1), ('Группа6', 4, 1), ('Группа7', 5, 1), ('Группа8', 5, 1)
 
- INSERT INTO WarrantyPeriod VALUES (0)
+ INSERT INTO WarrantyPeriod VALUES ('Нет'), ('14 дней')
 
  INSERT INTO UnitStorage VALUES ('шт')
 

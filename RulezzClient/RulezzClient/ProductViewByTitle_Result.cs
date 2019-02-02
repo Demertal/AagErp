@@ -18,7 +18,7 @@ namespace RulezzClient
         public int Count { get; set; }
         public string ExchangeRate { get; set; }
         public string UnitStorage { get; set; }
-        public Nullable<int> WarrantyPeriod { get; set; }
+        public string WarrantyPeriod { get; set; }
         public decimal PurchasePrice { get; set; }
         public decimal SalesPrice { get; set; }
         public string Title { get; set; }

@@ -3,7 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-              mc:Ignorable="d" 
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:interactivity="http://prismlibrary.com/"
+             mc:Ignorable="d" 
              VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Padding="10,5,5,10">
 
     <UserControl.Resources>
@@ -23,6 +25,11 @@
                   IsSynchronizedWithCurrentItem="True" MinColumnWidth="100" MaxColumnWidth="150" HorizontalAlignment="Left" Margin="0,5,0,0" CanUserResizeRows="False"
                   CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Top"
                   MinHeight="200" MaxHeight="500" RowStyle="{StaticResource DefaultRowStyle}" SelectionMode="{Binding SelectionMode}">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseDoubleClick">
+                    <interactivity:InvokeCommandAction Command="{Binding UpdateProduct}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
                     <Setter Property="BorderThickness" Value="0"/>
@@ -32,9 +39,10 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Наименование"     Binding="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}"       IsReadOnly="True" MaxWidth="100"/>
                 <DataGridTextColumn Header="Артикул"          Binding="{Binding Path=VendorCode, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True" MaxWidth="100"/>
+                <DataGridTextColumn Header="Штрихкод"          Binding="{Binding Path=Barcode, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True" MaxWidth="100"/>
                 <DataGridTextColumn Header="Цена"             Binding="{Binding Path=SalesPrice, UpdateSourceTrigger=PropertyChanged, StringFormat=C, ConverterCulture='ua-UA'}"  IsReadOnly="True" MaxWidth="100"/>
                 <DataGridTextColumn Header="Ед. хранения"     Binding="{Binding Path=UnitStorage, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" MaxWidth="80" MinWidth="80" CanUserResize="False"/>
-                <DataGridTextColumn Header="Гарантия"         Binding="{Binding Path=PeriodString, UpdateSourceTrigger=PropertyChanged}"    IsReadOnly="True" MaxWidth="60" MinWidth="60" CanUserResize="False"/>
+                <DataGridTextColumn Header="Гарантия"         Binding="{Binding Path=WarrantyPeriod, UpdateSourceTrigger=PropertyChanged}"    IsReadOnly="True" MaxWidth="60" MinWidth="60" CanUserResize="False"/>
                 <DataGridTextColumn Header="Кол-во на складе" Binding="{Binding Path=Count, UpdateSourceTrigger=PropertyChanged}"       IsReadOnly="True" MaxWidth="125"/>
             </DataGrid.Columns>
         </DataGrid>

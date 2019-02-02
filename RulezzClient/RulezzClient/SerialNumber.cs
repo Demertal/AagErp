@@ -25,7 +25,9 @@ namespace RulezzClient
         public string Value { get; set; }
         public Nullable<System.DateTime> SelleDate { get; set; }
         public System.DateTime PurchaseDate { get; set; }
+        public int IdProduct { get; set; }
     
+        public virtual Product Product { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SalesInfo> SalesInfo { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="Хранилище StoreModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="Хранилище StoreModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="ExchangeRate">
           <Key>
             <PropertyRef Name="Id" />
@@ -134,6 +134,7 @@
           <Property Name="Value" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="SelleDate" Type="date" />
           <Property Name="PurchaseDate" Type="date" Nullable="false" />
+          <Property Name="IdProduct" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Store">
           <Key>
@@ -175,7 +176,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Period" Type="int" Nullable="false" />
+          <Property Name="Period" Type="nvarchar" MaxLength="20" Nullable="false" />
         </EntityType>
         <Association Name="FK__Nomenclat__IdNom__4CA06362">
           <End Role="NomenclatureGroup" Type="Self.NomenclatureGroup" Multiplicity="1" />
@@ -213,7 +214,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Product__IdExcha__60A75C0F">
+        <Association Name="FK__Product__IdExcha__619B8048">
           <End Role="ExchangeRate" Type="Self.ExchangeRate" Multiplicity="1" />
           <End Role="Product" Type="Self.Product" Multiplicity="*" />
           <ReferentialConstraint>
@@ -225,7 +226,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Product__IdNomen__5EBF139D">
+        <Association Name="FK__Product__IdNomen__5FB337D6">
           <End Role="NomenclatureSubGroup" Type="Self.NomenclatureSubGroup" Multiplicity="1" />
           <End Role="Product" Type="Self.Product" Multiplicity="*" />
           <ReferentialConstraint>
@@ -237,7 +238,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Product__IdUnitS__5FB337D6">
+        <Association Name="FK__Product__IdUnitS__60A75C0F">
           <End Role="UnitStorage" Type="Self.UnitStorage" Multiplicity="1" />
           <End Role="Product" Type="Self.Product" Multiplicity="*" />
           <ReferentialConstraint>
@@ -249,7 +250,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Product__IdWarra__619B8048">
+        <Association Name="FK__Product__IdWarra__628FA481">
           <End Role="WarrantyPeriod" Type="Self.WarrantyPeriod" Multiplicity="1" />
           <End Role="Product" Type="Self.Product" Multiplicity="*" />
           <ReferentialConstraint>
@@ -261,7 +262,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__PropertyN__IdNom__66603565">
+        <Association Name="FK__PropertyN__IdNom__6754599E">
           <End Role="NomenclatureGroup" Type="Self.NomenclatureGroup" Multiplicity="1" />
           <End Role="PropertyName" Type="Self.PropertyName" Multiplicity="*" />
           <ReferentialConstraint>
@@ -273,7 +274,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__PropertyP__IdPro__6E01572D">
+        <Association Name="FK__PropertyP__IdPro__6EF57B66">
           <End Role="Product" Type="Self.Product" Multiplicity="1" />
           <End Role="PropertyProduct" Type="Self.PropertyProduct" Multiplicity="*" />
           <ReferentialConstraint>
@@ -285,7 +286,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__PropertyP__IdPro__6EF57B66">
+        <Association Name="FK__PropertyP__IdPro__6FE99F9F">
           <End Role="PropertyValue" Type="Self.PropertyValue" Multiplicity="1" />
           <End Role="PropertyProduct" Type="Self.PropertyProduct" Multiplicity="*" />
           <ReferentialConstraint>
@@ -297,7 +298,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__PropertyV__IdPro__6A30C649">
+        <Association Name="FK__PropertyV__IdPro__6B24EA82">
           <End Role="PropertyName" Type="Self.PropertyName" Multiplicity="1" />
           <End Role="PropertyValue" Type="Self.PropertyValue" Multiplicity="*" />
           <ReferentialConstraint>
@@ -309,7 +310,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__PurchaseI__IdExc__7D439ABD">
+        <Association Name="FK__PurchaseI__IdExc__7E37BEF6">
           <End Role="ExchangeRate" Type="Self.ExchangeRate" Multiplicity="1" />
           <End Role="PurchaseInfo" Type="Self.PurchaseInfo" Multiplicity="*" />
           <ReferentialConstraint>
@@ -321,7 +322,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__PurchaseI__IdPro__7C4F7684">
+        <Association Name="FK__PurchaseI__IdPro__7D439ABD">
           <End Role="Product" Type="Self.Product" Multiplicity="1" />
           <End Role="PurchaseInfo" Type="Self.PurchaseInfo" Multiplicity="*" />
           <ReferentialConstraint>
@@ -333,7 +334,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__PurchaseI__IdPur__7B5B524B">
+        <Association Name="FK__PurchaseI__IdPur__7C4F7684">
           <End Role="PurchaseReport" Type="Self.PurchaseReport" Multiplicity="1" />
           <End Role="PurchaseInfo" Type="Self.PurchaseInfo" Multiplicity="*" />
           <ReferentialConstraint>
@@ -345,7 +346,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__PurchaseR__IdSto__75A278F5">
+        <Association Name="FK__PurchaseR__IdSto__76969D2E">
           <End Role="Store" Type="Self.Store" Multiplicity="1" />
           <End Role="PurchaseReport" Type="Self.PurchaseReport" Multiplicity="*" />
           <ReferentialConstraint>
@@ -357,7 +358,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__PurchaseR__IdSup__76969D2E">
+        <Association Name="FK__PurchaseR__IdSup__778AC167">
           <End Role="Supplier" Type="Self.Supplier" Multiplicity="1" />
           <End Role="PurchaseReport" Type="Self.PurchaseReport" Multiplicity="*" />
           <ReferentialConstraint>
@@ -381,7 +382,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__SalesInfo__IdPro__0A9D95DB">
+        <Association Name="FK__SalesInfo__IdPro__0C85DE4D">
           <End Role="Product" Type="Self.Product" Multiplicity="1" />
           <End Role="SalesInfo" Type="Self.SalesInfo" Multiplicity="*" />
           <ReferentialConstraint>
@@ -393,7 +394,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__SalesInfo__IdSal__09A971A2">
+        <Association Name="FK__SalesInfo__IdSal__0B91BA14">
           <End Role="SalesReport" Type="Self.SalesReport" Multiplicity="1" />
           <End Role="SalesInfo" Type="Self.SalesInfo" Multiplicity="*" />
           <ReferentialConstraint>
@@ -405,7 +406,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__SalesInfo__IdSer__0B91BA14">
+        <Association Name="FK__SalesInfo__IdSer__0D7A0286">
           <End Role="SerialNumber" Type="Self.SerialNumber" Multiplicity="0..1" />
           <End Role="SalesInfo" Type="Self.SalesInfo" Multiplicity="*" />
           <ReferentialConstraint>
@@ -417,7 +418,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__SalesRepo__IdSto__03F0984C">
+        <Association Name="FK__SalesRepo__IdSto__05D8E0BE">
           <End Role="Store" Type="Self.Store" Multiplicity="1" />
           <End Role="SalesReport" Type="Self.SalesReport" Multiplicity="*" />
           <ReferentialConstraint>
@@ -429,7 +430,19 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Supplier__IdStor__72C60C4A">
+        <Association Name="FK__SerialNum__IdPro__02FC7413">
+          <End Role="Product" Type="Self.Product" Multiplicity="1" />
+          <End Role="SerialNumber" Type="Self.SerialNumber" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SerialNumber">
+              <PropertyRef Name="IdProduct" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Supplier__IdStor__73BA3083">
           <End Role="Store" Type="Self.Store" Multiplicity="1" />
           <End Role="Supplier" Type="Self.Supplier" Multiplicity="*" />
           <ReferentialConstraint>
@@ -441,7 +454,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Warranty__IdSeri__114A936A">
+        <Association Name="FK__Warranty__IdSeri__1332DBDC">
           <End Role="SerialNumber" Type="Self.SerialNumber" Multiplicity="0..1" />
           <End Role="Warranty" Type="Self.Warranty" Multiplicity="*" />
           <ReferentialConstraint>
@@ -453,7 +466,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Warranty__IdSupp__10566F31">
+        <Association Name="FK__Warranty__IdSupp__123EB7A3">
           <End Role="Supplier" Type="Self.Supplier" Multiplicity="1" />
           <End Role="Warranty" Type="Self.Warranty" Multiplicity="*" />
           <ReferentialConstraint>
@@ -475,7 +488,7 @@
                 <Property Name="Count" Type="int" Nullable="false" />
                 <Property Name="ExchangeRate" Type="nvarchar" MaxLength="10" />
                 <Property Name="UnitStorage" Type="nvarchar" MaxLength="20" />
-                <Property Name="WarrantyPeriod" Type="int" />
+                <Property Name="WarrantyPeriod" Type="nvarchar" MaxLength="20" />
                 <Property Name="PurchasePrice" Type="money" Nullable="false" />
                 <Property Name="SalesPrice" Type="money" Nullable="false" />
                 <Property Name="Title" Type="nvarchar" MaxLength="120" Nullable="false" />
@@ -495,7 +508,7 @@
                 <Property Name="Count" Type="int" Nullable="false" />
                 <Property Name="ExchangeRate" Type="nvarchar" MaxLength="10" />
                 <Property Name="UnitStorage" Type="nvarchar" MaxLength="20" />
-                <Property Name="WarrantyPeriod" Type="int" />
+                <Property Name="WarrantyPeriod" Type="nvarchar" MaxLength="20" />
                 <Property Name="PurchasePrice" Type="money" Nullable="false" />
                 <Property Name="SalesPrice" Type="money" Nullable="false" />
                 <Property Name="Title" Type="nvarchar" MaxLength="120" Nullable="false" />
@@ -516,7 +529,7 @@
                 <Property Name="Count" Type="int" Nullable="false" />
                 <Property Name="ExchangeRate" Type="nvarchar" MaxLength="10" />
                 <Property Name="UnitStorage" Type="nvarchar" MaxLength="20" />
-                <Property Name="WarrantyPeriod" Type="int" />
+                <Property Name="WarrantyPeriod" Type="nvarchar" MaxLength="20" />
                 <Property Name="PurchasePrice" Type="money" Nullable="false" />
                 <Property Name="SalesPrice" Type="money" Nullable="false" />
                 <Property Name="Title" Type="nvarchar" MaxLength="120" Nullable="false" />
@@ -558,55 +571,55 @@
             <End Role="Store" EntitySet="Store" />
             <End Role="NomenclatureGroup" EntitySet="NomenclatureGroup" />
           </AssociationSet>
-          <AssociationSet Name="FK__Product__IdExcha__60A75C0F" Association="Self.FK__Product__IdExcha__60A75C0F">
+          <AssociationSet Name="FK__Product__IdExcha__619B8048" Association="Self.FK__Product__IdExcha__619B8048">
             <End Role="ExchangeRate" EntitySet="ExchangeRate" />
             <End Role="Product" EntitySet="Product" />
           </AssociationSet>
-          <AssociationSet Name="FK__Product__IdNomen__5EBF139D" Association="Self.FK__Product__IdNomen__5EBF139D">
+          <AssociationSet Name="FK__Product__IdNomen__5FB337D6" Association="Self.FK__Product__IdNomen__5FB337D6">
             <End Role="NomenclatureSubGroup" EntitySet="NomenclatureSubGroup" />
             <End Role="Product" EntitySet="Product" />
           </AssociationSet>
-          <AssociationSet Name="FK__Product__IdUnitS__5FB337D6" Association="Self.FK__Product__IdUnitS__5FB337D6">
+          <AssociationSet Name="FK__Product__IdUnitS__60A75C0F" Association="Self.FK__Product__IdUnitS__60A75C0F">
             <End Role="UnitStorage" EntitySet="UnitStorage" />
             <End Role="Product" EntitySet="Product" />
           </AssociationSet>
-          <AssociationSet Name="FK__Product__IdWarra__619B8048" Association="Self.FK__Product__IdWarra__619B8048">
+          <AssociationSet Name="FK__Product__IdWarra__628FA481" Association="Self.FK__Product__IdWarra__628FA481">
             <End Role="WarrantyPeriod" EntitySet="WarrantyPeriod" />
             <End Role="Product" EntitySet="Product" />
           </AssociationSet>
-          <AssociationSet Name="FK__PropertyN__IdNom__66603565" Association="Self.FK__PropertyN__IdNom__66603565">
+          <AssociationSet Name="FK__PropertyN__IdNom__6754599E" Association="Self.FK__PropertyN__IdNom__6754599E">
             <End Role="NomenclatureGroup" EntitySet="NomenclatureGroup" />
             <End Role="PropertyName" EntitySet="PropertyName" />
           </AssociationSet>
-          <AssociationSet Name="FK__PropertyP__IdPro__6E01572D" Association="Self.FK__PropertyP__IdPro__6E01572D">
+          <AssociationSet Name="FK__PropertyP__IdPro__6EF57B66" Association="Self.FK__PropertyP__IdPro__6EF57B66">
             <End Role="Product" EntitySet="Product" />
             <End Role="PropertyProduct" EntitySet="PropertyProduct" />
           </AssociationSet>
-          <AssociationSet Name="FK__PropertyP__IdPro__6EF57B66" Association="Self.FK__PropertyP__IdPro__6EF57B66">
+          <AssociationSet Name="FK__PropertyP__IdPro__6FE99F9F" Association="Self.FK__PropertyP__IdPro__6FE99F9F">
             <End Role="PropertyValue" EntitySet="PropertyValue" />
             <End Role="PropertyProduct" EntitySet="PropertyProduct" />
           </AssociationSet>
-          <AssociationSet Name="FK__PropertyV__IdPro__6A30C649" Association="Self.FK__PropertyV__IdPro__6A30C649">
+          <AssociationSet Name="FK__PropertyV__IdPro__6B24EA82" Association="Self.FK__PropertyV__IdPro__6B24EA82">
             <End Role="PropertyName" EntitySet="PropertyName" />
             <End Role="PropertyValue" EntitySet="PropertyValue" />
           </AssociationSet>
-          <AssociationSet Name="FK__PurchaseI__IdExc__7D439ABD" Association="Self.FK__PurchaseI__IdExc__7D439ABD">
+          <AssociationSet Name="FK__PurchaseI__IdExc__7E37BEF6" Association="Self.FK__PurchaseI__IdExc__7E37BEF6">
             <End Role="ExchangeRate" EntitySet="ExchangeRate" />
             <End Role="PurchaseInfo" EntitySet="PurchaseInfo" />
           </AssociationSet>
-          <AssociationSet Name="FK__PurchaseI__IdPro__7C4F7684" Association="Self.FK__PurchaseI__IdPro__7C4F7684">
+          <AssociationSet Name="FK__PurchaseI__IdPro__7D439ABD" Association="Self.FK__PurchaseI__IdPro__7D439ABD">
             <End Role="Product" EntitySet="Product" />
             <End Role="PurchaseInfo" EntitySet="PurchaseInfo" />
           </AssociationSet>
-          <AssociationSet Name="FK__PurchaseI__IdPur__7B5B524B" Association="Self.FK__PurchaseI__IdPur__7B5B524B">
+          <AssociationSet Name="FK__PurchaseI__IdPur__7C4F7684" Association="Self.FK__PurchaseI__IdPur__7C4F7684">
             <End Role="PurchaseReport" EntitySet="PurchaseReport" />
             <End Role="PurchaseInfo" EntitySet="PurchaseInfo" />
           </AssociationSet>
-          <AssociationSet Name="FK__PurchaseR__IdSto__75A278F5" Association="Self.FK__PurchaseR__IdSto__75A278F5">
+          <AssociationSet Name="FK__PurchaseR__IdSto__76969D2E" Association="Self.FK__PurchaseR__IdSto__76969D2E">
             <End Role="Store" EntitySet="Store" />
             <End Role="PurchaseReport" EntitySet="PurchaseReport" />
           </AssociationSet>
-          <AssociationSet Name="FK__PurchaseR__IdSup__76969D2E" Association="Self.FK__PurchaseR__IdSup__76969D2E">
+          <AssociationSet Name="FK__PurchaseR__IdSup__778AC167" Association="Self.FK__PurchaseR__IdSup__778AC167">
             <End Role="Supplier" EntitySet="Supplier" />
             <End Role="PurchaseReport" EntitySet="PurchaseReport" />
           </AssociationSet>
@@ -614,36 +627,41 @@
             <End Role="Product" EntitySet="Product" />
             <End Role="RevaluationProduct" EntitySet="RevaluationProduct" />
           </AssociationSet>
-          <AssociationSet Name="FK__SalesInfo__IdPro__0A9D95DB" Association="Self.FK__SalesInfo__IdPro__0A9D95DB">
+          <AssociationSet Name="FK__SalesInfo__IdPro__0C85DE4D" Association="Self.FK__SalesInfo__IdPro__0C85DE4D">
             <End Role="Product" EntitySet="Product" />
             <End Role="SalesInfo" EntitySet="SalesInfo" />
           </AssociationSet>
-          <AssociationSet Name="FK__SalesInfo__IdSal__09A971A2" Association="Self.FK__SalesInfo__IdSal__09A971A2">
+          <AssociationSet Name="FK__SalesInfo__IdSal__0B91BA14" Association="Self.FK__SalesInfo__IdSal__0B91BA14">
             <End Role="SalesReport" EntitySet="SalesReport" />
             <End Role="SalesInfo" EntitySet="SalesInfo" />
           </AssociationSet>
-          <AssociationSet Name="FK__SalesInfo__IdSer__0B91BA14" Association="Self.FK__SalesInfo__IdSer__0B91BA14">
+          <AssociationSet Name="FK__SalesInfo__IdSer__0D7A0286" Association="Self.FK__SalesInfo__IdSer__0D7A0286">
             <End Role="SerialNumber" EntitySet="SerialNumber" />
             <End Role="SalesInfo" EntitySet="SalesInfo" />
           </AssociationSet>
-          <AssociationSet Name="FK__SalesRepo__IdSto__03F0984C" Association="Self.FK__SalesRepo__IdSto__03F0984C">
+          <AssociationSet Name="FK__SalesRepo__IdSto__05D8E0BE" Association="Self.FK__SalesRepo__IdSto__05D8E0BE">
             <End Role="Store" EntitySet="Store" />
             <End Role="SalesReport" EntitySet="SalesReport" />
           </AssociationSet>
-          <AssociationSet Name="FK__Supplier__IdStor__72C60C4A" Association="Self.FK__Supplier__IdStor__72C60C4A">
+          <AssociationSet Name="FK__SerialNum__IdPro__02FC7413" Association="Self.FK__SerialNum__IdPro__02FC7413">
+            <End Role="Product" EntitySet="Product" />
+            <End Role="SerialNumber" EntitySet="SerialNumber" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Supplier__IdStor__73BA3083" Association="Self.FK__Supplier__IdStor__73BA3083">
             <End Role="Store" EntitySet="Store" />
             <End Role="Supplier" EntitySet="Supplier" />
           </AssociationSet>
-          <AssociationSet Name="FK__Warranty__IdSeri__114A936A" Association="Self.FK__Warranty__IdSeri__114A936A">
+          <AssociationSet Name="FK__Warranty__IdSeri__1332DBDC" Association="Self.FK__Warranty__IdSeri__1332DBDC">
             <End Role="SerialNumber" EntitySet="SerialNumber" />
             <End Role="Warranty" EntitySet="Warranty" />
           </AssociationSet>
-          <AssociationSet Name="FK__Warranty__IdSupp__10566F31" Association="Self.FK__Warranty__IdSupp__10566F31">
+          <AssociationSet Name="FK__Warranty__IdSupp__123EB7A3" Association="Self.FK__Warranty__IdSupp__123EB7A3">
             <End Role="Supplier" EntitySet="Supplier" />
             <End Role="Warranty" EntitySet="Warranty" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="StoreModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -653,7 +671,7 @@
           <Property Name="Count" Type="Int32" Nullable="false" />
           <Property Name="ExchangeRate" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="UnitStorage" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="WarrantyPeriod" Type="Int32" />
+          <Property Name="WarrantyPeriod" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="PurchasePrice" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
           <Property Name="SalesPrice" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
           <Property Name="Title" Type="String" MaxLength="120" FixedLength="false" Unicode="true" Nullable="false" />
@@ -666,7 +684,20 @@
           <Property Name="Count" Type="Int32" Nullable="false" />
           <Property Name="ExchangeRate" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="UnitStorage" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="WarrantyPeriod" Type="Int32" />
+          <Property Name="WarrantyPeriod" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="PurchasePrice" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="SalesPrice" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="120" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="VendorCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="IdNomenclatureSubGroup" Type="Int32" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="ProductViewByTitle_Result">
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Barcode" Type="String" MaxLength="13" FixedLength="false" Unicode="true" />
+          <Property Name="Count" Type="Int32" Nullable="false" />
+          <Property Name="ExchangeRate" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="UnitStorage" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="WarrantyPeriod" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="PurchasePrice" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
           <Property Name="SalesPrice" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
           <Property Name="Title" Type="String" MaxLength="120" FixedLength="false" Unicode="true" Nullable="false" />
@@ -680,8 +711,8 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Title" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Сourse" Type="Double" Nullable="false" />
-          <NavigationProperty Name="Product" Relationship="Self.FK__Product__IdExcha__60A75C0F" FromRole="ExchangeRate" ToRole="Product" />
-          <NavigationProperty Name="PurchaseInfo" Relationship="Self.FK__PurchaseI__IdExc__7D439ABD" FromRole="ExchangeRate" ToRole="PurchaseInfo" />
+          <NavigationProperty Name="Product" Relationship="Self.FK__Product__IdExcha__619B8048" FromRole="ExchangeRate" ToRole="Product" />
+          <NavigationProperty Name="PurchaseInfo" Relationship="Self.FK__PurchaseI__IdExc__7E37BEF6" FromRole="ExchangeRate" ToRole="PurchaseInfo" />
         </EntityType>
         <EntityType Name="NomenclatureGroup">
           <Key>
@@ -692,7 +723,7 @@
           <Property Name="IdStore" Type="Int32" Nullable="false" />
           <NavigationProperty Name="NomenclatureSubGroup" Relationship="Self.FK__Nomenclat__IdNom__4CA06362" FromRole="NomenclatureGroup" ToRole="NomenclatureSubGroup" />
           <NavigationProperty Name="Store" Relationship="Self.FK__Nomenclat__IdSto__440B1D61" FromRole="NomenclatureGroup" ToRole="Store" />
-          <NavigationProperty Name="PropertyName" Relationship="Self.FK__PropertyN__IdNom__66603565" FromRole="NomenclatureGroup" ToRole="PropertyName" />
+          <NavigationProperty Name="PropertyName" Relationship="Self.FK__PropertyN__IdNom__6754599E" FromRole="NomenclatureGroup" ToRole="PropertyName" />
         </EntityType>
         <EntityType Name="NomenclatureSubGroup">
           <Key>
@@ -704,7 +735,7 @@
           <Property Name="IdPriceGroup" Type="Int32" Nullable="false" />
           <NavigationProperty Name="NomenclatureGroup" Relationship="Self.FK__Nomenclat__IdNom__4CA06362" FromRole="NomenclatureSubGroup" ToRole="NomenclatureGroup" />
           <NavigationProperty Name="PriceGroup" Relationship="Self.FK__Nomenclat__IdPri__4D94879B" FromRole="NomenclatureSubGroup" ToRole="PriceGroup" />
-          <NavigationProperty Name="Product" Relationship="Self.FK__Product__IdNomen__5EBF139D" FromRole="NomenclatureSubGroup" ToRole="Product" />
+          <NavigationProperty Name="Product" Relationship="Self.FK__Product__IdNomen__5FB337D6" FromRole="NomenclatureSubGroup" ToRole="Product" />
         </EntityType>
         <EntityType Name="PriceGroup">
           <Key>
@@ -729,14 +760,15 @@
           <Property Name="IdUnitStorage" Type="Int32" Nullable="false" />
           <Property Name="IdExchangeRate" Type="Int32" Nullable="false" />
           <Property Name="IdWarrantyPeriod" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="ExchangeRate" Relationship="Self.FK__Product__IdExcha__60A75C0F" FromRole="Product" ToRole="ExchangeRate" />
-          <NavigationProperty Name="NomenclatureSubGroup" Relationship="Self.FK__Product__IdNomen__5EBF139D" FromRole="Product" ToRole="NomenclatureSubGroup" />
-          <NavigationProperty Name="UnitStorage" Relationship="Self.FK__Product__IdUnitS__5FB337D6" FromRole="Product" ToRole="UnitStorage" />
-          <NavigationProperty Name="WarrantyPeriod" Relationship="Self.FK__Product__IdWarra__619B8048" FromRole="Product" ToRole="WarrantyPeriod" />
-          <NavigationProperty Name="PropertyProduct" Relationship="Self.FK__PropertyP__IdPro__6E01572D" FromRole="Product" ToRole="PropertyProduct" />
-          <NavigationProperty Name="PurchaseInfo" Relationship="Self.FK__PurchaseI__IdPro__7C4F7684" FromRole="Product" ToRole="PurchaseInfo" />
+          <NavigationProperty Name="ExchangeRate" Relationship="Self.FK__Product__IdExcha__619B8048" FromRole="Product" ToRole="ExchangeRate" />
+          <NavigationProperty Name="NomenclatureSubGroup" Relationship="Self.FK__Product__IdNomen__5FB337D6" FromRole="Product" ToRole="NomenclatureSubGroup" />
+          <NavigationProperty Name="UnitStorage" Relationship="Self.FK__Product__IdUnitS__60A75C0F" FromRole="Product" ToRole="UnitStorage" />
+          <NavigationProperty Name="WarrantyPeriod" Relationship="Self.FK__Product__IdWarra__628FA481" FromRole="Product" ToRole="WarrantyPeriod" />
+          <NavigationProperty Name="PropertyProduct" Relationship="Self.FK__PropertyP__IdPro__6EF57B66" FromRole="Product" ToRole="PropertyProduct" />
+          <NavigationProperty Name="PurchaseInfo" Relationship="Self.FK__PurchaseI__IdPro__7D439ABD" FromRole="Product" ToRole="PurchaseInfo" />
           <NavigationProperty Name="RevaluationProduct" Relationship="Self.FK__Revaluati__IdPro__160F4887" FromRole="Product" ToRole="RevaluationProduct" />
-          <NavigationProperty Name="SalesInfo" Relationship="Self.FK__SalesInfo__IdPro__0A9D95DB" FromRole="Product" ToRole="SalesInfo" />
+          <NavigationProperty Name="SalesInfo" Relationship="Self.FK__SalesInfo__IdPro__0C85DE4D" FromRole="Product" ToRole="SalesInfo" />
+          <NavigationProperty Name="SerialNumber" Relationship="Self.FK__SerialNum__IdPro__02FC7413" FromRole="Product" ToRole="SerialNumber" />
         </EntityType>
         <EntityType Name="PropertyName">
           <Key>
@@ -745,8 +777,8 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Title" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="IdNomenclatureGroup" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="NomenclatureGroup" Relationship="Self.FK__PropertyN__IdNom__66603565" FromRole="PropertyName" ToRole="NomenclatureGroup" />
-          <NavigationProperty Name="PropertyValue" Relationship="Self.FK__PropertyV__IdPro__6A30C649" FromRole="PropertyName" ToRole="PropertyValue" />
+          <NavigationProperty Name="NomenclatureGroup" Relationship="Self.FK__PropertyN__IdNom__6754599E" FromRole="PropertyName" ToRole="NomenclatureGroup" />
+          <NavigationProperty Name="PropertyValue" Relationship="Self.FK__PropertyV__IdPro__6B24EA82" FromRole="PropertyName" ToRole="PropertyValue" />
         </EntityType>
         <EntityType Name="PropertyProduct">
           <Key>
@@ -755,8 +787,8 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="IdProduct" Type="Int32" Nullable="false" />
           <Property Name="IdPropertyValue" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Product" Relationship="Self.FK__PropertyP__IdPro__6E01572D" FromRole="PropertyProduct" ToRole="Product" />
-          <NavigationProperty Name="PropertyValue" Relationship="Self.FK__PropertyP__IdPro__6EF57B66" FromRole="PropertyProduct" ToRole="PropertyValue" />
+          <NavigationProperty Name="Product" Relationship="Self.FK__PropertyP__IdPro__6EF57B66" FromRole="PropertyProduct" ToRole="Product" />
+          <NavigationProperty Name="PropertyValue" Relationship="Self.FK__PropertyP__IdPro__6FE99F9F" FromRole="PropertyProduct" ToRole="PropertyValue" />
         </EntityType>
         <EntityType Name="PropertyValue">
           <Key>
@@ -765,8 +797,8 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Value" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="IdPropertyName" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="PropertyName" Relationship="Self.FK__PropertyV__IdPro__6A30C649" FromRole="PropertyValue" ToRole="PropertyName" />
-          <NavigationProperty Name="PropertyProduct" Relationship="Self.FK__PropertyP__IdPro__6EF57B66" FromRole="PropertyValue" ToRole="PropertyProduct" />
+          <NavigationProperty Name="PropertyName" Relationship="Self.FK__PropertyV__IdPro__6B24EA82" FromRole="PropertyValue" ToRole="PropertyName" />
+          <NavigationProperty Name="PropertyProduct" Relationship="Self.FK__PropertyP__IdPro__6FE99F9F" FromRole="PropertyValue" ToRole="PropertyProduct" />
         </EntityType>
         <EntityType Name="PurchaseInfo">
           <Key>
@@ -778,9 +810,9 @@
           <Property Name="IdPurchaseReport" Type="Int32" Nullable="false" />
           <Property Name="IdProduct" Type="Int32" Nullable="false" />
           <Property Name="IdExchangeRate" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="ExchangeRate" Relationship="Self.FK__PurchaseI__IdExc__7D439ABD" FromRole="PurchaseInfo" ToRole="ExchangeRate" />
-          <NavigationProperty Name="Product" Relationship="Self.FK__PurchaseI__IdPro__7C4F7684" FromRole="PurchaseInfo" ToRole="Product" />
-          <NavigationProperty Name="PurchaseReport" Relationship="Self.FK__PurchaseI__IdPur__7B5B524B" FromRole="PurchaseInfo" ToRole="PurchaseReport" />
+          <NavigationProperty Name="ExchangeRate" Relationship="Self.FK__PurchaseI__IdExc__7E37BEF6" FromRole="PurchaseInfo" ToRole="ExchangeRate" />
+          <NavigationProperty Name="Product" Relationship="Self.FK__PurchaseI__IdPro__7D439ABD" FromRole="PurchaseInfo" ToRole="Product" />
+          <NavigationProperty Name="PurchaseReport" Relationship="Self.FK__PurchaseI__IdPur__7C4F7684" FromRole="PurchaseInfo" ToRole="PurchaseReport" />
         </EntityType>
         <EntityType Name="PurchaseReport">
           <Key>
@@ -790,9 +822,9 @@
           <Property Name="DataOrder" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="IdStore" Type="Int32" Nullable="false" />
           <Property Name="IdSupplier" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="PurchaseInfo" Relationship="Self.FK__PurchaseI__IdPur__7B5B524B" FromRole="PurchaseReport" ToRole="PurchaseInfo" />
-          <NavigationProperty Name="Store" Relationship="Self.FK__PurchaseR__IdSto__75A278F5" FromRole="PurchaseReport" ToRole="Store" />
-          <NavigationProperty Name="Supplier" Relationship="Self.FK__PurchaseR__IdSup__76969D2E" FromRole="PurchaseReport" ToRole="Supplier" />
+          <NavigationProperty Name="PurchaseInfo" Relationship="Self.FK__PurchaseI__IdPur__7C4F7684" FromRole="PurchaseReport" ToRole="PurchaseInfo" />
+          <NavigationProperty Name="Store" Relationship="Self.FK__PurchaseR__IdSto__76969D2E" FromRole="PurchaseReport" ToRole="Store" />
+          <NavigationProperty Name="Supplier" Relationship="Self.FK__PurchaseR__IdSup__778AC167" FromRole="PurchaseReport" ToRole="Supplier" />
         </EntityType>
         <EntityType Name="RevaluationProduct">
           <Key>
@@ -815,9 +847,9 @@
           <Property Name="IdProduct" Type="Int32" Nullable="false" />
           <Property Name="IdSalesReport" Type="Int32" Nullable="false" />
           <Property Name="IdSerialNumber" Type="Int32" />
-          <NavigationProperty Name="Product" Relationship="Self.FK__SalesInfo__IdPro__0A9D95DB" FromRole="SalesInfo" ToRole="Product" />
-          <NavigationProperty Name="SalesReport" Relationship="Self.FK__SalesInfo__IdSal__09A971A2" FromRole="SalesInfo" ToRole="SalesReport" />
-          <NavigationProperty Name="SerialNumber" Relationship="Self.FK__SalesInfo__IdSer__0B91BA14" FromRole="SalesInfo" ToRole="SerialNumber" />
+          <NavigationProperty Name="Product" Relationship="Self.FK__SalesInfo__IdPro__0C85DE4D" FromRole="SalesInfo" ToRole="Product" />
+          <NavigationProperty Name="SalesReport" Relationship="Self.FK__SalesInfo__IdSal__0B91BA14" FromRole="SalesInfo" ToRole="SalesReport" />
+          <NavigationProperty Name="SerialNumber" Relationship="Self.FK__SalesInfo__IdSer__0D7A0286" FromRole="SalesInfo" ToRole="SerialNumber" />
         </EntityType>
         <EntityType Name="SalesReport">
           <Key>
@@ -826,8 +858,8 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="DataSales" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="IdStore" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="SalesInfo" Relationship="Self.FK__SalesInfo__IdSal__09A971A2" FromRole="SalesReport" ToRole="SalesInfo" />
-          <NavigationProperty Name="Store" Relationship="Self.FK__SalesRepo__IdSto__03F0984C" FromRole="SalesReport" ToRole="Store" />
+          <NavigationProperty Name="SalesInfo" Relationship="Self.FK__SalesInfo__IdSal__0B91BA14" FromRole="SalesReport" ToRole="SalesInfo" />
+          <NavigationProperty Name="Store" Relationship="Self.FK__SalesRepo__IdSto__05D8E0BE" FromRole="SalesReport" ToRole="Store" />
         </EntityType>
         <EntityType Name="SerialNumber">
           <Key>
@@ -837,8 +869,10 @@
           <Property Name="Value" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="SelleDate" Type="DateTime" Precision="0" />
           <Property Name="PurchaseDate" Type="DateTime" Nullable="false" Precision="0" />
-          <NavigationProperty Name="SalesInfo" Relationship="Self.FK__SalesInfo__IdSer__0B91BA14" FromRole="SerialNumber" ToRole="SalesInfo" />
-          <NavigationProperty Name="Warranty" Relationship="Self.FK__Warranty__IdSeri__114A936A" FromRole="SerialNumber" ToRole="Warranty" />
+          <Property Name="IdProduct" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Product" Relationship="Self.FK__SerialNum__IdPro__02FC7413" FromRole="SerialNumber" ToRole="Product" />
+          <NavigationProperty Name="SalesInfo" Relationship="Self.FK__SalesInfo__IdSer__0D7A0286" FromRole="SerialNumber" ToRole="SalesInfo" />
+          <NavigationProperty Name="Warranty" Relationship="Self.FK__Warranty__IdSeri__1332DBDC" FromRole="SerialNumber" ToRole="Warranty" />
         </EntityType>
         <EntityType Name="Store">
           <Key>
@@ -847,9 +881,9 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Title" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="NomenclatureGroup" Relationship="Self.FK__Nomenclat__IdSto__440B1D61" FromRole="Store" ToRole="NomenclatureGroup" />
-          <NavigationProperty Name="PurchaseReport" Relationship="Self.FK__PurchaseR__IdSto__75A278F5" FromRole="Store" ToRole="PurchaseReport" />
-          <NavigationProperty Name="SalesReport" Relationship="Self.FK__SalesRepo__IdSto__03F0984C" FromRole="Store" ToRole="SalesReport" />
-          <NavigationProperty Name="Supplier" Relationship="Self.FK__Supplier__IdStor__72C60C4A" FromRole="Store" ToRole="Supplier" />
+          <NavigationProperty Name="PurchaseReport" Relationship="Self.FK__PurchaseR__IdSto__76969D2E" FromRole="Store" ToRole="PurchaseReport" />
+          <NavigationProperty Name="SalesReport" Relationship="Self.FK__SalesRepo__IdSto__05D8E0BE" FromRole="Store" ToRole="SalesReport" />
+          <NavigationProperty Name="Supplier" Relationship="Self.FK__Supplier__IdStor__73BA3083" FromRole="Store" ToRole="Supplier" />
         </EntityType>
         <EntityType Name="Supplier">
           <Key>
@@ -858,9 +892,9 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Title" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="IdStore" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="PurchaseReport" Relationship="Self.FK__PurchaseR__IdSup__76969D2E" FromRole="Supplier" ToRole="PurchaseReport" />
-          <NavigationProperty Name="Store" Relationship="Self.FK__Supplier__IdStor__72C60C4A" FromRole="Supplier" ToRole="Store" />
-          <NavigationProperty Name="Warranty" Relationship="Self.FK__Warranty__IdSupp__10566F31" FromRole="Supplier" ToRole="Warranty" />
+          <NavigationProperty Name="PurchaseReport" Relationship="Self.FK__PurchaseR__IdSup__778AC167" FromRole="Supplier" ToRole="PurchaseReport" />
+          <NavigationProperty Name="Store" Relationship="Self.FK__Supplier__IdStor__73BA3083" FromRole="Supplier" ToRole="Store" />
+          <NavigationProperty Name="Warranty" Relationship="Self.FK__Warranty__IdSupp__123EB7A3" FromRole="Supplier" ToRole="Warranty" />
         </EntityType>
         <EntityType Name="UnitStorage">
           <Key>
@@ -868,7 +902,7 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Title" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="Product" Relationship="Self.FK__Product__IdUnitS__5FB337D6" FromRole="UnitStorage" ToRole="Product" />
+          <NavigationProperty Name="Product" Relationship="Self.FK__Product__IdUnitS__60A75C0F" FromRole="UnitStorage" ToRole="Product" />
         </EntityType>
         <EntityType Name="Warranty">
           <Key>
@@ -882,18 +916,18 @@
           <Property Name="Info" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
           <Property Name="IdSupplier" Type="Int32" Nullable="false" />
           <Property Name="IdSerialNumber" Type="Int32" />
-          <NavigationProperty Name="SerialNumber" Relationship="Self.FK__Warranty__IdSeri__114A936A" FromRole="Warranty" ToRole="SerialNumber" />
-          <NavigationProperty Name="Supplier" Relationship="Self.FK__Warranty__IdSupp__10566F31" FromRole="Warranty" ToRole="Supplier" />
+          <NavigationProperty Name="SerialNumber" Relationship="Self.FK__Warranty__IdSeri__1332DBDC" FromRole="Warranty" ToRole="SerialNumber" />
+          <NavigationProperty Name="Supplier" Relationship="Self.FK__Warranty__IdSupp__123EB7A3" FromRole="Warranty" ToRole="Supplier" />
         </EntityType>
         <EntityType Name="WarrantyPeriod">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Period" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Product" Relationship="Self.FK__Product__IdWarra__619B8048" FromRole="WarrantyPeriod" ToRole="Product" />
+          <Property Name="Period" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Product" Relationship="Self.FK__Product__IdWarra__628FA481" FromRole="WarrantyPeriod" ToRole="Product" />
         </EntityType>
-        <Association Name="FK__Product__IdExcha__60A75C0F">
+        <Association Name="FK__Product__IdExcha__619B8048">
           <End Role="ExchangeRate" Type="Self.ExchangeRate" Multiplicity="1" />
           <End Role="Product" Type="Self.Product" Multiplicity="*" />
           <ReferentialConstraint>
@@ -905,7 +939,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__PurchaseI__IdExc__7D439ABD">
+        <Association Name="FK__PurchaseI__IdExc__7E37BEF6">
           <End Role="ExchangeRate" Type="Self.ExchangeRate" Multiplicity="1" />
           <End Role="PurchaseInfo" Type="Self.PurchaseInfo" Multiplicity="*" />
           <ReferentialConstraint>
@@ -941,7 +975,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__PropertyN__IdNom__66603565">
+        <Association Name="FK__PropertyN__IdNom__6754599E">
           <End Role="NomenclatureGroup" Type="Self.NomenclatureGroup" Multiplicity="1" />
           <End Role="PropertyName" Type="Self.PropertyName" Multiplicity="*" />
           <ReferentialConstraint>
@@ -965,7 +999,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Product__IdNomen__5EBF139D">
+        <Association Name="FK__Product__IdNomen__5FB337D6">
           <End Role="NomenclatureSubGroup" Type="Self.NomenclatureSubGroup" Multiplicity="1" />
           <End Role="Product" Type="Self.Product" Multiplicity="*" />
           <ReferentialConstraint>
@@ -977,7 +1011,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Product__IdUnitS__5FB337D6">
+        <Association Name="FK__Product__IdUnitS__60A75C0F">
           <End Role="UnitStorage" Type="Self.UnitStorage" Multiplicity="1" />
           <End Role="Product" Type="Self.Product" Multiplicity="*" />
           <ReferentialConstraint>
@@ -989,7 +1023,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Product__IdWarra__619B8048">
+        <Association Name="FK__Product__IdWarra__628FA481">
           <End Role="WarrantyPeriod" Type="Self.WarrantyPeriod" Multiplicity="1" />
           <End Role="Product" Type="Self.Product" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1001,7 +1035,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__PropertyP__IdPro__6E01572D">
+        <Association Name="FK__PropertyP__IdPro__6EF57B66">
           <End Role="Product" Type="Self.Product" Multiplicity="1" />
           <End Role="PropertyProduct" Type="Self.PropertyProduct" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1013,7 +1047,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__PurchaseI__IdPro__7C4F7684">
+        <Association Name="FK__PurchaseI__IdPro__7D439ABD">
           <End Role="Product" Type="Self.Product" Multiplicity="1" />
           <End Role="PurchaseInfo" Type="Self.PurchaseInfo" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1037,7 +1071,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__SalesInfo__IdPro__0A9D95DB">
+        <Association Name="FK__SalesInfo__IdPro__0C85DE4D">
           <End Role="Product" Type="Self.Product" Multiplicity="1" />
           <End Role="SalesInfo" Type="Self.SalesInfo" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1049,7 +1083,19 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__PropertyV__IdPro__6A30C649">
+        <Association Name="FK__SerialNum__IdPro__02FC7413">
+          <End Role="Product" Type="Self.Product" Multiplicity="1" />
+          <End Role="SerialNumber" Type="Self.SerialNumber" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SerialNumber">
+              <PropertyRef Name="IdProduct" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PropertyV__IdPro__6B24EA82">
           <End Role="PropertyName" Type="Self.PropertyName" Multiplicity="1" />
           <End Role="PropertyValue" Type="Self.PropertyValue" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1061,7 +1107,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__PropertyP__IdPro__6EF57B66">
+        <Association Name="FK__PropertyP__IdPro__6FE99F9F">
           <End Role="PropertyValue" Type="Self.PropertyValue" Multiplicity="1" />
           <End Role="PropertyProduct" Type="Self.PropertyProduct" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1073,7 +1119,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__PurchaseI__IdPur__7B5B524B">
+        <Association Name="FK__PurchaseI__IdPur__7C4F7684">
           <End Role="PurchaseReport" Type="Self.PurchaseReport" Multiplicity="1" />
           <End Role="PurchaseInfo" Type="Self.PurchaseInfo" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1085,7 +1131,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__PurchaseR__IdSto__75A278F5">
+        <Association Name="FK__PurchaseR__IdSto__76969D2E">
           <End Role="Store" Type="Self.Store" Multiplicity="1" />
           <End Role="PurchaseReport" Type="Self.PurchaseReport" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1097,7 +1143,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__PurchaseR__IdSup__76969D2E">
+        <Association Name="FK__PurchaseR__IdSup__778AC167">
           <End Role="Supplier" Type="Self.Supplier" Multiplicity="1" />
           <End Role="PurchaseReport" Type="Self.PurchaseReport" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1109,7 +1155,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__SalesInfo__IdSal__09A971A2">
+        <Association Name="FK__SalesInfo__IdSal__0B91BA14">
           <End Role="SalesReport" Type="Self.SalesReport" Multiplicity="1" />
           <End Role="SalesInfo" Type="Self.SalesInfo" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1121,7 +1167,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__SalesInfo__IdSer__0B91BA14">
+        <Association Name="FK__SalesInfo__IdSer__0D7A0286">
           <End Role="SerialNumber" Type="Self.SerialNumber" Multiplicity="0..1" />
           <End Role="SalesInfo" Type="Self.SalesInfo" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1133,7 +1179,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__SalesRepo__IdSto__03F0984C">
+        <Association Name="FK__SalesRepo__IdSto__05D8E0BE">
           <End Role="Store" Type="Self.Store" Multiplicity="1" />
           <End Role="SalesReport" Type="Self.SalesReport" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1145,7 +1191,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Warranty__IdSeri__114A936A">
+        <Association Name="FK__Warranty__IdSeri__1332DBDC">
           <End Role="SerialNumber" Type="Self.SerialNumber" Multiplicity="0..1" />
           <End Role="Warranty" Type="Self.Warranty" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1157,7 +1203,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Supplier__IdStor__72C60C4A">
+        <Association Name="FK__Supplier__IdStor__73BA3083">
           <End Role="Store" Type="Self.Store" Multiplicity="1" />
           <End Role="Supplier" Type="Self.Supplier" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1169,7 +1215,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Warranty__IdSupp__10566F31">
+        <Association Name="FK__Warranty__IdSupp__123EB7A3">
           <End Role="Supplier" Type="Self.Supplier" Multiplicity="1" />
           <End Role="Warranty" Type="Self.Warranty" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1201,11 +1247,11 @@
           <EntitySet Name="UnitStorage" EntityType="Self.UnitStorage" />
           <EntitySet Name="Warranty" EntityType="Self.Warranty" />
           <EntitySet Name="WarrantyPeriod" EntityType="Self.WarrantyPeriod" />
-          <AssociationSet Name="FK__Product__IdExcha__60A75C0F" Association="Self.FK__Product__IdExcha__60A75C0F">
+          <AssociationSet Name="FK__Product__IdExcha__619B8048" Association="Self.FK__Product__IdExcha__619B8048">
             <End Role="ExchangeRate" EntitySet="ExchangeRate" />
             <End Role="Product" EntitySet="Product" />
           </AssociationSet>
-          <AssociationSet Name="FK__PurchaseI__IdExc__7D439ABD" Association="Self.FK__PurchaseI__IdExc__7D439ABD">
+          <AssociationSet Name="FK__PurchaseI__IdExc__7E37BEF6" Association="Self.FK__PurchaseI__IdExc__7E37BEF6">
             <End Role="ExchangeRate" EntitySet="ExchangeRate" />
             <End Role="PurchaseInfo" EntitySet="PurchaseInfo" />
           </AssociationSet>
@@ -1217,7 +1263,7 @@
             <End Role="Store" EntitySet="Store" />
             <End Role="NomenclatureGroup" EntitySet="NomenclatureGroup" />
           </AssociationSet>
-          <AssociationSet Name="FK__PropertyN__IdNom__66603565" Association="Self.FK__PropertyN__IdNom__66603565">
+          <AssociationSet Name="FK__PropertyN__IdNom__6754599E" Association="Self.FK__PropertyN__IdNom__6754599E">
             <End Role="NomenclatureGroup" EntitySet="NomenclatureGroup" />
             <End Role="PropertyName" EntitySet="PropertyName" />
           </AssociationSet>
@@ -1225,23 +1271,23 @@
             <End Role="PriceGroup" EntitySet="PriceGroup" />
             <End Role="NomenclatureSubGroup" EntitySet="NomenclatureSubGroup" />
           </AssociationSet>
-          <AssociationSet Name="FK__Product__IdNomen__5EBF139D" Association="Self.FK__Product__IdNomen__5EBF139D">
+          <AssociationSet Name="FK__Product__IdNomen__5FB337D6" Association="Self.FK__Product__IdNomen__5FB337D6">
             <End Role="NomenclatureSubGroup" EntitySet="NomenclatureSubGroup" />
             <End Role="Product" EntitySet="Product" />
           </AssociationSet>
-          <AssociationSet Name="FK__Product__IdUnitS__5FB337D6" Association="Self.FK__Product__IdUnitS__5FB337D6">
+          <AssociationSet Name="FK__Product__IdUnitS__60A75C0F" Association="Self.FK__Product__IdUnitS__60A75C0F">
             <End Role="UnitStorage" EntitySet="UnitStorage" />
             <End Role="Product" EntitySet="Product" />
           </AssociationSet>
-          <AssociationSet Name="FK__Product__IdWarra__619B8048" Association="Self.FK__Product__IdWarra__619B8048">
+          <AssociationSet Name="FK__Product__IdWarra__628FA481" Association="Self.FK__Product__IdWarra__628FA481">
             <End Role="WarrantyPeriod" EntitySet="WarrantyPeriod" />
             <End Role="Product" EntitySet="Product" />
           </AssociationSet>
-          <AssociationSet Name="FK__PropertyP__IdPro__6E01572D" Association="Self.FK__PropertyP__IdPro__6E01572D">
+          <AssociationSet Name="FK__PropertyP__IdPro__6EF57B66" Association="Self.FK__PropertyP__IdPro__6EF57B66">
             <End Role="Product" EntitySet="Product" />
             <End Role="PropertyProduct" EntitySet="PropertyProduct" />
           </AssociationSet>
-          <AssociationSet Name="FK__PurchaseI__IdPro__7C4F7684" Association="Self.FK__PurchaseI__IdPro__7C4F7684">
+          <AssociationSet Name="FK__PurchaseI__IdPro__7D439ABD" Association="Self.FK__PurchaseI__IdPro__7D439ABD">
             <End Role="Product" EntitySet="Product" />
             <End Role="PurchaseInfo" EntitySet="PurchaseInfo" />
           </AssociationSet>
@@ -1249,78 +1295,69 @@
             <End Role="Product" EntitySet="Product" />
             <End Role="RevaluationProduct" EntitySet="RevaluationProduct" />
           </AssociationSet>
-          <AssociationSet Name="FK__SalesInfo__IdPro__0A9D95DB" Association="Self.FK__SalesInfo__IdPro__0A9D95DB">
+          <AssociationSet Name="FK__SalesInfo__IdPro__0C85DE4D" Association="Self.FK__SalesInfo__IdPro__0C85DE4D">
             <End Role="Product" EntitySet="Product" />
             <End Role="SalesInfo" EntitySet="SalesInfo" />
           </AssociationSet>
-          <AssociationSet Name="FK__PropertyV__IdPro__6A30C649" Association="Self.FK__PropertyV__IdPro__6A30C649">
+          <AssociationSet Name="FK__SerialNum__IdPro__02FC7413" Association="Self.FK__SerialNum__IdPro__02FC7413">
+            <End Role="Product" EntitySet="Product" />
+            <End Role="SerialNumber" EntitySet="SerialNumber" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PropertyV__IdPro__6B24EA82" Association="Self.FK__PropertyV__IdPro__6B24EA82">
             <End Role="PropertyName" EntitySet="PropertyName" />
             <End Role="PropertyValue" EntitySet="PropertyValue" />
           </AssociationSet>
-          <AssociationSet Name="FK__PropertyP__IdPro__6EF57B66" Association="Self.FK__PropertyP__IdPro__6EF57B66">
+          <AssociationSet Name="FK__PropertyP__IdPro__6FE99F9F" Association="Self.FK__PropertyP__IdPro__6FE99F9F">
             <End Role="PropertyValue" EntitySet="PropertyValue" />
             <End Role="PropertyProduct" EntitySet="PropertyProduct" />
           </AssociationSet>
-          <AssociationSet Name="FK__PurchaseI__IdPur__7B5B524B" Association="Self.FK__PurchaseI__IdPur__7B5B524B">
+          <AssociationSet Name="FK__PurchaseI__IdPur__7C4F7684" Association="Self.FK__PurchaseI__IdPur__7C4F7684">
             <End Role="PurchaseReport" EntitySet="PurchaseReport" />
             <End Role="PurchaseInfo" EntitySet="PurchaseInfo" />
           </AssociationSet>
-          <AssociationSet Name="FK__PurchaseR__IdSto__75A278F5" Association="Self.FK__PurchaseR__IdSto__75A278F5">
+          <AssociationSet Name="FK__PurchaseR__IdSto__76969D2E" Association="Self.FK__PurchaseR__IdSto__76969D2E">
             <End Role="Store" EntitySet="Store" />
             <End Role="PurchaseReport" EntitySet="PurchaseReport" />
           </AssociationSet>
-          <AssociationSet Name="FK__PurchaseR__IdSup__76969D2E" Association="Self.FK__PurchaseR__IdSup__76969D2E">
+          <AssociationSet Name="FK__PurchaseR__IdSup__778AC167" Association="Self.FK__PurchaseR__IdSup__778AC167">
             <End Role="Supplier" EntitySet="Supplier" />
             <End Role="PurchaseReport" EntitySet="PurchaseReport" />
           </AssociationSet>
-          <AssociationSet Name="FK__SalesInfo__IdSal__09A971A2" Association="Self.FK__SalesInfo__IdSal__09A971A2">
+          <AssociationSet Name="FK__SalesInfo__IdSal__0B91BA14" Association="Self.FK__SalesInfo__IdSal__0B91BA14">
             <End Role="SalesReport" EntitySet="SalesReport" />
             <End Role="SalesInfo" EntitySet="SalesInfo" />
           </AssociationSet>
-          <AssociationSet Name="FK__SalesInfo__IdSer__0B91BA14" Association="Self.FK__SalesInfo__IdSer__0B91BA14">
+          <AssociationSet Name="FK__SalesInfo__IdSer__0D7A0286" Association="Self.FK__SalesInfo__IdSer__0D7A0286">
             <End Role="SerialNumber" EntitySet="SerialNumber" />
             <End Role="SalesInfo" EntitySet="SalesInfo" />
           </AssociationSet>
-          <AssociationSet Name="FK__SalesRepo__IdSto__03F0984C" Association="Self.FK__SalesRepo__IdSto__03F0984C">
+          <AssociationSet Name="FK__SalesRepo__IdSto__05D8E0BE" Association="Self.FK__SalesRepo__IdSto__05D8E0BE">
             <End Role="Store" EntitySet="Store" />
             <End Role="SalesReport" EntitySet="SalesReport" />
           </AssociationSet>
-          <AssociationSet Name="FK__Warranty__IdSeri__114A936A" Association="Self.FK__Warranty__IdSeri__114A936A">
+          <AssociationSet Name="FK__Warranty__IdSeri__1332DBDC" Association="Self.FK__Warranty__IdSeri__1332DBDC">
             <End Role="SerialNumber" EntitySet="SerialNumber" />
             <End Role="Warranty" EntitySet="Warranty" />
           </AssociationSet>
-          <AssociationSet Name="FK__Supplier__IdStor__72C60C4A" Association="Self.FK__Supplier__IdStor__72C60C4A">
+          <AssociationSet Name="FK__Supplier__IdStor__73BA3083" Association="Self.FK__Supplier__IdStor__73BA3083">
             <End Role="Store" EntitySet="Store" />
             <End Role="Supplier" EntitySet="Supplier" />
           </AssociationSet>
-          <AssociationSet Name="FK__Warranty__IdSupp__10566F31" Association="Self.FK__Warranty__IdSupp__10566F31">
+          <AssociationSet Name="FK__Warranty__IdSupp__123EB7A3" Association="Self.FK__Warranty__IdSupp__123EB7A3">
             <End Role="Supplier" EntitySet="Supplier" />
             <End Role="Warranty" EntitySet="Warranty" />
           </AssociationSet>
           <FunctionImport Name="AllProductView" IsComposable="true" ReturnType="Collection(StoreModel.AllProductView_Result)">
-          <Parameter Name="idStore" Mode="In" Type="Int32" />
+            <Parameter Name="idStore" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="ProductView" IsComposable="true" ReturnType="Collection(StoreModel.ProductView_Result)">
-          <Parameter Name="idNomenclatureSubGroup" Mode="In" Type="Int32" />
+            <Parameter Name="idNomenclatureSubGroup" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="ProductViewByTitle" IsComposable="true" ReturnType="Collection(StoreModel.ProductViewByTitle_Result)">
             <Parameter Name="idStore" Mode="In" Type="Int32" />
             <Parameter Name="findStr" Mode="In" Type="String" />
           </FunctionImport>
         </EntityContainer>
-        <ComplexType Name="ProductViewByTitle_Result">
-          <Property Type="Int32" Name="Id" Nullable="false" />
-          <Property Type="String" Name="Barcode" Nullable="true" MaxLength="13" />
-          <Property Type="Int32" Name="Count" Nullable="false" />
-          <Property Type="String" Name="ExchangeRate" Nullable="true" MaxLength="10" />
-          <Property Type="String" Name="UnitStorage" Nullable="true" MaxLength="20" />
-          <Property Type="Int32" Name="WarrantyPeriod" Nullable="true" />
-          <Property Type="Decimal" Name="PurchasePrice" Nullable="false" Precision="19" Scale="4" />
-          <Property Type="Decimal" Name="SalesPrice" Nullable="false" Precision="19" Scale="4" />
-          <Property Type="String" Name="Title" Nullable="false" MaxLength="120" />
-          <Property Type="String" Name="VendorCode" Nullable="true" MaxLength="20" />
-          <Property Type="Int32" Name="IdNomenclatureSubGroup" Nullable="false" />
-        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1468,6 +1505,7 @@
                 <ScalarProperty Name="Value" ColumnName="Value" />
                 <ScalarProperty Name="SelleDate" ColumnName="SelleDate" />
                 <ScalarProperty Name="PurchaseDate" ColumnName="PurchaseDate" />
+                <ScalarProperty Name="IdProduct" ColumnName="IdProduct" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1552,7 +1590,7 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="ProductViewByTitle" FunctionName="Хранилище StoreModel.ProductViewByTitle">
+          <FunctionImportMapping FunctionName="Хранилище StoreModel.ProductViewByTitle" FunctionImportName="ProductViewByTitle">
             <ResultMapping>
               <ComplexTypeMapping TypeName="StoreModel.ProductViewByTitle_Result">
                 <ScalarProperty Name="Id" ColumnName="Id" />
