@@ -7,13 +7,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RulezzClient", "RulezzClien
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomControlLibrary", "CustomControlLibrary\CustomControlLibrary.csproj", "{BA906062-87B9-41E7-B1EE-A44007EB8933}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductModul", "ShowProductModel\ProductModul.csproj", "{A2C817E8-9AF6-4724-A7CF-3F6F2F8EB427}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductModul", "ProductModel\ProductModul.csproj", "{A2C817E8-9AF6-4724-A7CF-3F6F2F8EB427}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelModul", "ModelModul\ModelModul.csproj", "{C1088933-3223-41A0-A687-8D34C8A1E104}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Moduls", "Moduls", "{1959A74B-683C-4F60-B692-40068E978177}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GroupModul", "ShowGroupModul\GroupModul.csproj", "{06EB7CE3-8C9C-4BD6-BF72-4CAAB19B22F0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GroupModul", "GroupModul\GroupModul.csproj", "{06EB7CE3-8C9C-4BD6-BF72-4CAAB19B22F0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Library", "Library", "{03B06937-A9C7-41CB-938F-01059B7FE969}"
 EndProject
