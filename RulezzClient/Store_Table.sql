@@ -14,7 +14,7 @@ USE Store
 * Title наименование валюты
 * Сourse курс
 */
-CREATE TABLE ExchangeRate(
+CREATE TABLE ExchangeRates(
 	Id INT PRIMARY KEY IDENTITY,
 	Title NVARCHAR(10) NOT NULL UNIQUE CHECK(Title !=''),
 	Сourse FLOAT NOT NULL UNIQUE CHECK(Сourse >= 0),
@@ -26,23 +26,22 @@ GO
 * Store таблица магазинов
 * Title наименование магазина
 */
-CREATE TABLE Store(
+CREATE TABLE Stores(
 	Id INT PRIMARY KEY IDENTITY,
 	Title NVARCHAR(20) NOT NULL UNIQUE CHECK(Title !='')
 )
 GO
 
 /*
-* NomenclatureGroup таблица номенклатурных групп
+* Group группы
 * Title наименование группы
-* IdStore id магазина
 */
-CREATE TABLE NomenclatureGroup(
+CREATE TABLE Groups(
 	Id INT PRIMARY KEY IDENTITY,
 	Title NVARCHAR(20) NOT NULL CHECK(Title !=''),
-	IdStore INT NOT NULL,
-	FOREIGN KEY (IdStore) REFERENCES Store (Id),
-	CONSTRAINT UQ_NomenclatureGroup_TitleIdStore UNIQUE (Title, IdStore)
+	IdParentGroup INT,
+	FOREIGN KEY (IdParentGroup) REFERENCES Groups (Id),
+	CONSTRAINT UQ_Group_TitleIdParentGroup UNIQUE (Title, IdParentGroup)
 )
 GO
 
@@ -50,25 +49,9 @@ GO
 * PriceGroup таблица наценок
 * Markup наценка
 */
-CREATE TABLE PriceGroup(
+CREATE TABLE PriceGroups(
 	Id INT PRIMARY KEY IDENTITY,
 	Markup float NOT NULL UNIQUE CHECK(Markup >= 0),
-)
-GO
-
-/*
-* NomenclatureSubGroup таблица номенклатурных подгрупп
-* Title наименование группы
-* IdNomenclatureGroup id номенклатурной группы
-*/
-CREATE TABLE NomenclatureSubGroup(
-	Id INT PRIMARY KEY IDENTITY,
-	Title NVARCHAR(20) NOT NULL CHECK(Title !=''),
-	IdNomenclatureGroup INT NOT NULL,
-	IdPriceGroup INT NOT NULL,
-	FOREIGN KEY (IdNomenclatureGroup) REFERENCES NomenclatureGroup (Id),
-	FOREIGN KEY (IdPriceGroup) REFERENCES PriceGroup (Id),
-	CONSTRAINT UQ_NomenclatureSubGroup_TitleIdNomenclatureGroup UNIQUE (Title, IdNomenclatureGroup)
 )
 GO
 
@@ -76,7 +59,7 @@ GO
 * UnitStorage таблица типов хранения
 * Title наименование типа
 */
-CREATE TABLE UnitStorage(
+CREATE TABLE UnitStorages(
 	Id INT PRIMARY KEY IDENTITY,
 	Title NVARCHAR(20) NOT NULL UNIQUE CHECK(Title !=''),
 )
@@ -86,7 +69,7 @@ GO
 * WarrantyPeriod таблица сроков гарантии
 * Period срок
 */
-CREATE TABLE WarrantyPeriod(
+CREATE TABLE WarrantyPeriods(
 	Id INT PRIMARY KEY IDENTITY,
 	Period NVARCHAR(20) NOT NULL UNIQUE CHECK(Period != ''),
 )
@@ -97,44 +80,42 @@ GO
 * Title наименование товара
 * VendorCode код производителя
 * Barcode штрихкод
-* Count кол-во
 * PurchasePrice закупочная цена
 * SalesPrice цена продажи
-* IdNomenclatureSubGroup id номенклатурной подгруппы
 * IdUnitStorage id типа хранения
 * IdExchangeRate id валюты для закупочной цены
 * IdWarrantyPeriod id гарантийного срока
+* IdGroup id группы
 */
-CREATE TABLE Product(
+CREATE TABLE Products(
 	Id INT PRIMARY KEY IDENTITY,
 	Title NVARCHAR(120) NOT NULL CHECK(Title !='') UNIQUE,
 	VendorCode NVARCHAR(20) NULL,
 	Barcode NVARCHAR(13) NULL,
-	Count INT NOT NULL DEFAULT 0 CHECK(Count >= 0),
 	PurchasePrice MONEY NOT NULL DEFAULT 0 CHECK(PurchasePrice >= 0),
 	SalesPrice MONEY NOT NULL DEFAULT 0 CHECK(SalesPrice >= 0),
-	IdNomenclatureSubGroup INT NOT NULL,
 	IdUnitStorage INT NOT NULL,
 	IdExchangeRate INT NOT NULL,
 	IdWarrantyPeriod INT NOT NULL,
-	FOREIGN KEY (IdNomenclatureSubGroup) REFERENCES NomenclatureSubGroup (Id),
-	FOREIGN KEY (IdUnitStorage) REFERENCES UnitStorage (Id),
-	FOREIGN KEY (IdExchangeRate) REFERENCES ExchangeRate (Id),
-	FOREIGN KEY (IdWarrantyPeriod) REFERENCES WarrantyPeriod (Id),
+	IdGroup INT NOT NULL,
+	FOREIGN KEY (IdUnitStorage) REFERENCES UnitStorages (Id),
+	FOREIGN KEY (IdExchangeRate) REFERENCES ExchangeRates (Id),
+	FOREIGN KEY (IdWarrantyPeriod) REFERENCES WarrantyPeriods (Id),
+	FOREIGN KEY (IdGroup) REFERENCES Groups (Id)
 )
 GO
 
 /*
 * PropertyName таблица наименований параметров товара
 * Title наименование параметра
-* IdNomenclatureSubGroup id номенклатурной группы
+* IdGroup id группы
 */
-CREATE TABLE PropertyName(
+CREATE TABLE PropertyNames(
 	Id INT PRIMARY KEY IDENTITY,
 	Title NVARCHAR(20) NOT NULL CHECK(Title !=''),
-	IdNomenclatureGroup INT NOT NULL,
-	FOREIGN KEY (IdNomenclatureGroup) REFERENCES NomenclatureGroup (Id),
-	CONSTRAINT UQ_PropertyName_TitleIdNomenclatureGroup UNIQUE (Title, IdNomenclatureGroup)
+	IdGroup INT NOT NULL,
+	FOREIGN KEY (IdGroup) REFERENCES Groups (Id),
+	CONSTRAINT UQ_PropertyName_TitleIdGroup UNIQUE (Title, IdGroup)
 )
 GO
 
@@ -143,11 +124,11 @@ GO
 * Value значние параметра
 * IdPropertyName id наименования параметра
 */
-CREATE TABLE PropertyValue(
+CREATE TABLE PropertyValues(
 	Id INT PRIMARY KEY IDENTITY,
 	Value NVARCHAR(50) NOT NULL,
 	IdPropertyName INT NOT NULL,
-	FOREIGN KEY (IdPropertyName) REFERENCES PropertyName (Id),
+	FOREIGN KEY (IdPropertyName) REFERENCES PropertyNames (Id),
 	CONSTRAINT UQ_PropertyValue_ValueIdPropertyName UNIQUE (Value, IdPropertyName)
 )
 GO
@@ -157,12 +138,12 @@ GO
 * IdProduct id продукта
 * IdPropertyValue id значения параметра
 */
-CREATE TABLE PropertyProduct(
+CREATE TABLE PropertyProducts(
 	Id INT PRIMARY KEY IDENTITY,
 	IdProduct INT NOT NULL,
 	IdPropertyValue INT NOT NULL,
-	FOREIGN KEY (IdProduct) REFERENCES Product (Id),
-	FOREIGN KEY (IdPropertyValue) REFERENCES PropertyValue (Id),
+	FOREIGN KEY (IdProduct) REFERENCES Products (Id),
+	FOREIGN KEY (IdPropertyValue) REFERENCES PropertyValues (Id),
 	CONSTRAINT UQ_PropertyProduct_IdProductIdPropertyValue UNIQUE (IdProduct, IdPropertyValue)
 )
 GO
@@ -172,11 +153,11 @@ GO
 * Title поставщик
 * IdStore id магазина
 */
-CREATE TABLE Supplier(
+CREATE TABLE Suppliers(
 	Id INT PRIMARY KEY IDENTITY,
 	Title NVARCHAR(20) NOT NULL,
 	IdStore INT NOT NULL,
-	FOREIGN KEY (IdStore) REFERENCES Store (Id),
+	FOREIGN KEY (IdStore) REFERENCES Stores (Id),
 	CONSTRAINT UQ_Supplier_TitleIdStore UNIQUE (Title, IdStore)
 )
 GO
@@ -187,13 +168,13 @@ GO
 * IdStore id магазина
 * IdSupplier id поставщика
 */
-CREATE TABLE PurchaseReport(
+CREATE TABLE PurchaseReports(
 	Id INT PRIMARY KEY IDENTITY,
 	DataOrder DATE NOT NULL,
 	IdStore INT NOT NULL,
 	IdSupplier INT NOT NULL,
-	FOREIGN KEY (IdStore) REFERENCES Store (Id),
-	FOREIGN KEY (IdSupplier) REFERENCES Supplier (Id)
+	FOREIGN KEY (IdStore) REFERENCES Stores (Id),
+	FOREIGN KEY (IdSupplier) REFERENCES Suppliers (Id)
 )
 GO
 
@@ -205,16 +186,16 @@ GO
 * IdProduct id продукта
 * IdExchangeRate id валюты
 */
-CREATE TABLE PurchaseInfo(
+CREATE TABLE PurchaseInfos(
 	Id INT PRIMARY KEY IDENTITY,
 	Count INT NOT NULL CHECK (Count >= 0),
 	PurchasePrice MONEY NOT NULL CHECK (PurchasePrice >= 0),
 	IdPurchaseReport INT NOT NULL,
 	IdProduct INT NOT NULL,
 	IdExchangeRate INT NOT NULL,
-	FOREIGN KEY (IdPurchaseReport) REFERENCES PurchaseReport (Id),
-	FOREIGN KEY (IdProduct) REFERENCES Product (Id),
-	FOREIGN KEY (IdExchangeRate) REFERENCES ExchangeRate (Id)
+	FOREIGN KEY (IdPurchaseReport) REFERENCES PurchaseReports (Id),
+	FOREIGN KEY (IdProduct) REFERENCES Products (Id),
+	FOREIGN KEY (IdExchangeRate) REFERENCES ExchangeRates (Id)
 )
 GO
 
@@ -223,14 +204,18 @@ GO
 * Value серийный номер
 * SelleDate дата продажи
 * PurchaseDate дата покупки
+* IdProduct id продукта
+* IdSupplier id поставщика
 */
-CREATE TABLE SerialNumber(
+CREATE TABLE SerialNumbers(
 	Id INT PRIMARY KEY IDENTITY,
 	Value VARCHAR(20) NOT NULL UNIQUE CHECK (Value != ''),
 	SelleDate DATE NULL,	
 	PurchaseDate DATE NOT NULL,
 	IdProduct INT NOT NULL,
-	FOREIGN KEY (IdProduct) REFERENCES Product (Id) 
+	IdSupplier INT NOT NULL,
+	FOREIGN KEY (IdSupplier) REFERENCES Suppliers (Id),
+	FOREIGN KEY (IdProduct) REFERENCES Products (Id) 
 )
 GO
 
@@ -239,11 +224,11 @@ GO
 * DataSales дата продажи
 * IdStore id магазина
 */
-CREATE TABLE SalesReport(
+CREATE TABLE SalesReports(
 	Id INT PRIMARY KEY IDENTITY,
 	DataSales DATE NOT NULL,
 	IdStore INT NOT NULL,
-	FOREIGN KEY (IdStore) REFERENCES Store (Id)
+	FOREIGN KEY (IdStore) REFERENCES Stores (Id)
 )
 GO
 
@@ -255,16 +240,16 @@ GO
 * IdProduct id продукта
 * IdSerialNumber id серийного номера
 */
-CREATE TABLE SalesInfo(
+CREATE TABLE SalesInfos(
 	Id INT PRIMARY KEY IDENTITY,
 	Count INT NOT NULL CHECK (Count >= 0),
 	SellingPrice MONEY NOT NULL CHECK (SellingPrice >= 0),	
 	IdProduct INT NOT NULL,
 	IdSalesReport INT NOT NULL,
 	IdSerialNumber INT DEFAULT NULL,
-	FOREIGN KEY (IdSalesReport) REFERENCES SalesReport (Id),
-	FOREIGN KEY (IdProduct) REFERENCES Product (Id),
-	FOREIGN KEY (IdSerialNumber) REFERENCES SerialNumber (Id)
+	FOREIGN KEY (IdSalesReport) REFERENCES SalesReports (Id),
+	FOREIGN KEY (IdProduct) REFERENCES Products (Id),
+	FOREIGN KEY (IdSerialNumber) REFERENCES SerialNumbers (Id)
 )
 GO
 
@@ -278,7 +263,7 @@ GO
 * IdSupplier id поставщика
 * IdSerialNumber id серийного номера
 */
-CREATE TABLE Warranty(
+CREATE TABLE Warranties(
 	Id INT PRIMARY KEY IDENTITY,
 	Malfunction NVARCHAR(256) NOT NULL CHECK (Malfunction != ''),
 	DateReceipt DATE NOT NULL,	
@@ -287,17 +272,26 @@ CREATE TABLE Warranty(
 	Info NVARCHAR(256),
 	IdSupplier INT NOT NULL,
 	IdSerialNumber INT DEFAULT NULL,
-	FOREIGN KEY (IdSupplier) REFERENCES Supplier (Id),
-	FOREIGN KEY (IdSerialNumber) REFERENCES SerialNumber (Id)
+	FOREIGN KEY (IdSupplier) REFERENCES Suppliers (Id),
+	FOREIGN KEY (IdSerialNumber) REFERENCES SerialNumbers (Id)
 )
 GO
 
-CREATE TABLE RevaluationProduct(
+CREATE TABLE RevaluationProducts(
 	Id INT PRIMARY KEY IDENTITY,
 	IdProduct INT NOT NULL,
 	Date DATE NOT NULL,
 	OldSalesPrice MONEY NOT NULL,
 	NewSalesPrice MONEY NOT NULL,
-	FOREIGN KEY (IdProduct) REFERENCES Product (Id),
+	FOREIGN KEY (IdProduct) REFERENCES Products (Id),
+)
+GO
+
+CREATE TABLE CountProducts(
+	IdProduct INT NOT NULL,
+	IdStore INT NOT NULL,
+	Count INT NOT NULL DEFAULT 0,
+	FOREIGN KEY (IdProduct) REFERENCES Products (Id),
+	FOREIGN KEY (IdStore) REFERENCES Stores (Id)
 )
 GO

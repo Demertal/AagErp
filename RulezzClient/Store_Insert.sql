@@ -1,17 +1,20 @@
-INSERT INTO Store VALUES ('Rulezz'), ('Craft')
+INSERT INTO Groups(Title) VALUES ('Rulezz')
 
-INSERT INTO NomenclatureGroup VALUES ('Группа1', 1), ('Группа2', 1), ('Группа3', 2), ('Группа4', 2)
+INSERT INTO Groups(Title) VALUES ('Craft')
 
-INSERT INTO PriceGroup VALUES (1)
+INSERT INTO Groups VALUES ('Группа1', 2), ('Группа2', 1)
 
-INSERT INTO NomenclatureSubGroup (Title, IdNomenclatureGroup, IdPriceGroup) VALUES ('Группа1', 2, 1), ('Группа2', 2, 1), ('Группа3', 3, 1), ('Группа4', 3, 1),
- ('Группа5', 4, 1), ('Группа6', 4, 1), ('Группа7', 5, 1), ('Группа8', 5, 1)
+INSERT INTO Groups VALUES ('Группа3', 3), ('Группа4', 3)
 
- INSERT INTO WarrantyPeriod VALUES ('Нет'), ('14 дней')
+INSERT INTO PriceGroups VALUES (1)
 
- INSERT INTO UnitStorage VALUES ('шт')
+ INSERT INTO WarrantyPeriods VALUES ('Нет'), ('14 дней')
 
- INSERT INTO ExchangeRate VALUES ('грн', 1), ('USD', 20)
+ INSERT INTO UnitStorages VALUES ('шт')
 
- INSERT INTO Product (Title, VendorCode, Barcode, PurchasePrice, SalesPrice, IdNomenclatureSubGroup, IdUnitStorage, IdExchangeRate, IdWarrantyPeriod)
- VALUES ('asd', 'asd', 'asd',  2, 2, 4, 1, 1, 1)
+ INSERT INTO ExchangeRates VALUES ('грн', 1), ('USD', 20)
+
+ INSERT INTO Products (Title, VendorCode, Barcode, PurchasePrice, SalesPrice, IdUnitStorage, IdExchangeRate, IdWarrantyPeriod, IdGroup)
+ VALUES ('Товар1', 'ven1', 'bar1',  100, 200, 1, 1, 1, 1), ('Товар2', 'ven2', 'bar2',  200, 400, 1, 1, 2, 1),
+ ('Товар3', 'ven3', 'bar3',  200, 400, 1, 1, 1, 2), ('Товар4', 'ven4', 'bar4',  500, 800, 1, 1, 2, 2),
+ ('Товар5', 'ven5', 'bar5',  200, 400, 1, 1, 1, 3), ('Товар6', 'ven6', 'bar6',  200, 400, 1, 1, 2, 6)

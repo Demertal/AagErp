@@ -35,8 +35,9 @@
                         <DataGridTextColumn Header="Артикул"             Binding="{Binding Path=VendorCode, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True" MaxWidth="80"/>
                         <DataGridTextColumn Header="Цена закупки"        IsReadOnly="True" MaxWidth="100">
                             <DataGridTextColumn.Binding>
-                                <MultiBinding Converter="{StaticResource CurrencyConverter}">
-                                    <Binding/>
+                                <MultiBinding Converter="{StaticResource CurrencyConverter}" ValidatesOnExceptions="True">
+                                    <Binding Path="PurchasePrice"/>
+                                    <Binding Path="IdExchangeRate"/>
                                     <Binding Path="IsChecked" ElementName="BringPurchasePriceCh"/>
                                 </MultiBinding>
                             </DataGridTextColumn.Binding>

@@ -1,276 +1,190 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Windows;
-using Prism.Commands;
-using Prism.Mvvm;
+﻿//using System;
+//using System.Collections.ObjectModel;
+//using System.Linq;
+//using System.Windows;
+//using Prism.Commands;
+//using Prism.Mvvm;
 
-namespace RulezzClient.ViewModels
-{
-    class AddProductViewModel : BindableBase
-    {
-        public enum ChoiceUpdate : byte
-        {
-            Store,
-            NomenclatureGroup,
-            NomenclatureSubgroup,
-            UnitStorage,
-            WarrantyPeriod
-        }
+//namespace RulezzClient.ViewModels
+//{
+//    class AddProductViewModel : BindableBase
+//    {
+//        public enum ChoiceUpdate : byte
+//        {
+//            UnitStorage,
+//            WarrantyPeriod
+//        }
 
-        private Store _selectedStore;
-        private NomenclatureGroup _selectedNomenclatureGroup;
-        private NomenclatureSubGroup _selectedNomenclatureSubGroup;
-        private UnitStorage _selectedUnitStorage;
-        private WarrantyPeriod _selectedWarrantyPeriod;
+//        #region Parametrs
 
-        public StoreListVm StoreList = new StoreListVm();
-        public NomenclatureGroupListVm NomenclatureGroupList = new NomenclatureGroupListVm();
-        public NomenclatureSubgroupListVm NomenclatureSubgroupList = new NomenclatureSubgroupListVm();
-        public UnitStorageListVm UnitStorageList = new UnitStorageListVm();
-        public WarrantyPeriodListVm WarrantyPeriodList = new WarrantyPeriodListVm();
-        public Product Product = new Product();
+//        private UnitStorages _selectedUnitStorage;
+//        private WarrantyPeriods _selectedWarrantyPeriod;
+//        private ShowStructurVM _showStructur;
 
-        public ReadOnlyObservableCollection<Store> Stores => StoreList.Stores;
-        public ReadOnlyObservableCollection<NomenclatureGroup> NomenclatureGroups => NomenclatureGroupList.NomenclatureGroups;
-        public ReadOnlyObservableCollection<NomenclatureSubGroup> NomenclatureSubGroups => NomenclatureSubgroupList.NomenclatureSubGroups;
-        public ReadOnlyObservableCollection<UnitStorage> UnitStorages => UnitStorageList.UnitStorages;
-        public ReadOnlyObservableCollection<WarrantyPeriod> WarrantyPeriods => WarrantyPeriodList.WarrantyPeriods;
+//        public UnitStorageListVm UnitStorageList = new UnitStorageListVm();
+//        public WarrantyPeriodListVm WarrantyPeriodList = new WarrantyPeriodListVm();
+//        public Products Product = new Products();
 
-        public AddProductViewModel()
-        {
-            Update(ChoiceUpdate.Store);
-            Update(ChoiceUpdate.UnitStorage);
-            Update(ChoiceUpdate.WarrantyPeriod);
-            using (StoreEntities db = new StoreEntities())
-            {
-                ExchangeRate exchange = db.ExchangeRate.FirstOrDefault(r => r.Title == "грн");
-                Product.IdExchangeRate = exchange.Id;
-            }
+//        public ReadOnlyObservableCollection<UnitStorages> UnitStorages => UnitStorageList.UnitStorages;
+//        public ReadOnlyObservableCollection<WarrantyPeriods> WarrantyPeriods => WarrantyPeriodList.WarrantyPeriods;
 
-            AddProduct = new DelegateCommand(() =>
-            {
-                using (StoreEntities db = new StoreEntities())
-                {
-                    using (var transaction = db.Database.BeginTransaction())
-                    {
-                        try
-                        {
-                            db.Product.Add(Product);
-                            db.SaveChanges();
-                            transaction.Commit();
-                            Product.Id = 0;
-                            MessageBox.Show("Товар добавлен", "Успех", MessageBoxButton.OK);
-                        }
-                        catch (Exception ex)
-                        {
-                            transaction.Rollback();
-                            MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK,
-                                MessageBoxImage.Error);
-                        }
-                    }
-                }
-            });
-        }
+//        #endregion
 
-        public Store SelectedStore
-        {
-            get => _selectedStore;
-            set
-            {
-                _selectedStore = value;
-                Update(ChoiceUpdate.NomenclatureGroup);
-                RaisePropertyChanged();
-                RaisePropertyChanged("IsButtonAddEnabled");
-            }
-        }
+//        public AddProductViewModel()
+//        {
+//            ShowStructur = new ShowStructurVM();
+//            Update(ChoiceUpdate.UnitStorage);
+//            Update(ChoiceUpdate.WarrantyPeriod);
+//            using (StoreEntities db = new StoreEntities())
+//            {
+//                ExchangeRates exchange = db.ExchangeRates.FirstOrDefault(r => r.Title == "грн");
+//                if (exchange != null) Product.IdExchangeRate = exchange.Id;
+//                else throw new Exception("Нет старотовой валюты");
+//            }
 
-        public NomenclatureGroup SelectedNomenclatureGroup
-        {
-            get => _selectedNomenclatureGroup;
-            set
-            {
-                _selectedNomenclatureGroup = value;
-                Update(ChoiceUpdate.NomenclatureSubgroup);
-                RaisePropertyChanged();
-                RaisePropertyChanged("IsButtonAddEnabled");
-            }
-        }
+//            AddProduct = new DelegateCommand(() =>
+//            {
+//                using (StoreEntities db = new StoreEntities())
+//                {
+//                    using (var transaction = db.Database.BeginTransaction())
+//                    {
+//                        try
+//                        {
+//                            Product.IdGroup = ShowStructur.SelectedNode.Group.Id;
+//                            db.Products.Add(Product);
+//                            db.SaveChanges();
+//                            transaction.Commit();
+//                            Product.Id = 0;
+//                            MessageBox.Show("Товар добавлен", "Успех", MessageBoxButton.OK);
+//                        }
+//                        catch (Exception ex)
+//                        {
+//                            transaction.Rollback();
+//                            MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK,
+//                                MessageBoxImage.Error);
+//                        }
+//                    }
+//                }
+//            });
+//        }
 
-        public NomenclatureSubGroup SelectedNomenclatureSubGroup
-        {
-            get => _selectedNomenclatureSubGroup;
-            set
-            {
-                _selectedNomenclatureSubGroup = value;
-                if (_selectedNomenclatureSubGroup != null) Product.IdNomenclatureSubGroup = _selectedNomenclatureSubGroup.Id;
-                RaisePropertyChanged();
-                RaisePropertyChanged("IsButtonAddEnabled");
-            }
-        }
+//        #region GetSetMethod
 
-        public UnitStorage SelectedUnitStorage
-        {
-            get => _selectedUnitStorage;
-            set
-            {
-                _selectedUnitStorage = value;
-                if (_selectedUnitStorage != null) Product.IdUnitStorage = _selectedUnitStorage.Id;
-                RaisePropertyChanged();
-                RaisePropertyChanged("IsButtonAddEnabled");
-            }
-        }
+//        public UnitStorages SelectedUnitStorage
+//        {
+//            get => _selectedUnitStorage;
+//            set
+//            {
+//                _selectedUnitStorage = value;
+//                if (_selectedUnitStorage != null) Product.IdUnitStorage = _selectedUnitStorage.Id;
+//                RaisePropertyChanged();
+//                RaisePropertyChanged("IsButtonAddEnabled");
+//            }
+//        }
 
-        public WarrantyPeriod SelectedWarrantyPeriod
-        {
-            get => _selectedWarrantyPeriod;
-            set
-            {
-                _selectedWarrantyPeriod = value;
-                if (_selectedWarrantyPeriod != null) Product.IdWarrantyPeriod = _selectedWarrantyPeriod.Id;
-                RaisePropertyChanged();
-                RaisePropertyChanged("IsButtonAddEnabled");
-            }
-        }
+//        public WarrantyPeriods SelectedWarrantyPeriod
+//        {
+//            get => _selectedWarrantyPeriod;
+//            set
+//            {
+//                _selectedWarrantyPeriod = value;
+//                if (_selectedWarrantyPeriod != null) Product.IdWarrantyPeriod = _selectedWarrantyPeriod.Id;
+//                RaisePropertyChanged();
+//                RaisePropertyChanged("IsButtonAddEnabled");
+//            }
+//        }
 
-        public bool IsButtonAddEnabled => SelectedStore != null && SelectedNomenclatureGroup != null && SelectedNomenclatureSubGroup != null && SelectedUnitStorage != null && SelectedWarrantyPeriod != null && Product.Title != null && Product.Title != "";
+//        public bool IsButtonAddEnabled => SelectedUnitStorage != null && SelectedWarrantyPeriod != null && Product.Title != null && Product.Title != "" && ShowStructur?.SelectedNode != null;
 
-        public string Title
-        {
-            get => Product.Title;
-            set
-            {
-                Product.Title = value;
-                RaisePropertyChanged();
-                RaisePropertyChanged("IsButtonAddEnabled");
-            }
-        }
+//        public ShowStructurVM ShowStructur
+//        {
+//            get => _showStructur;
+//            set
+//            {
+//                _showStructur = value;
+//                RaisePropertyChanged();
+//            }
+//        }
 
-        public string Barcode
-        {
-            get => Product.Barcode;
-            set
-            {
-                Product.Barcode = value;
-                RaisePropertyChanged();
-                RaisePropertyChanged("IsButtonAddEnabled");
-            }
-        }
+//        public string Title
+//        {
+//            get => Product.Title;
+//            set
+//            {
+//                Product.Title = value;
+//                RaisePropertyChanged();
+//                RaisePropertyChanged("IsButtonAddEnabled");
+//            }
+//        }
 
-        public string VendorCode
-        {
-            get => Product.VendorCode;
-            set
-            {
-                Product.VendorCode = value;
-                RaisePropertyChanged();
-                RaisePropertyChanged("IsButtonAddEnabled");
-            }
-        }
+//        public string Barcode
+//        {
+//            get => Product.Barcode;
+//            set
+//            {
+//                Product.Barcode = value;
+//                RaisePropertyChanged();
+//                RaisePropertyChanged("IsButtonAddEnabled");
+//            }
+//        }
 
-        private void CheckSelectedStore()
-        {
-            if (SelectedStore == null)
-            {
-                if (Stores.Count != 0)
-                {
-                    SelectedStore = Stores[0];
-                }
-            }
-            else
-            {
-                if (!Stores.Contains(_selectedStore)) SelectedStore = null;
-            }
-        }
+//        public string VendorCode
+//        {
+//            get => Product.VendorCode;
+//            set
+//            {
+//                Product.VendorCode = value;
+//                RaisePropertyChanged();
+//                RaisePropertyChanged("IsButtonAddEnabled");
+//            }
+//        }
 
-        private void CheckSelectedSelectedNomenclatureGroup()
-        {
-            if (SelectedNomenclatureGroup == null)
-            {
-                if (NomenclatureGroups.Count != 0)
-                {
-                    SelectedNomenclatureGroup = NomenclatureGroups[0];
-                }
-            }
-            else
-            {
-                if (!NomenclatureGroups.Contains(SelectedNomenclatureGroup)) SelectedNomenclatureGroup = null;
-            }
-        }
+//        #endregion
 
-        private void CheckSelectedSelectedNomenclatureSubgroup()
-        {
-            if (SelectedNomenclatureSubGroup == null)
-            {
-                if (NomenclatureSubGroups.Count != 0)
-                {
-                    SelectedNomenclatureSubGroup = NomenclatureSubGroups[0];
-                }
-            }
-            else
-            {
-                if (!NomenclatureSubGroups.Contains(SelectedNomenclatureSubGroup)) SelectedNomenclatureSubGroup = null;
-            }
-        }
+//        private void CheckSelectedSelectedUnitStorage()
+//        {
+//            if (SelectedUnitStorage == null)
+//            {
+//                if (UnitStorages.Count != 0)
+//                {
+//                    SelectedUnitStorage = UnitStorages[0];
+//                }
+//            }
+//            else
+//            {
+//                if (!UnitStorages.Contains(SelectedUnitStorage)) SelectedUnitStorage = null;
+//            }
+//        }
 
-        private void CheckSelectedSelectedUnitStorage()
-        {
-            if (SelectedUnitStorage == null)
-            {
-                if (UnitStorages.Count != 0)
-                {
-                    SelectedUnitStorage = UnitStorages[0];
-                }
-            }
-            else
-            {
-                if (!UnitStorages.Contains(SelectedUnitStorage)) SelectedUnitStorage = null;
-            }
-        }
+//        private void CheckSelectedSelectedWarrantyPeriod()
+//        {
+//            if (SelectedWarrantyPeriod == null)
+//            {
+//                SelectedWarrantyPeriod = WarrantyPeriods.FirstOrDefault();
+//            }
+//            else
+//            {
+//                if (!WarrantyPeriods.Contains(SelectedWarrantyPeriod)) SelectedWarrantyPeriod = null;
+//            }
+//        }
 
-        private void CheckSelectedSelectedWarrantyPeriod()
-        {
-            if (SelectedWarrantyPeriod == null)
-            {
-                SelectedWarrantyPeriod = WarrantyPeriods.FirstOrDefault();
-            }
-            else
-            {
-                if (!WarrantyPeriods.Contains(SelectedWarrantyPeriod)) SelectedWarrantyPeriod = null;
-            }
-        }
+//        public async void Update(ChoiceUpdate choice)
+//        {
+//            switch (choice)
+//            {
+//                case ChoiceUpdate.UnitStorage:
+//                    await UnitStorageList.Load();
+//                    CheckSelectedSelectedUnitStorage();
+//                    break;
+//                case ChoiceUpdate.WarrantyPeriod:
+//                    await WarrantyPeriodList.Load();
+//                    CheckSelectedSelectedWarrantyPeriod();
+//                    break;
+//                default:
+//                    throw new ArgumentOutOfRangeException(nameof(choice), choice, null);
+//            }
+//        }
 
-        public async void Update(ChoiceUpdate choice)
-        {
-            switch (choice)
-            {
-                case ChoiceUpdate.Store:
-                    await StoreList.Load();
-                    CheckSelectedStore();
-                    break;
-                case ChoiceUpdate.NomenclatureGroup:
-                    if (_selectedStore == null) await NomenclatureGroupList.Load(-1);
-                    else await NomenclatureGroupList.Load(_selectedStore.Id);
-                    CheckSelectedSelectedNomenclatureGroup();
-                    break;
-                case ChoiceUpdate.NomenclatureSubgroup:
-                    if (_selectedNomenclatureGroup == null) await NomenclatureSubgroupList.Load(-1);
-                    else await NomenclatureSubgroupList.Load(_selectedNomenclatureGroup.Id);
-                    CheckSelectedSelectedNomenclatureSubgroup();
-                    break;
-                case ChoiceUpdate.UnitStorage:
-                    await UnitStorageList.Load();
-                    CheckSelectedSelectedUnitStorage();
-                    break;
-                case ChoiceUpdate.WarrantyPeriod:
-                    await WarrantyPeriodList.Load();
-                    CheckSelectedSelectedWarrantyPeriod();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(choice), choice, null);
-            }
-        }
-
-        public DelegateCommand AddProduct { get; }
-    }
-}
+//        public DelegateCommand AddProduct { get; }
+//    }
+//}

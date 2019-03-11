@@ -1,9 +1,8 @@
-﻿<Application x:Class="RulezzClient.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:RulezzClient"
-             StartupUri="Views/Shell.xaml">
+﻿<prism:PrismApplication x:Class="RulezzClient.App"
+                        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:prism="http://prismlibrary.com/">
     <Application.Resources>
-
+        <ResourceDictionary Source="/CustomControlLibrary;component/Themes/Resourse.xaml"></ResourceDictionary>
     </Application.Resources>
-</Application>
+</prism:PrismApplication>
