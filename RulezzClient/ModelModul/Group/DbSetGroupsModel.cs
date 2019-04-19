@@ -4,89 +4,42 @@ using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
-using Prism.Mvvm;
 
 namespace ModelModul.Group
 {
-    public class ListGroupsModel : BindableBase
+    public class DbSetGroupsModel : DbSetModel<Groups>
     {
-        #region Properties
-
-        private GroupModel _parentGroup;
-
-        public GroupModel ParentGroup
-        {
-            get => _parentGroup;
-            set
-            {
-                _parentGroup = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private ObservableCollection<ListGroupsModel> _groups = new ObservableCollection<ListGroupsModel>();
-
-        public ObservableCollection<ListGroupsModel> Groups
-        {
-            get => _groups;
-            set => SetProperty(ref _groups, value);
-        }
-
-        #endregion
-
-        #region Сonstructors
-
-        public ListGroupsModel()
-        {
-            Groups = new ObservableCollection<ListGroupsModel>();
-            ParentGroup = null;
-        }
-
-        public ListGroupsModel(GroupModel parentGroup)
-        {
-            Groups = new ObservableCollection<ListGroupsModel>();
-            ParentGroup = parentGroup;
-        }
-
-        #endregion
-
-        public async Task<int> Load()
+        public async Task<int> Load(Groups parentGroup = null)
         {
             bool Pre(Groups obj)
             {
-                if (obj.IdParentGroup == null && ParentGroup == null) return true;
-                return obj.IdParentGroup != null && ParentGroup != null && obj.IdParentGroup.Value == ParentGroup.Id;
+                if (obj.IdParentGroup == null && parentGroup == null) return true;
+                return obj.IdParentGroup != null && parentGroup != null &&
+                       obj.IdParentGroup.Value == parentGroup.Id;
             }
 
-            List<ListGroupsModel> temp = await Task.Run(() =>
+            List<Groups> temp = await Task.Run(() =>
             {
                 using (StoreEntities db = new StoreEntities())
                 {
-                    return db.Groups.Where(Pre).Select(obj => new ListGroupsModel(new GroupModel
-                    {
-
-                        Id = obj.Id,
-                        Title = obj.Title,
-                        IdParentGroup = obj.IdParentGroup
-                    })).ToList();
+                    return db.Groups.Include("Groups1").Where(Pre).ToList();
                 }
             });
-
-            ObservableCollection<ListGroupsModel> group = new ObservableCollection<ListGroupsModel>();
+            ObservableCollection<Groups> list = new ObservableCollection<Groups>();
 
             if (temp != null)
             {
                 foreach (var item in temp)
                 {
-                    group.Add(item);
+                    list.Add(item);
                 }
             }
 
-            Groups = group;
-            return Groups.Count;
+            List = list;
+            return List.Count;
         }
 
-        public void Add(GroupModel group)
+        public override void Add(Groups obj)
         {
             using (StoreEntities db = new StoreEntities())
             {
@@ -94,19 +47,20 @@ namespace ModelModul.Group
                 {
                     try
                     {
-                        db.Groups.Add(group.ConvertToGroups());
+                        db.Groups.Add(obj);
                         db.SaveChanges();
                         transaction.Commit();
                     }
                     catch (Exception)
                     {
                         transaction.Rollback();
+                        throw;
                     }
                 }
             }
         }
 
-        public bool Delete(int id)
+        public override void Delete(int objId)
         {
             using (StoreEntities db = new StoreEntities())
             {
@@ -114,22 +68,21 @@ namespace ModelModul.Group
                 {
                     try
                     {
-                        var group = db.Groups.Find(id);
+                        var group = db.Groups.Find(objId);
                         db.Entry(group).State = EntityState.Deleted;
                         db.SaveChanges();
                         transaction.Commit();
-                        return true;
                     }
                     catch (Exception)
                     {
                         transaction.Rollback();
-                        return false;
+                        throw;
                     }
                 }
             }
         }
 
-        public void Update(GroupModel group)
+        public override void Update(Groups obj)
         {
             using (StoreEntities db = new StoreEntities())
             {
@@ -137,10 +90,10 @@ namespace ModelModul.Group
                 {
                     try
                     {
-                        var modifi = db.Groups.Find(group.Id);
+                        var modifi = db.Groups.Find(obj.Id);
                         if (modifi != null)
                         {
-                            modifi.Title = group.Title;
+                            modifi.Title = obj.Title;
                             db.Entry(modifi).State = EntityState.Modified;
                         }
                         else throw new Exception("Изменение не удалось");
@@ -150,6 +103,7 @@ namespace ModelModul.Group
                     catch (Exception)
                     {
                         transaction.Rollback();
+                        throw;
                     }
                 }
             }

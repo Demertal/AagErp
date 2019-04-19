@@ -9,14 +9,11 @@
 
 namespace ModelModul
 {
-    using System;
-    using System.Collections.Generic;
-    
     public partial class CountProducts
     {
         public int IdProduct { get; set; }
         public int IdStore { get; set; }
-        public int Count { get; set; }
+        public double Count { get; set; }
     
         public virtual Products Products { get; set; }
         public virtual Stores Stores { get; set; }

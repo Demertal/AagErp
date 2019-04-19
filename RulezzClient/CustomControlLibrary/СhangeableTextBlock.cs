@@ -1,7 +1,5 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using Prism.Commands;
 
 namespace CustomControlLibrary
 {
@@ -14,10 +12,6 @@ namespace CustomControlLibrary
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(СhangeableTextBlock), new FrameworkPropertyMetadata(typeof(СhangeableTextBlock)));
             IsСhangeProperty = DependencyProperty.Register("IsСhange", typeof(bool), typeof(СhangeableTextBlock));
-        }
-
-        public СhangeableTextBlock()
-        {
         }
 
         public bool IsСhange

@@ -7,18 +7,17 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System;
+
 namespace ModelModul
 {
-    using System;
-    using System.Collections.Generic;
-    
     public partial class Warranties
     {
         public int Id { get; set; }
         public string Malfunction { get; set; }
-        public System.DateTime DateReceipt { get; set; }
-        public System.DateTime DateDeparture { get; set; }
-        public System.DateTime DateIssue { get; set; }
+        public DateTime DateReceipt { get; set; }
+        public DateTime DateDeparture { get; set; }
+        public DateTime DateIssue { get; set; }
         public string Info { get; set; }
         public int IdSupplier { get; set; }
         public Nullable<int> IdSerialNumber { get; set; }

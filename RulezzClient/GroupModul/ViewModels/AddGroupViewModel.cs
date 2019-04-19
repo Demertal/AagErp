@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using ModelModul;
 using ModelModul.Group;
 using Prism.Commands;
 using Prism.Interactivity.InteractionRequest;
@@ -11,7 +12,7 @@ namespace GroupModul.ViewModels
     {
         #region Properties
 
-        private readonly GroupModel _groupModel = new GroupModel();
+        private readonly Groups _groupModel = new Groups();
         public string Title
         {
             get => _groupModel.Title;
@@ -32,7 +33,7 @@ namespace GroupModul.ViewModels
             set
             {
                 SetProperty(ref _notification, value as Confirmation);
-                _groupModel.IdParentGroup = (_notification.Content as GroupModel)?.Id;
+                _groupModel.IdParentGroup = (_notification.Content as Groups)?.Id;
                 Title = "";
             }
         }
@@ -52,8 +53,8 @@ namespace GroupModul.ViewModels
         {
             try
             {
-                ListGroupsModel listGroups = new ListGroupsModel();
-                listGroups.Add(_groupModel);
+                DbSetGroupsModel dbSetGroupsModel = new DbSetGroupsModel();
+                dbSetGroupsModel.Add(_groupModel);
                 MessageBox.Show("Группа добавлена", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
 
                 if (_notification != null)

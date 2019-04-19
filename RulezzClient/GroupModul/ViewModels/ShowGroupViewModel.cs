@@ -1,13 +1,13 @@
-﻿using EventAggregatorLibrary;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Windows;
+using EventAggregatorLibrary;
+using ModelModul;
 using ModelModul.Group;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Interactivity.InteractionRequest;
 using Prism.Mvvm;
-using System;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
-using System.Windows;
 
 namespace GroupModul.ViewModels
 {
@@ -17,34 +17,28 @@ namespace GroupModul.ViewModels
 
         readonly IEventAggregator _ea;
 
-        private ListGroupsModel _listGroups = new ListGroupsModel();
-        public ListGroupsModel ListGroups
+        private DbSetGroupsModel _dbSetGroupsModel = new DbSetGroupsModel();
+        public DbSetGroupsModel DbSetGroupsModel
         {
-            get => _listGroups;
+            get => _dbSetGroupsModel;
             set
             {
-                SetProperty(ref _listGroups, value);
+                SetProperty(ref _dbSetGroupsModel, value);
                 RaisePropertyChanged();
             }
         }
 
-        ListGroupsModel _editableGroup;
-        public ListGroupsModel EditableGroup
-        {
-            get => _editableGroup;
-            set => SetProperty(ref _editableGroup, value);
-        }
-
-        public ObservableCollection<ListGroupsModel> Groups => ListGroups.Groups;
+        public ObservableCollection<Groups> Groups => DbSetGroupsModel.List;
 
         public InteractionRequest<INotification> AddStorePopupRequest { get; set; }
         public InteractionRequest<INotification> AddGroupPopupRequest { get; set; }
+        public InteractionRequest<INotification> UpdateStorePopupRequest { get; set; }
 
-        public DelegateCommand<ListGroupsModel> SelectedGroupCommand { get; }
-        public DelegateCommand<ListGroupsModel> DeleteGroupCommand { get; }
+        public DelegateCommand<Groups> SelectedGroupCommand { get; }
+        public DelegateCommand<Groups> DeleteGroupCommand { get; }
         public DelegateCommand AddStoreCommand { get; }
-        public DelegateCommand<ListGroupsModel> AddGroupCommand { get; }
-        public DelegateCommand<ListGroupsModel> RenameGroupCommand { get; }
+        public DelegateCommand<Groups> AddGroupCommand { get; }
+        public DelegateCommand<Groups> UpdateGroupCommand { get; }
         public DelegateCommand <object> GroupСhangeCommand { get; }
 
         #endregion
@@ -53,13 +47,14 @@ namespace GroupModul.ViewModels
         {
             _ea = ea;
             Reload();
-            SelectedGroupCommand = new DelegateCommand<ListGroupsModel>(SendSelectedGroupId);
+            SelectedGroupCommand = new DelegateCommand<Groups>(SendSelectedGroupId);
             AddStorePopupRequest = new InteractionRequest<INotification>();
             AddGroupPopupRequest = new InteractionRequest<INotification>();
+            UpdateStorePopupRequest = new InteractionRequest<INotification>();
             AddStoreCommand = new DelegateCommand(AddStore);
-            RenameGroupCommand = new DelegateCommand<ListGroupsModel>(RenameGroup);
-            DeleteGroupCommand = new DelegateCommand<ListGroupsModel>(DeleteGroup);
-            AddGroupCommand = new DelegateCommand<ListGroupsModel>(AddGroup);
+            UpdateGroupCommand = new DelegateCommand<Groups>(UpdateGroup);
+            DeleteGroupCommand = new DelegateCommand<Groups>(DeleteGroup);
+            AddGroupCommand = new DelegateCommand<Groups>(AddGroup);
             GroupСhangeCommand = new DelegateCommand<object>(GroupСhange);
         }
 
@@ -67,30 +62,17 @@ namespace GroupModul.ViewModels
 
         public async void Reload()
         {
-            await ListGroups.Load();
-            await LoadNode(ListGroups);
+            await DbSetGroupsModel.Load();
             RaisePropertyChanged("Groups");
-        }
-
-        public async Task<int> LoadNode(ListGroupsModel group)
-        {
-            foreach (var item in group.Groups)
-            {
-                await item.Load();
-                await LoadNode(item);
-            }
-            return group.Groups.Count;
         }
 
         #endregion
 
         #region Commands
 
-        private void SendSelectedGroupId(ListGroupsModel listGroupsModel)
+        private void SendSelectedGroupId(Groups group)
         {
-            EditableGroup = null;
-            if (listGroupsModel?.ParentGroup == null) _ea.GetEvent<IntEventAggregator>().Publish(-1);
-            else _ea.GetEvent<IntEventAggregator>().Publish(listGroupsModel.ParentGroup.Id);
+             _ea.GetEvent<GroupsEventAggregator>().Publish(group);
         }
 
         private void AddStore()
@@ -98,18 +80,17 @@ namespace GroupModul.ViewModels
             AddStorePopupRequest.Raise(new Confirmation{ Title = "Добавить магазин" }, Callback);
         }
 
-        private void AddGroup(ListGroupsModel obj)
+        private void AddGroup(Groups group)
         {
-            AddGroupPopupRequest.Raise(new Confirmation { Title = "Добавить группу", Content = obj.ParentGroup}, Callback);
+            AddGroupPopupRequest.Raise(new Confirmation { Title = "Добавить группу", Content = group.Groups2}, Callback);
         }
 
-        private void RenameGroup(ListGroupsModel listGroupsModel)
+        private void UpdateGroup(Groups group)
         {
-            EditableGroup = listGroupsModel;
-            //if (listGroupsModel.ParentGroup.IdParentGroup == null)
-            //{
-            //    UpdateStorePopupRequest.Raise(new Confirmation { Title = "Изменить магазин", Content = listGroupsModel.ParentGroup}, Callback);
-            //}
+            if (group.IdParentGroup == null)
+            {
+                UpdateStorePopupRequest.Raise(new Confirmation { Title = "Изменить магазин", Content = group.Groups2 }, Callback);
+            }
         }
 
         private void GroupСhange(object obj)
@@ -117,17 +98,23 @@ namespace GroupModul.ViewModels
 
         }
 
-        private void DeleteGroup(ListGroupsModel listGroupsModel)
+        private void DeleteGroup(Groups group)
         {
-            if (listGroupsModel.ParentGroup.IdParentGroup == null)
+            if (group.IdParentGroup == null)
             {
                 if (MessageBox.Show("Удалить магазин?", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Question) ==
                     MessageBoxResult.Yes)
                 {
-                    if (listGroupsModel.Delete(listGroupsModel.ParentGroup.Id))
+                    try
                     {
+                        DbSetGroupsModel.Delete(group.IdParentGroup.Value);
                         MessageBox.Show("Магазин удален.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
                         Reload();
+                    }
+                    catch (Exception e)
+                    {
+                        MessageBox.Show(e.Message);
+                        throw;
                     }
                 }
             }

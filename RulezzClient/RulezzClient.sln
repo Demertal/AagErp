@@ -19,6 +19,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Library", "Library", "{03B0
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventAggregatorLibrary", "EventAggregatorLibrary\EventAggregatorLibrary.csproj", "{DED61686-0CD3-492D-8E13-F0EF7054F2DA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitStorageModul", "UnitStorageModul\UnitStorageModul.csproj", "{B4B52FF1-550A-4B6C-A4F8-DC0AAD7C2DAC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,10 @@ Global
 		{DED61686-0CD3-492D-8E13-F0EF7054F2DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DED61686-0CD3-492D-8E13-F0EF7054F2DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DED61686-0CD3-492D-8E13-F0EF7054F2DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4B52FF1-550A-4B6C-A4F8-DC0AAD7C2DAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4B52FF1-550A-4B6C-A4F8-DC0AAD7C2DAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4B52FF1-550A-4B6C-A4F8-DC0AAD7C2DAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4B52FF1-550A-4B6C-A4F8-DC0AAD7C2DAC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -59,9 +65,10 @@ Global
 		{C1088933-3223-41A0-A687-8D34C8A1E104} = {1959A74B-683C-4F60-B692-40068E978177}
 		{06EB7CE3-8C9C-4BD6-BF72-4CAAB19B22F0} = {1959A74B-683C-4F60-B692-40068E978177}
 		{DED61686-0CD3-492D-8E13-F0EF7054F2DA} = {03B06937-A9C7-41CB-938F-01059B7FE969}
+		{B4B52FF1-550A-4B6C-A4F8-DC0AAD7C2DAC} = {1959A74B-683C-4F60-B692-40068E978177}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35
 		SolutionGuid = {19416D65-422B-45AC-9508-FC45CBA4B529}
+		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35
 	EndGlobalSection
 EndGlobal

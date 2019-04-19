@@ -15,7 +15,7 @@
           </Key>
           <Property Name="IdProduct" Type="int" Nullable="false" />
           <Property Name="IdStore" Type="int" Nullable="false" />
-          <Property Name="Count" Type="int" Nullable="false" />
+          <Property Name="Count" Type="float" Nullable="false" />
         </EntityType>
         <EntityType Name="ExchangeRates">
           <Key>
@@ -32,6 +32,7 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Title" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="IdParentGroup" Type="int" />
+          <Property Name="IdUnitStorage" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="PriceGroups">
           <Key>
@@ -50,7 +51,6 @@
           <Property Name="Barcode" Type="nvarchar" MaxLength="13" />
           <Property Name="PurchasePrice" Type="money" Nullable="false" />
           <Property Name="SalesPrice" Type="money" Nullable="false" />
-          <Property Name="IdUnitStorage" Type="int" Nullable="false" />
           <Property Name="IdExchangeRate" Type="int" Nullable="false" />
           <Property Name="IdWarrantyPeriod" Type="int" Nullable="false" />
           <Property Name="IdGroup" Type="int" Nullable="false" />
@@ -205,7 +205,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Groups__IdParent__440B1D61">
+        <Association Name="FK__Groups__IdParent__47DBAE45">
           <End Role="Groups" Type="Self.Groups" Multiplicity="0..1" />
           <End Role="Groups1" Type="Self.Groups" Multiplicity="*" />
           <ReferentialConstraint>
@@ -214,6 +214,18 @@
             </Principal>
             <Dependent Role="Groups1">
               <PropertyRef Name="IdParentGroup" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Groups__IdUnitSt__48CFD27E">
+          <End Role="UnitStorages" Type="Self.UnitStorages" Multiplicity="1" />
+          <End Role="Groups" Type="Self.Groups" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UnitStorages">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Groups">
+              <PropertyRef Name="IdUnitStorage" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -238,18 +250,6 @@
             </Principal>
             <Dependent Role="Products">
               <PropertyRef Name="IdGroup" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__Products__IdUnit__5812160E">
-          <End Role="UnitStorages" Type="Self.UnitStorages" Multiplicity="1" />
-          <End Role="Products" Type="Self.Products" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UnitStorages">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Products">
-              <PropertyRef Name="IdUnitStorage" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -527,9 +527,13 @@
             <End Role="Stores" EntitySet="Stores" />
             <End Role="CountProducts" EntitySet="CountProducts" />
           </AssociationSet>
-          <AssociationSet Name="FK__Groups__IdParent__440B1D61" Association="Self.FK__Groups__IdParent__440B1D61">
+          <AssociationSet Name="FK__Groups__IdParent__47DBAE45" Association="Self.FK__Groups__IdParent__47DBAE45">
             <End Role="Groups" EntitySet="Groups" />
             <End Role="Groups1" EntitySet="Groups" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Groups__IdUnitSt__48CFD27E" Association="Self.FK__Groups__IdUnitSt__48CFD27E">
+            <End Role="UnitStorages" EntitySet="UnitStorages" />
+            <End Role="Groups" EntitySet="Groups" />
           </AssociationSet>
           <AssociationSet Name="FK__Products__IdExch__59063A47" Association="Self.FK__Products__IdExch__59063A47">
             <End Role="ExchangeRates" EntitySet="ExchangeRates" />
@@ -537,10 +541,6 @@
           </AssociationSet>
           <AssociationSet Name="FK__Products__IdGrou__5AEE82B9" Association="Self.FK__Products__IdGrou__5AEE82B9">
             <End Role="Groups" EntitySet="Groups" />
-            <End Role="Products" EntitySet="Products" />
-          </AssociationSet>
-          <AssociationSet Name="FK__Products__IdUnit__5812160E" Association="Self.FK__Products__IdUnit__5812160E">
-            <End Role="UnitStorages" EntitySet="UnitStorages" />
             <End Role="Products" EntitySet="Products" />
           </AssociationSet>
           <AssociationSet Name="FK__Products__IdWarr__59FA5E80" Association="Self.FK__Products__IdWarr__59FA5E80">
@@ -646,8 +646,10 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Title" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="IdParentGroup" Type="Int32" />
-          <NavigationProperty Name="Groups1" Relationship="Self.FK__Groups__IdParent__440B1D61" FromRole="Groups" ToRole="Groups1" />
-          <NavigationProperty Name="Groups2" Relationship="Self.FK__Groups__IdParent__440B1D61" FromRole="Groups1" ToRole="Groups" />
+          <Property Name="IdUnitStorage" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Groups1" Relationship="Self.FK__Groups__IdParent__47DBAE45" FromRole="Groups" ToRole="Groups1" />
+          <NavigationProperty Name="Groups2" Relationship="Self.FK__Groups__IdParent__47DBAE45" FromRole="Groups1" ToRole="Groups" />
+          <NavigationProperty Name="UnitStorages" Relationship="Self.FK__Groups__IdUnitSt__48CFD27E" FromRole="Groups" ToRole="UnitStorages" />
           <NavigationProperty Name="Products" Relationship="Self.FK__Products__IdGrou__5AEE82B9" FromRole="Groups" ToRole="Products" />
           <NavigationProperty Name="PropertyNames" Relationship="Self.FK__PropertyN__IdGro__5FB337D6" FromRole="Groups" ToRole="PropertyNames" />
         </EntityType>
@@ -668,14 +670,12 @@
           <Property Name="Barcode" Type="String" MaxLength="13" FixedLength="false" Unicode="true" />
           <Property Name="PurchasePrice" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
           <Property Name="SalesPrice" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
-          <Property Name="IdUnitStorage" Type="Int32" Nullable="false" />
           <Property Name="IdExchangeRate" Type="Int32" Nullable="false" />
           <Property Name="IdWarrantyPeriod" Type="Int32" Nullable="false" />
           <Property Name="IdGroup" Type="Int32" Nullable="false" />
           <NavigationProperty Name="ExchangeRates" Relationship="Self.FK__Products__IdExch__59063A47" FromRole="Products" ToRole="ExchangeRates" />
           <NavigationProperty Name="Groups" Relationship="Self.FK__Products__IdGrou__5AEE82B9" FromRole="Products" ToRole="Groups" />
           <NavigationProperty Name="CountProducts" Relationship="Self.FK__CountProd__IdPro__123EB7A3" FromRole="Products" ToRole="CountProducts" />
-          <NavigationProperty Name="UnitStorages" Relationship="Self.FK__Products__IdUnit__5812160E" FromRole="Products" ToRole="UnitStorages" />
           <NavigationProperty Name="WarrantyPeriods" Relationship="Self.FK__Products__IdWarr__59FA5E80" FromRole="Products" ToRole="WarrantyPeriods" />
           <NavigationProperty Name="PropertyProducts" Relationship="Self.FK__PropertyP__IdPro__6754599E" FromRole="Products" ToRole="PropertyProducts" />
           <NavigationProperty Name="PurchaseInfos" Relationship="Self.FK__PurchaseI__IdPro__75A278F5" FromRole="Products" ToRole="PurchaseInfos" />
@@ -818,7 +818,7 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Title" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="Products" Relationship="Self.FK__Products__IdUnit__5812160E" FromRole="UnitStorages" ToRole="Products" />
+          <NavigationProperty Name="Groups" Relationship="Self.FK__Groups__IdUnitSt__48CFD27E" FromRole="UnitStorages" ToRole="Groups" />
         </EntityType>
         <EntityType Name="Warranties">
           <Key>
@@ -851,7 +851,7 @@
           </Key>
           <Property Name="IdProduct" Type="Int32" Nullable="false" />
           <Property Name="IdStore" Type="Int32" Nullable="false" />
-          <Property Name="Count" Type="Int32" Nullable="false" />
+          <Property Name="Count" Type="Double" Nullable="false" />
           <NavigationProperty Name="Products" Relationship="Self.FK__CountProd__IdPro__123EB7A3" FromRole="CountProducts" ToRole="Products" />
           <NavigationProperty Name="Stores" Relationship="Self.FK__CountProd__IdSto__1332DBDC" FromRole="CountProducts" ToRole="Stores" />
         </EntityType>
@@ -879,7 +879,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Groups__IdParent__440B1D61">
+        <Association Name="FK__Groups__IdParent__47DBAE45">
           <End Role="Groups" Type="Self.Groups" Multiplicity="0..1" />
           <End Role="Groups1" Type="Self.Groups" Multiplicity="*" />
           <ReferentialConstraint>
@@ -888,6 +888,18 @@
             </Principal>
             <Dependent Role="Groups1">
               <PropertyRef Name="IdParentGroup" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Groups__IdUnitSt__48CFD27E">
+          <End Role="UnitStorages" Type="Self.UnitStorages" Multiplicity="1" />
+          <End Role="Groups" Type="Self.Groups" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UnitStorages">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Groups">
+              <PropertyRef Name="IdUnitStorage" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -924,18 +936,6 @@
             </Principal>
             <Dependent Role="CountProducts">
               <PropertyRef Name="IdProduct" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__Products__IdUnit__5812160E">
-          <End Role="UnitStorages" Type="Self.UnitStorages" Multiplicity="1" />
-          <End Role="Products" Type="Self.Products" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UnitStorages">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Products">
-              <PropertyRef Name="IdUnitStorage" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1195,9 +1195,13 @@
             <End Role="ExchangeRates" EntitySet="ExchangeRates" />
             <End Role="PurchaseInfos" EntitySet="PurchaseInfos" />
           </AssociationSet>
-          <AssociationSet Name="FK__Groups__IdParent__440B1D61" Association="Self.FK__Groups__IdParent__440B1D61">
+          <AssociationSet Name="FK__Groups__IdParent__47DBAE45" Association="Self.FK__Groups__IdParent__47DBAE45">
             <End Role="Groups" EntitySet="Groups" />
             <End Role="Groups1" EntitySet="Groups" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Groups__IdUnitSt__48CFD27E" Association="Self.FK__Groups__IdUnitSt__48CFD27E">
+            <End Role="UnitStorages" EntitySet="UnitStorages" />
+            <End Role="Groups" EntitySet="Groups" />
           </AssociationSet>
           <AssociationSet Name="FK__Products__IdGrou__5AEE82B9" Association="Self.FK__Products__IdGrou__5AEE82B9">
             <End Role="Groups" EntitySet="Groups" />
@@ -1210,10 +1214,6 @@
           <AssociationSet Name="FK__CountProd__IdPro__123EB7A3" Association="Self.FK__CountProd__IdPro__123EB7A3">
             <End Role="Products" EntitySet="Products" />
             <End Role="CountProducts" EntitySet="CountProducts" />
-          </AssociationSet>
-          <AssociationSet Name="FK__Products__IdUnit__5812160E" Association="Self.FK__Products__IdUnit__5812160E">
-            <End Role="UnitStorages" EntitySet="UnitStorages" />
-            <End Role="Products" EntitySet="Products" />
           </AssociationSet>
           <AssociationSet Name="FK__Products__IdWarr__59FA5E80" Association="Self.FK__Products__IdWarr__59FA5E80">
             <End Role="WarrantyPeriods" EntitySet="WarrantyPeriods" />
@@ -1313,6 +1313,7 @@
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="IdParentGroup" ColumnName="IdParentGroup" />
+                <ScalarProperty Name="IdUnitStorage" ColumnName="IdUnitStorage" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1333,7 +1334,6 @@
                 <ScalarProperty Name="Barcode" ColumnName="Barcode" />
                 <ScalarProperty Name="PurchasePrice" ColumnName="PurchasePrice" />
                 <ScalarProperty Name="SalesPrice" ColumnName="SalesPrice" />
-                <ScalarProperty Name="IdUnitStorage" ColumnName="IdUnitStorage" />
                 <ScalarProperty Name="IdExchangeRate" ColumnName="IdExchangeRate" />
                 <ScalarProperty Name="IdWarrantyPeriod" ColumnName="IdWarrantyPeriod" />
                 <ScalarProperty Name="IdGroup" ColumnName="IdGroup" />

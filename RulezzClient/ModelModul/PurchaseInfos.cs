@@ -9,9 +9,6 @@
 
 namespace ModelModul
 {
-    using System;
-    using System.Collections.Generic;
-    
     public partial class PurchaseInfos
     {
         public int Id { get; set; }

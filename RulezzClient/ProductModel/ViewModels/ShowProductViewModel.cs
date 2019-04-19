@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using EventAggregatorLibrary;
+using ModelModul;
 using ModelModul.Product;
 using Prism.Commands;
 using Prism.Events;
@@ -13,9 +14,9 @@ namespace ProductModul.ViewModels
 
         readonly IEventAggregator _ea;
 
-        public ListProductsModel ProductList = new ListProductsModel();
+        public DbSetProductsModel DbSetProductsModel = new DbSetProductsModel();
 
-        public ObservableCollection<ProductModel> Products => ProductList.Products;
+        public ObservableCollection<Products> Products => DbSetProductsModel.List;
 
         private string _findString;
         public string FindString
@@ -34,7 +35,7 @@ namespace ProductModul.ViewModels
         public ShowProductViewModel(IEventAggregator ea)
         {
             _ea = ea;
-            _ea.GetEvent<IntEventAggregator>().Subscribe(GetSelectedGroupId);
+            _ea.GetEvent<GroupsEventAggregator>().Subscribe(GetSelectedGroup);
             FindString = "";
             //DeleteProduct = new DelegateCommand(() =>
             //{
@@ -42,7 +43,7 @@ namespace ProductModul.ViewModels
             //            MessageBoxImage.Question) != MessageBoxResult.Yes) return;
             //    try
             //    {
-            //        ProductList.Delete(SelectedProduct.Id);
+            //        DbSetGroupsModel.Delete(SelectedProduct.Id);
             //        Update(ChoiceUpdate.Product);
             //    }
             //    catch (Exception ex)
@@ -122,18 +123,19 @@ namespace ProductModul.ViewModels
         {
             if (!string.IsNullOrEmpty(FindString))
             {
-                await ProductList.LoadByFindString(FindString);
+                await DbSetProductsModel.LoadByFindString(FindString);
             }
             else
             {
-                await ProductList.Load(idGroup);
+                await DbSetProductsModel.Load(idGroup);
             }
             RaisePropertyChanged("Products");
         }
 
-        private void GetSelectedGroupId(int idGroup)
+        private void GetSelectedGroup(Groups obj)
         {
-            Load(idGroup);
+            if (obj == null) Load(-1);
+            else Load(obj.Id);
         }
 
         #endregion

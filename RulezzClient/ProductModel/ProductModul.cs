@@ -1,11 +1,11 @@
 ﻿using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Regions;
-using ShowProduct = ProductModul.Views.ShowProduct;
+using ProductModul.Views;
 
 namespace ProductModul
 {
-    public class ShowProductModul : IModule
+    public class ProductModul : IModule
     {
         public void OnInitialized(IContainerProvider containerProvider)
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using ModelModul;
 using ModelModul.Group;
 using Prism.Commands;
 using Prism.Interactivity.InteractionRequest;
@@ -11,7 +12,7 @@ namespace GroupModul.ViewModels
     {
         #region Properties
 
-        private GroupModel _oldGroupModel;
+        private Groups _oldGroupModel;
 
         private string _title = "";
         public string Title
@@ -34,7 +35,7 @@ namespace GroupModul.ViewModels
             set
             {
                 SetProperty(ref _notification, value as Confirmation);
-                _oldGroupModel = (GroupModel)_notification.Content;
+                _oldGroupModel = (Groups)_notification.Content;
                 Title = _oldGroupModel.Title;
             }
         }
@@ -56,8 +57,9 @@ namespace GroupModul.ViewModels
             {
                 if (_oldGroupModel.Title != Title)
                 {
-                    ListGroupsModel listGroups = new ListGroupsModel();
-                    listGroups.Update(new GroupModel {Title = Title, Id = _oldGroupModel.Id});
+                    DbSetGroupsModel dbSetGroupsModel = new DbSetGroupsModel();
+                    _oldGroupModel.Title = Title;
+                    dbSetGroupsModel.Update(_oldGroupModel);
                     MessageBox.Show("Магазин изменен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
 
                     if (_notification != null)

@@ -63,16 +63,17 @@
     <Compile Include="Groups.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Group\GroupModel.cs" />
-    <Compile Include="Group\ListGroupsModel.cs" />
-    <Compile Include="Product\ListProductsModel.cs" />
+    <Compile Include="Group\DbSetGroupsModel.cs" />
+    <Compile Include="DbSetModel.cs" />
+    <Compile Include="Group\Groups.cs" />
     <Compile Include="PriceGroups.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Product\ProductModel.cs" />
     <Compile Include="Products.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Product\DbSetProductsModel.cs" />
+    <Compile Include="Product\Products.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyNames.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
@@ -119,27 +120,29 @@
     <Compile Include="Stores.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Store\StoreModul.cs" />
     <Compile Include="Suppliers.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
     <Compile Include="UnitStorages.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="UnitStorage\DbSetUnitStoragesModel.cs" />
     <Compile Include="Warranties.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
     <Compile Include="WarrantyPeriods.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="WarrantyPeriod\WarrantyPeriods.cs" />
+    <Compile Include="WarrantyPeriod\DbSetWarrantyPeriodsModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
     <EntityDeploy Include="StoreModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>StoreModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <None Include="packages.config" />
     <None Include="StoreModel.edmx.diagram">
       <DependentUpon>StoreModel.edmx</DependentUpon>
     </None>

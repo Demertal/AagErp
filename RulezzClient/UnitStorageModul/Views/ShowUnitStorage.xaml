@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="UnitStorageModul.Views.ShowUnitStorage"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:interactivity="http://prismlibrary.com/"
+             mc:Ignorable="d" 
+             VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left">
+
+    <UserControl.Resources>
+        <ContextMenu  x:Key="RowMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+            <MenuItem Header="Добавить" CommandParameter="{Binding}"
+                      Command="{Binding DataContext.AddUnitStorage, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+            <MenuItem Header="Удалить" CommandParameter="{Binding}"
+                      Command="{Binding DataContext.DeleteUnitStorage, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+        </ContextMenu>
+        <Style x:Key="DefaultRowStyle" TargetType="{x:Type DataGridRow}">
+            <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
+        </Style>
+    </UserControl.Resources>
+
+    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" DataContext="{Binding ShowUnitStorage}" Orientation="Horizontal">
+        <DataGrid x:Name="ProductData" ItemsSource="{Binding UnitStorages, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedUnitStorage, UpdateSourceTrigger=PropertyChanged}"
+                  IsSynchronizedWithCurrentItem="True" MinColumnWidth="100" MaxColumnWidth="150" HorizontalAlignment="Left" Margin="0,5,0,0" CanUserResizeRows="False"
+                  CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Top"
+                  RowStyle="{StaticResource DefaultRowStyle}" SelectionMode="Single">
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Добавить" Command="{Binding AddUnitStorage}"/>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="CellEditEnding">
+                    <interactivity:InvokeCommandAction Command="{Binding CellChanged}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Ед. хранения" Binding="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}" MaxWidth="80" MinWidth="80" CanUserResize="False"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </StackPanel>
+
+</UserControl>

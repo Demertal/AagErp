@@ -26,8 +26,6 @@ namespace CustomControlLibrary
             SelectedItemChanged += ___ICH;
             PreviewMouseRightButtonDown += ___MRBD;
             PreviewMouseLeftButtonDown += ___MLBD;
-            PreviewMouseDoubleClick += __MDC;
-            AddHandler(TreeViewItem.SelectedEvent, (RoutedEventHandler)((sender, args) => _selectedItemTv = (TreeViewItem) args.OriginalSource));
         }
 
         #region EventHandlers
@@ -37,54 +35,35 @@ namespace CustomControlLibrary
             SetValue(SelectedItemProperty, base.SelectedItem);
         }
 
-        private void __MDC(object sender, MouseEventArgs e)
-        {
-            TreeViewItem treeViewItem = VisualUpwardSearch(e.OriginalSource as DependencyObject);
-
-            if (treeViewItem != null)
-            {
-                treeViewItem.IsSelected = true;
-                treeViewItem.IsExpanded = !treeViewItem.IsExpanded;
-                treeViewItem.Focus();
-                e.Handled = true;
-                return;
-            }
-            e.Handled = false;
-        }
-
         private void ___MRBD(object sender, MouseEventArgs e)
         {
             TreeViewItem treeViewItem = VisualUpwardSearch(e.OriginalSource as DependencyObject);
-
-            if (treeViewItem == null)
+            treeViewItem?.Focus();
+            if (treeViewItem != null)
             {
-                if (_selectedItemTv != null)
-                {
-                    _selectedItemTv.IsSelected = false;
-                    _selectedItemTv = null;
-                    SetValue(SelectedItemProperty, null);
-                }
-                e.Handled = false;
+                _selectedItemTv = treeViewItem;
                 return;
             }
 
-            treeViewItem.IsSelected = true;
-            treeViewItem.Focus();
-            e.Handled = true;
+            if (_selectedItemTv == null) return;
+            _selectedItemTv.IsSelected = false;
+            _selectedItemTv = null;
+            SetValue(SelectedItemProperty, null);
         }
 
         private void ___MLBD(object sender, MouseEventArgs e)
         {
             TreeViewItem treeViewItem = VisualUpwardSearch(e.OriginalSource as DependencyObject);
-            treeViewItem?.Focus();
-            if (treeViewItem != null) return;
-            if (_selectedItemTv != null)
+            if (treeViewItem != null)
             {
-                _selectedItemTv.IsSelected = false;
-                _selectedItemTv = null;
-                SetValue(SelectedItemProperty, null);
+                _selectedItemTv = treeViewItem;
+                return;
             }
-            e.Handled = true;
+
+            if (_selectedItemTv == null) return;
+            _selectedItemTv.IsSelected = false;
+            _selectedItemTv = null;
+            SetValue(SelectedItemProperty, null);
         }
 
         #endregion

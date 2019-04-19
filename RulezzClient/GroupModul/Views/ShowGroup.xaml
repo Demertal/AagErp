@@ -7,6 +7,7 @@
              xmlns:customControlLibrary="clr-namespace:CustomControlLibrary;assembly=CustomControlLibrary"
              xmlns:group="clr-namespace:ModelModul.Group;assembly=ModelModul"
              xmlns:converters="clr-namespace:GroupModul.Converters"
+             xmlns:modelModul="clr-namespace:ModelModul;assembly=ModelModul"
              mvvm:ViewModelLocator.AutoWireViewModel="True">
 
     <StackPanel>
@@ -44,7 +45,17 @@
                 <customControlLibrary:ExtendedTreeView.Resources>
                     <customControlLibrary:BindingProxy x:Key="GroupCommandProxy" Data="{Binding}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=customControlLibrary:ExtendedTreeView}, Path=SelectedItem}" />
                     <ContextMenu DataContext="{Binding Source={StaticResource GroupCommandProxy}, Path = Data}" x:Key="TreeViewContextNode">
-                        <MenuItem Header="Переименовать" Command="{Binding Path=RenameGroupCommand}" CommandParameter="{Binding Source={StaticResource GroupCommandProxy}, Path=CommandParameter}"/>
+                        <MenuItem Header="Изменить группу" Command="{Binding Path=UpdateGroupCommand}" CommandParameter="{Binding Source={StaticResource GroupCommandProxy}, Path=CommandParameter}">
+                            <i:Interaction.Triggers>
+                                <mvvm:InteractionRequestTrigger SourceObject="{Binding Path=UpdateGroupPopupRequest}">
+                                    <mvvm:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True" WindowStyle="{DynamicResource MyWindowStyle}">
+                                        <mvvm:PopupWindowAction.WindowContent>
+                                            <views:AddGroup/>
+                                        </mvvm:PopupWindowAction.WindowContent>
+                                    </mvvm:PopupWindowAction>
+                                </mvvm:InteractionRequestTrigger>
+                            </i:Interaction.Triggers>
+                        </MenuItem>
                         <MenuItem Header="Добавить группу" Command="{Binding Path=AddGroupCommand}" CommandParameter="{Binding Source={StaticResource GroupCommandProxy}, Path=CommandParameter}">
                             <i:Interaction.Triggers>
                                 <mvvm:InteractionRequestTrigger SourceObject="{Binding Path=AddGroupPopupRequest}">
@@ -61,20 +72,8 @@
                 </customControlLibrary:ExtendedTreeView.Resources>
 
                 <customControlLibrary:ExtendedTreeView.ItemTemplate>
-                    <HierarchicalDataTemplate ItemsSource="{Binding Path=Groups}" DataType="{x:Type group:ListGroupsModel}">
-                        <customControlLibrary:СhangeableTextBlock Text="{Binding Path=ParentGroup.Title, UpdateSourceTrigger=LostFocus}" ContextMenu="{StaticResource TreeViewContextNode}">
-                            <customControlLibrary:СhangeableTextBlock.IsСhange>
-                                <MultiBinding Converter="{converters:ObjectsEqualConverter}">
-                                    <Binding/>
-                                    <Binding Source="{StaticResource GroupCommandProxy}" Path="Data.EditableGroup"/>
-                                </MultiBinding>
-                            </customControlLibrary:СhangeableTextBlock.IsСhange>
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="TextСhanged">
-                                    <i:InvokeCommandAction Command="{Binding Source={StaticResource GroupCommandProxy}, Path=GroupСhangeCommand}" CommandParameter="{Binding}"/>
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>
-                        </customControlLibrary:СhangeableTextBlock>
+                    <HierarchicalDataTemplate ItemsSource="{Binding Path=Groups1}" DataType="{x:Type modelModul:Groups}" >
+                        <TextBlock Text="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}" ContextMenu="{StaticResource TreeViewContextNode}"/>
                     </HierarchicalDataTemplate>
                 </customControlLibrary:ExtendedTreeView.ItemTemplate>
 

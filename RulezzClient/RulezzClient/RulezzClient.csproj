@@ -128,14 +128,10 @@
     <Compile Include="Views\Revaluation.xaml.cs">
       <DependentUpon>Revaluation.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\ProductVM.cs" />
     <Compile Include="ViewModels\ShowProductViewModel.cs" />
     <Compile Include="ViewModels\UnitStorageVM.cs" />
     <Compile Include="ViewModels\UpdateProductViewModel.cs" />
     <Compile Include="ViewModels\WarrantyPeriodVM.cs" />
-    <Compile Include="Views\AddProduct.xaml.cs">
-      <DependentUpon>AddProduct.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Views\Shell.xaml.cs">
       <DependentUpon>Shell.xaml</DependentUpon>
@@ -144,7 +140,6 @@
       <DependentUpon>ShowUnitStorage.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\ShellViewModel.cs" />
-    <Compile Include="ViewModels\AddProductViewModel.cs" />
     <Page Include="Views\AddUnitStorage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -154,10 +149,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Revaluation.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\AddProduct.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -211,11 +202,11 @@
       <Project>{ba906062-87b9-41e7-b1ee-a44007eb8933}</Project>
       <Name>CustomControlLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ShowGroupModul\GroupModul.csproj">
+    <ProjectReference Include="..\GroupModul\GroupModul.csproj">
       <Project>{06eb7ce3-8c9c-4bd6-bf72-4caab19b22f0}</Project>
       <Name>GroupModul</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ShowProductModel\ProductModul.csproj">
+    <ProjectReference Include="..\ProductModel\ProductModul.csproj">
       <Project>{a2c817e8-9af6-4724-a7cf-3f6f2f8eb427}</Project>
       <Name>ProductModul</Name>
     </ProjectReference>

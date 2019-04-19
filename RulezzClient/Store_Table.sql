@@ -32,15 +32,29 @@ CREATE TABLE Stores(
 )
 GO
 
+
+/*
+* UnitStorage таблица типов хранения
+* Title наименование типа
+*/
+CREATE TABLE UnitStorages(
+	Id INT PRIMARY KEY IDENTITY,
+	Title NVARCHAR(20) NOT NULL UNIQUE CHECK(Title !=''),
+)
+GO
+
 /*
 * Group группы
 * Title наименование группы
+* IdUnitStorage id типа хранения
 */
 CREATE TABLE Groups(
 	Id INT PRIMARY KEY IDENTITY,
 	Title NVARCHAR(20) NOT NULL CHECK(Title !=''),
 	IdParentGroup INT,
+	IdUnitStorage INT NOT NULL,
 	FOREIGN KEY (IdParentGroup) REFERENCES Groups (Id),
+	FOREIGN KEY (IdUnitStorage) REFERENCES UnitStorages (Id),
 	CONSTRAINT UQ_Group_TitleIdParentGroup UNIQUE (Title, IdParentGroup)
 )
 GO
@@ -52,16 +66,6 @@ GO
 CREATE TABLE PriceGroups(
 	Id INT PRIMARY KEY IDENTITY,
 	Markup float NOT NULL UNIQUE CHECK(Markup >= 0),
-)
-GO
-
-/*
-* UnitStorage таблица типов хранения
-* Title наименование типа
-*/
-CREATE TABLE UnitStorages(
-	Id INT PRIMARY KEY IDENTITY,
-	Title NVARCHAR(20) NOT NULL UNIQUE CHECK(Title !=''),
 )
 GO
 
@@ -82,7 +86,6 @@ GO
 * Barcode штрихкод
 * PurchasePrice закупочная цена
 * SalesPrice цена продажи
-* IdUnitStorage id типа хранения
 * IdExchangeRate id валюты для закупочной цены
 * IdWarrantyPeriod id гарантийного срока
 * IdGroup id группы
@@ -93,12 +96,10 @@ CREATE TABLE Products(
 	VendorCode NVARCHAR(20) NULL,
 	Barcode NVARCHAR(13) NULL,
 	PurchasePrice MONEY NOT NULL DEFAULT 0 CHECK(PurchasePrice >= 0),
-	SalesPrice MONEY NOT NULL DEFAULT 0 CHECK(SalesPrice >= 0),
-	IdUnitStorage INT NOT NULL,
+	SalesPrice MONEY NOT NULL DEFAULT 0 CHECK(SalesPrice >= 0),	
 	IdExchangeRate INT NOT NULL,
 	IdWarrantyPeriod INT NOT NULL,
-	IdGroup INT NOT NULL,
-	FOREIGN KEY (IdUnitStorage) REFERENCES UnitStorages (Id),
+	IdGroup INT NOT NULL,	
 	FOREIGN KEY (IdExchangeRate) REFERENCES ExchangeRates (Id),
 	FOREIGN KEY (IdWarrantyPeriod) REFERENCES WarrantyPeriods (Id),
 	FOREIGN KEY (IdGroup) REFERENCES Groups (Id)
@@ -290,7 +291,7 @@ GO
 CREATE TABLE CountProducts(
 	IdProduct INT NOT NULL,
 	IdStore INT NOT NULL,
-	Count INT NOT NULL DEFAULT 0,
+	Count FLOAT NOT NULL DEFAULT 0,
 	FOREIGN KEY (IdProduct) REFERENCES Products (Id),
 	FOREIGN KEY (IdStore) REFERENCES Stores (Id)
 )

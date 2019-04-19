@@ -4,53 +4,23 @@ using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
-using Prism.Mvvm;
 
 namespace ModelModul.Product
 {
-    public class ListProductsModel : BindableBase
+    public class DbSetProductsModel : DbSetModel<Products>
     {
-        #region Properties
-
-        private ObservableCollection<ProductModel> _products = new ObservableCollection<ProductModel>();
-
-        public ObservableCollection<ProductModel> Products
-        {
-            get => _products;
-            set => SetProperty(ref _products, value);
-        }
-
-        #endregion
-
-        public ListProductsModel()
-        {
-            Products = new ObservableCollection<ProductModel>();
-        }
-
         #region LoadMethod
 
         public async Task<int> Load(int idGroup)
         {
-            List<ProductModel> temp = await Task.Run(() =>
+            List<Products> temp = await Task.Run(() =>
             {
                 try
                 {
                     using (StoreEntities db = new StoreEntities())
                     {
-                        db.Products.Load();
-                        return db.Products.Where(obj => obj.IdGroup == idGroup).Select(obj => new ProductModel
-                        {
-                            Id = obj.Id,
-                            Title = obj.Title,
-                            VendorCode = obj.VendorCode,
-                            Barcode = obj.Barcode,
-                            PurchasePrice = obj.PurchasePrice,
-                            SalesPrice = obj.SalesPrice,
-                            IdUnitStorage = obj.IdUnitStorage,
-                            IdExchangeRate = obj.IdExchangeRate,
-                            IdWarrantyPeriod = obj.IdWarrantyPeriod,
-                            IdGroup = obj.IdGroup
-                        }).ToList();
+                        return db.Products.Include(p => p.CountProducts).Include(p => p.ExchangeRates)
+                            .Include(p => p.WarrantyPeriods).Where(obj => obj.IdGroup == idGroup).ToList();
                     }
                 }
                 catch (Exception)
@@ -58,45 +28,32 @@ namespace ModelModul.Product
                     return null;
                 }
             });
-            ObservableCollection<ProductModel> product = new ObservableCollection<ProductModel>();
+            ObservableCollection<Products> list = new ObservableCollection<Products>();
 
             if (temp != null)
             {
                 foreach (var item in temp)
                 {
-                    product.Add(item);
+                    list.Add(item);
                 }
             }
 
-            Products = product;
-            return Products.Count;
+            List = list;
+            return List.Count;
         }
 
         public async Task<int> LoadByFindString(string findString)
         {
-            List<ProductModel> temp = await Task.Run(() =>
+            List<Products> temp = await Task.Run(() =>
             {
                 try
                 {
                     using (StoreEntities db = new StoreEntities())
                     {
-                        db.Products.Load();
-                        return db.Products
-                            .Where(obj =>
+                        return db.Products.Include(p => p.CountProducts).Include(p => p.ExchangeRates)
+                            .Include(p => p.WarrantyPeriods).Where(obj =>
                                 obj.Title.Contains(findString) || obj.VendorCode.Contains(findString) ||
-                                obj.Barcode.Contains(findString)).Select(obj => new ProductModel
-                            {
-                                Id = obj.Id,
-                                Title = obj.Title,
-                                VendorCode = obj.VendorCode,
-                                Barcode = obj.Barcode,
-                                PurchasePrice = obj.PurchasePrice,
-                                SalesPrice = obj.SalesPrice,
-                                IdUnitStorage = obj.IdUnitStorage,
-                                IdExchangeRate = obj.IdExchangeRate,
-                                IdWarrantyPeriod = obj.IdWarrantyPeriod,
-                                IdGroup = obj.IdGroup
-                            }).ToList();
+                                obj.Barcode.Contains(findString)).ToList();
                     }
                 }
                 catch (Exception)
@@ -105,23 +62,23 @@ namespace ModelModul.Product
                 }
             });
 
-            ObservableCollection<ProductModel> product = new ObservableCollection<ProductModel>();
+            ObservableCollection<Products> list = new ObservableCollection<Products>();
 
             if (temp != null)
             {
                 foreach (var item in temp)
                 {
-                    product.Add(item);
+                    list.Add(item);
                 }
             }
 
-            Products = product;
-            return Products.Count;
+            List = list;
+            return List.Count;
         }
 
         #endregion
 
-        public void Delete(int id)
+        public override void Delete(int id)
         {
             using (StoreEntities db = new StoreEntities())
             {
@@ -137,12 +94,13 @@ namespace ModelModul.Product
                     catch (Exception)
                     {
                         transaction.Rollback();
+                        throw;
                     }
                 }
             }
         }
 
-        public void Add(ProductModel product)
+        public override void Add(Products product)
         {
             using (StoreEntities db = new StoreEntities())
             {
@@ -150,19 +108,32 @@ namespace ModelModul.Product
                 {
                     try
                     {
-                        db.Products.Add(product.ConvertToProducts());
+                        if (product.Groups != null)
+                        {
+                            product.IdGroup = product.Groups.Id;
+                            product.Groups = null;
+                        }
+                        if (product.WarrantyPeriods != null)
+                        {
+                            product.IdWarrantyPeriod = product.WarrantyPeriods.Id;
+                            product.WarrantyPeriods = null;
+                        }
+                        product.IdExchangeRate = db.ExchangeRates.Select(ex => ex.Id).FirstOrDefault();
+
+                        db.Products.Add(product);
                         db.SaveChanges();
                         transaction.Commit();
                     }
                     catch (Exception)
                     {
                         transaction.Rollback();
+                        throw;
                     }
                 }
             }
         }
 
-        public void Update(ProductModel product)
+        public override void Update(Products product)
         {
             using (StoreEntities db = new StoreEntities())
             {
@@ -177,6 +148,7 @@ namespace ModelModul.Product
                     catch (Exception)
                     {
                         transaction.Rollback();
+                        throw;
                     }
                 }
             }

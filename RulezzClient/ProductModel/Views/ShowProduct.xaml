@@ -34,7 +34,7 @@
             <ContentControl  Grid.Column="0" interactivity:RegionManager.RegionName="ShowGroupRegion"/>
             <GridSplitter Grid.Column="1" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="Black" />
             <ScrollViewer Grid.Column="2" HorizontalContentAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" MinHeight="200" MaxHeight="500">
-                <DataGrid x:Name="ProductData" ItemsSource="{Binding Path = Products, UpdateSourceTrigger=PropertyChanged}" MaxWidth="520"
+                <customcontrollibrary:ExtendedDataGrid x:Name="ProductData" ItemsSource="{Binding Path = Products, UpdateSourceTrigger=PropertyChanged}" MaxWidth="520"
                     IsSynchronizedWithCurrentItem="True" CanUserResizeRows="False"
                     CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Center" VerticalAlignment="Top"
                     MinHeight="200" MaxHeight="500" RowStyle="{StaticResource DefaultRowStyle}" CanUserAddRows="False" HorizontalAlignment="Left">
@@ -43,21 +43,22 @@
                             <interactivity:InvokeCommandAction Command="{Binding Path=UpdateProduct}" CommandParameter="{Binding ElementName=ProductData, Path=SelectedItem}"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
-                    <DataGrid.CellStyle>
+                    <customcontrollibrary:ExtendedDataGrid.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Setter Property="BorderThickness" Value="0"/>
                             <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
                         </Style>
-                    </DataGrid.CellStyle>
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Наименование"     Binding="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}"       IsReadOnly="True" MaxWidth="100"/>
-                        <DataGridTextColumn Header="Артикул"          Binding="{Binding Path=VendorCode, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True" MaxWidth="100"/>
-                        <DataGridTextColumn Header="Штрихкод"         Binding="{Binding Path=Barcode, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True" MaxWidth="100"/>
-                        <DataGridTextColumn Header="Цена"             Binding="{Binding Path=SalesPrice, UpdateSourceTrigger=PropertyChanged, StringFormat=C, ConverterCulture='ua-UA'}"  IsReadOnly="True" MaxWidth= "80"/>
-                        <DataGridTextColumn Header="Ед. хранения"     Binding="{Binding Path=UnitStorage.Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" MaxWidth="80" MinWidth="80" CanUserResize="False"/>
-                        <DataGridTextColumn Header="Гарантия"         Binding="{Binding Path=WarrantyPeriod.Period, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" MaxWidth="60" MinWidth="60" CanUserResize="False"/>
-                    </DataGrid.Columns>
-                </DataGrid>
+                    </customcontrollibrary:ExtendedDataGrid.CellStyle>
+                    <customcontrollibrary:ExtendedDataGrid.Columns>
+                        <DataGridTextColumn Header="Наименование"     Binding="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}"       IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Артикул"          Binding="{Binding Path=VendorCode, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Штрихкод"         Binding="{Binding Path=Barcode, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True" Visibility="Collapsed"/>
+                        <DataGridTextColumn Header="Цена"             Binding="{Binding Path=SalesPrice, UpdateSourceTrigger=PropertyChanged, StringFormat=C, ConverterCulture='ua-UA'}"  IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Остаток"     Binding="{Binding Path=Count, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" CanUserResize="False"/>
+                        <DataGridTextColumn Header="Ед. хр."     Binding="{Binding Path=UnitStorage.Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" CanUserResize="False"/>
+                        <DataGridTextColumn Header="Гарантия"         Binding="{Binding Path=WarrantyPeriod.Period, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" CanUserResize="False" Visibility="Collapsed"/>
+                    </customcontrollibrary:ExtendedDataGrid.Columns>
+                </customcontrollibrary:ExtendedDataGrid>
             </ScrollViewer>
         </Grid>
         <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left">

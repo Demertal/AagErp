@@ -5,6 +5,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mvvm="http://prismlibrary.com/"
     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+    xmlns:views="clr-namespace:ProductModul.Views;assembly=ProductModel"
     mvvm:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d"
     Title="Главное окно" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" HorizontalAlignment="Center"
@@ -15,7 +16,17 @@
             <MenuItem Height="20"  Header="Рабочее место кассира"/>
             <MenuItem Height="20"  Header="Показать товар" Command="{Binding ShowProductCommand}"/>
             <MenuItem Header="Действия с товаром">
-                <MenuItem Header="Добавить товар" Command="{Binding AddProductMainCommand}"/>
+                <MenuItem Header="Добавить товар" Command="{Binding AddProductCommand}">
+                    <i:Interaction.Triggers>
+                        <mvvm:InteractionRequestTrigger SourceObject="{Binding Path=AddProductPopupRequest}">
+                            <mvvm:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True" WindowStyle="{DynamicResource MyWindowStyle}">
+                                <mvvm:PopupWindowAction.WindowContent>
+                                    <views:AddProduct/>
+                                </mvvm:PopupWindowAction.WindowContent>
+                            </mvvm:PopupWindowAction>
+                        </mvvm:InteractionRequestTrigger>
+                    </i:Interaction.Triggers>
+                </MenuItem>
                 <MenuItem Header="Переоценка товара" Command="{Binding RevaluationCommand}"/>
                 <MenuItem Header="Принять товар" Command="{Binding PurchaseInvoiceCommand}"/>
             </MenuItem>

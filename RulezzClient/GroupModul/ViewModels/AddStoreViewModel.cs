@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using ModelModul;
 using ModelModul.Group;
 using Prism.Commands;
 using Prism.Interactivity.InteractionRequest;
@@ -51,8 +52,8 @@ namespace GroupModul.ViewModels
         {
             try
             {
-                ListGroupsModel listGroups = new ListGroupsModel();
-                listGroups.Add(new GroupModel { Title = Title });
+                DbSetGroupsModel dbSetGroupsModel = new DbSetGroupsModel();
+                dbSetGroupsModel.Add(new Groups{ Title = Title });
                 MessageBox.Show("Магазин добавлен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
 
                 if (_notification != null)

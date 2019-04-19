@@ -19,7 +19,7 @@ namespace RulezzClient
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
         {
-            moduleCatalog.AddModule<ProductModul.ShowProductModul>();
+            moduleCatalog.AddModule<ProductModul.ProductModul>();
             moduleCatalog.AddModule<GroupModul.GroupModul>();
         }
     }
