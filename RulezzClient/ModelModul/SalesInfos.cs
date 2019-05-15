@@ -7,21 +7,22 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System;
-
 namespace ModelModul
 {
+    using System;
+    using System.Collections.Generic;
+    
     public partial class SalesInfos
     {
         public int Id { get; set; }
-        public int Count { get; set; }
+        //public int Count { get; set; }
         public decimal SellingPrice { get; set; }
         public int IdProduct { get; set; }
         public int IdSalesReport { get; set; }
         public Nullable<int> IdSerialNumber { get; set; }
     
-        public virtual Products Products { get; set; }
+        //public virtual Products Products { get; set; }
         public virtual SalesReports SalesReports { get; set; }
-        public virtual SerialNumbers SerialNumbers { get; set; }
+        //public virtual SerialNumbers SerialNumbers { get; set; }
     }
 }

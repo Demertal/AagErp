@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Windows;
-using EventAggregatorLibrary;
 using ModelModul;
+using ModelModul.Group;
 using ModelModul.Product;
+using ModelModul.UnitStorage;
 using ModelModul.WarrantyPeriod;
 using Prism.Commands;
-using Prism.Events;
 using Prism.Interactivity.InteractionRequest;
 using Prism.Mvvm;
 
@@ -14,13 +14,23 @@ namespace ProductModul.ViewModels
 {
     class AddProductViewModel : BindableBase, IInteractionRequestAware
     {
-        #region Properties
+        #region GroupProperties
 
-        readonly IEventAggregator _ea;
+        private readonly DbSetGroups _groupModel = new DbSetGroups();
 
-        private readonly DbSetWarrantyPeriodsModel _dbSetWarrantyPeriodsModel = new DbSetWarrantyPeriodsModel();
+        public ObservableCollection<Groups> GroupsList => _groupModel.List;
 
-        public ObservableCollection<WarrantyPeriods> WarrantyPeriods => _dbSetWarrantyPeriodsModel.List;
+        public DelegateCommand<Groups> SelectedGroupCommand { get; }
+
+        #endregion
+
+        #region ProductProperties
+
+        private readonly DbSetWarrantyPeriods _warrantyPeriodsModel = new DbSetWarrantyPeriods();
+        private readonly DbSetUnitStorages _unitStoragesModel = new DbSetUnitStorages();
+
+        public ObservableCollection<WarrantyPeriods> WarrantyPeriods => _warrantyPeriodsModel.List;
+        public ObservableCollection<UnitStorages> UnitStorages => _unitStoragesModel.List;
 
         private readonly Products _product = new Products();
 
@@ -30,6 +40,28 @@ namespace ProductModul.ViewModels
             set
             {
                 _product.WarrantyPeriods = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged("IsEnabled");
+            }
+        }
+
+        public Groups SelectedGroup
+        {
+            get => _product.Groups;
+            set
+            {
+                _product.Groups = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged("IsEnabled");
+            }
+        }
+
+        public UnitStorages UnitStorage
+        {
+            get => _product.UnitStorages;
+            set
+            {
+                _product.UnitStorages = value;
                 RaisePropertyChanged();
                 RaisePropertyChanged("IsEnabled");
             }
@@ -66,7 +98,7 @@ namespace ProductModul.ViewModels
             }
         }
 
-        private bool IsEnabled => Title != "" && WarrantyPeriod != null;
+        private bool IsEnabled => Title != "" && WarrantyPeriod != null && UnitStorage != null && SelectedGroup != null;
 
         private Confirmation _notification;
         public INotification Notification
@@ -79,7 +111,7 @@ namespace ProductModul.ViewModels
                 Barcode = "";
                 VendorCode = "";
                 WarrantyPeriod = null;
-                LoadWarrantyPeriods();
+                UnitStorage = null;
             }
         }
 
@@ -89,38 +121,45 @@ namespace ProductModul.ViewModels
 
         #endregion
 
-        public AddProductViewModel(IEventAggregator ea)
+        public AddProductViewModel()
         {
-            _ea = ea;
-            _ea.GetEvent<GroupsEventAggregator>().Subscribe(GetSelectedGroup);
+            SelectedGroupCommand = new DelegateCommand<Groups>(SelectedGroupChange);
             AddProductCommand = new DelegateCommand(AddProduct).ObservesCanExecute(() => IsEnabled);
+            Load();
         }
 
-        private void GetSelectedGroup(Groups obj)
-        {
-            _product.Groups = obj;
-        }
+        #region GroupCommands
 
-        private async void LoadWarrantyPeriods()
+        private async void Load()
         {
             try
             {
-                await _dbSetWarrantyPeriodsModel.Load();
+                await _groupModel.Load();
+                RaisePropertyChanged("GroupsList");
+                await _warrantyPeriodsModel.Load();
+                RaisePropertyChanged("WarrantyPeriods");
+                await _unitStoragesModel.Load();
+                RaisePropertyChanged("UnitStorages");
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            RaisePropertyChanged("WarrantyPeriods");
         }
 
+        private void SelectedGroupChange(Groups obj)
+        {
+            SelectedGroup = obj;
+        }
+
+        #endregion
 
         public void AddProduct()
         {
             try
             {
-                DbSetProductsModel dbSetProductsModel = new DbSetProductsModel();
-                dbSetProductsModel.Add((Products)_product.Clone());
+                DbSetProducts dbSetProducts = new DbSetProducts();
+                dbSetProducts.Add((Products)_product.Clone());
                 MessageBox.Show("Товар добавлен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)

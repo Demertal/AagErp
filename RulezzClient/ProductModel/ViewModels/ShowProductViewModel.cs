@@ -1,22 +1,57 @@
-﻿using System.Collections.ObjectModel;
-using EventAggregatorLibrary;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Windows;
 using ModelModul;
+using ModelModul.Group;
 using ModelModul.Product;
 using Prism.Commands;
-using Prism.Events;
+using Prism.Interactivity.InteractionRequest;
 using Prism.Mvvm;
+using Prism.Regions;
 
 namespace ProductModul.ViewModels
 {
-    class ShowProductViewModel : BindableBase
+    class ShowProductViewModel : BindableBase, INavigationAware, IRegionMemberLifetime, IInteractionRequestAware
     {
-        #region Properties
+        private bool _isAddPurchase;
+        public bool IsAddPurchase
+        {
+            get => _isAddPurchase;
+            set => SetProperty(ref _isAddPurchase, value);
+        }
 
-        readonly IEventAggregator _ea;
+        #region GroupProperties
 
-        public DbSetProductsModel DbSetProductsModel = new DbSetProductsModel();
+        private DbSetGroups _groupModel = new DbSetGroups();
 
-        public ObservableCollection<Products> Products => DbSetProductsModel.List;
+        public ObservableCollection<Groups> GroupsList => _groupModel.List;
+
+        public DelegateCommand<Groups> SelectedGroupCommand { get; }
+
+        public InteractionRequest<INotification> AddStorePopupRequest { get; set; }
+        public InteractionRequest<INotification> AddGroupPopupRequest { get; set; }
+        public InteractionRequest<INotification> UpdateStorePopupRequest { get; set; }
+        public InteractionRequest<INotification> ShowPropertiesPopupRequest { get; set; }
+        public DelegateCommand<Groups> DeleteGroupCommand { get; }
+        public DelegateCommand AddStoreCommand { get; }
+        public DelegateCommand<Groups> AddGroupCommand { get; }
+        public DelegateCommand<Groups> UpdateGroupCommand { get; }
+        public DelegateCommand<Groups> ShowPropertiesCommand { get; }
+
+        #endregion
+
+        #region ProductProperties
+
+        private Groups _selectedGroup;
+        public Groups SelectedGroup
+        {
+            get => _selectedGroup;
+            set
+            {
+                SetProperty(ref _selectedGroup, value);
+                LoadProduct();
+            }
+        }
 
         private string _findString;
         public string FindString
@@ -24,126 +59,197 @@ namespace ProductModul.ViewModels
             get => _findString;
             set
             {
-                _findString = value;
-                RaisePropertyChanged();
-                Load(-1);
+                SetProperty(ref _findString, value);
+                LoadProduct();
+            }
+        }
+
+        private DbSetProducts _productsModel = new DbSetProducts();
+
+        public ObservableCollection<Products> ProductsList => _productsModel.List;
+
+        public InteractionRequest<INotification> UpdateProductPopupRequest { get; set; }
+
+        public DelegateCommand<Products> DeleteProductCommand { get; }
+        public DelegateCommand<Products> UpdateProductCommand { get; }
+        public DelegateCommand<object> AddCommandPurchaseGoods { get; }
+       
+
+        private Confirmation _notification;
+        public INotification Notification
+        {
+            get => _notification;
+            set
+            {
+                SetProperty(ref _notification, value as Confirmation);
+                IsAddPurchase = true;
+                FindString = "";
+                SelectedGroup = null;
+                LoadGroup();
+            }
+        }
+
+        public Action FinishInteraction { get; set; }
+
+        #endregion
+
+        public ShowProductViewModel()
+        {
+            IsAddPurchase = false;
+            SelectedGroupCommand = new DelegateCommand<Groups>(SelectedGroupChange);
+            AddStorePopupRequest = new InteractionRequest<INotification>();
+            AddGroupPopupRequest = new InteractionRequest<INotification>();
+            UpdateStorePopupRequest = new InteractionRequest<INotification>();
+            ShowPropertiesPopupRequest = new InteractionRequest<INotification>();
+            AddStoreCommand = new DelegateCommand(AddStore);
+            UpdateGroupCommand = new DelegateCommand<Groups>(UpdateGroup);
+            DeleteGroupCommand = new DelegateCommand<Groups>(DeleteGroup);
+            AddGroupCommand = new DelegateCommand<Groups>(AddGroup);
+            ShowPropertiesCommand = new DelegateCommand<Groups>(ShowProperties);
+
+            UpdateProductPopupRequest = new InteractionRequest<INotification>();
+            AddCommandPurchaseGoods = new DelegateCommand<object>(AddPurchaseGoods);
+            DeleteProductCommand = new DelegateCommand<Products>(DeleteProduct);
+            UpdateProductCommand = new DelegateCommand<Products>(UpdateProduct);
+            
+            LoadGroup();
+        }
+        
+        #region GroupCommands
+
+        private async void LoadGroup()
+        {
+            await _groupModel.Load();
+            RaisePropertyChanged("GroupsList");
+        }
+
+        private void SelectedGroupChange(Groups obj)
+        {
+            SelectedGroup = obj;
+        }
+
+        private void AddStore()
+        {
+            AddStorePopupRequest.Raise(new Confirmation { Title = "Добавить магазин" }, Callback);
+        }
+
+        private void AddGroup(Groups group)
+        {
+            AddGroupPopupRequest.Raise(new Confirmation { Title = "Добавить группу", Content = group.Groups2 }, Callback);
+        }
+
+        private void UpdateGroup(Groups group)
+        {
+            if (group.IdParentGroup == null)
+            {
+                UpdateStorePopupRequest.Raise(new Confirmation { Title = "Изменить магазин", Content = group.Groups2 }, Callback);
+            }
+        }
+
+        private void ShowProperties(Groups group)
+        {
+            ShowPropertiesPopupRequest.Raise(new Notification { Title = "Свойства", Content = group });
+        }
+
+        private void DeleteGroup(Groups group)
+        {
+            try
+            {
+                if (group.IdParentGroup == null)
+                {
+                    if (MessageBox.Show("Удалить магазин?", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
+                        MessageBoxResult.Yes) return;
+                    _groupModel.Delete(group.Id);
+                    MessageBox.Show("Магазин удален.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                    LoadGroup();
+                }
+                else
+                {
+                    if (MessageBox.Show("Удалить группу?", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
+                        MessageBoxResult.Yes) return;
+                    _groupModel.Delete(group.Id);
+                    MessageBox.Show("Группа удалена.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                    LoadGroup();
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void Callback(INotification notification)
+        {
+            if (!((Confirmation) notification).Confirmed) return;
+            LoadGroup();
+            LoadProduct();
+        }
+
+        #endregion
+
+        #region ProductCommands
+
+        private async void LoadProduct()
+        {
+            if (SelectedGroup == null) await _productsModel.Load(-1, FindString);
+            else await _productsModel.Load(SelectedGroup.Id, FindString);
+            RaisePropertyChanged("ProductsList");
+        }
+
+        private void AddPurchaseGoods(object obj)
+        {
+            if (_notification != null)
+            {
+                _notification.Confirmed = true;
+                _notification.Content = obj;
+            }
+            FinishInteraction?.Invoke();
+        }
+
+        private void UpdateProduct(Products obj)
+        {
+            UpdateProductPopupRequest.Raise(new Confirmation { Title = "Изменить товар", Content = obj}, Callback);
+        }
+
+        private void DeleteProduct(Products obj)
+        {
+            if (obj == null) return;
+            if (MessageBox.Show("Удалить товар?", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
+                MessageBoxResult.Yes) return;
+            try
+            {
+                _productsModel.Delete(obj.Id);
+                MessageBox.Show("Товар удален.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                LoadProduct();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
             }
         }
 
         #endregion
 
-        public ShowProductViewModel(IEventAggregator ea)
+        #region Navigat
+
+        public void OnNavigatedTo(NavigationContext navigationContext)
         {
-            _ea = ea;
-            _ea.GetEvent<GroupsEventAggregator>().Subscribe(GetSelectedGroup);
             FindString = "";
-            //DeleteProduct = new DelegateCommand(() =>
-            //{
-            //    if (MessageBox.Show("Вы уверены что хотите удалить товар?", "Удаление", MessageBoxButton.YesNo,
-            //            MessageBoxImage.Question) != MessageBoxResult.Yes) return;
-            //    try
-            //    {
-            //        DbSetGroupsModel.Delete(SelectedProduct.Id);
-            //        Update(ChoiceUpdate.Product);
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK,
-            //            MessageBoxImage.Error);
-            //    }
-            //});
-            //UpdateProduct = new DelegateCommand(() =>
-            //{
-            //    //if (SelectedProduct == null) return;
-            //    //object[] param = new object[1];
-            //    //param[0] = SelectedProduct;
-            //    //_dialogService.ShowDialog(DialogService.ChoiceView.UpdateProduct, param, true, b => { });
-            //    //Update(ChoiceUpdate.Product);
-            //});
+            SelectedGroup = null;
+            LoadGroup();
         }
 
-        //public ShowProductViewModel(object obj, Window wnd)
-        //{
-        //    SelectionMode = SelectionMode.Multiple;
-        //    IsSelectedProduct = Visibility.Visible;
-        //    IsNotSelectedProduct = Visibility.Collapsed;
-        //    Update(ChoiceUpdate.Store);
-        //    FindString = "";
-        //    DeleteProduct = null;
-        //    UpdateProduct = new DelegateCommand(() =>
-        //    {
-        //        using (StoreEntities db = new StoreEntities())
-        //        {
-        //            if (obj.GetType().ToString() == "RulezzClient.ViewModels.RevaluationVM")
-        //            {
-        //                RevaluationProductModel revItem =
-        //                    new RevaluationProductModel(db.Products.Find(SelectedProduct?.Id));
-        //                if (!(obj as RevaluationVM).AllProduct.Contains(revItem)) (obj as RevaluationVM).AllProduct.Add(revItem);
-        //            }
-        //            else if (obj.GetType().ToString() == "RulezzClient.ViewModels.PurchaseInvoiceVM")
-        //            {
-        //                PurchaseInvoiceProductVM purItem =
-        //                    new PurchaseInvoiceProductVM(
-        //                        new PurchaseInvoiceProductModel(db.Products.Find(SelectedProduct?.Id)));
-        //                if (!(obj as PurchaseInvoiceVM).PurchaseInvoiceProduct.Contains(purItem)) (obj as PurchaseInvoiceVM).PurchaseInvoiceProduct.Add(purItem);
-        //            }
-        //        }
-        //        wnd.Close();
-        //    });
-        //    SelectedProductCommand = new DelegateCommand<object>(sel =>
-        //    {
-        //        using (StoreEntities db = new StoreEntities())
-        //        {
-        //            foreach (var item in (IList)sel)
-        //            {
-        //                if (obj.GetType().ToString() == "RulezzClient.ViewModels.RevaluationVM")
-        //                {
-        //                    RevaluationProductModel revItem =
-        //                        new RevaluationProductModel(db.Products.Find((item as ProductView)?.Id));
-        //                    if ((obj as RevaluationVM).AllProduct.Contains(revItem)) continue;
-        //                    (obj as RevaluationVM).AllProduct.Add(revItem);
-        //                }
-        //                else if (obj.GetType().ToString() == "RulezzClient.ViewModels.PurchaseInvoiceVM")
-        //                {
-        //                    PurchaseInvoiceProductVM purItem =
-        //                        new PurchaseInvoiceProductVM(
-        //                            new PurchaseInvoiceProductModel(db.Products.Find((item as ProductView)?.Id)));
-        //                    if ((obj as PurchaseInvoiceVM).PurchaseInvoiceProduct.Contains(purItem)) continue;
-        //                    (obj as PurchaseInvoiceVM).PurchaseInvoiceProduct.Add(purItem);
-        //                }
-        //            }
-        //        }
-        //        wnd.Close();
-        //    });
-        //}
-
-        #region Load
-
-        public async void Load(int idGroup)
+        public bool IsNavigationTarget(NavigationContext navigationContext)
         {
-            if (!string.IsNullOrEmpty(FindString))
-            {
-                await DbSetProductsModel.LoadByFindString(FindString);
-            }
-            else
-            {
-                await DbSetProductsModel.Load(idGroup);
-            }
-            RaisePropertyChanged("Products");
+            return false;
         }
 
-        private void GetSelectedGroup(Groups obj)
+        public void OnNavigatedFrom(NavigationContext navigationContext)
         {
-            if (obj == null) Load(-1);
-            else Load(obj.Id);
         }
+
+        public bool KeepAlive => false;
 
         #endregion
-
-        public DelegateCommand DeleteProduct { get; }
-
-        public DelegateCommand UpdateProduct { get; }
-
-        public DelegateCommand<object> SelectedProductCommand { get; }
     }
 }

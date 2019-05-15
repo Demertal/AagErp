@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnitStoragesModul.cs" />
     <Compile Include="ViewModels\ShowUnitStorageViewModel.cs" />
     <Compile Include="Views\ShowUnitStorage.xaml.cs">
       <DependentUpon>ShowUnitStorage.xaml</DependentUpon>

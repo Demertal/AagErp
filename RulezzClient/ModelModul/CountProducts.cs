@@ -9,6 +9,9 @@
 
 namespace ModelModul
 {
+    using System;
+    using System.Collections.Generic;
+    
     public partial class CountProducts
     {
         public int IdProduct { get; set; }

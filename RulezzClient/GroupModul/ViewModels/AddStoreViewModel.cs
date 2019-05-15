@@ -52,8 +52,8 @@ namespace GroupModul.ViewModels
         {
             try
             {
-                DbSetGroupsModel dbSetGroupsModel = new DbSetGroupsModel();
-                dbSetGroupsModel.Add(new Groups{ Title = Title });
+                DbSetGroups dbSetGroups = new DbSetGroups();
+                dbSetGroups.Add(new Groups{ Title = Title });
                 MessageBox.Show("Магазин добавлен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
 
                 if (_notification != null)

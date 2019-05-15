@@ -3,6 +3,7 @@ using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Unity;
 using RulezzClient.Views;
+using UnitStorageModul;
 
 namespace RulezzClient
 {
@@ -20,7 +21,13 @@ namespace RulezzClient
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
         {
             moduleCatalog.AddModule<ProductModul.ProductModul>();
-            moduleCatalog.AddModule<GroupModul.GroupModul>();
+            moduleCatalog.AddModule<PurchaseGoodsModul.PurchaseGoodsModul>();
+            moduleCatalog.AddModule<PropertiesModul.PropertiesModul>();
+            moduleCatalog.AddModule<SupplierModul.SupplierModul>();
+            moduleCatalog.AddModule<RevaluationProductsModul.RevaluationProductsModul>();
+            moduleCatalog.AddModule<UnitStoragesModul>();
+            moduleCatalog.AddModule<WarrantyPeriodsModul.WarrantyPeriodsModul>();
+            moduleCatalog.AddModule<CashierWorkplaceModul.CashierWorkplaceModul>();
         }
     }
 }

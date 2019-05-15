@@ -1,0 +1,250 @@
+﻿<UserControl x:Class="PurchaseGoodsModul.Views.PurchaseGoods"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mvvm="http://prismlibrary.com/"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:customControlLibrary="clr-namespace:CustomControlLibrary;assembly=CustomControlLibrary"
+             xmlns:views="clr-namespace:ProductModul.Views;assembly=ProductModel"
+             xmlns:modelModul="clr-namespace:ModelModul;assembly=ModelModul"
+             xmlns:converters="clr-namespace:CustomControlLibrary.Converters;assembly=CustomControlLibrary"
+             mvvm:ViewModelLocator.AutoWireViewModel="True">
+    <UserControl.Resources>
+        <converters:VisibilityConverter x:Key="VisibilityConverter" />
+        <converters:CurrencyConverter2Parametrs x:Key="CurrencyConverter2" />
+        <converters:CurrencyConverter4Parametrs x:Key="CurrencyConverter4" />
+        <ContextMenu  x:Key="RowMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+            <MenuItem Header="Исключить" CommandParameter="{Binding Path=SelectedItems, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                      Command="{Binding DataContext.DeleteProductCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>
+        </ContextMenu>
+        <Style x:Key="DefaultRowStyle" TargetType="{x:Type DataGridRow}">
+            <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
+        </Style>
+    </UserControl.Resources>
+
+    <StackPanel>
+        <StackPanel>
+            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                <TextBlock Text="Выберете склад: " FontSize="14" Margin="5"/>
+                <ComboBox  Margin="5" ItemsSource="{Binding Stores, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedStore, UpdateSourceTrigger=PropertyChanged}"
+                           IsSynchronizedWithCurrentItem="True" DisplayMemberPath="Title"
+                           Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" MinWidth="50" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+                <TextBlock Text="Выберете поставщика: " FontSize="14" Margin="5"/>
+                <ComboBox  Margin="5" ItemsSource="{Binding Suppliers, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedSuppliers, UpdateSourceTrigger=PropertyChanged}"
+                           IsSynchronizedWithCurrentItem="True" DisplayMemberPath="Title"
+                           Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" MinWidth="50" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Укажите курс USD: " FontSize="14" Margin="5"/>
+                <TextBox Text="{Binding Path=Course, UpdateSourceTrigger=PropertyChanged, StringFormat=C, ConverterCulture='ua-UA'}" FontSize="14" Margin="5" MinWidth="50"/>
+            </StackPanel>
+        </StackPanel>
+
+        <Border Margin="5" CornerRadius="4" BorderBrush="#193441" BorderThickness="2" MaxHeight="900" ScrollViewer.VerticalScrollBarVisibility="Auto">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <TextBlock Text="Прием товара" FontSize="14" Margin="5"/>
+                            <customControlLibrary:ExtendedDataGrid ItemsSource="{Binding PurchaseInfos, UpdateSourceTrigger=PropertyChanged}"
+                            IsSynchronizedWithCurrentItem="True" HorizontalAlignment="Left" Margin="5" CanUserResizeRows="False"
+                            CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Top"
+                            MinHeight="200" MaxHeight="600" RowStyle="{StaticResource DefaultRowStyle}" CanUserAddRows="False" CanUserDeleteRows="False">
+                                <customControlLibrary:ExtendedDataGrid.CellStyle>
+                                    <Style TargetType="DataGridCell">
+                                        <Setter Property="BorderThickness" Value="0"/>
+                                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                                    </Style>
+                                </customControlLibrary:ExtendedDataGrid.CellStyle>
+                                <customControlLibrary:ExtendedDataGrid.Columns>
+                                    <DataGridTextColumn Header="Наименование" Binding="{Binding Path=Products.Title, UpdateSourceTrigger=PropertyChanged}"       IsReadOnly="True"/>
+                                    <DataGridTextColumn Header="Артикул" Binding="{Binding Path=Products.VendorCode, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True" Visibility="Collapsed"/>
+                                    <DataGridTextColumn Header="Штрихкод" Binding="{Binding Path=Products.Barcode, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True" Visibility="Collapsed"/>
+                                    <DataGridTextColumn Header="Цена закупки">
+                                        <DataGridTextColumn.Binding>
+                                            <MultiBinding Converter="{StaticResource CurrencyConverter2}" UpdateSourceTrigger="PropertyChanged" ValidatesOnExceptions="True">
+                                                <Binding Path="PurchasePrice"/>
+                                                <Binding Path="ExchangeRates"/>
+                                            </MultiBinding>
+                                        </DataGridTextColumn.Binding>
+                                    </DataGridTextColumn>
+                                    <DataGridTemplateColumn   Header="Валюта">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Path=ExchangeRates.Title}"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                        <DataGridTemplateColumn.CellEditingTemplate>
+                                            <DataTemplate>
+                                                <ComboBox SelectedItem="{Binding Path=ExchangeRates}"  DisplayMemberPath="Title" ItemsSource="{Binding Path=DataContext.ExchangeRates, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellEditingTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTextColumn Header="Кол-во" Binding="{Binding Path=Count, UpdateSourceTrigger=PropertyChanged}"/>
+                                </customControlLibrary:ExtendedDataGrid.Columns>
+                                <customControlLibrary:ExtendedDataGrid.RowDetailsTemplate>
+                                    <DataTemplate>
+                                        <Border BorderThickness="0" Visibility="{Binding Path=Products.WarrantyPeriods.Period, Converter={StaticResource VisibilityConverter}}"
+                                                MaxHeight="200" ScrollViewer.HorizontalScrollBarVisibility="Hidden">
+                                            <DataGrid ItemsSource="{Binding Path=Products.SerialNumbers, UpdateSourceTrigger=PropertyChanged}"
+                                            IsSynchronizedWithCurrentItem="True" HorizontalAlignment="Left" CanUserResizeRows="False" Margin="10,0,0,0" CanUserReorderColumns="False"
+                                            AutoGenerateColumns="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Top" SelectionMode="Single"
+                                                      CanUserAddRows="False" CanUserDeleteRows="False">
+                                                <i:Interaction.Triggers>
+                                                    <i:EventTrigger EventName="CellEditEnding">
+                                                        <mvvm:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}},
+                                                            Path=DataContext.UpdatePurchaseInfosCommand}"/>
+                                                    </i:EventTrigger>
+                                                </i:Interaction.Triggers>
+                                                <DataGrid.Columns>
+                                                    <DataGridTextColumn Header="Серийный номер" Binding="{Binding Path=Value, UpdateSourceTrigger=PropertyChanged}"/>
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+                                        </Border>
+                                    </DataTemplate>
+                                </customControlLibrary:ExtendedDataGrid.RowDetailsTemplate>
+                            </customControlLibrary:ExtendedDataGrid>
+                        </StackPanel>
+                    </ScrollViewer>
+                    <Button Content="Добавить товар" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" Command="{Binding AddProductCommand}">
+                        <i:Interaction.Triggers>
+                            <mvvm:InteractionRequestTrigger SourceObject="{Binding AddProductPopupRequest}">
+                                <mvvm:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True" WindowStyle="{DynamicResource MyWindowStyle}">
+                                    <mvvm:PopupWindowAction.WindowContent>
+                                        <views:ShowProduct/>
+                                    </mvvm:PopupWindowAction.WindowContent>
+                                </mvvm:PopupWindowAction>
+                            </mvvm:InteractionRequestTrigger>
+                        </i:Interaction.Triggers>
+                    </Button>
+                    <Border Margin="5" CornerRadius="4" BorderBrush="#193441" BorderThickness="2" MaxHeight="500">
+                        <Border.Style>
+                            <Style TargetType="{x:Type Border}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsRevaluationProducts}" Value="False">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsRevaluationProducts}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <StackPanel>
+                            <TextBlock Text="Переоценка" FontSize="14" Margin="5"/>
+                            <customControlLibrary:ExtendedDataGrid ItemsSource="{Binding RevaluationProducts, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True"
+                                HorizontalAlignment="Left" CanUserResizeRows="False" CanUserReorderColumns="False" Margin="5"
+                                AutoGenerateColumns="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Top" MaxHeight="400"
+                                                                   CanUserAddRows="False" CanUserDeleteRows="False">
+                                <customControlLibrary:ExtendedDataGrid.CellStyle>
+                                    <Style TargetType="DataGridCell">
+                                        <Setter Property="BorderThickness" Value="0"/>
+                                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                                    </Style>
+                                </customControlLibrary:ExtendedDataGrid.CellStyle>
+                                <customControlLibrary:ExtendedDataGrid.Columns>
+                                    <DataGridTextColumn Header="Наименование" Binding="{Binding Path=RevaluationProducts.Products.Title, UpdateSourceTrigger=PropertyChanged}"       IsReadOnly="True"/>
+                                    <DataGridTextColumn Header="Артикул" Binding="{Binding Path=RevaluationProducts.Products.VendorCode, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True" Visibility="Collapsed"/>
+                                    <DataGridTextColumn Header="Штрихкод" Binding="{Binding Path=RevaluationProducts.Products.Barcode, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True" Visibility="Collapsed"/>
+                                    <DataGridTextColumn Header="Ст. цена зак." IsReadOnly="True">
+                                        <DataGridTextColumn.Binding>
+                                            <MultiBinding Converter="{StaticResource CurrencyConverter4}" UpdateSourceTrigger="PropertyChanged" ValidatesOnExceptions="True">
+                                                <Binding Path="RevaluationProducts.Products.PurchasePrice"/>
+                                                <Binding Path="RevaluationProducts.Products.ExchangeRates"/>
+                                                <Binding ElementName="BringPurchasePriceCh" Path="IsChecked"/>
+                                                <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type UserControl}}" Path="DataContext.Course" UpdateSourceTrigger="PropertyChanged"/>
+                                            </MultiBinding>
+                                        </DataGridTextColumn.Binding>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Header="Нов. цена зак." IsReadOnly="True">
+                                        <DataGridTextColumn.Binding>
+                                            <MultiBinding Converter="{StaticResource CurrencyConverter4}" UpdateSourceTrigger="PropertyChanged" ValidatesOnExceptions="True">
+                                                <Binding Path="PurchasePrice" UpdateSourceTrigger="PropertyChanged"/>
+                                                <Binding Path="ExchangeRate" UpdateSourceTrigger="PropertyChanged"/>
+                                                <Binding ElementName="BringPurchasePriceCh" Path="IsChecked"/>
+                                                <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type UserControl}}" Path="DataContext.Course" UpdateSourceTrigger="PropertyChanged"/>
+                                            </MultiBinding>
+                                        </DataGridTextColumn.Binding>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Header="Ст. цена прод." Binding="{Binding Path=RevaluationProducts.OldSalesPrice, UpdateSourceTrigger=PropertyChanged, StringFormat=C, ConverterCulture='ua-UA'}"  IsReadOnly="True"/>
+                                    <DataGridTextColumn Header="Нов. цена прод."  Binding="{Binding Path=RevaluationProducts.NewSalesPrice, UpdateSourceTrigger=PropertyChanged, StringFormat=C, ConverterCulture='ua-UA', ValidatesOnExceptions=True}"/>
+                                    <DataGridCheckBoxColumn CanUserResize="False" Binding="{Binding Path= IsNotRevaluation, UpdateSourceTrigger=PropertyChanged}">
+                                        <DataGridCheckBoxColumn.HeaderTemplate>
+                                            <DataTemplate>
+                                                <CheckBox Content="Все" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.AllIsChecked, UpdateSourceTrigger=PropertyChanged }"/>
+                                            </DataTemplate>
+                                        </DataGridCheckBoxColumn.HeaderTemplate>
+                                    </DataGridCheckBoxColumn>
+                                </customControlLibrary:ExtendedDataGrid.Columns>
+                            </customControlLibrary:ExtendedDataGrid>
+                            <CheckBox x:Name="BringPurchasePriceCh" Content="Привести закупочную цену к гривне" Margin="5"/>
+                        </StackPanel>
+                    </Border>
+                    <Button Content="Провести" HorizontalAlignment="Center" VerticalAlignment="Center" Command="{Binding PurchaseInvoiceCommand}" Margin="5"/>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+    </StackPanel>
+</UserControl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

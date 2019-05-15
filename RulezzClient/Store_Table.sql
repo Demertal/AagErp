@@ -12,13 +12,12 @@ USE Store
 /*
 * ExchangeRate таблица валют
 * Title наименование валюты
-* Сourse курс
+* Course курс
 */
 CREATE TABLE ExchangeRates(
 	Id INT PRIMARY KEY IDENTITY,
 	Title NVARCHAR(10) NOT NULL UNIQUE CHECK(Title !=''),
-	Сourse FLOAT NOT NULL UNIQUE CHECK(Сourse >= 0),
-	CONSTRAINT UQ_ExchangeRate_CurrencyСourse UNIQUE (Title, Сourse)
+	Course MONEY NOT NULL CHECK(Course > 0)
 )
 GO
 
@@ -51,21 +50,9 @@ GO
 CREATE TABLE Groups(
 	Id INT PRIMARY KEY IDENTITY,
 	Title NVARCHAR(20) NOT NULL CHECK(Title !=''),
-	IdParentGroup INT,
-	IdUnitStorage INT NOT NULL,
-	FOREIGN KEY (IdParentGroup) REFERENCES Groups (Id),
-	FOREIGN KEY (IdUnitStorage) REFERENCES UnitStorages (Id),
+	IdParentGroup INT,	
+	FOREIGN KEY (IdParentGroup) REFERENCES Groups (Id),	
 	CONSTRAINT UQ_Group_TitleIdParentGroup UNIQUE (Title, IdParentGroup)
-)
-GO
-
-/*
-* PriceGroup таблица наценок
-* Markup наценка
-*/
-CREATE TABLE PriceGroups(
-	Id INT PRIMARY KEY IDENTITY,
-	Markup float NOT NULL UNIQUE CHECK(Markup >= 0),
 )
 GO
 
@@ -99,7 +86,9 @@ CREATE TABLE Products(
 	SalesPrice MONEY NOT NULL DEFAULT 0 CHECK(SalesPrice >= 0),	
 	IdExchangeRate INT NOT NULL,
 	IdWarrantyPeriod INT NOT NULL,
-	IdGroup INT NOT NULL,	
+	IdGroup INT NOT NULL,
+	IdUnitStorage INT NOT NULL,
+	FOREIGN KEY (IdUnitStorage) REFERENCES UnitStorages (Id),	
 	FOREIGN KEY (IdExchangeRate) REFERENCES ExchangeRates (Id),
 	FOREIGN KEY (IdWarrantyPeriod) REFERENCES WarrantyPeriods (Id),
 	FOREIGN KEY (IdGroup) REFERENCES Groups (Id)
@@ -152,26 +141,24 @@ GO
 /*
 * Supplier таблица поставщиков
 * Title поставщик
-* IdStore id магазина
 */
 CREATE TABLE Suppliers(
 	Id INT PRIMARY KEY IDENTITY,
-	Title NVARCHAR(20) NOT NULL,
-	IdStore INT NOT NULL,
-	FOREIGN KEY (IdStore) REFERENCES Stores (Id),
-	CONSTRAINT UQ_Supplier_TitleIdStore UNIQUE (Title, IdStore)
+	Title NVARCHAR(20) NOT NULL UNIQUE
 )
 GO
 
 /*
 * PurchaseReport таблица отчетов о покупке
 * DataOrder дата покупки
+* Сourse курс
 * IdStore id магазина
 * IdSupplier id поставщика
 */
 CREATE TABLE PurchaseReports(
 	Id INT PRIMARY KEY IDENTITY,
 	DataOrder DATE NOT NULL,
+	Course MONEY NOT NULL CHECK(Course >= 0),
 	IdStore INT NOT NULL,
 	IdSupplier INT NOT NULL,
 	FOREIGN KEY (IdStore) REFERENCES Stores (Id),
@@ -210,7 +197,7 @@ GO
 */
 CREATE TABLE SerialNumbers(
 	Id INT PRIMARY KEY IDENTITY,
-	Value VARCHAR(20) NOT NULL UNIQUE CHECK (Value != ''),
+	Value VARCHAR(20) NOT NULL CHECK (Value != ''),
 	SelleDate DATE NULL,	
 	PurchaseDate DATE NOT NULL,
 	IdProduct INT NOT NULL,
@@ -222,11 +209,13 @@ GO
 
 /*
 * SalesReport таблица отчетов о продаже
+* Сourse курс
 * DataSales дата продажи
 * IdStore id магазина
 */
 CREATE TABLE SalesReports(
 	Id INT PRIMARY KEY IDENTITY,
+	Course MONEY NOT NULL CHECK(Course >= 0),
 	DataSales DATE NOT NULL,
 	IdStore INT NOT NULL,
 	FOREIGN KEY (IdStore) REFERENCES Stores (Id)

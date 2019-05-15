@@ -7,11 +7,12 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
-
 namespace ModelModul
 {
+    using System;
+    using System.Data.Entity;
+    using System.Data.Entity.Infrastructure;
+    
     public partial class StoreEntities : DbContext
     {
         public StoreEntities()
@@ -26,7 +27,6 @@ namespace ModelModul
     
         public virtual DbSet<ExchangeRates> ExchangeRates { get; set; }
         public virtual DbSet<Groups> Groups { get; set; }
-        public virtual DbSet<PriceGroups> PriceGroups { get; set; }
         public virtual DbSet<Products> Products { get; set; }
         public virtual DbSet<PropertyNames> PropertyNames { get; set; }
         public virtual DbSet<PropertyProducts> PropertyProducts { get; set; }

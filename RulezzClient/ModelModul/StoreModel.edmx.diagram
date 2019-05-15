@@ -4,52 +4,50 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="dd5a0e9490994ca994c3c36d926e396a" Name="Diagram1">
-        <EntityTypeShape EntityType="StoreModel.ExchangeRates" Width="1.5" PointX="0.75" PointY="10.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.Groups" Width="1.5" PointX="0.75" PointY="6.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.PriceGroups" Width="1.5" PointX="8.75" PointY="1.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.Products" Width="1.5" PointX="3" PointY="9.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.PropertyNames" Width="1.5" PointX="0.75" PointY="16.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.PropertyProducts" Width="1.5" PointX="5.25" PointY="10.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.PropertyValues" Width="1.5" PointX="3" PointY="16.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.PurchaseInfos" Width="1.5" PointX="8.25" PointY="10" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.PurchaseReports" Width="1.5" PointX="6" PointY="20.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.RevaluationProducts" Width="1.5" PointX="5.25" PointY="16.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.SalesInfos" Width="1.5" PointX="5.25" PointY="6" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.SalesReports" Width="1.5" PointX="3" PointY="0.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.SerialNumbers" Width="1.5" PointX="8.25" PointY="5.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.Stores" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.Suppliers" Width="1.5" PointX="6" PointY="2.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.UnitStorages" Width="1.5" PointX="1.5" PointY="4.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.Warranties" Width="1.5" PointX="10.5" PointY="5.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.WarrantyPeriods" Width="1.5" PointX="0.75" PointY="13.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="StoreModel.CountProducts" Width="1.5" PointX="5.25" PointY="13.375" IsExpanded="true" />
-        <AssociationConnector Association="StoreModel.FK__Products__IdExch__59063A47" ManuallyRouted="false" />
-        <AssociationConnector Association="StoreModel.FK__PurchaseI__IdExc__76969D2E" ManuallyRouted="false" />
-        <AssociationConnector Association="StoreModel.FK__Groups__IdParent__47DBAE45" ManuallyRouted="false" />
-        <AssociationConnector Association="StoreModel.FK__Groups__IdUnitSt__48CFD27E" ManuallyRouted="false" />
-        <AssociationConnector Association="StoreModel.FK__Products__IdGrou__5AEE82B9" ManuallyRouted="false" />
-        <AssociationConnector Association="StoreModel.FK__PropertyN__IdGro__5FB337D6" ManuallyRouted="false" />
-        <AssociationConnector Association="StoreModel.FK__CountProd__IdPro__123EB7A3" ManuallyRouted="false" />
-        <AssociationConnector Association="StoreModel.FK__Products__IdWarr__59FA5E80" ManuallyRouted="false" />
-        <AssociationConnector Association="StoreModel.FK__PropertyP__IdPro__6754599E" ManuallyRouted="false" />
-        <AssociationConnector Association="StoreModel.FK__PurchaseI__IdPro__75A278F5" ManuallyRouted="false" />
-        <AssociationConnector Association="StoreModel.FK__Revaluati__IdPro__0F624AF8" ManuallyRouted="false" />
-        <AssociationConnector Association="StoreModel.FK__SalesInfo__IdPro__05D8E0BE" ManuallyRouted="false" />
-        <AssociationConnector Association="StoreModel.FK__SerialNum__IdPro__7C4F7684" ManuallyRouted="false" />
-        <AssociationConnector Association="StoreModel.FK__PropertyV__IdPro__6383C8BA" ManuallyRouted="false" />
-        <AssociationConnector Association="StoreModel.FK__PropertyP__IdPro__68487DD7" ManuallyRouted="false" />
-        <AssociationConnector Association="StoreModel.FK__PurchaseI__IdPur__74AE54BC" ManuallyRouted="false" />
-        <AssociationConnector Association="StoreModel.FK__PurchaseR__IdSto__6EF57B66" ManuallyRouted="false" />
-        <AssociationConnector Association="StoreModel.FK__PurchaseR__IdSup__6FE99F9F" ManuallyRouted="false" />
-        <AssociationConnector Association="StoreModel.FK__SalesInfo__IdSal__04E4BC85" ManuallyRouted="false" />
-        <AssociationConnector Association="StoreModel.FK__SalesInfo__IdSer__06CD04F7" ManuallyRouted="false" />
-        <AssociationConnector Association="StoreModel.FK__SalesRepo__IdSto__7F2BE32F" ManuallyRouted="false" />
-        <AssociationConnector Association="StoreModel.FK__SerialNum__IdSup__7B5B524B" ManuallyRouted="false" />
-        <AssociationConnector Association="StoreModel.FK__Warrantie__IdSer__0C85DE4D" ManuallyRouted="false" />
-        <AssociationConnector Association="StoreModel.FK__CountProd__IdSto__1332DBDC" ManuallyRouted="false" />
-        <AssociationConnector Association="StoreModel.FK__Suppliers__IdSto__6C190EBB" ManuallyRouted="false" />
-        <AssociationConnector Association="StoreModel.FK__Warrantie__IdSup__0B91BA14" ManuallyRouted="false" />
+      <Diagram DiagramId="342b6529a052440ebbd097335b92d21f" Name="Diagram1">
+        <EntityTypeShape EntityType="StoreModel.ExchangeRates" Width="1.5" PointX="0.75" PointY="9.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.Groups" Width="1.5" PointX="0.75" PointY="6.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.Products" Width="1.5" PointX="3" PointY="8.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.PropertyNames" Width="1.5" PointX="0.75" PointY="18.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.PropertyProducts" Width="1.5" PointX="5.25" PointY="9.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.PropertyValues" Width="1.5" PointX="3" PointY="18.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.PurchaseInfos" Width="1.5" PointX="8.25" PointY="9.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.PurchaseReports" Width="1.5" PointX="6" PointY="19.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.RevaluationProducts" Width="1.5" PointX="5.25" PointY="16" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.SalesInfos" Width="1.5" PointX="5.25" PointY="5.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.SalesReports" Width="1.5" PointX="3" PointY="3.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.SerialNumbers" Width="1.5" PointX="8.25" PointY="5.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.Stores" Width="1.5" PointX="0.75" PointY="3.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.Suppliers" Width="1.5" PointX="6" PointY="1.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.UnitStorages" Width="1.5" PointX="0.75" PointY="13.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.Warranties" Width="1.5" PointX="10.5" PointY="5.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.WarrantyPeriods" Width="1.5" PointX="0.75" PointY="15.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="StoreModel.CountProducts" Width="1.5" PointX="5.25" PointY="12.875" IsExpanded="true" />
+        <AssociationConnector Association="StoreModel.FK__Products__IdExch__534D60F1" ManuallyRouted="false" />
+        <AssociationConnector Association="StoreModel.FK__PurchaseI__IdExc__70DDC3D8" ManuallyRouted="false" />
+        <AssociationConnector Association="StoreModel.FK__Groups__IdParent__45F365D3" ManuallyRouted="false" />
+        <AssociationConnector Association="StoreModel.FK__Products__IdGrou__5535A963" ManuallyRouted="false" />
+        <AssociationConnector Association="StoreModel.FK__PropertyN__IdGro__59FA5E80" ManuallyRouted="false" />
+        <AssociationConnector Association="StoreModel.FK__CountProd__IdPro__0C85DE4D" ManuallyRouted="false" />
+        <AssociationConnector Association="StoreModel.FK__Products__IdUnit__52593CB8" ManuallyRouted="false" />
+        <AssociationConnector Association="StoreModel.FK__Products__IdWarr__5441852A" ManuallyRouted="false" />
+        <AssociationConnector Association="StoreModel.FK__PropertyP__IdPro__619B8048" ManuallyRouted="false" />
+        <AssociationConnector Association="StoreModel.FK__PurchaseI__IdPro__6FE99F9F" ManuallyRouted="false" />
+        <AssociationConnector Association="StoreModel.FK__Revaluati__IdPro__09A971A2" ManuallyRouted="false" />
+        <AssociationConnector Association="StoreModel.FK__SalesInfo__IdPro__00200768" ManuallyRouted="false" />
+        <AssociationConnector Association="StoreModel.FK__SerialNum__IdPro__75A278F5" ManuallyRouted="false" />
+        <AssociationConnector Association="StoreModel.FK__PropertyV__IdPro__5DCAEF64" ManuallyRouted="false" />
+        <AssociationConnector Association="StoreModel.FK__PropertyP__IdPro__628FA481" ManuallyRouted="false" />
+        <AssociationConnector Association="StoreModel.FK__PurchaseI__IdPur__6EF57B66" ManuallyRouted="false" />
+        <AssociationConnector Association="StoreModel.FK__PurchaseR__IdSto__693CA210" ManuallyRouted="false" />
+        <AssociationConnector Association="StoreModel.FK__PurchaseR__IdSup__6A30C649" ManuallyRouted="false" />
+        <AssociationConnector Association="StoreModel.FK__SalesInfo__IdSal__7F2BE32F" ManuallyRouted="false" />
+        <AssociationConnector Association="StoreModel.FK__SalesInfo__IdSer__01142BA1" ManuallyRouted="false" />
+        <AssociationConnector Association="StoreModel.FK__SalesRepo__IdSto__797309D9" ManuallyRouted="false" />
+        <AssociationConnector Association="StoreModel.FK__SerialNum__IdSup__74AE54BC" ManuallyRouted="false" />
+        <AssociationConnector Association="StoreModel.FK__Warrantie__IdSer__06CD04F7" ManuallyRouted="false" />
+        <AssociationConnector Association="StoreModel.FK__CountProd__IdSto__0D7A0286" ManuallyRouted="false" />
+        <AssociationConnector Association="StoreModel.FK__Warrantie__IdSup__05D8E0BE" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

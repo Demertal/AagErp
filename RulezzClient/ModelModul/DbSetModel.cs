@@ -1,25 +1,15 @@
 ﻿using System.Collections.ObjectModel;
-using Prism.Mvvm;
 
 namespace ModelModul
 {
-    public abstract class DbSetModel<T> : BindableBase
+    public abstract class DbSetModel<T>
     {
-        #region Properties
-
         private ObservableCollection<T> _list = new ObservableCollection<T>();
 
-        public ObservableCollection<T> List
+        public virtual ObservableCollection<T> List
         {
             get => _list;
-            set => SetProperty(ref _list, value);
-        }
-
-        #endregion
-
-        protected DbSetModel()
-        {
-            List = new ObservableCollection<T>();
+            set => _list = value;
         }
 
         public abstract void Add(T obj);

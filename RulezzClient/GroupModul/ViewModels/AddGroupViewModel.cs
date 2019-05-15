@@ -53,8 +53,8 @@ namespace GroupModul.ViewModels
         {
             try
             {
-                DbSetGroupsModel dbSetGroupsModel = new DbSetGroupsModel();
-                dbSetGroupsModel.Add(_groupModel);
+                DbSetGroups dbSetGroups = new DbSetGroups();
+                dbSetGroups.Add(_groupModel);
                 MessageBox.Show("Группа добавлена", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
 
                 if (_notification != null)

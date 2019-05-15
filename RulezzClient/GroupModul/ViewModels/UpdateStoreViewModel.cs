@@ -57,9 +57,9 @@ namespace GroupModul.ViewModels
             {
                 if (_oldGroupModel.Title != Title)
                 {
-                    DbSetGroupsModel dbSetGroupsModel = new DbSetGroupsModel();
+                    DbSetGroups dbSetGroups = new DbSetGroups();
                     _oldGroupModel.Title = Title;
-                    dbSetGroupsModel.Update(_oldGroupModel);
+                    dbSetGroups.Update(_oldGroupModel);
                     MessageBox.Show("Магазин изменен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
 
                     if (_notification != null)

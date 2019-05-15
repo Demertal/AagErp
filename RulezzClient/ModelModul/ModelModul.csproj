@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommonServiceLocator.2.0.4\lib\net45\CommonServiceLocator.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -41,11 +44,18 @@
     <Reference Include="Prism, Version=7.1.0.431, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Core.7.1.0.431\lib\net45\Prism.dll</HintPath>
     </Reference>
+    <Reference Include="Prism.Wpf, Version=7.1.0.431, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
+      <HintPath>..\packages\Prism.Wpf.7.1.0.431\lib\net45\Prism.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Prism.Wpf.7.1.0.431\lib\net45\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -60,30 +70,35 @@
     <Compile Include="ExchangeRates.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="ExchangeRate\DbSetExchangeRates.cs" />
+    <Compile Include="ExchangeRate\ExchangeRates.cs" />
     <Compile Include="Groups.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Group\DbSetGroupsModel.cs" />
+    <Compile Include="Group\DbSetGroups.cs" />
     <Compile Include="DbSetModel.cs" />
     <Compile Include="Group\Groups.cs" />
-    <Compile Include="PriceGroups.cs">
-      <DependentUpon>StoreModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Products.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Product\DbSetProductsModel.cs" />
+    <Compile Include="Product\DbSetProducts.cs" />
     <Compile Include="Product\Products.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyNames.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="PropertyName\DbSetPropertyNames.cs" />
+    <Compile Include="PropertyName\PropertyNames.cs" />
     <Compile Include="PropertyProducts.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
     <Compile Include="PropertyValues.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="PurchaseGoods\DbSetPurchaseGoods.cs" />
+    <Compile Include="PurchaseGoods\PurchaseInfos.cs" />
+    <Compile Include="PurchaseGoods\PurchaseReports.cs" />
     <Compile Include="PurchaseInfos.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
@@ -93,6 +108,10 @@
     <Compile Include="RevaluationProducts.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="RevaluationProduct\DbSetRevaluationProducts.cs" />
+    <Compile Include="RevaluationProduct\RevaluationProducts.cs" />
+    <Compile Include="SalesGoods\DbSetSalesGoods.cs" />
+    <Compile Include="SalesGoods\SalesInfos.cs" />
     <Compile Include="SalesInfos.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
@@ -102,6 +121,7 @@
     <Compile Include="SerialNumbers.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="SerialNumber\SerialNumbers.cs" />
     <Compile Include="StoreModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -120,13 +140,17 @@
     <Compile Include="Stores.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Store\DbSetStores.cs" />
+    <Compile Include="Store\Stores.cs" />
     <Compile Include="Suppliers.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Supplier\DbSetSuppliers.cs" />
     <Compile Include="UnitStorages.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="UnitStorage\DbSetUnitStoragesModel.cs" />
+    <Compile Include="UnitStorage\DbSetUnitStorages.cs" />
+    <Compile Include="UnitStorage\UnitStorages.cs" />
     <Compile Include="Warranties.cs">
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
@@ -134,7 +158,7 @@
       <DependentUpon>StoreModel.tt</DependentUpon>
     </Compile>
     <Compile Include="WarrantyPeriod\WarrantyPeriods.cs" />
-    <Compile Include="WarrantyPeriod\DbSetWarrantyPeriodsModel.cs" />
+    <Compile Include="WarrantyPeriod\DbSetWarrantyPeriods.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

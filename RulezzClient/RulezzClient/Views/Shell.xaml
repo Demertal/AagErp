@@ -13,8 +13,8 @@
     SizeToContent="WidthAndHeight" Padding="0,0,10,0">
     <Grid>
         <Menu Height="23" VerticalContentAlignment="Center" VerticalAlignment="Top" HorizontalContentAlignment="Center">
-            <MenuItem Height="20"  Header="Рабочее место кассира"/>
-            <MenuItem Height="20"  Header="Показать товар" Command="{Binding ShowProductCommand}"/>
+            <MenuItem Height="20"  Header="Рабочее место кассира" Command="{Binding NavigateCommand}" CommandParameter="CashierWorkplace"/>
+            <MenuItem Height="20"  Header="Показать товар" Command="{Binding NavigateCommand}" CommandParameter="ShowProduct"/>
             <MenuItem Header="Действия с товаром">
                 <MenuItem Header="Добавить товар" Command="{Binding AddProductCommand}">
                     <i:Interaction.Triggers>
@@ -27,12 +27,13 @@
                         </mvvm:InteractionRequestTrigger>
                     </i:Interaction.Triggers>
                 </MenuItem>
-                <MenuItem Header="Переоценка товара" Command="{Binding RevaluationCommand}"/>
-                <MenuItem Header="Принять товар" Command="{Binding PurchaseInvoiceCommand}"/>
+                <MenuItem Header="Переоценка товара" Command="{Binding NavigateCommand}" CommandParameter="RevaluationProductsView"/>
+                <MenuItem Header="Принять товар" Command="{Binding NavigateCommand}" CommandParameter="PurchaseGoods"/>
             </MenuItem>
             <MenuItem Header="Действия с...">
-                <MenuItem Header="Структурой" Command="{Binding ShowStructCommand}"/>
-                <MenuItem Header="Ед. хранения" Command="{Binding ShowUnitStorageCommand}"/>
+                <MenuItem Header="Поставщиками" Command="{Binding NavigateCommand}" CommandParameter="ShowSuppliers"/>
+                <MenuItem Header="Ед. хранения" Command="{Binding NavigateCommand}" CommandParameter="ShowUnitStorage"/>
+                <MenuItem Header="Гарантийный период" Command="{Binding NavigateCommand}" CommandParameter="ShowWarrantyPeriods"/>
             </MenuItem>
         </Menu>
 

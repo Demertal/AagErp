@@ -106,61 +106,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Service\CurrencyConverter.cs" />
-    <Compile Include="Models\PurchaseInvoiceProductModel.cs" />
-    <Compile Include="Models\RevaluationProductModel.cs" />
-    <Compile Include="ViewModels\AddUnitStorageVM.cs" />
-    <Compile Include="ViewModels\PurchaseInvoiceProductVM.cs" />
-    <Compile Include="ViewModels\PurchaseInvoiceVM.cs" />
-    <Compile Include="ViewModels\RevaluationProductVM.cs" />
-    <Compile Include="ViewModels\RevaluationVM.cs" />
-    <Compile Include="ViewModels\SerialNumberVM.cs" />
-    <Compile Include="ViewModels\ShowStructurVM.cs" />
-    <Compile Include="ViewModels\ShowUnitStorageVM.cs" />
-    <Compile Include="ViewModels\UpdateNomenclatureGroupVM.cs" />
-    <Compile Include="ViewModels\UpdateNomenclatureSubGroupVM.cs" />
-    <Compile Include="Views\AddUnitStorage.xaml.cs">
-      <DependentUpon>AddUnitStorage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\PurchaseInvoice.xaml.cs">
-      <DependentUpon>PurchaseInvoice.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Revaluation.xaml.cs">
-      <DependentUpon>Revaluation.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ViewModels\ShowProductViewModel.cs" />
-    <Compile Include="ViewModels\UnitStorageVM.cs" />
-    <Compile Include="ViewModels\UpdateProductViewModel.cs" />
-    <Compile Include="ViewModels\WarrantyPeriodVM.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Views\Shell.xaml.cs">
       <DependentUpon>Shell.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ShowUnitStorage.xaml.cs">
-      <DependentUpon>ShowUnitStorage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ViewModels\ShellViewModel.cs" />
-    <Page Include="Views\AddUnitStorage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\PurchaseInvoice.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Revaluation.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Views\Shell.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ShowUnitStorage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -198,6 +153,10 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CashierWorkplaceModul\CashierWorkplaceModul.csproj">
+      <Project>{8D451053-0BCE-4BF4-AE6D-99FA2C920946}</Project>
+      <Name>CashierWorkplaceModul</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CustomControlLibrary\CustomControlLibrary.csproj">
       <Project>{ba906062-87b9-41e7-b1ee-a44007eb8933}</Project>
       <Name>CustomControlLibrary</Name>
@@ -209,6 +168,30 @@
     <ProjectReference Include="..\ProductModel\ProductModul.csproj">
       <Project>{a2c817e8-9af6-4724-a7cf-3f6f2f8eb427}</Project>
       <Name>ProductModul</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PropertiesModul\PropertiesModul.csproj">
+      <Project>{9EF8175E-79BF-4BE3-978A-1065EED8CD93}</Project>
+      <Name>PropertiesModul</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PurchaseGoodsModul\PurchaseGoodsModul.csproj">
+      <Project>{084660A4-4C9A-417F-890D-5B2607DBA7F7}</Project>
+      <Name>PurchaseGoodsModul</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RevaluationProductsModul\RevaluationProductsModul.csproj">
+      <Project>{0BFAA536-F50B-45D5-A01E-7F5B3F5A4BED}</Project>
+      <Name>RevaluationProductsModul</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SupplierModul\SupplierModul.csproj">
+      <Project>{6407678E-40CB-4365-B707-21121734E873}</Project>
+      <Name>SupplierModul</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UnitStorageModul\UnitStorageModul.csproj">
+      <Project>{B4B52FF1-550A-4B6C-A4F8-DC0AAD7C2DAC}</Project>
+      <Name>UnitStorageModul</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WarrantyPeriodsModul\WarrantyPeriodsModul.csproj">
+      <Project>{E7D86849-91E5-4509-963E-B29A546D0893}</Project>
+      <Name>WarrantyPeriodsModul</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

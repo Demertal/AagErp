@@ -1,4 +1,7 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Windows;
+using ModelModul;
 using ModelModul.UnitStorage;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -7,89 +10,80 @@ namespace UnitStorageModul.ViewModels
 {
     class ShowUnitStorageViewModel : BindableBase
     {
-        //private UnitStorages _selectedUnitStorage;
+        #region Properties
 
-        public DbSetUnitStoragesModel DbSetUnitStoragesModel = new DbSetUnitStoragesModel();
+        private readonly DbSetUnitStorages _dbSetUnitStorages = new DbSetUnitStorages();
 
-        public ObservableCollection<UnitStorageModel> UnitStorages => DbSetUnitStoragesModel.UnitStorages;
+        public ObservableCollection<UnitStorages> UnitStoragesList => _dbSetUnitStorages.List;
+
+        public DelegateCommand<object> AddUnitStoragesCommand { get; }
+
+        public DelegateCommand<UnitStorages> DeleteUnitStoragesCommand { get; }
+
+        #endregion
 
         public ShowUnitStorageViewModel()
         {
-            DbSetUnitStoragesModel.Load();
-            CellChanged = new DelegateCommand(() =>
-            {
-                //using (StoreEntities db = new StoreEntities())
-                //{
-                //    using (var transaction = db.Database.BeginTransaction())
-                //    {
-                //        try
-                //        {
-                //            var unt = db.UnitStorages.Find(_selectedUnitStorage.Id);
-                //            unt.Title = _selectedUnitStorage.Title;
-                //            db.Entry(unt).State = EntityState.Modified;
-                //            db.SaveChanges();
-                //            transaction.Commit();
-                //            DbSetGroupsModel.Load();
-                //            RaisePropertyChanged("UnitStorages");
-                //            MessageBox.Show("Наименование ед. хранения измененено", "Успех", MessageBoxButton.OK);
-                //        }
-                //        catch (Exception ex)
-                //        {
-                //            transaction.Rollback();
-                //            DbSetGroupsModel.Load();
-                //            RaisePropertyChanged("UnitStorages");
-                //            MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK,
-                //                MessageBoxImage.Error);
-                //        }
-                //    }
-                //}
-            });
-            DeleteUnitStorage = new DelegateCommand(() =>
-            {
-                //using (StoreEntities db = new StoreEntities())
-                //{
-                //    using (var transaction = db.Database.BeginTransaction())
-                //    {
-                //        try
-                //        {
-                //            var unt = db.UnitStorages.Find(_selectedUnitStorage.Id);
-                //            db.Entry(unt).State = EntityState.Deleted;
-                //            db.SaveChanges();
-                //            transaction.Commit();
-                //            DbSetGroupsModel.Load();
-                //            RaisePropertyChanged("UnitStorages");
-                //            MessageBox.Show("Ед. хранения удалена", "Успех", MessageBoxButton.OK);
-                //        }
-                //        catch (Exception ex)
-                //        {
-                //            transaction.Rollback();
-                //            MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK,
-                //                MessageBoxImage.Error);
-                //        }
-                //    }
-                //}
-            });
-            AddUnitStorage = new DelegateCommand(() =>
-            {
-                //_dialogService.ShowDialog(DialogService.ChoiceView.AddUnitStorage, null, true, b => { });
-                //DbSetGroupsModel.Load();
-            });
+            Load();
+            AddUnitStoragesCommand = new DelegateCommand<object>(AddUnitStorages);
+            DeleteUnitStoragesCommand = new DelegateCommand<UnitStorages>(DeleteUnitStorages);
         }
 
-        public UnitStorageModel SelectedUnitStorage
+        private void DeleteUnitStorages(UnitStorages obj)
         {
-            get => _selectedUnitStorage;
-            set
+            if (obj == null) return;
+            if (obj.Title == "шт")
             {
-                _selectedUnitStorage = value;
-                RaisePropertyChanged();
+                MessageBox.Show("Нельзя удалять ед. хр.: \"шт\"", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (MessageBox.Show("Удалить ед. хр.?", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
+                MessageBoxResult.Yes) return;
+            try
+            {
+                _dbSetUnitStorages.Delete(obj.Id);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            Load();
+        }
+
+        private void AddUnitStorages(object obj)
+        {
+            try
+            {
+                if (obj == null) return;
+                if (((UnitStorages)obj).Id == 0)
+                {
+                    _dbSetUnitStorages.Add((UnitStorages)obj);
+                }
+                else
+                {
+                    _dbSetUnitStorages.Update((UnitStorages)obj);
+                }
+                
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            Load();
+        }
+
+        private async void Load()
+        {
+            try
+            {
+                await _dbSetUnitStorages.Load();
+                RaisePropertyChanged("UnitStoragesList");
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        public DelegateCommand DeleteUnitStorage { get; }
-
-        public DelegateCommand AddUnitStorage { get; }
-
-        public DelegateCommand CellChanged { get; }
     }
 }

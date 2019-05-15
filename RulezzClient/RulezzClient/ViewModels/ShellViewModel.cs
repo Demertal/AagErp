@@ -1,6 +1,7 @@
 ﻿using Prism.Commands;
 using Prism.Interactivity.InteractionRequest;
 using Prism.Mvvm;
+using Prism.Regions;
 
 namespace RulezzClient.ViewModels
 {
@@ -8,23 +9,20 @@ namespace RulezzClient.ViewModels
     {
         #region Parametr
 
+        private readonly IRegionManager _regionManager;
+
         public InteractionRequest<INotification> AddProductPopupRequest { get; set; }
 
         public DelegateCommand AddProductCommand { get; }
 
-        //private readonly IUiDialogService _dialogService = new DialogService();
-        //private Visibility _isProductGroupVisible;
-        //private Visibility _isStructGroupVisible;
-        //private Visibility _isUnitStorageVisible;
-        //private ShowProductViewModel _showProduct;
-        //private ShowStructurVM _showStructur;
-        //private ShowUnitStorageVM _showUnitStorage;
-
+        public DelegateCommand<string> NavigateCommand { get; }
         #endregion
 
-        public ShellViewModel()
+        public ShellViewModel(IRegionManager regionManager)
         {
+            _regionManager = regionManager;
             AddProductPopupRequest = new InteractionRequest<INotification>();
+            NavigateCommand = new DelegateCommand<string>(Navigate);
             AddProductCommand = new DelegateCommand(AddProduct);
             //IsProductGroupVisible = Visibility.Collapsed;
             //IsStructGroupVisible = Visibility.Collapsed;
@@ -67,17 +65,15 @@ namespace RulezzClient.ViewModels
             //});
         }
 
-        private void AddProduct()
+        private void Navigate(string navigatePath)
         {
-            AddProductPopupRequest.Raise(new Confirmation { Title = "Добавить товар" }, Callback);
+            if (navigatePath != null)
+                _regionManager.RequestNavigate("ContentRegion", navigatePath);
         }
 
-        private void Callback(INotification notification)
+        private void AddProduct()
         {
-            if (((Confirmation)notification).Confirmed)
-            {
-                //Reload();
-            }
+            AddProductPopupRequest.Raise(new Confirmation { Title = "Добавить товар" });
         }
 
         #region GestSetMethd

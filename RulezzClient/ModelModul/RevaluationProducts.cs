@@ -7,17 +7,18 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System;
-
 namespace ModelModul
 {
+    using System;
+    using System.Collections.Generic;
+    
     public partial class RevaluationProducts
     {
         public int Id { get; set; }
         public int IdProduct { get; set; }
-        public DateTime Date { get; set; }
+        public System.DateTime Date { get; set; }
         public decimal OldSalesPrice { get; set; }
-        public decimal NewSalesPrice { get; set; }
+        //public decimal NewSalesPrice { get; set; }
     
         public virtual Products Products { get; set; }
     }

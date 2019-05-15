@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ModelModul
 {
@@ -20,6 +21,7 @@ namespace ModelModul
 
         public object Clone()
         {
+            List<SerialNumbers> temp = new List<SerialNumbers>(SerialNumbers);
             return new Products
             {
                 Title = Title,
@@ -30,9 +32,12 @@ namespace ModelModul
                 IdExchangeRate = IdExchangeRate,
                 IdGroup = IdGroup,
                 IdWarrantyPeriod = IdWarrantyPeriod,
+                IdUnitStorage = IdWarrantyPeriod,
                 Id = Id,
+                UnitStorages = (UnitStorages)UnitStorages?.Clone(),
                 WarrantyPeriods = (WarrantyPeriods) WarrantyPeriods?.Clone(),
-                Groups = (Groups) Groups?.Clone()
+                Groups = (Groups) Groups?.Clone(),
+                SerialNumbers = temp
             };
         }
     }

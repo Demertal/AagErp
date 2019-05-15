@@ -9,17 +9,20 @@
 
 namespace ModelModul
 {
+    using System;
+    using System.Collections.Generic;
+    
     public partial class PurchaseInfos
     {
-        public int Id { get; set; }
-        public int Count { get; set; }
-        public decimal PurchasePrice { get; set; }
-        public int IdPurchaseReport { get; set; }
-        public int IdProduct { get; set; }
-        public int IdExchangeRate { get; set; }
+        //public int Id { get; set; }
+        //public int Count { get; set; }
+        //public decimal PurchasePrice { get; set; }
+        //public int IdPurchaseReport { get; set; }
+        //public int IdProduct { get; set; }
+        //public int IdExchangeRate { get; set; }
     
-        public virtual ExchangeRates ExchangeRates { get; set; }
-        public virtual Products Products { get; set; }
-        public virtual PurchaseReports PurchaseReports { get; set; }
+        //public virtual ExchangeRates ExchangeRates { get; set; }
+        //public virtual Products Products { get; set; }
+        //public virtual PurchaseReports PurchaseReports { get; set; }
     }
 }

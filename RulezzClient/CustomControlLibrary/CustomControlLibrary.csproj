@@ -66,6 +66,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BindingProxy.cs" />
+    <Compile Include="Converters\CurrencyConverter2Parametrs.cs" />
+    <Compile Include="Converters\CurrencyConverter4Parametrs.cs" />
+    <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="ExtendedDataGrid.cs" />
     <Compile Include="ExtendedTreeView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -82,7 +85,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="WatermarkTextBox.cs" />
-    <Compile Include="СhangeableTextBlock.cs" />
+    <Compile Include="ChangeableTextBlock.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -92,6 +95,13 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\ModelModul\ModelModul.csproj">
+      <Project>{C1088933-3223-41A0-A687-8D34C8A1E104}</Project>
+      <Name>ModelModul</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

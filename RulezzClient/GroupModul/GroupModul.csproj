@@ -55,19 +55,14 @@
   <ItemGroup>
     <Compile Include="Converters\ObjectsEqualConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="GroupModul.cs" />
     <Compile Include="ViewModels\AddGroupViewModel.cs" />
     <Compile Include="ViewModels\AddStoreViewModel.cs" />
-    <Compile Include="ViewModels\ShowGroupViewModel.cs" />
     <Compile Include="ViewModels\UpdateStoreViewModel.cs" />
     <Compile Include="Views\AddGroup.xaml.cs">
       <DependentUpon>AddGroup.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\AddStore.xaml.cs">
       <DependentUpon>AddStore.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ShowGroup.xaml.cs">
-      <DependentUpon>ShowGroup.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\UpdateStore.xaml.cs">
       <DependentUpon>UpdateStore.xaml</DependentUpon>
@@ -79,13 +74,13 @@
       <Project>{ba906062-87b9-41e7-b1ee-a44007eb8933}</Project>
       <Name>CustomControlLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\EventAggregatorLibrary\EventAggregatorLibrary.csproj">
-      <Project>{ded61686-0cd3-492d-8e13-f0ef7054f2da}</Project>
-      <Name>EventAggregatorLibrary</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ModelModul\ModelModul.csproj">
       <Project>{c1088933-3223-41a0-a687-8d34c8a1e104}</Project>
       <Name>ModelModul</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PropertiesModul\PropertiesModul.csproj">
+      <Project>{9EF8175E-79BF-4BE3-978A-1065EED8CD93}</Project>
+      <Name>PropertiesModul</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -98,10 +93,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\AddStore.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ShowGroup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
