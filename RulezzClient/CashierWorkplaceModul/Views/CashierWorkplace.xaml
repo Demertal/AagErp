@@ -13,7 +13,8 @@
              VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Padding="10,5,5,10">
 
     <UserControl.Resources>
-        <converters:VisibilityConverter x:Key="VisibilityConverter" />
+        <converters:IsReadOnlyConverterTrue x:Key="IsReadOnlyConverterTrue" />
+        <converters:IsReadOnlyConverterFalse x:Key="IsReadOnlyConverterFalse" />
         <ContextMenu  x:Key="RowMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
             <MenuItem Header="Исключить" CommandParameter="{Binding Path=SelectedItems, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
                       Command="{Binding DataContext.DeleteProductCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>
@@ -49,34 +50,60 @@
                                         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
                                     </Style>
                                 </customControlLibrary:ExtendedDataGrid.CellStyle>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="CellEditEnding">
+                                        <interactivity:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}},
+                                                            Path=DataContext.UpdatSalesInfosCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
                                 <customControlLibrary:ExtendedDataGrid.Columns>
-                                    <DataGridTextColumn Header="Наименование" Binding="{Binding Path=Products.Title, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <DataGridTextColumn Header="Наименование" Binding="{Binding Path=Products.Title, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True"/>
                                     <DataGridTextColumn Header="Артикул" Binding="{Binding Path=Products.VendorCode, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True" Visibility="Collapsed"/>
-                                    <DataGridTextColumn Header="Штрихкод" Binding="{Binding Path=Products.Barcode, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True" Visibility="Collapsed"/>
+                                    <DataGridTextColumn Header="Штрихкод" Binding="{Binding Path=Products.Barcode, UpdateSourceTrigger=PropertyChanged}"/>
                                     <DataGridTextColumn Header="Цена" Binding="{Binding Path=Products.SalesPrice, UpdateSourceTrigger=PropertyChanged, StringFormat=C, ConverterCulture='ua-UA'}"  IsReadOnly="True"/>
-                                    <DataGridTextColumn Header="Кол-во" Binding="{Binding Path=Count, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <DataGridTemplateColumn Header="Кол-во">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBox Text="{Binding Path=Count, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding Path=Products.WarrantyPeriods.Period, Converter={StaticResource IsReadOnlyConverterTrue}}">
+                                                    <TextBox.Style>
+                                                        <Style TargetType="{x:Type TextBox}">
+                                                            <Setter Property="BorderThickness" Value="0"></Setter>
+                                                            <Style.Triggers>
+                                                                <Trigger Property="IsEnabled" Value="False">
+                                                                    <Setter Property="Background" Value="Gainsboro"/>
+                                                                    <Setter Property="Foreground">
+                                                                        <Setter.Value>
+                                                                            <SolidColorBrush Color="Black"/>
+                                                                        </Setter.Value>
+                                                                    </Setter>
+                                                                </Trigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBox.Style>
+                                                </TextBox>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Header="Серийный ноиер">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBox Text="{Binding Path=SerialNumbers.Value, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding Path=Products.WarrantyPeriods.Period, Converter={StaticResource IsReadOnlyConverterFalse}}">
+                                                    <TextBox.Style>
+                                                        <Style TargetType="{x:Type TextBox}">
+                                                            <Setter Property="BorderThickness" Value="0"></Setter>
+                                                            <Style.Triggers>
+                                                                <Trigger Property="IsEnabled" Value="False">
+                                                                    <Setter Property="Background" Value="Gainsboro"/>
+                                                                    <Setter Property="Foreground" Value="Black"/>
+                                                                </Trigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBox.Style>
+                                                </TextBox>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
                                 </customControlLibrary:ExtendedDataGrid.Columns>
-                                <customControlLibrary:ExtendedDataGrid.RowDetailsTemplate>
-                                    <DataTemplate>
-                                        <Border BorderThickness="0" Visibility="{Binding Path=Products.WarrantyPeriods.Period, Converter={StaticResource VisibilityConverter}}"
-                                                MaxHeight="200" ScrollViewer.HorizontalScrollBarVisibility="Hidden">
-                                            <DataGrid ItemsSource="{Binding Path=Products.SerialNumbers, UpdateSourceTrigger=PropertyChanged}"
-                                            IsSynchronizedWithCurrentItem="True" HorizontalAlignment="Left" CanUserResizeRows="False" Margin="10,0,0,0" CanUserReorderColumns="False"
-                                            AutoGenerateColumns="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Top" SelectionMode="Single"
-                                                      CanUserAddRows="False" CanUserDeleteRows="False">
-                                                <i:Interaction.Triggers>
-                                                    <i:EventTrigger EventName="CellEditEnding">
-                                                        <interactivity:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}},
-                                                            Path=DataContext.UpdatePurchaseInfosCommand}"/>
-                                                    </i:EventTrigger>
-                                                </i:Interaction.Triggers>
-                                                <DataGrid.Columns>
-                                                    <DataGridTextColumn Header="Серийный номер" Binding="{Binding Path=Value, UpdateSourceTrigger=PropertyChanged}"/>
-                                                </DataGrid.Columns>
-                                            </DataGrid>
-                                        </Border>
-                                    </DataTemplate>
-                                </customControlLibrary:ExtendedDataGrid.RowDetailsTemplate>
                             </customControlLibrary:ExtendedDataGrid>
                         </StackPanel>
                     </ScrollViewer>

@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using ModelModul;
 using ModelModul.WarrantyPeriod;
@@ -33,7 +29,7 @@ namespace WarrantyPeriodsModul.ViewModels
             DeleteWarrantyPeriodsCommand = new DelegateCommand<WarrantyPeriods>(DeleteWarrantyPeriods);
         }
 
-        private void DeleteWarrantyPeriods(WarrantyPeriods obj)
+        private async void DeleteWarrantyPeriods(WarrantyPeriods obj)
         {
             if (obj == null) return;
             if (obj.Period == "Нет")
@@ -45,7 +41,7 @@ namespace WarrantyPeriodsModul.ViewModels
                 MessageBoxResult.Yes) return;
             try
             {
-                _dbSetWarrantyPeriods.Delete(obj.Id);
+                await _dbSetWarrantyPeriods.DeleteAsync(obj.Id);
             }
             catch (Exception e)
             {
@@ -54,18 +50,18 @@ namespace WarrantyPeriodsModul.ViewModels
             Load();
         }
 
-        private void AddWarrantyPeriods(object obj)
+        private async void AddWarrantyPeriods(object obj)
         {
             try
             {
                 if (obj == null) return;
                 if (((WarrantyPeriods)obj).Id == 0)
                 {
-                    _dbSetWarrantyPeriods.Add((WarrantyPeriods)obj);
+                    await _dbSetWarrantyPeriods.AddAsync((WarrantyPeriods)obj);
                 }
                 else
                 {
-                    _dbSetWarrantyPeriods.Update((WarrantyPeriods)obj);
+                    await _dbSetWarrantyPeriods.UpdateAsync((WarrantyPeriods)obj);
                 }
 
             }
@@ -80,7 +76,7 @@ namespace WarrantyPeriodsModul.ViewModels
         {
             try
             {
-                await _dbSetWarrantyPeriods.Load();
+                await _dbSetWarrantyPeriods.LoadAsync();
                 RaisePropertyChanged("WarrantyPeriodsList");
             }
             catch (Exception e)

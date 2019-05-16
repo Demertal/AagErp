@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace ModelModul.PurchaseGoods
 {
@@ -8,12 +9,12 @@ namespace ModelModul.PurchaseGoods
     {
         public override ObservableCollection<PurchaseReports> List => null;
 
-        public override void Add(PurchaseReports obj)
+        public override async Task AddAsync(PurchaseReports obj)
         {
             throw new NotImplementedException();
         }
 
-        public void Add(PurchaseReports purchaseReport, List<RevaluationProducts> revaluationProductses)
+        public async Task AddAsync(PurchaseReports purchaseReport, List<RevaluationProducts> revaluationProductses)
         {
             using (StoreEntities db = new StoreEntities())
             {
@@ -69,7 +70,7 @@ namespace ModelModul.PurchaseGoods
                             }
                         }
                         db.RevaluationProducts.AddRange(revaluationProductses);
-                        db.SaveChanges();
+                        await db.SaveChangesAsync();
                         transaction.Commit();
                     }
                     catch (Exception)
@@ -81,12 +82,12 @@ namespace ModelModul.PurchaseGoods
             }
         }
 
-        public override void Update(PurchaseReports obj)
+        public override async Task UpdateAsync(PurchaseReports obj)
         {
             throw new NotImplementedException();
         }
 
-        public override void Delete(int objId)
+        public override async Task DeleteAsync(int objId)
         {
             throw new NotImplementedException();
         }

@@ -36,6 +36,8 @@
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Укажите курс USD: " FontSize="14" Margin="5"/>
                 <TextBox Text="{Binding Path=Course, UpdateSourceTrigger=PropertyChanged, StringFormat=C, ConverterCulture='ua-UA'}" FontSize="14" Margin="5" MinWidth="50"/>
+                <TextBlock Text="Информация о закупке: " FontSize="14" Margin="5"/>
+                <TextBox Text="{Binding Path=TextInfo, UpdateSourceTrigger=PropertyChanged}" FontSize="14" Margin="5" MinWidth="150" MaxWidth="150"/>
             </StackPanel>
         </StackPanel>
 

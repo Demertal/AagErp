@@ -51,7 +51,7 @@ namespace GroupModul.ViewModels
             UpdateStoreCommand = new DelegateCommand(UpdateStore).ObservesCanExecute(() => IsEnabled);
         }
 
-        public void UpdateStore()
+        public async void UpdateStore()
         {
             try
             {
@@ -59,7 +59,7 @@ namespace GroupModul.ViewModels
                 {
                     DbSetGroups dbSetGroups = new DbSetGroups();
                     _oldGroupModel.Title = Title;
-                    dbSetGroups.Update(_oldGroupModel);
+                    await dbSetGroups.UpdateAsync(_oldGroupModel);
                     MessageBox.Show("Магазин изменен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
 
                     if (_notification != null)

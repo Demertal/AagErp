@@ -81,7 +81,7 @@ CREATE TABLE Products(
 	Id INT PRIMARY KEY IDENTITY,
 	Title NVARCHAR(120) NOT NULL CHECK(Title !='') UNIQUE,
 	VendorCode NVARCHAR(20) NULL,
-	Barcode NVARCHAR(13) NULL,
+	Barcode NVARCHAR(13) NULL UNIQUE,
 	PurchasePrice MONEY NOT NULL DEFAULT 0 CHECK(PurchasePrice >= 0),
 	SalesPrice MONEY NOT NULL DEFAULT 0 CHECK(SalesPrice >= 0),	
 	IdExchangeRate INT NOT NULL,
@@ -149,8 +149,8 @@ CREATE TABLE Suppliers(
 GO
 
 /*
-* PurchaseReport таблица отчетов о покупке
-* DataOrder дата покупки
+* PurchaseReport таблица отчетов о закупке
+* DataOrder дата закупки
 * Сourse курс
 * IdStore id магазина
 * IdSupplier id поставщика
@@ -159,6 +159,7 @@ CREATE TABLE PurchaseReports(
 	Id INT PRIMARY KEY IDENTITY,
 	DataOrder DATE NOT NULL,
 	Course MONEY NOT NULL CHECK(Course >= 0),
+	TextInfo NVARCHAR(50), 
 	IdStore INT NOT NULL,
 	IdSupplier INT NOT NULL,
 	FOREIGN KEY (IdStore) REFERENCES Stores (Id),

@@ -19,7 +19,7 @@ namespace RevaluationProductsModul.ViewModels
     {
         #region Properties
 
-        private  DbSetExchangeRates _dbSetExchangeRates = new DbSetExchangeRates();
+        private readonly DbSetExchangeRates _dbSetExchangeRates = new DbSetExchangeRates();
 
         private ObservableCollection<RevaluationProducts> _revaluationProducts = new ObservableCollection<RevaluationProducts>();
 
@@ -101,7 +101,7 @@ namespace RevaluationProductsModul.ViewModels
         {
             try
             {
-                await _dbSetExchangeRates.Load();
+                await _dbSetExchangeRates.LoadAsync();
                 RaisePropertyChanged("ExchangeRates");
                 _exchangeUsd = _dbSetExchangeRates.List.FirstOrDefault(e => e.Title == "USD");
             }
@@ -121,7 +121,7 @@ namespace RevaluationProductsModul.ViewModels
 
         #region DelegateCommand
 
-        private void Revaluation()
+        private async void Revaluation()
         {
             if (MessageBox.Show(
                     "Вы уверены, что хотите провести отчет о переоценке товара? Этот отчет невозможно будет изменить после.",
@@ -130,7 +130,7 @@ namespace RevaluationProductsModul.ViewModels
             try
             {
                 DbSetRevaluationProducts dbSetRevaluation = new DbSetRevaluationProducts();
-                dbSetRevaluation.Add(RevaluationProducts.ToList());
+                await dbSetRevaluation.AddAsync(RevaluationProducts.ToList());
                 MessageBox.Show("Отчет о переоценке добавлен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
                 NewReport();
             }

@@ -8,14 +8,14 @@ INSERT INTO Groups(Title, IdParentGroup) VALUES ('Группа3', 3), ('Группа4', 3)
 
  INSERT INTO WarrantyPeriods VALUES ('Нет'), ('14 дней')
 
- INSERT INTO ExchangeRates VALUES ('ГРН'), ('USD')
+ INSERT INTO ExchangeRates VALUES ('ГРН', 1), ('USD', 20)
 
  INSERT INTO Suppliers VALUES ('Поставщик1')
 
  INSERT INTO Products (Title, VendorCode, Barcode, PurchasePrice, SalesPrice, IdExchangeRate, IdWarrantyPeriod, IdGroup, IdUnitStorage)
- VALUES ('Товар1', 'ven1', 'bar1',  100, 200, 1, 1, 1, 1), ('Товар2', 'ven2', 'bar2',  200, 400, 1, 2, 1, 1),
- ('Товар3', 'ven3', 'bar3',  200, 400, 1, 1, 2, 1), ('Товар4', 'ven4', 'bar4',  500, 800, 1, 2, 2, 1),
- ('Товар5', 'ven5', 'bar5',  200, 400, 1, 1, 3, 1), ('Товар6', 'ven6', 'bar6',  200, 400, 1, 2, 6, 1)
+ VALUES ('Товар1', 'ven1', '7702655770330',  100, 200, 1, 1, 1, 1), ('Товар2', 'ven2', '2432275136012',  200, 400, 1, 2, 1, 1),
+ ('Товар3', 'ven3', '2480403477506',  200, 400, 1, 1, 2, 1), ('Товар4', 'ven4', '5522645663532',  500, 800, 1, 2, 2, 1),
+ ('Товар5', 'ven5', '7836688033275',  200, 400, 1, 1, 3, 1), ('Товар6', 'ven6', '2267301887541',  200, 400, 1, 2, 6, 1)
 
  SELECT * FROM ExchangeRates;
  SELECT * FROM Stores;

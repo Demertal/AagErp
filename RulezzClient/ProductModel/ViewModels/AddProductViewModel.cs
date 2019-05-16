@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using ModelModul;
 using ModelModul.Group;
@@ -123,22 +125,23 @@ namespace ProductModul.ViewModels
 
         public AddProductViewModel()
         {
+            LoadAsync();
             SelectedGroupCommand = new DelegateCommand<Groups>(SelectedGroupChange);
             AddProductCommand = new DelegateCommand(AddProduct).ObservesCanExecute(() => IsEnabled);
-            Load();
+            
         }
 
         #region GroupCommands
 
-        private async void Load()
+        private async Task LoadAsync()
         {
             try
             {
-                await _groupModel.Load();
+                await  _groupModel.LoadAsync();
                 RaisePropertyChanged("GroupsList");
-                await _warrantyPeriodsModel.Load();
+                await _warrantyPeriodsModel.LoadAsync();
                 RaisePropertyChanged("WarrantyPeriods");
-                await _unitStoragesModel.Load();
+                await _unitStoragesModel.LoadAsync();
                 RaisePropertyChanged("UnitStorages");
             }
             catch (Exception ex)
@@ -154,12 +157,12 @@ namespace ProductModul.ViewModels
 
         #endregion
 
-        public void AddProduct()
+        public async void AddProduct()
         {
             try
             {
                 DbSetProducts dbSetProducts = new DbSetProducts();
-                dbSetProducts.Add((Products)_product.Clone());
+                await dbSetProducts.AddAsync((Products)_product.Clone());
                 MessageBox.Show("Товар добавлен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)

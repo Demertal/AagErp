@@ -29,14 +29,14 @@ namespace SupplierModul.ViewModels
             DeleteSuppliersCommand = new DelegateCommand<Suppliers>(DeleteSuppliers);
         }
 
-        private void DeleteSuppliers(Suppliers obj)
+        private async void DeleteSuppliers(Suppliers obj)
         {
             if (obj == null) return;
             if (MessageBox.Show("Удалить поставщика?", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
                 MessageBoxResult.Yes) return;
             try
             {
-                _dbSetSuppliers.Delete(obj.Id);
+                await _dbSetSuppliers.DeleteAsync(obj.Id);
                 Load();
             }
             catch (Exception e)
@@ -45,18 +45,18 @@ namespace SupplierModul.ViewModels
             }
         }
 
-        private void AddSuppliers(object obj)
+        private async void AddSuppliers(object obj)
         {
             try
             {
                 if(obj == null) return;
                 if (((Suppliers) obj).Id == 0)
                 {
-                    _dbSetSuppliers.Add((Suppliers)obj);
+                    await _dbSetSuppliers.AddAsync((Suppliers) obj);
                 }
                 else
                 {
-                    _dbSetSuppliers.Update((Suppliers)obj);
+                    await _dbSetSuppliers.UpdateAsync((Suppliers) obj);
                 }
 
                 Load();
@@ -71,7 +71,7 @@ namespace SupplierModul.ViewModels
         {
             try
             {
-                await _dbSetSuppliers.Load();
+                await _dbSetSuppliers.LoadAsync();
                 RaisePropertyChanged("SuppliersList");
             }
             catch (Exception e)

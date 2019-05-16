@@ -161,6 +161,10 @@
       <Project>{ba906062-87b9-41e7-b1ee-a44007eb8933}</Project>
       <Name>CustomControlLibrary</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GenerationBarcodeLibrary\GenerationBarcodeLibrary.csproj">
+      <Project>{4F2CF7C8-3230-4459-8B64-7AA0750BD3C3}</Project>
+      <Name>GenerationBarcodeLibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GroupModul\GroupModul.csproj">
       <Project>{06eb7ce3-8c9c-4bd6-bf72-4caab19b22f0}</Project>
       <Name>GroupModul</Name>

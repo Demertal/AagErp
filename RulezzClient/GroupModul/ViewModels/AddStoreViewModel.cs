@@ -48,12 +48,12 @@ namespace GroupModul.ViewModels
             AddStoreCommand = new DelegateCommand(AddStore).ObservesCanExecute(() => IsEnabled);
         }
 
-        public void AddStore()
+        public async void AddStore()
         {
             try
             {
                 DbSetGroups dbSetGroups = new DbSetGroups();
-                dbSetGroups.Add(new Groups{ Title = Title });
+                await  dbSetGroups.AddAsync(new Groups{ Title = Title });
                 MessageBox.Show("Магазин добавлен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
 
                 if (_notification != null)

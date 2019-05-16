@@ -22,7 +22,8 @@ namespace ModelModul
                 PurchaseInfos = temp,
                 Stores = Stores,
                 Suppliers = Suppliers,
-                Course = Course
+                Course = Course,
+                TextInfo = TextInfo
             };
         }
     }

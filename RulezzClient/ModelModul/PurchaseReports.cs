@@ -25,6 +25,7 @@ namespace ModelModul
         public decimal Course { get; set; }
         public int IdStore { get; set; }
         public int IdSupplier { get; set; }
+        public string TextInfo { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PurchaseInfos> PurchaseInfos { get; set; }

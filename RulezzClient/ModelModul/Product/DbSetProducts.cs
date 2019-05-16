@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,53 +7,32 @@ namespace ModelModul.Product
 {
     public class DbSetProducts : DbSetModel<Products>
     {
-
-        #region LoadMethod
-
-        public async Task<int> Load(int idGroup, string findString)
+        public async Task LoadAsync(int idGroup, string findString)
         {
-            List<Products> temp = await Task.Run(() =>
+            using (StoreEntities db = new StoreEntities())
             {
-                try
-                {
-                    using (StoreEntities db = new StoreEntities())
-                    {
-                        if (string.IsNullOrEmpty(findString))
-                        {
-                            return db.Products.Include(p => p.CountProducts).Include(p => p.ExchangeRates)
-                                .Include(p => p.WarrantyPeriods).Include(p => p.UnitStorages).Include(p => p.Groups).Where(obj => obj.IdGroup == idGroup).ToList();
-                        }
-                        else
-                        {
-                            return db.Products.Include(p => p.CountProducts).Include(p => p.ExchangeRates)
-                                .Include(p => p.WarrantyPeriods).Include(p => p.UnitStorages).Include(p => p.Groups).Where(obj =>
-                                    obj.Title.Contains(findString) || obj.VendorCode.Contains(findString) ||
-                                    obj.Barcode.Contains(findString)).ToList();
-                        }
-                    }
-                }
-                catch (Exception)
-                {
-                    return null;
-                }
-            });
-            ObservableCollection<Products> list = new ObservableCollection<Products>();
 
-            if (temp != null)
-            {
-                foreach (var item in temp)
+                if (string.IsNullOrEmpty(findString))
                 {
-                    list.Add(item);
+                    await db.Products.Where(obj => obj.IdGroup == idGroup).Include(p => p.CountProducts)
+                        .Include(p => p.ExchangeRates).Include(p => p.WarrantyPeriods).Include(p => p.UnitStorages)
+                        .Include(p => p.Groups).LoadAsync();
                 }
+                else
+                {
+                    await db.Products.Include(p => p.CountProducts)
+                        .Where(obj =>
+                            obj.Title.Contains(findString) || obj.VendorCode.Contains(findString) ||
+                            obj.Barcode.Contains(findString)).Include(p => p.ExchangeRates)
+                        .Include(p => p.WarrantyPeriods).Include(p => p.UnitStorages).Include(p => p.Groups)
+                        .LoadAsync();
+                }
+
+                List = db.Products.Local;
             }
-
-            List = list;
-            return List.Count;
         }
 
-        #endregion
-
-        public override void Delete(int id)
+        public override async Task DeleteAsync(int id)
         {
             using (StoreEntities db = new StoreEntities())
             {
@@ -65,7 +42,7 @@ namespace ModelModul.Product
                     {
                         var product = db.Products.Find(id);
                         db.Entry(product).State = EntityState.Deleted;
-                        db.SaveChanges();
+                        await db.SaveChangesAsync();
                         transaction.Commit();
                     }
                     catch (Exception)
@@ -77,7 +54,7 @@ namespace ModelModul.Product
             }
         }
 
-        public override void Add(Products product)
+        public override async Task AddAsync(Products product)
         {
             using (StoreEntities db = new StoreEntities())
             {
@@ -103,7 +80,7 @@ namespace ModelModul.Product
                         product.IdExchangeRate = db.ExchangeRates.Select(ex => ex.Id).FirstOrDefault();
 
                         db.Products.Add(product);
-                        db.SaveChanges();
+                        await db.SaveChangesAsync();
                         transaction.Commit();
                     }
                     catch (Exception)
@@ -115,7 +92,7 @@ namespace ModelModul.Product
             }
         }
 
-        public override void Update(Products product)
+        public override async Task UpdateAsync(Products product)
         {
             using (StoreEntities db = new StoreEntities())
             {
@@ -139,7 +116,7 @@ namespace ModelModul.Product
                             product.UnitStorages = null;
                         }
                         db.Entry(product).State = EntityState.Modified;
-                        db.SaveChanges();
+                        await db.SaveChangesAsync();
                         transaction.Commit();
                     }
                     catch (Exception)

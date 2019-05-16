@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace ModelModul.SalesGoods
 {
@@ -7,17 +8,17 @@ namespace ModelModul.SalesGoods
     {
         public override ObservableCollection<SalesReports> List => null;
 
-        public override void Add(SalesReports obj)
+        public override async Task AddAsync(SalesReports obj)
         {
             throw new NotImplementedException();
         }
 
-        public override void Update(SalesReports obj)
+        public override async Task UpdateAsync(SalesReports obj)
         {
             throw new NotImplementedException();
         }
 
-        public override void Delete(int objId)
+        public override async Task DeleteAsync(int objId)
         {
             throw new NotImplementedException();
         }

@@ -1,56 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Data.Entity;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ModelModul.ExchangeRate
 {
     public class DbSetExchangeRates: DbSetModel<ExchangeRates>
     {
-        public async Task<int> Load()
+        public async Task LoadAsync()
         {
-            List<ExchangeRates> temp = await Task.Run(() =>
+            using (StoreEntities db = new StoreEntities())
             {
-                try
-                {
-                    using (StoreEntities db = new StoreEntities())
-                    {
-                        db.ExchangeRates.Load();
-                        return db.ExchangeRates.Local.ToList();
-                    }
-                }
-                catch (Exception)
-                {
-                    return null;
-                }
-            });
-            ObservableCollection<ExchangeRates> list = new ObservableCollection<ExchangeRates>();
-
-            if (temp != null)
-            {
-                foreach (var item in temp)
-                {
-                    list.Add(item);
-                }
+                await db.ExchangeRates.LoadAsync();
+                List = db.ExchangeRates.Local;
             }
-
-            List = list;
-            return List.Count;
         }
 
-        public override void Add(ExchangeRates obj)
+        public override Task AddAsync(ExchangeRates obj)
         {
             throw new NotImplementedException();
         }
 
-        public override void Update(ExchangeRates obj)
+        public override Task UpdateAsync(ExchangeRates obj)
         {
             throw new NotImplementedException();
         }
 
-        public override void Delete(int objId)
+        public override Task DeleteAsync(int objId)
         {
             throw new NotImplementedException();
         }

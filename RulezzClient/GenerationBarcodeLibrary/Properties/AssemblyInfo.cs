@@ -1,15 +1,14 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // Общие сведения об этой сборке предоставляются следующим набором
 // набора атрибутов. Измените значения этих атрибутов, чтобы изменить сведения,
 // связанные со сборкой.
-[assembly: AssemblyTitle("CashierWorkplaceModul")]
+[assembly: AssemblyTitle("GenerationBarcodeLibrary")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("sibiryak-soft")]
-[assembly: AssemblyProduct("CashierWorkplaceModul")]
+[assembly: AssemblyProduct("GenerationBarcodeLibrary")]
 [assembly: AssemblyCopyright("Copyright © sibiryak-soft 2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // Следующий GUID служит для идентификации библиотеки типов, если этот проект будет видимым для COM
-[assembly: Guid("a9aaed08-88f3-48f1-b7dc-451c904cd9ee")]
+[assembly: Guid("4f2cf7c8-3230-4459-8b64-7aa0750bd3c3")]
 
 // Сведения о версии сборки состоят из следующих четырех значений:
 //

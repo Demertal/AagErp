@@ -49,12 +49,12 @@ namespace GroupModul.ViewModels
             AddGroupCommand = new DelegateCommand(AddGroup).ObservesCanExecute(() => IsEnabled);
         }
 
-        public void AddGroup()
+        public async void AddGroup()
         {
             try
             {
                 DbSetGroups dbSetGroups = new DbSetGroups();
-                dbSetGroups.Add(_groupModel);
+                await dbSetGroups.AddAsync(_groupModel);
                 MessageBox.Show("Группа добавлена", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
 
                 if (_notification != null)

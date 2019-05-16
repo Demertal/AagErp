@@ -91,7 +91,7 @@ CREATE TRIGGER PurchaseReports_INSERT
 ON PurchaseReports
 INSTEAD OF INSERT
 AS
-INSERT INTO PurchaseReports(DataOrder, Ñourse,	IdStore, IdSupplier) SELECT GETDATE(), INSERTED.Ñourse, INSERTED.IdStore, INSERTED.IdSupplier FROM INSERTED
+INSERT INTO PurchaseReports(DataOrder, Course,	IdStore, IdSupplier) SELECT GETDATE(), INSERTED.Course, INSERTED.IdStore, INSERTED.IdSupplier FROM INSERTED
 SELECT Id FROM PurchaseReports WHERE @@ROWCOUNT > 0 and Id = scope_identity(); 
 GO
 
@@ -99,20 +99,20 @@ CREATE TRIGGER PurchaseInfos_INSERT
 ON PurchaseInfos
 AFTER INSERT
 AS
-	DECLARE @insertProdFirst TABLE (PurchasePrice MONEY, Ñourse MONEY, IdExchangeRate INT, IdProduct INT)
+	DECLARE @insertProdFirst TABLE (PurchasePrice MONEY, Course MONEY, IdExchangeRate INT, IdProduct INT)
 	DECLARE @insertProd TABLE (PurchasePrice MONEY, IdExchangeRate INT, IdProduct INT)
 	DECLARE @insertCountFirst TABLE (Count INT, IdProduct INT, IdStore INT)
 	DECLARE @insertCount TABLE (Count INT, IdProduct INT, IdStore INT)
-	INSERT INTO @insertProdFirst(PurchasePrice, Ñourse, IdExchangeRate, IdProduct) SELECT
+	INSERT INTO @insertProdFirst(PurchasePrice, Course, IdExchangeRate, IdProduct) SELECT
 		i.PurchasePrice, CAST(	CASE 
 			WHEN (SELECT Title FROM ExchangeRates WHERE ExchangeRates.Id = i.IdExchangeRate) = 'USD'
-			THEN (SELECT p.Ñourse FROM PurchaseReports as p WHERE p.Id = i.IdPurchaseReport)
+			THEN (SELECT p.Course FROM PurchaseReports as p WHERE p.Id = i.IdPurchaseReport)
 			ELSE 1
-			END AS MONEY) AS Ñourse, i.IdExchangeRate, i.IdProduct
+			END AS MONEY) AS Course, i.IdExchangeRate, i.IdProduct
 		FROM inserted AS i 
-	INSERT INTO @insertProd(PurchasePrice, IdProduct) SELECT MAX(inpf1.PurchasePrice * inpf1.Ñourse), inpf1.IdProduct	FROM @insertProdFirst as inpf1 GROUP BY inpf1.IdProduct;
+	INSERT INTO @insertProd(PurchasePrice, IdProduct) SELECT MAX(inpf1.PurchasePrice * inpf1.Course), inpf1.IdProduct	FROM @insertProdFirst as inpf1 GROUP BY inpf1.IdProduct;
 	UPDATE @insertProd SET IdExchangeRate = inpf2.IdExchangeRate, PurchasePrice=inpf2.PurchasePrice  FROM @insertProd as inp1 INNER JOIN @insertProdFirst as inpf2 ON inp1.IdProduct = inpf2.IdProduct
-	WHERE inp1.PurchasePrice = inpf2.PurchasePrice*inpf2.Ñourse
+	WHERE inp1.PurchasePrice = inpf2.PurchasePrice*inpf2.Course
 	UPDATE Products SET PurchasePrice = inp.PurchasePrice, IdExchangeRate = inp.IdExchangeRate FROM @insertProd as inp WHERE Id = inp.IdProduct
 	INSERT INTO @insertCountFirst(Count, IdProduct, IdStore) SELECT ins.COUNT, ins.IdProduct, 
 		CAST((SELECT IdStore FROM PurchaseReports INNER JOIN INSERTED on PurchaseReports.Id = INSERTED.IdPurchaseReport) AS INT) as idstore FROM INSERTED as ins

@@ -9,7 +9,7 @@ namespace ModelModul.PropertyName
 {
     public class DbSetPropertyNames : DbSetModel<PropertyNames>
     {
-        public async Task<ObservableCollection<PropertyNames>> Load(int idGroup)
+        public async Task<ObservableCollection<PropertyNames>> LoadAsync(int idGroup)
         {
             List<PropertyNames> temp = await Task.Run(() =>
             {
@@ -38,7 +38,7 @@ namespace ModelModul.PropertyName
             return list;
         }
 
-        public override void Add(PropertyNames obj)
+        public override async Task AddAsync(PropertyNames obj)
         {
             using (StoreEntities db = new StoreEntities())
             {
@@ -54,7 +54,7 @@ namespace ModelModul.PropertyName
                         obj.PropertyValues = null;
 
                         db.PropertyNames.Add(obj);
-                        db.SaveChanges();
+                        await db.SaveChangesAsync();
                         transaction.Commit();
                     }
                     catch (Exception)
@@ -66,12 +66,12 @@ namespace ModelModul.PropertyName
             }
         }
 
-        public override void Update(PropertyNames obj)
+        public override async Task UpdateAsync(PropertyNames obj)
         {
             throw new System.NotImplementedException();
         }
 
-        public override void Delete(int objId)
+        public override async Task DeleteAsync(int objId)
         {
             using (StoreEntities db = new StoreEntities())
             {
@@ -81,7 +81,7 @@ namespace ModelModul.PropertyName
                     {
                         var propertyNames = db.PropertyNames.Find(objId);
                         db.Entry(propertyNames).State = EntityState.Deleted;
-                        db.SaveChanges();
+                        await db.SaveChangesAsync();
                         transaction.Commit();
                     }
                     catch (Exception)

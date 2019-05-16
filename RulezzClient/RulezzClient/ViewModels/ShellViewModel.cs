@@ -20,6 +20,12 @@ namespace RulezzClient.ViewModels
 
         public ShellViewModel(IRegionManager regionManager)
         {
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    Image img = GenerationBarcode.GetImageBarcode(GenerationBarcode.GenerateBarcode());
+            //    img.Save("D:\\" + i.ToString() + ".bmp");
+            //}
+
             _regionManager = regionManager;
             AddProductPopupRequest = new InteractionRequest<INotification>();
             NavigateCommand = new DelegateCommand<string>(Navigate);

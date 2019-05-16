@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows;
 using ModelModul;
 using ModelModul.Group;
@@ -126,22 +127,22 @@ namespace ProductModul.ViewModels
 
         public UpdateProductViewModel()
         {
+            LoadAsync();
             SelectedGroupCommand = new DelegateCommand<Groups>(SelectedGroupChange);
             UpdateProductCommand = new DelegateCommand(UpdateProduct).ObservesCanExecute(() => IsEnabled);
-            Load();
         }
 
         #region GroupCommands
 
-        private async void Load()
+        private async Task LoadAsync()
         {
             try
             {
-                await _groupModel.Load();
+                await _groupModel.LoadAsync();
                 RaisePropertyChanged("GroupsList");
-                await _warrantyPeriodsModel.Load();
+                await _warrantyPeriodsModel.LoadAsync();
                 RaisePropertyChanged("WarrantyPeriods");
-                await _unitStoragesModel.Load();
+                await _unitStoragesModel.LoadAsync();
                 RaisePropertyChanged("UnitStorages");
                 RaisePropertyChanged("SelectedGroup");
                 RaisePropertyChanged("WarrantyPeriod");
@@ -160,12 +161,12 @@ namespace ProductModul.ViewModels
 
         #endregion
 
-        public void UpdateProduct()
+        public async void UpdateProduct()
         {
             try
             {
                 DbSetProducts dbSetProducts = new DbSetProducts();
-                dbSetProducts.Update((Products)_product.Clone());
+                await dbSetProducts.UpdateAsync((Products)_product.Clone());
                 MessageBox.Show("Товар изменен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
                 if (_notification != null)
                     _notification.Confirmed = true;

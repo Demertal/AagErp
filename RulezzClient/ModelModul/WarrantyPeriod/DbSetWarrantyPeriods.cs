@@ -1,46 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Data.Entity;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ModelModul.WarrantyPeriod
 {
     public class DbSetWarrantyPeriods : DbSetModel<WarrantyPeriods>
     {
-        public async Task<int> Load()
+        public async Task LoadAsync()
         {
-            List<WarrantyPeriods> temp = await Task.Run(() =>
+            using (StoreEntities db = new StoreEntities())
             {
-                try
-                {
-                    using (StoreEntities db = new StoreEntities())
-                    {
-                        db.WarrantyPeriods.Load();
-                        return db.WarrantyPeriods.Local.ToList();
-                    }
-                }
-                catch (Exception)
-                {
-                    return null;
-                }
-            });
-            ObservableCollection<WarrantyPeriods> list = new ObservableCollection<WarrantyPeriods>();
-
-            if (temp != null)
-            {
-                foreach (var item in temp)
-                {
-                    list.Add(item);
-                }
+                await db.WarrantyPeriods.LoadAsync();
+                List = db.WarrantyPeriods.Local;
             }
-
-            List = list;
-            return List.Count;
         }
 
-        public override void Add(WarrantyPeriods obj)
+        public override async Task AddAsync(WarrantyPeriods obj)
         {
             using (StoreEntities db = new StoreEntities())
             {
@@ -49,7 +24,7 @@ namespace ModelModul.WarrantyPeriod
                     try
                     {
                         db.WarrantyPeriods.Add(obj);
-                        db.SaveChanges();
+                        await db.SaveChangesAsync();
                         transaction.Commit();
                     }
                     catch (Exception)
@@ -61,7 +36,7 @@ namespace ModelModul.WarrantyPeriod
             }
         }
 
-        public override void Update(WarrantyPeriods obj)
+        public override async Task UpdateAsync(WarrantyPeriods obj)
         {
             using (StoreEntities db = new StoreEntities())
             {
@@ -74,7 +49,7 @@ namespace ModelModul.WarrantyPeriod
                         if (unit.Period == "Нет") throw new Exception("Нельзя изменять гарантийный период: \"Нет\"");
                         unit.Period = obj.Period;
                         db.Entry(unit).State = EntityState.Modified;
-                        db.SaveChanges();
+                        await db.SaveChangesAsync();
                         transaction.Commit();
                     }
                     catch (Exception)
@@ -86,7 +61,7 @@ namespace ModelModul.WarrantyPeriod
             }
         }
 
-        public override void Delete(int objId)
+        public override async Task DeleteAsync(int objId)
         {
             using (StoreEntities db = new StoreEntities())
             {
@@ -98,7 +73,7 @@ namespace ModelModul.WarrantyPeriod
                         if (unit == null) throw new Exception("Удалить не получилось");
                         if (unit.Period == "Нет") throw new Exception("Нельзя удалять гарантийный период: \"Нет\"");
                         db.Entry(unit).State = EntityState.Deleted;
-                        db.SaveChanges();
+                        await db.SaveChangesAsync();
                         transaction.Commit();
                     }
                     catch (Exception)

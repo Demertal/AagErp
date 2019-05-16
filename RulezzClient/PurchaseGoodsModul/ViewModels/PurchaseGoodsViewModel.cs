@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using ModelModul;
 using ModelModul.ExchangeRate;
@@ -179,6 +180,16 @@ namespace PurchaseGoodsModul.ViewModels
             }
         }
 
+        public string TextInfo
+        {
+            get => _report.TextInfo;
+            set
+            {
+                _report.TextInfo = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public InteractionRequest<INotification> AddProductPopupRequest { get; set; }
 
         public DelegateCommand AddProductCommand { get; }
@@ -189,11 +200,11 @@ namespace PurchaseGoodsModul.ViewModels
 
         public PurchaseGoodsViewModel()
         {
+            LoadAsync();
             AddProductPopupRequest = new InteractionRequest<INotification>();
             PurchaseInvoiceCommand = new DelegateCommand(PurchaseInvoice).ObservesCanExecute(() => IsEnabled);
             AddProductCommand = new DelegateCommand(AddProduct);
             RevaluationProducts.CollectionChanged += OnRevaluationProductsCollectionChanged;
-            Load();
             DeleteProductCommand = new DelegateCommand<Collection<object>>(DeleteProduct);
             NewReport();
         }
@@ -357,15 +368,15 @@ namespace PurchaseGoodsModul.ViewModels
 
         #endregion
 
-        private async void Load()
+        private async Task LoadAsync()
         {
             try
             {
-                await _dbSetStores.Load();
+                await _dbSetStores.LoadAsync();
                 RaisePropertyChanged("Stores");
-                await _dbSetExchangeRates.Load();
+                await _dbSetExchangeRates.LoadAsync();
                 RaisePropertyChanged("ExchangeRates");
-                await _dbSetSuppliers.Load();
+                await _dbSetSuppliers.LoadAsync();
                 RaisePropertyChanged("Suppliers");
                 Course = _dbSetExchangeRates.List.First(e => e.Title == "USD").Course;
             }
@@ -393,7 +404,7 @@ namespace PurchaseGoodsModul.ViewModels
 
         #region DelegateCommand
 
-        private void PurchaseInvoice()
+        private async void PurchaseInvoice()
         {
             if (MessageBox.Show(
                     "Вы уверены, что хотите провести отчет о закупке товара? Этот отчет невозможно будет изменить после.",
@@ -410,7 +421,7 @@ namespace PurchaseGoodsModul.ViewModels
                         revaluationProducts.Add(revaluationProduct.RevaluationProducts);
                     }
                 }
-                dbSetPurchase.Add((PurchaseReports)_report.Clone(), revaluationProducts);
+                await dbSetPurchase.AddAsync((PurchaseReports)_report.Clone(), revaluationProducts);
                 MessageBox.Show("Отчет о закупке добавлен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
                 NewReport();
             }

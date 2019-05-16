@@ -1,56 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Data.Entity;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ModelModul.Store
 {
     public class DbSetStores : DbSetModel<Stores>
     {
-        public async Task<int> Load()
+        public async Task LoadAsync()
         {
-            List<Stores> temp = await Task.Run(() =>
+            using (StoreEntities db = new StoreEntities())
             {
-                try
-                {
-                    using (StoreEntities db = new StoreEntities())
-                    {
-                        db.Stores.Load();
-                        return db.Stores.Local.ToList();
-                    }
-                }
-                catch (Exception)
-                {
-                    return null;
-                }
-            });
-            ObservableCollection<Stores> list = new ObservableCollection<Stores>();
-
-            if (temp != null)
-            {
-                foreach (var item in temp)
-                {
-                    list.Add(item);
-                }
+                await db.Stores.LoadAsync();
+                List = db.Stores.Local;
             }
-
-            List = list;
-            return List.Count;
         }
 
-        public override void Add(Stores obj)
+        public override async Task AddAsync(Stores obj)
         {
             throw new NotImplementedException();
         }
 
-        public override void Update(Stores obj)
+        public override async Task UpdateAsync(Stores obj)
         {
             throw new NotImplementedException();
         }
 
-        public override void Delete(int objId)
+        public override async Task DeleteAsync(int objId)
         {
             throw new NotImplementedException();
         }

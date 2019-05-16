@@ -68,6 +68,8 @@
     <Compile Include="BindingProxy.cs" />
     <Compile Include="Converters\CurrencyConverter2Parametrs.cs" />
     <Compile Include="Converters\CurrencyConverter4Parametrs.cs" />
+    <Compile Include="Converters\IsReadOnlyConverterFalse.cs" />
+    <Compile Include="Converters\IsReadOnlyConverterTrue.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="ExtendedDataGrid.cs" />
     <Compile Include="ExtendedTreeView.cs" />

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace ModelModul.RevaluationProduct
 {
@@ -8,7 +9,7 @@ namespace ModelModul.RevaluationProduct
     {
         public override ObservableCollection<RevaluationProducts> List => null;
 
-        public override void Add(RevaluationProducts obj)
+        public override async Task AddAsync(RevaluationProducts obj)
         {
             using (StoreEntities db = new StoreEntities())
             {
@@ -22,7 +23,7 @@ namespace ModelModul.RevaluationProduct
                             obj.Products = null;
                         }
                         db.RevaluationProducts.Add(obj);
-                        db.SaveChanges();
+                        await db.SaveChangesAsync();
                         transaction.Commit();
                     }
                     catch (Exception)
@@ -34,7 +35,7 @@ namespace ModelModul.RevaluationProduct
             }
         }
 
-        public void Add(List<RevaluationProducts> obj)
+        public async Task AddAsync(List<RevaluationProducts> obj)
         {
             using (StoreEntities db = new StoreEntities())
             {
@@ -51,7 +52,7 @@ namespace ModelModul.RevaluationProduct
                             }
                             db.RevaluationProducts.Add(revaluationProduct);
                         }
-                        db.SaveChanges();
+                        await db.SaveChangesAsync();
                         transaction.Commit();
                     }
                     catch (Exception)
@@ -63,12 +64,12 @@ namespace ModelModul.RevaluationProduct
             }
         }
 
-        public override void Update(RevaluationProducts obj)
+        public override async Task UpdateAsync(RevaluationProducts obj)
         {
             throw new NotImplementedException();
         }
 
-        public override void Delete(int objId)
+        public override async Task DeleteAsync(int objId)
         {
             throw new NotImplementedException();
         }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace ModelModul
 {
@@ -12,8 +13,8 @@ namespace ModelModul
             set => _list = value;
         }
 
-        public abstract void Add(T obj);
-        public abstract void Update(T obj);
-        public abstract void Delete(int objId);
+        public abstract Task AddAsync(T obj);
+        public abstract Task UpdateAsync(T obj);
+        public abstract Task DeleteAsync(int objId);
     }
 }

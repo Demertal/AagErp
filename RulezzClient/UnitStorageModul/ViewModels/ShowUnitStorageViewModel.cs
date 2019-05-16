@@ -29,7 +29,7 @@ namespace UnitStorageModul.ViewModels
             DeleteUnitStoragesCommand = new DelegateCommand<UnitStorages>(DeleteUnitStorages);
         }
 
-        private void DeleteUnitStorages(UnitStorages obj)
+        private async void DeleteUnitStorages(UnitStorages obj)
         {
             if (obj == null) return;
             if (obj.Title == "шт")
@@ -41,7 +41,7 @@ namespace UnitStorageModul.ViewModels
                 MessageBoxResult.Yes) return;
             try
             {
-                _dbSetUnitStorages.Delete(obj.Id);
+                await _dbSetUnitStorages.DeleteAsync(obj.Id);
             }
             catch (Exception e)
             {
@@ -50,18 +50,18 @@ namespace UnitStorageModul.ViewModels
             Load();
         }
 
-        private void AddUnitStorages(object obj)
+        private async void AddUnitStorages(object obj)
         {
             try
             {
                 if (obj == null) return;
                 if (((UnitStorages)obj).Id == 0)
                 {
-                    _dbSetUnitStorages.Add((UnitStorages)obj);
+                    await _dbSetUnitStorages.AddAsync((UnitStorages)obj);
                 }
                 else
                 {
-                    _dbSetUnitStorages.Update((UnitStorages)obj);
+                    await _dbSetUnitStorages.UpdateAsync((UnitStorages)obj);
                 }
                 
             }
@@ -76,7 +76,7 @@ namespace UnitStorageModul.ViewModels
         {
             try
             {
-                await _dbSetUnitStorages.Load();
+                await _dbSetUnitStorages.LoadAsync();
                 RaisePropertyChanged("UnitStoragesList");
             }
             catch (Exception e)

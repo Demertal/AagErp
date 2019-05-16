@@ -6,6 +6,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using ModelModul;
 using Prism.Commands;
 using Prism.Interactivity.InteractionRequest;
@@ -17,7 +18,7 @@ namespace CashierWorkplaceModul.ViewModels
     {
         #region Properties
 
-        private SalesReports _salesReports = new SalesReports();
+        private readonly SalesReports _salesReports = new SalesReports();
 
         public ObservableCollection<SalesInfos> SalesInfos =>
             _salesReports.SalesInfos as ObservableCollection<SalesInfos>;
@@ -37,6 +38,7 @@ namespace CashierWorkplaceModul.ViewModels
         public DelegateCommand AddProductCommand { get; }
         public DelegateCommand SaleCommand { get; }
         public DelegateCommand<Collection<object>> DeleteProductCommand { get; }
+        public DelegateCommand<DataGridCellEditEndingEventArgs> UpdatSalesInfosCommand { get; }
 
         #endregion
 
@@ -48,7 +50,16 @@ namespace CashierWorkplaceModul.ViewModels
             DeleteProductCommand = new DelegateCommand<Collection<object>>(DeleteProduct);
             _salesReports.SalesInfos = new ObservableCollection<SalesInfos>();
             SalesInfos.CollectionChanged += OnSalesInfosCollectionChanged;
+            UpdatSalesInfosCommand = new DelegateCommand<DataGridCellEditEndingEventArgs>(UpdatSalesInfos);
             NewReport();
+        }
+
+        private void UpdatSalesInfos(DataGridCellEditEndingEventArgs obj)
+        {
+            if (obj.Column.Header == "Штрихкод")
+            {
+                //obj.Row.
+            }
         }
 
         #region PropertyChanged
@@ -83,11 +94,11 @@ namespace CashierWorkplaceModul.ViewModels
 
         #endregion
 
-        private async void Load()
+        private void Load()
         {
             //try
             //{
-            //    await _dbSetExchangeRates.Load();
+            //    await _dbSetExchangeRates.LoadAsync();
             //    RaisePropertyChanged("ExchangeRates");
             //    _exchangeUsd = _dbSetExchangeRates.List.FirstOrDefault(e => e.Title == "USD");
             //}
@@ -99,7 +110,7 @@ namespace CashierWorkplaceModul.ViewModels
 
         private void NewReport()
         {
-            //Load();
+            //LoadAsync();
             SalesInfos.Clear();
             RaisePropertyChanged("IsEnabled");
             RaisePropertyChanged("SalesInfos");
@@ -116,7 +127,7 @@ namespace CashierWorkplaceModul.ViewModels
             try
             {
                 //DbSetRevaluationProducts dbSetRevaluation = new DbSetRevaluationProducts();
-                //dbSetRevaluation.Add(SalesInfos.ToList());
+                //dbSetRevaluation.AddAsync(SalesInfos.ToList());
                 MessageBox.Show("Продажа добавлена", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
                 NewReport();
             }

@@ -1,45 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace ModelModul.Group
 {
     public class DbSetGroups : DbSetModel<Groups>
     {
-        public async Task<int> Load(Groups parentGroup = null)
+        public async Task LoadAsync(Groups parentGroup = null)
         {
             bool Pre(Groups obj)
             {
-                if (obj.IdParentGroup == null && parentGroup == null) return true;
-                return obj.IdParentGroup != null && parentGroup != null &&
-                       obj.IdParentGroup.Value == parentGroup.Id;
+                return (obj.IdParentGroup == null && parentGroup == null) ||
+                       (obj.IdParentGroup != null && parentGroup != null && obj.IdParentGroup.Value == parentGroup.Id);
             }
-
-            List<Groups> temp = await Task.Run(() =>
+            using (StoreEntities db = new StoreEntities())
             {
-                using (StoreEntities db = new StoreEntities())
-                {
-                    return db.Groups.Include("Groups1").Where(Pre).ToList();
-                }
-            });
-            ObservableCollection<Groups> list = new ObservableCollection<Groups>();
-
-            if (temp != null)
-            {
-                foreach (var item in temp)
-                {
-                    list.Add(item);
-                }
+                await db.Groups.Include("Groups1").LoadAsync();
+                List = new ObservableCollection<Groups>(db.Groups.Local.Where(Pre));
             }
-
-            List = list;
-            return List.Count;
         }
 
-        public override void Add(Groups obj)
+        public override async Task AddAsync(Groups obj)
         {
             using (StoreEntities db = new StoreEntities())
             {
@@ -48,7 +33,7 @@ namespace ModelModul.Group
                     try
                     {
                         db.Groups.Add(obj);
-                        db.SaveChanges();
+                        await db.SaveChangesAsync();
                         transaction.Commit();
                     }
                     catch (Exception)
@@ -60,7 +45,7 @@ namespace ModelModul.Group
             }
         }
 
-        public override void Delete(int objId)
+        public override async Task DeleteAsync(int objId)
         {
             using (StoreEntities db = new StoreEntities())
             {
@@ -70,7 +55,7 @@ namespace ModelModul.Group
                     {
                         var group = db.Groups.Find(objId);
                         db.Entry(group).State = EntityState.Deleted;
-                        db.SaveChanges();
+                        await db.SaveChangesAsync();
                         transaction.Commit();
                     }
                     catch (Exception)
@@ -82,7 +67,7 @@ namespace ModelModul.Group
             }
         }
 
-        public override void Update(Groups obj)
+        public override async Task UpdateAsync(Groups obj)
         {
             using (StoreEntities db = new StoreEntities())
             {
@@ -97,7 +82,7 @@ namespace ModelModul.Group
                             db.Entry(modifi).State = EntityState.Modified;
                         }
                         else throw new Exception("Изменение не удалось");
-                        db.SaveChanges();
+                        await db.SaveChangesAsync();
                         transaction.Commit();
                     }
                     catch (Exception)
