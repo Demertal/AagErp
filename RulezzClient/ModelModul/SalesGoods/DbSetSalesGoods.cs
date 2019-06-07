@@ -1,24 +1,59 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
 namespace ModelModul.SalesGoods
 {
-    class DbSetSalesGoods : DbSetModel<SalesReports>
+    public class DbSetSalesGoods : AutomationAccountingGoodsEntities, IDbSetModel<SalesReports>
     {
-        public override ObservableCollection<SalesReports> List => null;
+        public async Task AddAsync(SalesReports obj)
+        {
+            using (var transaction = Database.BeginTransaction())
+            {
+                try
+                {
+                    if (obj.Stores != null)
+                    {
+                        obj.IdStore = obj.Stores.Id;
+                        obj.Stores = null;
+                    }
 
-        public override async Task AddAsync(SalesReports obj)
+                    foreach (var salesInfo in obj.SalesInfos)
+                    {
+                        if (salesInfo.Products != null)
+                        {
+                            salesInfo.IdProduct = salesInfo.Products.Id;
+                            salesInfo.Products = null;
+                        }
+
+                        if (salesInfo.SerialNumbers != null && salesInfo.SerialNumbers.Id != 0)
+                        {
+                            salesInfo.IdSerialNumber = salesInfo.SerialNumbers.Id;
+                            salesInfo.SerialNumbers = null;
+                        }
+                        else
+                        {
+                            salesInfo.IdSerialNumber = null;
+                            salesInfo.SerialNumbers = null;
+                        }
+                    }
+                    SalesReports.Add(obj);
+                    await SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            }
+        }
+
+        public async Task UpdateAsync(SalesReports obj)
         {
             throw new NotImplementedException();
         }
 
-        public override async Task UpdateAsync(SalesReports obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override async Task DeleteAsync(int objId)
+        public async Task DeleteAsync(int objId)
         {
             throw new NotImplementedException();
         }

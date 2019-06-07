@@ -23,11 +23,13 @@ namespace RulezzClient
             moduleCatalog.AddModule<ProductModul.ProductModul>();
             moduleCatalog.AddModule<PurchaseGoodsModul.PurchaseGoodsModul>();
             moduleCatalog.AddModule<PropertiesModul.PropertiesModul>();
-            moduleCatalog.AddModule<SupplierModul.SupplierModul>();
+            moduleCatalog.AddModule<CounterpartyModul.CounterpartiesModul>();
             moduleCatalog.AddModule<RevaluationProductsModul.RevaluationProductsModul>();
             moduleCatalog.AddModule<UnitStoragesModul>();
             moduleCatalog.AddModule<WarrantyPeriodsModul.WarrantyPeriodsModul>();
             moduleCatalog.AddModule<CashierWorkplaceModul.CashierWorkplaceModul>();
+            moduleCatalog.AddModule<WarrantyModul.WarrantyModul>();
+            moduleCatalog.AddModule<ReportModul.ReportModul>();
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -7,145 +6,78 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using ModelModul;
+using ModelModul.Counterparty;
 using ModelModul.ExchangeRate;
+using ModelModul.Product;
 using ModelModul.PurchaseGoods;
 using ModelModul.Store;
-using ModelModul.Supplier;
 using Prism.Commands;
 using Prism.Interactivity.InteractionRequest;
 using Prism.Mvvm;
+using Prism.Regions;
 
 namespace PurchaseGoodsModul.ViewModels
 {
-    public class RevaluationProductsFromPurchase: BindableBase
+    public class PurchaseGoodsViewModel: BindableBase, INavigationAware
     {
         #region Properties
 
-        private RevaluationProducts _revaluationProducts;
-        public RevaluationProducts RevaluationProducts
-        {
-            get => _revaluationProducts;
-            set
-            {
-                _revaluationProducts = value;
-                if(_revaluationProducts != null) _revaluationProducts.PropertyChanged += (sender, args) => RaisePropertyChanged();
-                RaisePropertyChanged();
-            }
-        }
+        private string _barcode;
 
-        private ExchangeRates _exchangeRate;
-        public ExchangeRates ExchangeRate
-        {
-            get => _exchangeRate;
-            set
-            {
-                _exchangeRate = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private decimal _purchasePrice;
-        public decimal PurchasePrice
-        {
-            get => _purchasePrice;
-            set
-            {
-                _purchasePrice = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private bool _isNotRevaluation;
-        public bool IsNotRevaluation
-        {
-            get => _isNotRevaluation;
-            set
-            {
-                _isNotRevaluation = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        #endregion
-    }
-
-    public class PurchaseGoodsViewModel: BindableBase
-    {
-        #region Properties
-
-        private readonly DbSetStores _dbSetStores = new DbSetStores();
-        private readonly DbSetSuppliers _dbSetSuppliers = new DbSetSuppliers();
-        private readonly DbSetExchangeRates _dbSetExchangeRates = new DbSetExchangeRates();
+        private readonly IRegionManager _regionManager;
 
         private PurchaseReports _report = new PurchaseReports();
-        private ObservableCollection<RevaluationProductsFromPurchase> _revaluationProducts = new ObservableCollection<RevaluationProductsFromPurchase>();
 
-        public ObservableCollection<RevaluationProductsFromPurchase> RevaluationProducts
+        private ObservableCollection<PurchaseInfosViewModel> _purchaseInfos = new ObservableCollection<PurchaseInfosViewModel>();
+        public ObservableCollection<PurchaseInfosViewModel> PurchaseInfos
         {
-            get => _revaluationProducts;
+            get => _purchaseInfos;
+            set => SetProperty(ref _purchaseInfos, value);
+        }
+
+        private ObservableCollection<Stores> _stores = new ObservableCollection<Stores>();
+        public ObservableCollection<Stores> Stores
+        {
+            get => _stores;
             set
             {
-                _revaluationProducts = value;
-                RaisePropertyChanged();
+                SetProperty(ref _stores, value);
+                SelectedStore = Stores.FirstOrDefault();
             }
         }
 
-        private bool _allIsChecked;
-        public bool AllIsChecked
+        private ObservableCollection<Counterparties> _suppliers = new ObservableCollection<Counterparties>();
+        public ObservableCollection<Counterparties> Suppliers
         {
-            get => _allIsChecked;
+            get => _suppliers;
             set
             {
-                _allIsChecked = value;
-                RaisePropertyChanged();
-                foreach (var rev in RevaluationProducts)
-                {
-                    rev.IsNotRevaluation = _allIsChecked;
-                }
+                SetProperty(ref _suppliers, value);
+                SelectedSupplier = Suppliers.FirstOrDefault();
             }
         }
 
-        public ObservableCollection<PurchaseInfos> PurchaseInfos => _report.PurchaseInfos as ObservableCollection<PurchaseInfos>;
-        public ObservableCollection<Stores> Stores => _dbSetStores.List;
-        public ObservableCollection<Suppliers> Suppliers => _dbSetSuppliers.List;
-        public ObservableCollection<ExchangeRates> ExchangeRates => _dbSetExchangeRates.List;
+        private ObservableCollection<ExchangeRates> _exchangeRates = new ObservableCollection<ExchangeRates>();
+        public ObservableCollection<ExchangeRates> ExchangeRates
+        {
+            get => _exchangeRates;
+            set => SetProperty(ref _exchangeRates, value);
+        }
 
-        public bool IsEnabled
+        public bool IsValidate
         {
             get
             {
                 if(PurchaseInfos.Count == 0) return false;
                 foreach (var purchaseInfo in PurchaseInfos)
                 {
-                    if (purchaseInfo.ExchangeRates.Title == "USD" && _report.Course <= 0) return false;
+                    if (purchaseInfo.ExchangeRate.Title == "USD" && _report.Course <= 0) return false;
 
-                    if (purchaseInfo.Count == 0 || purchaseInfo.PurchasePrice <= 0) return false;
-
-                    if(purchaseInfo.Products == null) continue;
-                    foreach (var serialNumber in purchaseInfo.Products.SerialNumbers)
-                    {
-                        if(string.IsNullOrEmpty(serialNumber.Value)) return false;
-                    }
+                    if(!purchaseInfo.IsValidate) return false;
                 }
-
-                foreach (var revaluationProduct in RevaluationProducts)
-                {
-                    if (revaluationProduct.RevaluationProducts.NewSalesPrice <= 0 && !revaluationProduct.IsNotRevaluation) return false;
-                }
-
                 return true;
-            }
-        }
-
-        private bool _isRevaluationProducts;
-        public bool IsRevaluationProducts
-        {
-            get => _isRevaluationProducts;
-            set
-            {
-                _isRevaluationProducts = value;
-                RaisePropertyChanged();
             }
         }
 
@@ -156,16 +88,18 @@ namespace PurchaseGoodsModul.ViewModels
             {
                 _report.Stores = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged("IsValidate");
             }
         }
 
-        public Suppliers SelectedSuppliers
+        public Counterparties SelectedSupplier
         {
-            get => _report.Suppliers;
+            get => _report.Counterparties;
             set
             {
-                _report.Suppliers = value;
+                _report.Counterparties = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged("IsValidate");
             }
         }
 
@@ -176,10 +110,32 @@ namespace PurchaseGoodsModul.ViewModels
             {
                 _report.Course = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged("IsValidate");
                 PurchaseInfosViewModelPropertyChanged(this, new PropertyChangedEventArgs("Course"));
             }
         }
 
+        public decimal Total
+        {
+            get
+            {
+                decimal total = 0;
+                foreach (var purchaseInfo in PurchaseInfos)
+                {
+                    if (purchaseInfo.ExchangeRate.Title == "ГРН")
+                    {
+                        total += purchaseInfo.PurchasePrice * (decimal)purchaseInfo.Count;
+                    }
+                    else
+                    {
+                        total += purchaseInfo.PurchasePrice * (decimal)purchaseInfo.Count * Course;
+                    }
+                }
+
+                return total;
+            }
+        }
+        
         public string TextInfo
         {
             get => _report.TextInfo;
@@ -187,6 +143,7 @@ namespace PurchaseGoodsModul.ViewModels
             {
                 _report.TextInfo = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged("IsValidate");
             }
         }
 
@@ -195,175 +152,54 @@ namespace PurchaseGoodsModul.ViewModels
         public DelegateCommand AddProductCommand { get; }
         public DelegateCommand PurchaseInvoiceCommand { get; }
         public DelegateCommand<Collection<object>> DeleteProductCommand { get; }
+        public DelegateCommand<KeyEventArgs> ListenKeyboardCommand { get; }
 
         #endregion
 
-        public PurchaseGoodsViewModel()
+        public PurchaseGoodsViewModel(IRegionManager regionManager)
         {
-            LoadAsync();
+            _regionManager = regionManager;
             AddProductPopupRequest = new InteractionRequest<INotification>();
-            PurchaseInvoiceCommand = new DelegateCommand(PurchaseInvoice).ObservesCanExecute(() => IsEnabled);
+            PurchaseInvoiceCommand = new DelegateCommand(PurchaseInvoice).ObservesCanExecute(() => IsValidate);
             AddProductCommand = new DelegateCommand(AddProduct);
-            RevaluationProducts.CollectionChanged += OnRevaluationProductsCollectionChanged;
             DeleteProductCommand = new DelegateCommand<Collection<object>>(DeleteProduct);
+            ListenKeyboardCommand = new DelegateCommand<KeyEventArgs>(ListenKeyboard);
+            PurchaseInfos.CollectionChanged += OnPurchaseInfosCollectionChanged;
             NewReport();
         }
 
         #region PropertyChanged
-
-        private void OnRevaluationProductsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (RevaluationProductsFromPurchase item in e.OldItems)
-                    {
-                        //Removed items
-                        item.PropertyChanged -= RevaluationProductsViewModelPropertyChanged;
-                    }
-                    if (RevaluationProducts.Count == 0) IsRevaluationProducts = false;
-                    break;
-                case NotifyCollectionChangedAction.Add:
-                    foreach (RevaluationProductsFromPurchase item in e.NewItems)
-                    {
-                        //Added items
-                        item.PropertyChanged += RevaluationProductsViewModelPropertyChanged;
-                    }
-                    break;
-            }
-
-            RaisePropertyChanged("IsEnabled");
-        }
 
         private void OnPurchaseInfosCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Remove:
-                    foreach (PurchaseInfos item in e.OldItems)
+                    foreach (PurchaseInfosViewModel item in e.OldItems)
                     {
                         //Removed items
-                        (item.Products.SerialNumbers as ObservableCollection<SerialNumbers>).CollectionChanged -=
-                            OnSerialNumbersCollectionChanged;
                         item.PropertyChanged -= PurchaseInfosViewModelPropertyChanged;
-                        RevaluationProductsFromPurchase rev = RevaluationProducts.FirstOrDefault(ob => ob.RevaluationProducts.IdProduct == item.IdProduct);
-                        RevaluationProducts.Remove(rev);
                     }
-
-                    if (RevaluationProducts.Count == 0) IsRevaluationProducts = false;
                     break;
                 case NotifyCollectionChangedAction.Add:
-                    foreach (PurchaseInfos item in e.NewItems)
+                    foreach (PurchaseInfosViewModel item in e.NewItems)
                     {
-                        (item.Products.SerialNumbers as ObservableCollection<SerialNumbers>).CollectionChanged +=
-                            OnSerialNumbersCollectionChanged;
-                        //Added items
+                       //Added items
                         item.PropertyChanged += PurchaseInfosViewModelPropertyChanged;
                     }
                     break;
             }
-            RaisePropertyChanged("IsEnabled");
-        }
-
-        private void OnSerialNumbersCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (SerialNumbers item in e.OldItems)
-                    {
-                        //Removed items
-                        item.PropertyChanged -= SerialNumbersViewModelPropertyChanged;
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Add:
-                    foreach (SerialNumbers item in e.NewItems)
-                    {
-                        //Added items
-                        item.PropertyChanged += SerialNumbersViewModelPropertyChanged;
-                    }
-
-                    break;
-            }
-
-            RaisePropertyChanged("IsEnabled");
-        }
-
-        private void RevaluationProductsViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            RaisePropertyChanged("RevaluationProducts");
-            RaisePropertyChanged("IsEnabled");
-        }
-
-        private void SerialNumbersViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            RaisePropertyChanged("IsEnabled");
+            _barcode = "";
+            RaisePropertyChanged("IsValidate");
+            RaisePropertyChanged("Total");
         }
 
         private void PurchaseInfosViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            foreach (var purchaseInfo in PurchaseInfos)
-            {
-                if (purchaseInfo.Products.WarrantyPeriods.Period != "Нет")
-                {
-                    while (purchaseInfo.Count > purchaseInfo.Products.SerialNumbers.Count)
-                    {
-                        purchaseInfo.Products.SerialNumbers.Add(new SerialNumbers { IdProduct = purchaseInfo.Products.Id });
-                    }
-                    while (purchaseInfo.Count < purchaseInfo.Products.SerialNumbers.Count)
-                    {
-                        SerialNumbers sr = purchaseInfo.Products.SerialNumbers.FirstOrDefault(ser => string.IsNullOrEmpty(ser.Value)) ??
-                                           purchaseInfo.Products.SerialNumbers.First();
-                        purchaseInfo.Products.SerialNumbers.Remove(sr);
-                    }
-                }
-
-                if ((double)(purchaseInfo.Products.PurchasePrice - purchaseInfo.PurchasePrice) <= 0.001 &&
-                    purchaseInfo.Products.ExchangeRates.Id == purchaseInfo.ExchangeRates.Id)
-                {
-                    if (purchaseInfo.Products.SalesPrice != 0)
-                    {
-                        if (RevaluationProducts.Count(
-                                rev => rev.RevaluationProducts.IdProduct == purchaseInfo.IdProduct) != 0)
-                        {
-                            int idx = RevaluationProducts.IndexOf(RevaluationProducts.FirstOrDefault(rev =>
-                                rev.RevaluationProducts.IdProduct == purchaseInfo.IdProduct));
-                            RevaluationProducts.RemoveAt(idx);
-                        }
-                        continue;
-                    }
-                    
-                }
-                if (RevaluationProducts.Count(rev => rev.RevaluationProducts.IdProduct == purchaseInfo.IdProduct) == 0)
-                {
-                    RevaluationProducts.Add(new RevaluationProductsFromPurchase
-                    {
-                        ExchangeRate = purchaseInfo.ExchangeRates,
-                        IsNotRevaluation = false,
-                        PurchasePrice = purchaseInfo.PurchasePrice,
-                        RevaluationProducts = new RevaluationProducts
-                        {
-                            IdProduct = purchaseInfo.IdProduct,
-                            OldSalesPrice = purchaseInfo.Products.SalesPrice,
-                            Products = purchaseInfo.Products
-                        }
-                    });
-                }
-                else
-                {
-                    int idx = RevaluationProducts.IndexOf(RevaluationProducts.FirstOrDefault(rev =>
-                        rev.RevaluationProducts.IdProduct == purchaseInfo.IdProduct));
-                    if (idx >= 0)
-                    {
-                        RevaluationProducts[idx].PurchasePrice = purchaseInfo.PurchasePrice;
-                        RevaluationProducts[idx].ExchangeRate = purchaseInfo.ExchangeRates;
-                    }
-                }
-                IsRevaluationProducts = true;
-            }
-            RaisePropertyChanged("IsEnabled");
+            _barcode = "";
+            RaisePropertyChanged("IsValidate");
             RaisePropertyChanged("PurchaseInfos");
-            RaisePropertyChanged("RevaluationProducts");
+            RaisePropertyChanged("Total");
         }
 
         #endregion
@@ -372,13 +208,13 @@ namespace PurchaseGoodsModul.ViewModels
         {
             try
             {
-                await _dbSetStores.LoadAsync();
-                RaisePropertyChanged("Stores");
-                await _dbSetExchangeRates.LoadAsync();
+                DbSetStores dbSetStores = new DbSetStores();
+                Stores = await dbSetStores.LoadAsync();
+                DbSetExchangeRates dbSetExchange = new DbSetExchangeRates();
+                ExchangeRates = await dbSetExchange.LoadAsync();
                 RaisePropertyChanged("ExchangeRates");
-                await _dbSetSuppliers.LoadAsync();
-                RaisePropertyChanged("Suppliers");
-                Course = _dbSetExchangeRates.List.First(e => e.Title == "USD").Course;
+                DbSetCounterparties dbSetSuppliers = new DbSetCounterparties();
+                Suppliers = await dbSetSuppliers.LoadAsync(TypeCounterparties.Suppliers);
             }
             catch (Exception ex)
             {
@@ -386,20 +222,25 @@ namespace PurchaseGoodsModul.ViewModels
             }
         }
 
-        private void NewReport()
+        private async void NewReport()
         {
-            _report = new PurchaseReports
-            {
-                PurchaseInfos = new ObservableCollection<PurchaseInfos>()
-            };
-            RevaluationProducts.Clear();
-            PurchaseInfos.CollectionChanged += OnPurchaseInfosCollectionChanged;
-            Course = _dbSetExchangeRates.List.FirstOrDefault(e => e.Title == "USD") != null ? _dbSetExchangeRates.List.First(e => e.Title == "USD").Course : 0;
+            await LoadAsync();
+            _report = new PurchaseReports();
+            SelectedStore = Stores.FirstOrDefault();
+            SelectedSupplier = Suppliers.FirstOrDefault();
+            PurchaseInfos.Clear();
+            Course = ExchangeRates.FirstOrDefault(e => e.Title == "USD")?.Course ?? 0;
             RaisePropertyChanged("PurchaseInfos");
+            RaisePropertyChanged("TextInfo");
             RaisePropertyChanged("Course");
-            RaisePropertyChanged("IsEnabled");
-            RaisePropertyChanged("RevaluationProducts");
-            IsRevaluationProducts = false;
+            RaisePropertyChanged("Total");
+        }
+
+        private void Navigate(List<Products> revaluationProducts)
+        {
+            NavigationParameters navigationParameters =
+                new NavigationParameters {{"RevaluationProducts", revaluationProducts}};
+            _regionManager.RequestNavigate("ContentRegion", "RevaluationProductsView", navigationParameters);
         }
 
         #region DelegateCommand
@@ -412,17 +253,35 @@ namespace PurchaseGoodsModul.ViewModels
                 MessageBoxResult.Yes) return;
             try
             {
-                DbSetPurchaseGoods dbSetPurchase = new DbSetPurchaseGoods();
-                List<RevaluationProducts> revaluationProducts = new List<RevaluationProducts>();
-                foreach (var revaluationProduct in RevaluationProducts)
+                _report.PurchaseInfos = new List<PurchaseInfos>();
+                foreach (var purchaseInfo in PurchaseInfos)
                 {
-                    if (!revaluationProduct.IsNotRevaluation)
-                    {
-                        revaluationProducts.Add(revaluationProduct.RevaluationProducts);
-                    }
+                    _report.PurchaseInfos.Add(purchaseInfo.PurchaseInfo);
+                    ((List<PurchaseInfos>) _report.PurchaseInfos)[_report.PurchaseInfos.Count-1].Products =
+                        (Products) purchaseInfo.Product.Clone();
                 }
-                await dbSetPurchase.AddAsync((PurchaseReports)_report.Clone(), revaluationProducts);
+                DbSetPurchaseGoods dbSet = new DbSetPurchaseGoods();
+                await dbSet.AddAsync((PurchaseReports)_report.Clone());
                 MessageBox.Show("Отчет о закупке добавлен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                if (PurchaseInfos.FirstOrDefault(objPr =>
+                        objPr.Product.SalesPrice == 0 ||
+                        Math.Abs(objPr.PurchasePrice - objPr.PurchasePriceOld) > (decimal) 0.01 ||
+                        objPr.ExchangeRate.Id != objPr.ExchangeRateOld.Id) != null) 
+                {
+                    if (MessageBox.Show(
+                            "Есть товар на который изменилась цена закупки. Вы хотите переоценить этот товар?",
+                            "Вопрос", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
+                        MessageBoxResult.Yes)
+                    {
+                        NewReport();
+                        return;
+                    }
+                    List<Products> revaluationProducts = PurchaseInfos
+                        .Where(objPr =>
+                            Math.Abs(objPr.PurchasePrice - objPr.PurchasePriceOld) > (decimal) 0.01 ||
+                            objPr.ExchangeRate.Id != objPr.ExchangeRateOld.Id).Select(objPr => objPr.Product).ToList();
+                    Navigate(revaluationProducts);
+                }
                 NewReport();
             }
             catch (Exception ex)
@@ -438,45 +297,110 @@ namespace PurchaseGoodsModul.ViewModels
 
         private void DeleteProduct(Collection<object> obj)
         {
-            List<PurchaseInfos> list = obj.Cast<PurchaseInfos>().ToList();
+            List<PurchaseInfosViewModel> list = obj.Cast<PurchaseInfosViewModel>().ToList();
             list.ForEach(item => PurchaseInfos.Remove(item));
-            RaisePropertyChanged("PurchaseInfos");
         }
 
         private void Callback(INotification obj)
         {
-            if(obj.Content == null) return;
-            foreach (Products product in (IEnumerable)obj.Content)
+            if(!(obj.Content is Products)) return;
+            try
             {
-                if(PurchaseInfos.Count(p => p.Products.Id == product.Id) != 0) continue;
-                PurchaseInfos.Add(new PurchaseInfos
+                AddProduct((Products)obj.Content);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private async void ListenKeyboard(KeyEventArgs obj)
+        {
+            if (obj.Key >= Key.D0 && obj.Key <= Key.D9)
+            {
+                _barcode += obj.Key.ToString()[1].ToString();
+            }
+            else if (obj.Key >= Key.A && obj.Key <= Key.Z)
+            {
+                _barcode += obj.Key.ToString();
+            }
+            else if (obj.Key == Key.Enter)
+            {
+                try
                 {
-                    Products = new Products
+                    if(string.IsNullOrEmpty(_barcode) || _barcode.Length < 8 || _barcode.Length > 13)
                     {
-                        Barcode = product.Barcode,
-                        Groups = product.Groups,
-                        ExchangeRates = product.ExchangeRates,
-                        Id = product.Id,
-                        IdExchangeRate = product.IdExchangeRate,
-                        IdGroup = product.IdGroup,
-                        IdUnitStorage = product.IdUnitStorage,
-                        IdWarrantyPeriod = product.IdWarrantyPeriod,
-                        PurchasePrice = product.PurchasePrice,
-                        SalesPrice = product.SalesPrice,
-                        VendorCode = product.VendorCode,
-                        UnitStorages = product.UnitStorages,
-                        WarrantyPeriods = product.WarrantyPeriods,
-                        Title = product.Title,
-                        SerialNumbers = new ObservableCollection<SerialNumbers>()
-                    },
-                    IdProduct = product.Id,
-                    IdExchangeRate = product.IdExchangeRate,
-                    ExchangeRates = product.ExchangeRates
-                });
+                        _barcode = "";
+                        return;
+                    }
+                    DbSetProducts dbSetProducts = new DbSetProducts();
+                    Products product = await dbSetProducts.FindProductByBarcodeAsync(_barcode);
+                    if (product == null) throw new Exception("Товар не найден");
+                    AddProduct(product);
+                }
+                catch (Exception ex)
+                {
+                    _barcode = "";
+                    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                _barcode = "";
+            }
+            else
+            {
+                _barcode = "";
+            }
+        }
+
+        private async void AddProduct(Products product)
+        {
+            DbSetProducts dbSetProducts = new DbSetProducts();
+            PurchaseStruct purchaseStruct = await dbSetProducts.GetPurchasePriceAsync(product.Id);
+            PurchaseInfosViewModel purchaseInfo = PurchaseInfos.FirstOrDefault(oblPur => oblPur.PurchaseInfo.IdProduct == product.Id);
+            if (purchaseStruct?.ExchangeRate == null)
+            {
+                if (purchaseStruct == null)
+                {
+                    purchaseStruct = new PurchaseStruct{PurchasePrice = 0};
+                }
+                purchaseStruct.ExchangeRate = purchaseStruct?.ExchangeRate == null
+                    ? ExchangeRates.FirstOrDefault(objEx => objEx.Title == "ГРН")
+                    : ExchangeRates.FirstOrDefault(objEx => objEx.Id == purchaseStruct.ExchangeRate.Id);
+            }
+            PurchaseInfosViewModel temp = new PurchaseInfosViewModel
+            {
+                IdProduct = product.Id,
+                ExchangeRate = purchaseStruct.ExchangeRate,
+                IdExchangeRate = purchaseStruct.ExchangeRate.Id,
+                PurchasePrice = 0,
+                Count = 0,
+                Product = (Products)product.Clone(),
+                ExchangeRateOld = purchaseStruct.ExchangeRate,
+                PurchasePriceOld = purchaseStruct.PurchasePrice
+            };
+            if (purchaseInfo == null)
+            {
+                PurchaseInfos.Add(temp);
+            }
+            else
+            {
+                purchaseInfo.Count++;
             }
             RaisePropertyChanged("PurchaseInfos");
         }
 
         #endregion
+
+        public void OnNavigatedTo(NavigationContext navigationContext)
+        {
+        }
+
+        public bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return false;
+        }
+
+        public void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+        }
     }
 }

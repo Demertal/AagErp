@@ -1,20 +1,11 @@
-﻿using System.Collections.ObjectModel;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace ModelModul
 {
-    public abstract class DbSetModel<T>
+    public interface IDbSetModel<in T>
     {
-        private ObservableCollection<T> _list = new ObservableCollection<T>();
-
-        public virtual ObservableCollection<T> List
-        {
-            get => _list;
-            set => _list = value;
-        }
-
-        public abstract Task AddAsync(T obj);
-        public abstract Task UpdateAsync(T obj);
-        public abstract Task DeleteAsync(int objId);
+        Task AddAsync(T obj);
+        Task UpdateAsync(T obj);
+        Task DeleteAsync(int objId);
     }
 }

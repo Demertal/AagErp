@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Controls;
 using ModelModul;
 using ModelModul.WarrantyPeriod;
 using Prism.Commands;
@@ -12,21 +13,71 @@ namespace WarrantyPeriodsModul.ViewModels
     {
         #region Properties
 
-        private readonly DbSetWarrantyPeriods _dbSetWarrantyPeriods = new DbSetWarrantyPeriods();
-
-        public ObservableCollection<WarrantyPeriods> WarrantyPeriodsList => _dbSetWarrantyPeriods.List;
-
-        public DelegateCommand<object> AddWarrantyPeriodsCommand { get; }
+        public ObservableCollection<WarrantyPeriods> _warrantyPeriodsList = new ObservableCollection<WarrantyPeriods>();
+        public ObservableCollection<WarrantyPeriods> WarrantyPeriodsList
+        {
+            get => _warrantyPeriodsList;
+            set => SetProperty(ref _warrantyPeriodsList, value);
+        }
 
         public DelegateCommand<WarrantyPeriods> DeleteWarrantyPeriodsCommand { get; }
+        public DelegateCommand<DataGridCellEditEndingEventArgs> ChangeWarrantyPeriodsCommand { get; }
 
         #endregion
 
         public ShowWarrantyPeriodsViewModel()
         {
             Load();
-            AddWarrantyPeriodsCommand = new DelegateCommand<object>(AddWarrantyPeriods);
+            ChangeWarrantyPeriodsCommand = new DelegateCommand<DataGridCellEditEndingEventArgs>(ChangeWarrantyPeriods);
             DeleteWarrantyPeriodsCommand = new DelegateCommand<WarrantyPeriods>(DeleteWarrantyPeriods);
+        }
+
+        private void ChangeWarrantyPeriods(DataGridCellEditEndingEventArgs obj)
+        {
+            if (obj == null) return;
+            if (string.IsNullOrEmpty(((WarrantyPeriods)obj.Row.DataContext).Period))
+            {
+                obj.Cancel = true;
+            }
+            else
+            {
+                if (obj.Row.IsNewItem)
+                {
+                    AddWarrantyPeriods((WarrantyPeriods)obj.Row.Item);
+                }
+                else
+                {
+                    UpdateWarrantyPeriods((WarrantyPeriods)obj.Row.Item);
+                }
+            }
+        }
+
+        private async void AddWarrantyPeriods(WarrantyPeriods obj)
+        {
+            try
+            {
+                DbSetWarrantyPeriods dbSet = new DbSetWarrantyPeriods();
+                await dbSet.AddAsync(obj);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            Load();
+        }
+
+        private async void UpdateWarrantyPeriods(WarrantyPeriods obj)
+        {
+            try
+            {
+                DbSetWarrantyPeriods dbSet = new DbSetWarrantyPeriods();
+                await dbSet.UpdateAsync(obj);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            Load();
         }
 
         private async void DeleteWarrantyPeriods(WarrantyPeriods obj)
@@ -41,29 +92,8 @@ namespace WarrantyPeriodsModul.ViewModels
                 MessageBoxResult.Yes) return;
             try
             {
-                await _dbSetWarrantyPeriods.DeleteAsync(obj.Id);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            Load();
-        }
-
-        private async void AddWarrantyPeriods(object obj)
-        {
-            try
-            {
-                if (obj == null) return;
-                if (((WarrantyPeriods)obj).Id == 0)
-                {
-                    await _dbSetWarrantyPeriods.AddAsync((WarrantyPeriods)obj);
-                }
-                else
-                {
-                    await _dbSetWarrantyPeriods.UpdateAsync((WarrantyPeriods)obj);
-                }
-
+                DbSetWarrantyPeriods dbSet = new DbSetWarrantyPeriods();
+                await dbSet.DeleteAsync(obj.Id);
             }
             catch (Exception e)
             {
@@ -76,7 +106,8 @@ namespace WarrantyPeriodsModul.ViewModels
         {
             try
             {
-                await _dbSetWarrantyPeriods.LoadAsync();
+                DbSetWarrantyPeriods dbSet = new DbSetWarrantyPeriods();
+                WarrantyPeriodsList = new ObservableCollection<WarrantyPeriods>(await dbSet.LoadAsync());
                 RaisePropertyChanged("WarrantyPeriodsList");
             }
             catch (Exception e)

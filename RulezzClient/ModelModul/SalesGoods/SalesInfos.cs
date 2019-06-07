@@ -1,28 +1,23 @@
-﻿using Prism.Mvvm;
+﻿using System;
+using Prism.Mvvm;
 
 namespace ModelModul
 {
-    public partial class SalesInfos: BindableBase
+    public partial class SalesInfos: BindableBase, ICloneable
     {
-        private int _count;
-        public int Count
+        public object Clone()
         {
-            get => _count;
-            set => SetProperty(ref _count, value);
-        }
-
-        private Products _products;
-        public Products Products
-        {
-            get => _products;
-            set => SetProperty(ref _products, value);
-        }
-
-        private SerialNumbers _serialNumbers;
-        public SerialNumbers SerialNumbers
-        {
-            get => _serialNumbers;
-            set => SetProperty(ref _serialNumbers, value);
+            return new SalesInfos
+            {
+                Id = Id,
+                IdProduct = IdProduct,
+                IdSalesReport = IdSalesReport,
+                IdSerialNumber = IdSerialNumber,
+                Count = Count,
+                Products = (Products) Products.Clone(),
+                SellingPrice = SellingPrice,
+                SerialNumbers = (SerialNumbers)SerialNumbers.Clone()
+            };
         }
     }
 }

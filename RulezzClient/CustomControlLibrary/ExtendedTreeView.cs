@@ -45,7 +45,11 @@ namespace CustomControlLibrary
                 return;
             }
 
-            if (_selectedItemTv == null) return;
+            if (_selectedItemTv == null)
+            {
+                ((ExtendedTreeView)sender).Focus();
+                return;
+            }
             _selectedItemTv.IsSelected = false;
             _selectedItemTv = null;
             SetValue(SelectedItemProperty, null);

@@ -1,0 +1,28 @@
+﻿<UserControl x:Class="ReportModul.Views.RevaluationReportInfo"
+xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:interactivity="http://prismlibrary.com/"
+             xmlns:customControlLibrary="clr-namespace:CustomControlLibrary;assembly=CustomControlLibrary"
+             interactivity:ViewModelLocator.AutoWireViewModel="True"
+             VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left">
+
+    <StackPanel Orientation="Horizontal">
+        <customControlLibrary:ExtendedDataGrid ItemsSource="{Binding Path=RevaluationProductsReport.RevaluationProductsInfos, UpdateSourceTrigger=PropertyChanged}" MaxWidth="400"
+                                               IsSynchronizedWithCurrentItem="True" CanUserResizeRows="False" CanUserDeleteRows="False" CanUserAddRows="False"
+                                               CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Center" VerticalAlignment="Top"
+                                               MinHeight="200" MaxHeight="500" HorizontalAlignment="Left" SelectionMode="Single" IsReadOnly="True">
+            <DataGrid.CellStyle>
+                <Style TargetType="DataGridCell">
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                </Style>
+            </DataGrid.CellStyle>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Товар" Binding="{Binding Path=Products.Title, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Старая цена продажи" Binding="{Binding Path=OldSalesPrice, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Новая цена продажи" Binding="{Binding Path=NewSalesPrice, UpdateSourceTrigger=PropertyChanged}"/>
+            </DataGrid.Columns>
+        </customControlLibrary:ExtendedDataGrid>
+    </StackPanel>
+</UserControl>
+

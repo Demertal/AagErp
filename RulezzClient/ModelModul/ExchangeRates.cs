@@ -9,7 +9,6 @@
 
 namespace ModelModul
 {
-    using System;
     using System.Collections.Generic;
     
     public partial class ExchangeRates
@@ -17,7 +16,6 @@ namespace ModelModul
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public ExchangeRates()
         {
-            this.Products = new HashSet<Products>();
             this.PurchaseInfos = new HashSet<PurchaseInfos>();
         }
     
@@ -25,8 +23,6 @@ namespace ModelModul
         public string Title { get; set; }
         public decimal Course { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Products> Products { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PurchaseInfos> PurchaseInfos { get; set; }
     }

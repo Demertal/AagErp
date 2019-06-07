@@ -1,32 +1,85 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Controls;
 using ModelModul;
 using ModelModul.UnitStorage;
 using Prism.Commands;
 using Prism.Mvvm;
+using Prism.Regions;
 
 namespace UnitStorageModul.ViewModels
 {
-    class ShowUnitStorageViewModel : BindableBase
+    class ShowUnitStorageViewModel : BindableBase, INavigationAware
     {
         #region Properties
 
-        private readonly DbSetUnitStorages _dbSetUnitStorages = new DbSetUnitStorages();
+        public ObservableCollection<UnitStorages> _unitStoragesList = new ObservableCollection<UnitStorages>();
+        public ObservableCollection<UnitStorages> UnitStoragesList
+        {
+            get => _unitStoragesList;
+            set => SetProperty(ref _unitStoragesList, value);
+        }
 
-        public ObservableCollection<UnitStorages> UnitStoragesList => _dbSetUnitStorages.List;
-
-        public DelegateCommand<object> AddUnitStoragesCommand { get; }
 
         public DelegateCommand<UnitStorages> DeleteUnitStoragesCommand { get; }
+        public DelegateCommand<DataGridRowEditEndingEventArgs> ChangeUnitStoragesCommand { get; }
 
         #endregion
 
         public ShowUnitStorageViewModel()
         {
             Load();
-            AddUnitStoragesCommand = new DelegateCommand<object>(AddUnitStorages);
+            ChangeUnitStoragesCommand = new DelegateCommand<DataGridRowEditEndingEventArgs>(ChangeUnitStorages);
             DeleteUnitStoragesCommand = new DelegateCommand<UnitStorages>(DeleteUnitStorages);
+        }
+
+        private async void ChangeUnitStorages(DataGridRowEditEndingEventArgs obj)
+        {
+            if (obj == null) return;
+            if (string.IsNullOrEmpty(((UnitStorages)obj.Row.DataContext).Title))
+            {
+                obj.Cancel = true;
+            }
+            else
+            {
+                if (obj.Row.IsNewItem)
+                {
+                    AddUnitStorages((UnitStorages)obj.Row.Item);
+                }
+                else
+                {
+                    UpdateUnitStorages((UnitStorages)obj.Row.Item);
+                }
+            }
+        }
+
+        private async void AddUnitStorages(UnitStorages obj)
+        {
+            try
+            {
+                DbSetUnitStorages dbSet = new DbSetUnitStorages();
+                await dbSet.AddAsync(obj);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            Load();
+        }
+
+        private async void UpdateUnitStorages(UnitStorages obj)
+        {
+            try
+            {
+                DbSetUnitStorages dbSet = new DbSetUnitStorages();
+                await dbSet.UpdateAsync(obj);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            Load();
         }
 
         private async void DeleteUnitStorages(UnitStorages obj)
@@ -41,29 +94,8 @@ namespace UnitStorageModul.ViewModels
                 MessageBoxResult.Yes) return;
             try
             {
-                await _dbSetUnitStorages.DeleteAsync(obj.Id);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            Load();
-        }
-
-        private async void AddUnitStorages(object obj)
-        {
-            try
-            {
-                if (obj == null) return;
-                if (((UnitStorages)obj).Id == 0)
-                {
-                    await _dbSetUnitStorages.AddAsync((UnitStorages)obj);
-                }
-                else
-                {
-                    await _dbSetUnitStorages.UpdateAsync((UnitStorages)obj);
-                }
-                
+                DbSetUnitStorages dbSet = new DbSetUnitStorages();
+                await dbSet.DeleteAsync(obj.Id);
             }
             catch (Exception e)
             {
@@ -76,7 +108,8 @@ namespace UnitStorageModul.ViewModels
         {
             try
             {
-                await _dbSetUnitStorages.LoadAsync();
+                DbSetUnitStorages dbSet = new DbSetUnitStorages();
+                UnitStoragesList = new ObservableCollection<UnitStorages>(await dbSet.LoadAsync());
                 RaisePropertyChanged("UnitStoragesList");
             }
             catch (Exception e)
@@ -85,5 +118,18 @@ namespace UnitStorageModul.ViewModels
             }
         }
 
+        public void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            Load();
+        }
+
+        public bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return true;
+        }
+
+        public void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+        }
     }
 }

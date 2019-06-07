@@ -21,15 +21,15 @@ namespace ModelModul
         }
     
         public int Id { get; set; }
-        public System.DateTime DataOrder { get; set; }
+        public Nullable<System.DateTime> DataOrder { get; set; }
         public decimal Course { get; set; }
-        public int IdStore { get; set; }
-        public int IdSupplier { get; set; }
         public string TextInfo { get; set; }
+        public int IdStore { get; set; }
+        public int IdCounterparty { get; set; }
     
+        public virtual Counterparties Counterparties { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PurchaseInfos> PurchaseInfos { get; set; }
         public virtual Stores Stores { get; set; }
-        public virtual Suppliers Suppliers { get; set; }
     }
 }

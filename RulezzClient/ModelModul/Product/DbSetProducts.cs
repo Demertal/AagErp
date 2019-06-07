@@ -1,129 +1,139 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Data.Entity;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace ModelModul.Product
 {
-    public class DbSetProducts : DbSetModel<Products>
+    public class DbSetProducts : AutomationAccountingGoodsEntities, IDbSetModel<Products>
     {
-        public async Task LoadAsync(int idGroup, string findString)
+        public async Task<ObservableCollection<Products>> LoadAsync(int idGroup, string findString)
         {
-            using (StoreEntities db = new StoreEntities())
+            if (string.IsNullOrEmpty(findString))
             {
-
-                if (string.IsNullOrEmpty(findString))
-                {
-                    await db.Products.Where(obj => obj.IdGroup == idGroup).Include(p => p.CountProducts)
-                        .Include(p => p.ExchangeRates).Include(p => p.WarrantyPeriods).Include(p => p.UnitStorages)
-                        .Include(p => p.Groups).LoadAsync();
-                }
-                else
-                {
-                    await db.Products.Include(p => p.CountProducts)
-                        .Where(obj =>
-                            obj.Title.Contains(findString) || obj.VendorCode.Contains(findString) ||
-                            obj.Barcode.Contains(findString)).Include(p => p.ExchangeRates)
-                        .Include(p => p.WarrantyPeriods).Include(p => p.UnitStorages).Include(p => p.Groups)
-                        .LoadAsync();
-                }
-
-                List = db.Products.Local;
+                await Products.Where(obj => obj.IdGroup == idGroup).Include(p => p.CountProducts)
+                    .Include(p => p.WarrantyPeriods).Include(p => p.UnitStorages)
+                    .Include(p => p.Groups).LoadAsync();
             }
+            else
+            {
+                await Products.Include(p => p.CountProducts)
+                    .Where(obj =>
+                        obj.Title.Contains(findString) || obj.VendorCode.Contains(findString) ||
+                        obj.Barcode.Contains(findString)).Include(p => p.WarrantyPeriods)
+                    .Include(p => p.UnitStorages).Include(p => p.Groups).LoadAsync();
+            }
+
+            return Products.Local;
         }
 
-        public override async Task DeleteAsync(int id)
+        public async Task<int> CheckBarcodeAsync(string barcode)
         {
-            using (StoreEntities db = new StoreEntities())
-            {
-                using (var transaction = db.Database.BeginTransaction())
-                {
-                    try
-                    {
-                        var product = db.Products.Find(id);
-                        db.Entry(product).State = EntityState.Deleted;
-                        await db.SaveChangesAsync();
-                        transaction.Commit();
-                    }
-                    catch (Exception)
-                    {
-                        transaction.Rollback();
-                        throw;
-                    }
-                }
-            }
+            return await Products.Where(obj => obj.Barcode == barcode).CountAsync();
         }
 
-        public override async Task AddAsync(Products product)
+        public async Task<Products> FindProductByBarcodeAsync(string barcode)
         {
-            using (StoreEntities db = new StoreEntities())
-            {
-                using (var transaction = db.Database.BeginTransaction())
-                {
-                    try
-                    {
-                        if (product.Groups != null)
-                        {
-                            product.IdGroup = product.Groups.Id;
-                            product.Groups = null;
-                        }
-                        if (product.WarrantyPeriods != null)
-                        {
-                            product.IdWarrantyPeriod = product.WarrantyPeriods.Id;
-                            product.WarrantyPeriods = null;
-                        }
-                        if (product.UnitStorages != null)
-                        {
-                            product.IdUnitStorage = product.UnitStorages.Id;
-                            product.UnitStorages = null;
-                        }
-                        product.IdExchangeRate = db.ExchangeRates.Select(ex => ex.Id).FirstOrDefault();
+            return await Products.Where(obj => obj.Barcode == barcode).Include(p => p.CountProducts)
+                .Include(p => p.WarrantyPeriods).Include(p => p.UnitStorages).Include(p => p.Groups).SingleAsync();
+        }
 
-                        db.Products.Add(product);
-                        await db.SaveChangesAsync();
-                        transaction.Commit();
-                    }
-                    catch (Exception)
-                    {
-                        transaction.Rollback();
-                        throw;
-                    }
+        public async Task<Products> FindProductByIdAsync(int id)
+        {
+            return await Products.Where(obj => obj.Id == id).Include(p => p.CountProducts)
+                .Include(p => p.WarrantyPeriods).Include(p => p.UnitStorages).Include(p => p.Groups).SingleAsync();
+        }
+
+        public async Task<PurchaseStruct> GetPurchasePriceAsync(int id, int last = 0)
+        {
+            return await PurchaseInfos.Where(obj => obj.IdProduct == id).Include(obj => obj.PurchaseReports)
+                .Include(obj => obj.ExchangeRates).OrderByDescending(obj => obj.PurchaseReports.DataOrder.Value.Year)
+                .ThenByDescending(obj => obj.PurchaseReports.DataOrder.Value.Month)
+                .ThenByDescending(obj => obj.PurchaseReports.DataOrder.Value.Day)
+                .ThenByDescending(obj => obj.PurchaseReports.Id).Skip(last).Select(obj =>
+                    new PurchaseStruct { PurchasePrice = obj.PurchasePrice, ExchangeRate = obj.ExchangeRates })
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<ObservableCollection<string>> GetCountProduct(int id)
+        {
+            await CountProducts.Where(objCt => objCt.IdProduct == id).Include(objCt => objCt.Stores).LoadAsync();
+            ObservableCollection<string> temp = new ObservableCollection<string>();
+            foreach (var countProduct in CountProducts.Local)
+            {
+                temp.Add(countProduct.Stores.Title + ": " + countProduct.Count.ToString(CultureInfo.InvariantCulture));
+            }
+            return temp;
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            using (var transaction = Database.BeginTransaction())
+            {
+                try
+                {
+                    var product = Products.Find(id);
+                    Entry(product).State = EntityState.Deleted;
+                    await SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
                 }
             }
         }
 
-        public override async Task UpdateAsync(Products product)
+        public async Task AddAsync(Products product)
         {
-            using (StoreEntities db = new StoreEntities())
+            using (var transaction = Database.BeginTransaction())
             {
-                using (var transaction = db.Database.BeginTransaction())
+                try
                 {
-                    try
-                    {
-                        if (product.Groups != null)
-                        {
-                            product.IdGroup = product.Groups.Id;
-                            product.Groups = null;
-                        }
-                        if (product.WarrantyPeriods != null)
-                        {
-                            product.IdWarrantyPeriod = product.WarrantyPeriods.Id;
-                            product.WarrantyPeriods = null;
-                        }
-                        if (product.UnitStorages != null)
-                        {
-                            product.IdUnitStorage = product.UnitStorages.Id;
-                            product.UnitStorages = null;
-                        }
-                        db.Entry(product).State = EntityState.Modified;
-                        await db.SaveChangesAsync();
-                        transaction.Commit();
-                    }
-                    catch (Exception)
-                    {
-                        transaction.Rollback();
-                        throw;
-                    }
+                    Products.Add(product);
+                    await SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            }
+        }
+
+        public async Task UpdateAsync(Products product)
+        {
+            using (var transaction = Database.BeginTransaction())
+            {
+                try
+                {
+                    Products temp = Products.Find(product.Id);
+                    if (temp == null) throw new Exception("Изменение не удалось");
+                    temp.IdGroup = product.Groups?.Id ?? product.IdGroup;
+                    temp.IdWarrantyPeriod = product.WarrantyPeriods?.Id ?? product.IdWarrantyPeriod;
+                    temp.IdUnitStorage = product.UnitStorages?.Id ?? product.IdUnitStorage;
+                    temp.Groups = null;
+                    temp.CountProducts = product.CountProducts;
+                    temp.WarrantyPeriods = null;
+                    temp.UnitStorages = null;
+                    temp.Barcode = product.Barcode;
+                    temp.Title = product.Title;
+                    temp.VendorCode = product.VendorCode;
+                    temp.PropertyProducts = null;
+                    temp.PurchaseInfos = null;
+                    temp.RevaluationProductsInfos = null;
+                    Entry(temp).State = EntityState.Modified;
+                    await SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
                 }
             }
         }

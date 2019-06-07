@@ -51,7 +51,7 @@ namespace GenerationBarcodeLibrary
             using (var graphics = Graphics.FromImage(resultImage))
             using (var font = new Font("Consolas", 10))
             using (var brush = new SolidBrush(Color.Black))
-            using (var format = new StringFormat()
+            using (var format = new StringFormat
             {
                 Alignment = StringAlignment.Center, // Also, horizontally centered text, as in your example of the expected output
                 LineAlignment = StringAlignment.Far

@@ -1,13 +1,13 @@
 USE [master]
 GO
 
-DROP DATABASE IF EXISTS Store
+DROP DATABASE IF EXISTS AutomationAccountingGoods
 GO
 
-CREATE DATABASE Store
+CREATE DATABASE AutomationAccountingGoods
 GO
 
-USE Store
+USE AutomationAccountingGoods
 
 /*
 * ExchangeRate таблица валют
@@ -71,9 +71,7 @@ GO
 * Title наименование товара
 * VendorCode код производителя
 * Barcode штрихкод
-* PurchasePrice закупочная цена
 * SalesPrice цена продажи
-* IdExchangeRate id валюты для закупочной цены
 * IdWarrantyPeriod id гарантийного срока
 * IdGroup id группы
 */
@@ -82,14 +80,11 @@ CREATE TABLE Products(
 	Title NVARCHAR(120) NOT NULL CHECK(Title !='') UNIQUE,
 	VendorCode NVARCHAR(20) NULL,
 	Barcode NVARCHAR(13) NULL UNIQUE,
-	PurchasePrice MONEY NOT NULL DEFAULT 0 CHECK(PurchasePrice >= 0),
 	SalesPrice MONEY NOT NULL DEFAULT 0 CHECK(SalesPrice >= 0),	
-	IdExchangeRate INT NOT NULL,
 	IdWarrantyPeriod INT NOT NULL,
 	IdGroup INT NOT NULL,
 	IdUnitStorage INT NOT NULL,
-	FOREIGN KEY (IdUnitStorage) REFERENCES UnitStorages (Id),	
-	FOREIGN KEY (IdExchangeRate) REFERENCES ExchangeRates (Id),
+	FOREIGN KEY (IdUnitStorage) REFERENCES UnitStorages (Id),
 	FOREIGN KEY (IdWarrantyPeriod) REFERENCES WarrantyPeriods (Id),
 	FOREIGN KEY (IdGroup) REFERENCES Groups (Id)
 )
@@ -104,7 +99,7 @@ CREATE TABLE PropertyNames(
 	Id INT PRIMARY KEY IDENTITY,
 	Title NVARCHAR(20) NOT NULL CHECK(Title !=''),
 	IdGroup INT NOT NULL,
-	FOREIGN KEY (IdGroup) REFERENCES Groups (Id),
+	FOREIGN KEY (IdGroup) REFERENCES Groups (Id) ON DELETE CASCADE,
 	CONSTRAINT UQ_PropertyName_TitleIdGroup UNIQUE (Title, IdGroup)
 )
 GO
@@ -118,7 +113,7 @@ CREATE TABLE PropertyValues(
 	Id INT PRIMARY KEY IDENTITY,
 	Value NVARCHAR(50) NOT NULL,
 	IdPropertyName INT NOT NULL,
-	FOREIGN KEY (IdPropertyName) REFERENCES PropertyNames (Id),
+	FOREIGN KEY (IdPropertyName) REFERENCES PropertyNames (Id) ON DELETE CASCADE,
 	CONSTRAINT UQ_PropertyValue_ValueIdPropertyName UNIQUE (Value, IdPropertyName)
 )
 GO
@@ -126,25 +121,38 @@ GO
 /*
 * PropertyProduct таблица значений параметров товара
 * IdProduct id продукта
+* IdPropertyName id параметра
 * IdPropertyValue id значения параметра
 */
 CREATE TABLE PropertyProducts(
 	Id INT PRIMARY KEY IDENTITY,
 	IdProduct INT NOT NULL,
-	IdPropertyValue INT NOT NULL,
-	FOREIGN KEY (IdProduct) REFERENCES Products (Id),
+	IdPropertyName INT NOT NULL,
+	IdPropertyValue INT DEFAULT NULL,
+	FOREIGN KEY (IdProduct) REFERENCES Products (Id) ON DELETE CASCADE,
+	FOREIGN KEY (IdPropertyName) REFERENCES PropertyNames (Id) ON DELETE CASCADE,
 	FOREIGN KEY (IdPropertyValue) REFERENCES PropertyValues (Id),
-	CONSTRAINT UQ_PropertyProduct_IdProductIdPropertyValue UNIQUE (IdProduct, IdPropertyValue)
+	CONSTRAINT UQ_PropertyProduct_IdProductIdPropertyName UNIQUE (IdProduct, IdPropertyName)
 )
 GO
 
 /*
-* Supplier таблица поставщиков
-* Title поставщик
+* Сounterparties таблица контрагентов
+* Title наименование организации
+* СontactPerson контактное лицо
+* Props реквезиты
+* Address адрес
+* WhoIsIt кто это 0 - поставщик, 1 - покупатель
 */
-CREATE TABLE Suppliers(
+CREATE TABLE Counterparties(
 	Id INT PRIMARY KEY IDENTITY,
-	Title NVARCHAR(20) NOT NULL UNIQUE
+	Title NVARCHAR(40) NOT NULL,
+	ContactPerson NVARCHAR(40) NULL,
+	ContactPhone NVARCHAR(50) NULL,
+	Props NVARCHAR(40) NULL,
+	Address NVARCHAR(40) NULL,
+	WhoIsIt BIT NOT NULL
+	CONSTRAINT UQ_Title_WhoIsIt UNIQUE (Title, WhoIsIt)
 )
 GO
 
@@ -157,13 +165,13 @@ GO
 */
 CREATE TABLE PurchaseReports(
 	Id INT PRIMARY KEY IDENTITY,
-	DataOrder DATE NOT NULL,
+	DataOrder DATE NULL,
 	Course MONEY NOT NULL CHECK(Course >= 0),
 	TextInfo NVARCHAR(50), 
 	IdStore INT NOT NULL,
-	IdSupplier INT NOT NULL,
+	IdCounterparty INT NOT NULL,
 	FOREIGN KEY (IdStore) REFERENCES Stores (Id),
-	FOREIGN KEY (IdSupplier) REFERENCES Suppliers (Id)
+	FOREIGN KEY (IdCounterparty) REFERENCES Counterparties (Id)
 )
 GO
 
@@ -194,32 +202,32 @@ GO
 * SelleDate дата продажи
 * PurchaseDate дата покупки
 * IdProduct id продукта
-* IdSupplier id поставщика
+* IdCounterparty id поставщика
 */
 CREATE TABLE SerialNumbers(
 	Id INT PRIMARY KEY IDENTITY,
 	Value VARCHAR(20) NOT NULL CHECK (Value != ''),
 	SelleDate DATE NULL,	
-	PurchaseDate DATE NOT NULL,
+	PurchaseDate DATE NULL,
 	IdProduct INT NOT NULL,
-	IdSupplier INT NOT NULL,
-	FOREIGN KEY (IdSupplier) REFERENCES Suppliers (Id),
+	IdCounterparty INT NOT NULL,
+	FOREIGN KEY (IdCounterparty) REFERENCES Counterparties (Id),
 	FOREIGN KEY (IdProduct) REFERENCES Products (Id) 
 )
 GO
 
 /*
 * SalesReport таблица отчетов о продаже
-* Сourse курс
 * DataSales дата продажи
 * IdStore id магазина
 */
 CREATE TABLE SalesReports(
 	Id INT PRIMARY KEY IDENTITY,
-	Course MONEY NOT NULL CHECK(Course >= 0),
-	DataSales DATE NOT NULL,
+	DataSales DATE NULL,
 	IdStore INT NOT NULL,
-	FOREIGN KEY (IdStore) REFERENCES Stores (Id)
+	IdCounterparty INT NOT NULL,
+	FOREIGN KEY (IdStore) REFERENCES Stores (Id),
+	FOREIGN KEY (IdCounterparty) REFERENCES Counterparties (Id)
 )
 GO
 
@@ -251,30 +259,42 @@ GO
 * DateDeparture дата отправки
 * DateIssue дата выдачи
 * Info инфо о покупателе
-* IdSupplier id поставщика
 * IdSerialNumber id серийного номера
 */
 CREATE TABLE Warranties(
 	Id INT PRIMARY KEY IDENTITY,
 	Malfunction NVARCHAR(256) NOT NULL CHECK (Malfunction != ''),
-	DateReceipt DATE NOT NULL,	
-	DateDeparture DATE NOT NULL,
-	DateIssue DATE NOT NULL,
+	DateReceipt DATE NULL,	
+	DateDeparture DATE NULL,
+	DateIssue DATE NULL,
 	Info NVARCHAR(256),
-	IdSupplier INT NOT NULL,
-	IdSerialNumber INT DEFAULT NULL,
-	FOREIGN KEY (IdSupplier) REFERENCES Suppliers (Id),
+	IdSerialNumber INT NOT NULL,
 	FOREIGN KEY (IdSerialNumber) REFERENCES SerialNumbers (Id)
 )
 GO
 
-CREATE TABLE RevaluationProducts(
+/*
+* RevaluationProductsReports таблица отчетов о переоценке
+* DataRevaluation дата переоценки
+*/
+CREATE TABLE RevaluationProductsReports(
+	Id INT PRIMARY KEY IDENTITY,
+	DataRevaluation DATE NULL
+)
+GO
+
+/*
+* RevaluationProductsInfos таблица информации о переоценке
+* IdProduct id продукта
+*/
+CREATE TABLE RevaluationProductsInfos(
 	Id INT PRIMARY KEY IDENTITY,
 	IdProduct INT NOT NULL,
-	Date DATE NOT NULL,
+	IdRevaluationProductsReports INT NOT NULL,
 	OldSalesPrice MONEY NOT NULL,
 	NewSalesPrice MONEY NOT NULL,
 	FOREIGN KEY (IdProduct) REFERENCES Products (Id),
+	FOREIGN KEY (IdRevaluationProductsReports) REFERENCES RevaluationProductsReports (Id)
 )
 GO
 
@@ -282,7 +302,39 @@ CREATE TABLE CountProducts(
 	IdProduct INT NOT NULL,
 	IdStore INT NOT NULL,
 	Count FLOAT NOT NULL DEFAULT 0,
-	FOREIGN KEY (IdProduct) REFERENCES Products (Id),
-	FOREIGN KEY (IdStore) REFERENCES Stores (Id)
+	FOREIGN KEY (IdProduct) REFERENCES Products (Id) ON DELETE CASCADE,
+	FOREIGN KEY (IdStore) REFERENCES Stores (Id) ON DELETE CASCADE
 )
 GO
+
+CREATE LOGIN Tester WITH PASSWORD = '12345!', DEFAULT_DATABASE = AutomationAccountingGoods;
+CREATE USER Tester FOR LOGIN Tester;  
+CREATE LOGIN Tester1 WITH PASSWORD = '12345!', DEFAULT_DATABASE = AutomationAccountingGoods;
+CREATE USER Tester1 FOR LOGIN Tester1;  
+GO  
+
+CREATE ROLE Seller
+GRANT SELECT ON Stores TO Seller
+GRANT SELECT ON UnitStorages TO Seller
+GRANT SELECT ON Groups TO Seller
+GRANT SELECT ON WarrantyPeriods TO Seller
+GRANT SELECT ON Products TO Seller
+GRANT SELECT ON PropertyNames TO Seller
+GRANT SELECT ON PropertyValues TO Seller
+GRANT SELECT ON PropertyProducts TO Seller
+GRANT SELECT ON Counterparties TO Seller
+GRANT SELECT ON SerialNumbers TO Seller
+GRANT SELECT ON Warranties TO Seller
+GRANT SELECT ON CountProducts TO Seller
+GRANT UPDATE ON SerialNumbers TO Seller
+GRANT UPDATE ON Warranties TO Seller
+GRANT UPDATE ON CountProducts TO Seller
+GRANT INSERT ON Warranties TO Seller
+GRANT INSERT ON SalesInfos TO Seller
+GRANT INSERT ON SalesReports TO Seller
+DENY SELECT ON SalesReports TO Seller
+
+CREATE SERVER ROLE db_automationAccountingGoods
+
+ALTER ROLE Seller ADD MEMBER Tester
+ALTER ROLE Seller ADD MEMBER Tester1

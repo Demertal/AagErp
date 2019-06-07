@@ -18,10 +18,10 @@ namespace ModelModul
                 Id = Id,
                 DataOrder = DataOrder,
                 IdStore = IdStore,
-                IdSupplier = IdSupplier,
+                IdCounterparty = IdCounterparty,
                 PurchaseInfos = temp,
                 Stores = Stores,
-                Suppliers = Suppliers,
+                Counterparties = Counterparties,
                 Course = Course,
                 TextInfo = TextInfo
             };

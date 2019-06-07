@@ -3,31 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:interactivity="http://prismlibrary.com/"
-             xmlns:customControlLibrary="clr-namespace:CustomControlLibrary;assembly=CustomControlLibrary"
-             xmlns:views="clr-namespace:GroupModul.Views;assembly=GroupModul"
-             xmlns:views1="clr-namespace:PropertiesModul.Views;assembly=PropertiesModul"
-             xmlns:modelModul="clr-namespace:ModelModul;assembly=ModelModul"
              interactivity:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Padding="10,5,5,10">
     <StackPanel Orientation="Horizontal" >
-        <customControlLibrary:ExtendedTreeView ItemsSource="{Binding GroupsList, UpdateSourceTrigger=PropertyChanged}" MinWidth="100">
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="SelectedItemChanged">
-                    <i:InvokeCommandAction Command="{Binding Path=SelectedGroupCommand}" CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource FindAncestor, AncestorType=customControlLibrary:ExtendedTreeView}}"/>
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
-            <customControlLibrary:ExtendedTreeView.ItemTemplate>
-                <HierarchicalDataTemplate ItemsSource="{Binding Path=Groups1}" DataType="{x:Type modelModul:Groups}" >
-                    <TextBlock Text="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}"/>
-                </HierarchicalDataTemplate>
-            </customControlLibrary:ExtendedTreeView.ItemTemplate>
-
-        </customControlLibrary:ExtendedTreeView>
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
@@ -41,29 +24,34 @@
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <Label Content="Наименование товара" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" />
-            <TextBox Text="{Binding Title,  UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Center" Height="23"
-                     TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="0" Grid.Column="2"
+            <Label Content="{Binding Path=Group}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" />
+            <Label Content="Наименование товара" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" />
+            <TextBox Text="{Binding Product.Title,  UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Center" Height="23"
+                     TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="1" Grid.Column="2"
                      HorizontalContentAlignment="Center" MinWidth="100" VerticalContentAlignment="Center" Padding="0"/>
-            <Label Content="Артикул товара" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" />
-            <TextBox Text="{Binding VendorCode,  UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Height="23" TextWrapping="Wrap"
-                     VerticalAlignment="Center" Grid.Row="1" Grid.Column="2" HorizontalContentAlignment="Center"
+            <Label Content="Артикул товара" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" />
+            <TextBox Text="{Binding Product.VendorCode,  UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Height="23" TextWrapping="Wrap"
+                     VerticalAlignment="Center" Grid.Row="2" Grid.Column="2" HorizontalContentAlignment="Center"
                      MinWidth="100" VerticalContentAlignment="Center"/>
-            <Label Content="Штрих код" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" />
-            <TextBox Text="{Binding Barcode,  UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Height="23"
-                     TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="2" Grid.Column="2" HorizontalContentAlignment="Center"
+            <Label Content="Штрих код" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Center" />
+            <Button Background="White" BorderThickness="0" Grid.Row="3" Grid.Column="1" Command="{Binding GenerateBarcodeCommand}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Button.Content>
+                    <Image Width="25" Height="25" Source="/Resources/ReloadImage.png"/>
+                </Button.Content>
+            </Button>
+            <TextBox Text="{Binding Product.Barcode,  UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Height="23"
+                     TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="3" Grid.Column="2" HorizontalContentAlignment="Center"
                      MinWidth="100" VerticalContentAlignment="Center"/>
-            <Label Content="Гарантия" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Center" />
-            <ComboBox ItemsSource="{Binding WarrantyPeriods, UpdateSourceTrigger=PropertyChanged}"
-                      SelectedItem="{Binding WarrantyPeriod, UpdateSourceTrigger=PropertyChanged}"
-                      DisplayMemberPath="Period" Grid.Column="2" HorizontalAlignment="Center" Grid.Row="4" VerticalAlignment="Center"
+            <Label Content="Гарантия" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Center" />
+            <ComboBox ItemsSource="{Binding WarrantyPeriods, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True" SelectedValuePath="Id"
+                      SelectedValue="{Binding Product.IdWarrantyPeriod, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Period" Grid.Column="2" 
+                      HorizontalAlignment="Center" Grid.Row="4" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" MinWidth="50"/>
+            <Label Content="Ед. хр." Grid.Row="5" Grid.Column="0" HorizontalAlignment="Center" />
+            <ComboBox ItemsSource="{Binding UnitStorages, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True" SelectedValuePath="Id"
+                      SelectedValue="{Binding Product.IdUnitStorage, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Title"
+                      Grid.Column="2" HorizontalAlignment="Center" Grid.Row="5" VerticalAlignment="Center"
                       HorizontalContentAlignment="Center" VerticalContentAlignment="Center" MinWidth="50"/>
-            <Label Content="Ед. хр." Grid.Row="5" Grid.Column="1" HorizontalAlignment="Center" />
-            <ComboBox ItemsSource="{Binding UnitStorages, UpdateSourceTrigger=PropertyChanged}"
-                      SelectedItem="{Binding UnitStorage, UpdateSourceTrigger=PropertyChanged}"
-                      DisplayMemberPath="Title" Grid.Column="2" HorizontalAlignment="Center" Grid.Row="5" VerticalAlignment="Center"
-                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center" MinWidth="50"/>
-            <Button Grid.Column="2" Content="Добавить" HorizontalAlignment="Center" Grid.Row="6" VerticalAlignment="Center" Width="75" Command="{Binding AddProductCommand}"/>
+            <Button Grid.Column="0" Grid.ColumnSpan="3" Content="Добавить" HorizontalAlignment="Center" Grid.Row="6" VerticalAlignment="Center" Width="75" Command="{Binding AddProductCommand}"/>
         </Grid>
     </StackPanel>
 </UserControl>

@@ -1,0 +1,43 @@
+﻿<UserControl x:Class="ReportModul.Views.ShowFinalReport"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:customcontrollibrary="clr-namespace:CustomControlLibrary;assembly=CustomControlLibrary"
+             xmlns:interactivity="http://prismlibrary.com/"
+             interactivity:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d" 
+             VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Padding="10,5,5,10">
+    <StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="Укажите диапозон времени: "/>
+            <Calendar DisplayMode="Month"/>
+        </StackPanel>
+        <customcontrollibrary:ExtendedDataGrid ItemsSource="{Binding Path=ReportList, UpdateSourceTrigger=PropertyChanged}"
+                    IsSynchronizedWithCurrentItem="True" CanUserResizeRows="False" CanUserAddRows="False" CanUserDeleteRows="False"
+                    CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Center"
+                    MinHeight="200" MaxHeight="500" SelectionMode="Single" Background="White" IsReadOnly="True">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseDoubleClick">
+                    <interactivity:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.AddCommandPurchaseGoods}" CommandParameter="{Binding ElementName=ProductData, Path=SelectedItem}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            <customcontrollibrary:ExtendedDataGrid.CellStyle>
+                <Style TargetType="DataGridCell">
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                </Style>
+            </customcontrollibrary:ExtendedDataGrid.CellStyle>
+            <customcontrollibrary:ExtendedDataGrid.Columns>
+                <DataGridTextColumn Header="Наименование"     Binding="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Артикул"          Binding="{Binding Path=VendorCode, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed"/>
+                <DataGridTextColumn Header="Штрихкод"         Binding="{Binding Path=Barcode, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed"/>
+                <DataGridTextColumn Header="Кол-во зкуп."     Binding="{Binding Path=Count, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Сумма закуп."             Binding="{Binding Path=SalesPrice, UpdateSourceTrigger=PropertyChanged, StringFormat=C, ConverterCulture='ua-UA'}"/>
+                <DataGridTextColumn Header="Кол-во прод."     Binding="{Binding Path=Count, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Сумма прод."             Binding="{Binding Path=SalesPrice, UpdateSourceTrigger=PropertyChanged, StringFormat=C, ConverterCulture='ua-UA'}"/>
+            </customcontrollibrary:ExtendedDataGrid.Columns>
+        </customcontrollibrary:ExtendedDataGrid>
+    </StackPanel>
+</UserControl>

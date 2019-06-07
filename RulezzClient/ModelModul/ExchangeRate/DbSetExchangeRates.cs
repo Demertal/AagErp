@@ -1,31 +1,36 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Data.Entity;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ModelModul.ExchangeRate
 {
-    public class DbSetExchangeRates: DbSetModel<ExchangeRates>
+    public class DbSetExchangeRates: AutomationAccountingGoodsEntities, IDbSetModel<ExchangeRates>
     {
-        public async Task LoadAsync()
+        public async Task<ObservableCollection<ExchangeRates>> LoadAsync()
         {
-            using (StoreEntities db = new StoreEntities())
-            {
-                await db.ExchangeRates.LoadAsync();
-                List = db.ExchangeRates.Local;
-            }
+            await ExchangeRates.LoadAsync();
+            return ExchangeRates.Local;
         }
 
-        public override Task AddAsync(ExchangeRates obj)
+        public async Task<ExchangeRates> LoadAsync(string title)
         {
-            throw new NotImplementedException();
+            await ExchangeRates.Where(ex => ex.Title == title).LoadAsync();
+            return ExchangeRates.Local.FirstOrDefault();
         }
 
-        public override Task UpdateAsync(ExchangeRates obj)
+        public Task AddAsync(ExchangeRates obj)
         {
             throw new NotImplementedException();
         }
 
-        public override Task DeleteAsync(int objId)
+        public Task UpdateAsync(ExchangeRates obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteAsync(int objId)
         {
             throw new NotImplementedException();
         }

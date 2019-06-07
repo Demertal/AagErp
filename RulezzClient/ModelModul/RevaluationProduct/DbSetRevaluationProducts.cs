@@ -1,75 +1,58 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data.Entity;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ModelModul.RevaluationProduct
 {
-    public class DbSetRevaluationProducts: DbSetModel<RevaluationProducts>
+    public class DbSetRevaluationProducts: AutomationAccountingGoodsEntities, IDbSetModel<RevaluationProductsReports>
     {
-        public override ObservableCollection<RevaluationProducts> List => null;
-
-        public override async Task AddAsync(RevaluationProducts obj)
+        public async Task<ObservableCollection<RevaluationProductsReports>> LoadAsync(int start, int end)
         {
-            using (StoreEntities db = new StoreEntities())
+            await RevaluationProductsReports.OrderByDescending(obj => obj.DataRevaluation)
+                .ThenByDescending(obj => obj.Id).Skip(start).Take(end).Include(obj => obj.RevaluationProductsInfos)
+                .LoadAsync();
+            return RevaluationProductsReports.Local;
+        }
+
+        public async Task<int> GetCount()
+        {
+            return await RevaluationProductsReports.CountAsync();
+        }
+
+        public async Task AddAsync(RevaluationProductsReports obj)
+        {
+            using (var transaction = Database.BeginTransaction())
             {
-                using (var transaction = db.Database.BeginTransaction())
+                try
                 {
-                    try
+                    foreach (var revaluationProductsInfo in obj.RevaluationProductsInfos)
                     {
-                        if (obj.Products != null)
+                        if (revaluationProductsInfo.Products != null)
                         {
-                            obj.IdProduct = obj.Products.Id;
-                            obj.Products = null;
+                            revaluationProductsInfo.IdProduct = revaluationProductsInfo.Products.Id;
+                            revaluationProductsInfo.Products = null;
                         }
-                        db.RevaluationProducts.Add(obj);
-                        await db.SaveChangesAsync();
-                        transaction.Commit();
                     }
-                    catch (Exception)
-                    {
-                        transaction.Rollback();
-                        throw;
-                    }
+                    RevaluationProductsReports.Add(obj);
+                    await SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
                 }
             }
         }
 
-        public async Task AddAsync(List<RevaluationProducts> obj)
-        {
-            using (StoreEntities db = new StoreEntities())
-            {
-                using (var transaction = db.Database.BeginTransaction())
-                {
-                    try
-                    {
-                        foreach (var revaluationProduct in obj)
-                        {
-                            if (revaluationProduct.Products != null)
-                            {
-                                revaluationProduct.IdProduct = revaluationProduct.Products.Id;
-                                revaluationProduct.Products = null;
-                            }
-                            db.RevaluationProducts.Add(revaluationProduct);
-                        }
-                        await db.SaveChangesAsync();
-                        transaction.Commit();
-                    }
-                    catch (Exception)
-                    {
-                        transaction.Rollback();
-                        throw;
-                    }
-                }
-            }
-        }
-
-        public override async Task UpdateAsync(RevaluationProducts obj)
+        public async Task UpdateAsync(RevaluationProductsReports obj)
         {
             throw new NotImplementedException();
         }
 
-        public override async Task DeleteAsync(int objId)
+        public async Task DeleteAsync(int objId)
         {
             throw new NotImplementedException();
         }

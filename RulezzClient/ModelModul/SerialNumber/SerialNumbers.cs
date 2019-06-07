@@ -1,8 +1,9 @@
-﻿using Prism.Mvvm;
+﻿using System;
+using Prism.Mvvm;
 
 namespace ModelModul
 {
-    public partial class SerialNumbers: BindableBase
+    public partial class SerialNumbers: BindableBase, ICloneable
     {
         private string _value;
         public string Value
@@ -13,6 +14,17 @@ namespace ModelModul
                 _value = value;
                 RaisePropertyChanged();
             }
+        }
+
+        public object Clone()
+        {
+            return new SerialNumbers
+            {
+                Id = Id,
+                IdProduct = IdProduct,
+                IdCounterparty = IdCounterparty,
+                Value = Value
+            };
         }
     }
 }

@@ -14,6 +14,10 @@ namespace CustomControlLibrary.Converters
             {
                 visibility = value.ToString() == "Нет";
             }
+            else if (value is bool)
+            {
+                visibility = !(bool)value;
+            }
             return visibility ? Visibility.Collapsed : Visibility.Visible;
         }
 

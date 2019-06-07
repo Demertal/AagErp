@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Linq;
 using System.Windows;
+using GenerationBarcodeLibrary;
 using ModelModul;
-using ModelModul.Group;
 using ModelModul.Product;
 using ModelModul.UnitStorage;
 using ModelModul.WarrantyPeriod;
@@ -16,91 +15,34 @@ namespace ProductModul.ViewModels
 {
     class AddProductViewModel : BindableBase, IInteractionRequestAware
     {
-        #region GroupProperties
-
-        private readonly DbSetGroups _groupModel = new DbSetGroups();
-
-        public ObservableCollection<Groups> GroupsList => _groupModel.List;
-
-        public DelegateCommand<Groups> SelectedGroupCommand { get; }
-
-        #endregion
-
         #region ProductProperties
 
-        private readonly DbSetWarrantyPeriods _warrantyPeriodsModel = new DbSetWarrantyPeriods();
-        private readonly DbSetUnitStorages _unitStoragesModel = new DbSetUnitStorages();
-
-        public ObservableCollection<WarrantyPeriods> WarrantyPeriods => _warrantyPeriodsModel.List;
-        public ObservableCollection<UnitStorages> UnitStorages => _unitStoragesModel.List;
-
-        private readonly Products _product = new Products();
-
-        public WarrantyPeriods WarrantyPeriod
+        private ObservableCollection<WarrantyPeriods> _warrantyPeriods = new ObservableCollection<WarrantyPeriods>();
+        public ObservableCollection<WarrantyPeriods> WarrantyPeriods
         {
-            get => _product.WarrantyPeriods;
-            set
-            {
-                _product.WarrantyPeriods = value;
-                RaisePropertyChanged();
-                RaisePropertyChanged("IsEnabled");
-            }
+            get => _warrantyPeriods;
+            set => SetProperty(ref _warrantyPeriods, value);
         }
 
-        public Groups SelectedGroup
+        private ObservableCollection<UnitStorages> _unitStorages = new ObservableCollection<UnitStorages>();
+        public ObservableCollection<UnitStorages> UnitStorages
         {
-            get => _product.Groups;
-            set
-            {
-                _product.Groups = value;
-                RaisePropertyChanged();
-                RaisePropertyChanged("IsEnabled");
-            }
+            get => _unitStorages;
+            set => SetProperty(ref _unitStorages, value);
         }
 
-        public UnitStorages UnitStorage
+        private ProductViewModel _product = new ProductViewModel();
+        public ProductViewModel Product
         {
-            get => _product.UnitStorages;
+            get => _product;
             set
             {
-                _product.UnitStorages = value;
-                RaisePropertyChanged();
-                RaisePropertyChanged("IsEnabled");
-            }
-        }
-
-        public string Title
-        {
-            get => _product.Title;
-            set
-            {
-                _product.Title = value;
-                RaisePropertyChanged();
-                RaisePropertyChanged("IsEnabled");
-            }
-        }
-
-        public string Barcode
-        {
-            get => _product.Barcode;
-            set
-            {
-                _product.Barcode = value;
+                _product = value;
                 RaisePropertyChanged();
             }
         }
 
-        public string VendorCode
-        {
-            get => _product.VendorCode;
-            set
-            {
-                _product.VendorCode = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private bool IsEnabled => Title != "" && WarrantyPeriod != null && UnitStorage != null && SelectedGroup != null;
+        public string Group => Product?.Group == null ? "Группа:" : "Группа: " + Product.Group.Title;
 
         private Confirmation _notification;
         public INotification Notification
@@ -109,40 +51,39 @@ namespace ProductModul.ViewModels
             set
             {
                 SetProperty(ref _notification, value as Confirmation);
-                Title = "";
-                Barcode = "";
-                VendorCode = "";
-                WarrantyPeriod = null;
-                UnitStorage = null;
+                Product = new ProductViewModel {Group = (Groups) _notification.Content};
+                Product.IdGroup = Product.Group.Id;
+                UnitStorages tempUnit = UnitStorages.FirstOrDefault(obj => obj.Title == "шт");
+                Product.IdUnitStorage = tempUnit?.Id ?? 0;
+                WarrantyPeriods tempPeriods = WarrantyPeriods.FirstOrDefault(obj => obj.Period == "Нет");
+                Product.IdWarrantyPeriod = tempPeriods?.Id ?? 0;
+                RaisePropertyChanged("Group");
             }
         }
 
         public Action FinishInteraction { get; set; }
 
         public DelegateCommand AddProductCommand { get; }
+        public DelegateCommand GenerateBarcodeCommand { get; }
 
         #endregion
 
         public AddProductViewModel()
         {
             LoadAsync();
-            SelectedGroupCommand = new DelegateCommand<Groups>(SelectedGroupChange);
-            AddProductCommand = new DelegateCommand(AddProduct).ObservesCanExecute(() => IsEnabled);
-            
+            Product.PropertyChanged += (o, e) => RaisePropertyChanged(e.PropertyName);
+            AddProductCommand = new DelegateCommand(AddProduct).ObservesCanExecute(() => Product.IsValidate);
+            GenerateBarcodeCommand = new DelegateCommand(GenerateBarcode);
         }
 
-        #region GroupCommands
-
-        private async Task LoadAsync()
+        private async void LoadAsync()
         {
             try
             {
-                await  _groupModel.LoadAsync();
-                RaisePropertyChanged("GroupsList");
-                await _warrantyPeriodsModel.LoadAsync();
-                RaisePropertyChanged("WarrantyPeriods");
-                await _unitStoragesModel.LoadAsync();
-                RaisePropertyChanged("UnitStorages");
+                DbSetUnitStorages dbSetUnitStorages = new DbSetUnitStorages();
+                UnitStorages = await dbSetUnitStorages.LoadAsync();
+                DbSetWarrantyPeriods dbSetWarrantyPeriods = new DbSetWarrantyPeriods();
+                WarrantyPeriods = await dbSetWarrantyPeriods.LoadAsync();
             }
             catch (Exception ex)
             {
@@ -150,20 +91,42 @@ namespace ProductModul.ViewModels
             }
         }
 
-        private void SelectedGroupChange(Groups obj)
+        public async void AddProduct()
         {
-            SelectedGroup = obj;
+            Groups temp = _product.Group;
+            try
+            {
+                _product.Group = null;
+                _product.CountProducts = null;
+                _product.PropertyProducts = null;
+                _product.UnitStorage = null;
+                _product.WarrantyPeriod = null;
+                DbSetProducts dbSetProducts = new DbSetProducts();
+                await dbSetProducts.AddAsync((Products)_product.Product.Clone());
+                MessageBox.Show("Товар добавлен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                if (_notification != null)
+                    _notification.Confirmed = true;
+                FinishInteraction?.Invoke();
+            }
+            catch (Exception ex)
+            {
+                _product.Group = temp;
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
-        #endregion
-
-        public async void AddProduct()
+        private async void GenerateBarcode()
         {
             try
             {
                 DbSetProducts dbSetProducts = new DbSetProducts();
-                await dbSetProducts.AddAsync((Products)_product.Clone());
-                MessageBox.Show("Товар добавлен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                string temp;
+                do
+                {
+                    temp = GenerationBarcode.GenerateBarcode();
+                } while (await dbSetProducts.CheckBarcodeAsync(temp) != 0);
+
+                Product.Barcode = temp;
             }
             catch (Exception ex)
             {

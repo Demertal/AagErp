@@ -1,93 +1,89 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data.Entity;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ModelModul.PurchaseGoods
 {
-    public class DbSetPurchaseGoods : DbSetModel<PurchaseReports>
+    public class DbSetPurchaseGoods : AutomationAccountingGoodsEntities, IDbSetModel<PurchaseReports>
     {
-        public override ObservableCollection<PurchaseReports> List => null;
-
-        public override async Task AddAsync(PurchaseReports obj)
+        public async Task<ObservableCollection<PurchaseReports>> LoadAsync(int start, int end)
         {
-            throw new NotImplementedException();
+            await PurchaseReports.Include(obj => obj.PurchaseInfos)/*.(post => post.Author)*/.OrderByDescending(obj => obj.DataOrder)
+                .ThenByDescending(obj => obj.Id).Skip(start).Take(end)
+                .Include(obj => obj.Counterparties).Include(obj => obj.Stores).LoadAsync();
+            return PurchaseReports.Local;
         }
 
-        public async Task AddAsync(PurchaseReports purchaseReport, List<RevaluationProducts> revaluationProductses)
+        public async Task<int> GetCount()
         {
-            using (StoreEntities db = new StoreEntities())
+            return await PurchaseReports.CountAsync();
+        }
+
+        public async Task AddAsync(PurchaseReports obj)
+        {
+            using (var transaction = Database.BeginTransaction())
             {
-                using (var transaction = db.Database.BeginTransaction())
+                try
                 {
-                    try
+                    if (obj.Counterparties != null)
                     {
-                        if (purchaseReport.Suppliers != null)
-                        {
-                            purchaseReport.IdSupplier = purchaseReport.Suppliers.Id;
-                            purchaseReport.Suppliers = null;
-                        }
-                        if (purchaseReport.Stores != null)
-                        {
-                            purchaseReport.IdStore = purchaseReport.Stores.Id;
-                            purchaseReport.Stores = null;
-                        }
-
-                        List<SerialNumbers> serialNumbers = new List<SerialNumbers>();
-
-                        foreach (var purchaseInfo in purchaseReport.PurchaseInfos)
-                        {
-                            if (purchaseInfo.Products != null)
-                            {
-                                purchaseInfo.IdProduct = purchaseInfo.Products.Id;
-                                serialNumbers.AddRange(purchaseInfo.Products.SerialNumbers);
-                                purchaseInfo.Products = null;
-                            }
-
-                            if (purchaseInfo.ExchangeRates != null)
-                            {
-                                purchaseInfo.IdExchangeRate = purchaseInfo.ExchangeRates.Id;
-                                purchaseInfo.ExchangeRates = null;
-                            }
-                        }
-
-                        foreach (var serialNumber in serialNumbers)
-                        {
-                            serialNumber.IdSupplier = purchaseReport.IdSupplier;
-                            serialNumber.Suppliers = null;
-                        }
-
-                        db.PurchaseReports.Add(purchaseReport);
-
-                        db.SerialNumbers.AddRange(serialNumbers);
-
-                        foreach (var revaluationProduct in revaluationProductses)
-                        {
-                            if (revaluationProduct.Products != null)
-                            {
-                                revaluationProduct.IdProduct = revaluationProduct.Products.Id;
-                                revaluationProduct.Products = null;
-                            }
-                        }
-                        db.RevaluationProducts.AddRange(revaluationProductses);
-                        await db.SaveChangesAsync();
-                        transaction.Commit();
+                        obj.IdCounterparty = obj.Counterparties.Id;
+                        obj.Counterparties = null;
                     }
-                    catch (Exception)
+                    if (obj.Stores != null)
                     {
-                        transaction.Rollback();
-                        throw;
+                        obj.IdStore = obj.Stores.Id;
+                        obj.Stores = null;
                     }
+
+                    List<SerialNumbers> serialNumbers = new List<SerialNumbers>();
+
+                    foreach (var purchaseInfo in obj.PurchaseInfos)
+                    {
+                        if (purchaseInfo.Products != null)
+                        {
+                            purchaseInfo.IdProduct = purchaseInfo.Products.Id;
+                            serialNumbers.AddRange(purchaseInfo.Products.SerialNumbers);
+                            purchaseInfo.Products = null;
+                        }
+
+                        if (purchaseInfo.ExchangeRates != null)
+                        {
+                            purchaseInfo.IdExchangeRate = purchaseInfo.ExchangeRates.Id;
+                            purchaseInfo.ExchangeRates = null;
+                        }
+                    }
+
+                    foreach (var serialNumber in serialNumbers)
+                    {
+                        serialNumber.IdCounterparty = obj.IdCounterparty;
+                        serialNumber.Counterparties = null;
+                    }
+
+                    PurchaseReports.Add(obj);
+
+                    SerialNumbers.AddRange(serialNumbers);
+
+                    await SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
                 }
             }
         }
 
-        public override async Task UpdateAsync(PurchaseReports obj)
+        public async Task UpdateAsync(PurchaseReports obj)
         {
             throw new NotImplementedException();
         }
 
-        public override async Task DeleteAsync(int objId)
+        public async Task DeleteAsync(int objId)
         {
             throw new NotImplementedException();
         }

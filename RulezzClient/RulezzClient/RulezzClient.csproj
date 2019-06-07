@@ -138,6 +138,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="appsettings.json" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -169,6 +170,10 @@
       <Project>{06eb7ce3-8c9c-4bd6-bf72-4caab19b22f0}</Project>
       <Name>GroupModul</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ModelModul\ModelModul.csproj">
+      <Project>{c1088933-3223-41a0-a687-8d34c8a1e104}</Project>
+      <Name>ModelModul</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ProductModel\ProductModul.csproj">
       <Project>{a2c817e8-9af6-4724-a7cf-3f6f2f8eb427}</Project>
       <Name>ProductModul</Name>
@@ -181,17 +186,25 @@
       <Project>{084660A4-4C9A-417F-890D-5B2607DBA7F7}</Project>
       <Name>PurchaseGoodsModul</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ReportModul\ReportModul.csproj">
+      <Project>{1D29DBCB-3D13-4717-A02A-6329107A8031}</Project>
+      <Name>ReportModul</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RevaluationProductsModul\RevaluationProductsModul.csproj">
       <Project>{0BFAA536-F50B-45D5-A01E-7F5B3F5A4BED}</Project>
       <Name>RevaluationProductsModul</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SupplierModul\SupplierModul.csproj">
+    <ProjectReference Include="..\SupplierModul\CounterpartyModul.csproj">
       <Project>{6407678E-40CB-4365-B707-21121734E873}</Project>
-      <Name>SupplierModul</Name>
+      <Name>CounterpartyModul</Name>
     </ProjectReference>
     <ProjectReference Include="..\UnitStorageModul\UnitStorageModul.csproj">
       <Project>{B4B52FF1-550A-4B6C-A4F8-DC0AAD7C2DAC}</Project>
       <Name>UnitStorageModul</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WarrantyModul\WarrantyModul.csproj">
+      <Project>{2912B1BA-5D29-49A3-A00A-515B0E33DDBB}</Project>
+      <Name>WarrantyModul</Name>
     </ProjectReference>
     <ProjectReference Include="..\WarrantyPeriodsModul\WarrantyPeriodsModul.csproj">
       <Project>{E7D86849-91E5-4509-963E-B29A546D0893}</Project>
@@ -212,6 +225,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\ReloadImage.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

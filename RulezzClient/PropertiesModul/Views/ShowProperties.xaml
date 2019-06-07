@@ -4,22 +4,74 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:interactivity="http://prismlibrary.com/"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              interactivity:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
-             VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left">
+             VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Padding="10">
+
+    <UserControl.Resources>
+        <ContextMenu  x:Key="PropertyNamesMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+            <MenuItem Header="Удалить" CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                      Command="{Binding DataContext.DeletePropertyNamesCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>
+        </ContextMenu>
+        <Style x:Key="PropertyNamesRowStyle" TargetType="{x:Type DataGridRow}">
+            <Setter Property="ContextMenu" Value="{StaticResource PropertyNamesMenu}" />
+        </Style>
+
+        <ContextMenu  x:Key="PropertyValuesMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+            <MenuItem Header="Удалить" CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                      Command="{Binding DataContext.DeletePropertyValuesCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>
+        </ContextMenu>
+        <Style x:Key="PropertyValuesRowStyle" TargetType="{x:Type DataGridRow}">
+            <Setter Property="ContextMenu" Value="{StaticResource PropertyValuesMenu}" />
+        </Style>
+    </UserControl.Resources>
+
+
     <StackPanel>
         <TextBlock Text="{Binding StringFormat=Группа: {0}, Path=Group.Title}"/>
         <StackPanel Orientation="Horizontal">
-            <ListView MinWidth="100" MinHeight="100" Margin="5" ItemsSource="{Binding PropertyNames}" SelectedItem="{Binding Path=PropertyName}">
-                <ListView.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Добавить"></MenuItem>
-                        <MenuItem Header="Изменить"></MenuItem>
-                        <MenuItem Header="Удалить"></MenuItem>
-                    </ContextMenu>
-                </ListView.ContextMenu>
-            </ListView>
-            <ListView MinWidth="100" MinHeight="100" Margin="5"/>
+            <DataGrid ItemsSource="{Binding Path=PropertyNamesList, UpdateSourceTrigger=PropertyChanged}" MaxWidth="400"
+                      IsSynchronizedWithCurrentItem="True" CanUserResizeRows="False" CanUserDeleteRows="False"
+                      CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                      MinHeight="200" MaxHeight="500" RowStyle="{StaticResource PropertyNamesRowStyle}" SelectionMode="Single" HorizontalAlignment="Center">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="CellEditEnding">
+                        <interactivity:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.ChangePropertyNamesCommand}"/>
+                    </i:EventTrigger>
+                    <i:EventTrigger EventName="SelectedCellsChanged">
+                        <interactivity:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.SelectedPropertyNamesCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <DataGrid.CellStyle>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                    </Style>
+                </DataGrid.CellStyle>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Параметры" Binding="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <DataGrid ItemsSource="{Binding Path=PropertyValuesList, UpdateSourceTrigger=PropertyChanged}" MaxWidth="400"
+                      IsSynchronizedWithCurrentItem="True" CanUserResizeRows="False" CanUserDeleteRows="False" CanUserAddRows="{Binding CanUserAddValues}"
+                      CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                      MinHeight="200" MaxHeight="500" RowStyle="{StaticResource PropertyValuesRowStyle}" SelectionMode="Single" HorizontalAlignment="Center" Margin="5">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="CellEditEnding">
+                        <interactivity:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.ChangePropertyValuesCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <DataGrid.CellStyle>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                    </Style>
+                </DataGrid.CellStyle>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Значения" Binding="{Binding Path=Value, UpdateSourceTrigger=PropertyChanged}"/>
+                </DataGrid.Columns>
+            </DataGrid>
         </StackPanel>
     </StackPanel>
 </UserControl>

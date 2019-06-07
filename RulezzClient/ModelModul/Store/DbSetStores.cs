@@ -1,31 +1,29 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Threading.Tasks;
 
 namespace ModelModul.Store
 {
-    public class DbSetStores : DbSetModel<Stores>
+    public class DbSetStores : AutomationAccountingGoodsEntities, IDbSetModel<Stores>
     {
-        public async Task LoadAsync()
+        public async Task<ObservableCollection<Stores>> LoadAsync()
         {
-            using (StoreEntities db = new StoreEntities())
-            {
-                await db.Stores.LoadAsync();
-                List = db.Stores.Local;
-            }
+            await Stores.LoadAsync();
+            return Stores.Local;
         }
 
-        public override async Task AddAsync(Stores obj)
+        public async Task AddAsync(Stores obj)
         {
             throw new NotImplementedException();
         }
 
-        public override async Task UpdateAsync(Stores obj)
+        public async Task UpdateAsync(Stores obj)
         {
             throw new NotImplementedException();
         }
 
-        public override async Task DeleteAsync(int objId)
+        public async Task DeleteAsync(int objId)
         {
             throw new NotImplementedException();
         }

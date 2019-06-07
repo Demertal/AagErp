@@ -1,86 +1,75 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Threading.Tasks;
 
 namespace ModelModul.WarrantyPeriod
 {
-    public class DbSetWarrantyPeriods : DbSetModel<WarrantyPeriods>
+    public class DbSetWarrantyPeriods : AutomationAccountingGoodsEntities, IDbSetModel<WarrantyPeriods>
     {
-        public async Task LoadAsync()
+        public async Task<ObservableCollection<WarrantyPeriods>> LoadAsync()
         {
-            using (StoreEntities db = new StoreEntities())
-            {
-                await db.WarrantyPeriods.LoadAsync();
-                List = db.WarrantyPeriods.Local;
-            }
+            await WarrantyPeriods.LoadAsync();
+            return WarrantyPeriods.Local;
         }
 
-        public override async Task AddAsync(WarrantyPeriods obj)
+        public async Task AddAsync(WarrantyPeriods obj)
         {
-            using (StoreEntities db = new StoreEntities())
+            using (var transaction = Database.BeginTransaction())
             {
-                using (var transaction = db.Database.BeginTransaction())
+                try
                 {
-                    try
-                    {
-                        db.WarrantyPeriods.Add(obj);
-                        await db.SaveChangesAsync();
-                        transaction.Commit();
-                    }
-                    catch (Exception)
-                    {
-                        transaction.Rollback();
-                        throw;
-                    }
+                    WarrantyPeriods.Add(obj);
+                    await SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
                 }
             }
         }
 
-        public override async Task UpdateAsync(WarrantyPeriods obj)
+        public async Task UpdateAsync(WarrantyPeriods obj)
         {
-            using (StoreEntities db = new StoreEntities())
+            using (var transaction = Database.BeginTransaction())
             {
-                using (var transaction = db.Database.BeginTransaction())
+                try
                 {
-                    try
-                    {
-                        var unit = db.WarrantyPeriods.Find(obj.Id);
-                        if (unit == null) throw new Exception("Изменить не получилось");
-                        if (unit.Period == "Нет") throw new Exception("Нельзя изменять гарантийный период: \"Нет\"");
-                        unit.Period = obj.Period;
-                        db.Entry(unit).State = EntityState.Modified;
-                        await db.SaveChangesAsync();
-                        transaction.Commit();
-                    }
-                    catch (Exception)
-                    {
-                        transaction.Rollback();
-                        throw;
-                    }
+                    var unit = WarrantyPeriods.Find(obj.Id);
+                    if (unit == null) throw new Exception("Изменить не получилось");
+                    if (unit.Period == "Нет") throw new Exception("Нельзя изменять гарантийный период: \"Нет\"");
+                    unit.Period = obj.Period;
+                    Entry(unit).State = EntityState.Modified;
+                    await SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
                 }
             }
         }
 
-        public override async Task DeleteAsync(int objId)
+        public async Task DeleteAsync(int objId)
         {
-            using (StoreEntities db = new StoreEntities())
+            using (var transaction = Database.BeginTransaction())
             {
-                using (var transaction = db.Database.BeginTransaction())
+                try
                 {
-                    try
-                    {
-                        var unit = db.WarrantyPeriods.Find(objId);
-                        if (unit == null) throw new Exception("Удалить не получилось");
-                        if (unit.Period == "Нет") throw new Exception("Нельзя удалять гарантийный период: \"Нет\"");
-                        db.Entry(unit).State = EntityState.Deleted;
-                        await db.SaveChangesAsync();
-                        transaction.Commit();
-                    }
-                    catch (Exception)
-                    {
-                        transaction.Rollback();
-                        throw;
-                    }
+                    var unit = WarrantyPeriods.Find(objId);
+                    if (unit == null) throw new Exception("Удалить не получилось");
+                    if (unit.Period == "Нет") throw new Exception("Нельзя удалять гарантийный период: \"Нет\"");
+                    Entry(unit).State = EntityState.Deleted;
+                    await SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
                 }
             }
         }

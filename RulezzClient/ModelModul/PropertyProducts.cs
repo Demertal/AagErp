@@ -10,15 +10,16 @@
 namespace ModelModul
 {
     using System;
-    using System.Collections.Generic;
-    
+
     public partial class PropertyProducts
     {
         public int Id { get; set; }
         public int IdProduct { get; set; }
-        public int IdPropertyValue { get; set; }
+        public int IdPropertyName { get; set; }
+        public Nullable<int> IdPropertyValue { get; set; }
     
         public virtual Products Products { get; set; }
+        public virtual PropertyNames PropertyNames { get; set; }
         public virtual PropertyValues PropertyValues { get; set; }
     }
 }

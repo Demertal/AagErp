@@ -1,68 +1,75 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using ModelModul;
 using ModelModul.ExchangeRate;
+using ModelModul.Product;
 using ModelModul.RevaluationProduct;
 using Prism.Commands;
 using Prism.Interactivity.InteractionRequest;
 using Prism.Mvvm;
+using Prism.Regions;
+using RevaluationProductsModul.Views;
 
 namespace RevaluationProductsModul.ViewModels
 {
-    public class RevaluationProductsViewModel : BindableBase
+    public class RevaluationProductsViewModel : BindableBase, INavigationAware
     {
         #region Properties
 
-        private readonly DbSetExchangeRates _dbSetExchangeRates = new DbSetExchangeRates();
+        private string _barcode;
 
-        private ObservableCollection<RevaluationProducts> _revaluationProducts = new ObservableCollection<RevaluationProducts>();
+        private RevaluationProductsReports _revaluationProductsReports = new RevaluationProductsReports();
 
-        public ObservableCollection<RevaluationProducts> RevaluationProducts
+        private ObservableCollection<RevaluationProductsForRevaluationViewModel> _revaluationProductsInfosInfos = new ObservableCollection<RevaluationProductsForRevaluationViewModel>();
+        public ObservableCollection<RevaluationProductsForRevaluationViewModel> RevaluationProductsInfos
         {
-            get => _revaluationProducts;
-            set
-            {
-                _revaluationProducts = value;
-                RaisePropertyChanged();
-            }
+            get => _revaluationProductsInfosInfos;
+            set => SetProperty(ref _revaluationProductsInfosInfos, value);
         }
 
-        ExchangeRates _exchangeUsd = new ExchangeRates();
-
-        public decimal Course => _exchangeUsd.Course;
-
-        public bool IsEnabled
+        public bool IsValidate
         {
             get
             {
-                if (RevaluationProducts.Count == 0) return false;
+                if (RevaluationProductsInfos.Count == 0) return false;
 
-                return RevaluationProducts.Count(rev => rev.NewSalesPrice <= 0) == 0;
+                return RevaluationProductsInfos.FirstOrDefault(rev => rev.NewSalesPrice <= 0) == null;
             }
         }
 
-        public InteractionRequest<INotification> AddProductPopupRequest { get; set; }
+        public InteractionRequest<Confirmation> AddProductPopupRequest { get; set; }
 
         public DelegateCommand AddProductCommand { get; }
         public DelegateCommand RevaluationCommand { get; }
         public DelegateCommand<Collection<object>> DeleteProductCommand { get; }
+        public DelegateCommand<KeyEventArgs> ListenKeyboardCommand { get; }
+
+        public DelegateCommand<object> TestCommand { get; }
 
         #endregion
 
         public RevaluationProductsViewModel()
         {
-            AddProductPopupRequest = new InteractionRequest<INotification>();
-            RevaluationCommand = new DelegateCommand(Revaluation).ObservesCanExecute(() => IsEnabled);
+            AddProductPopupRequest = new InteractionRequest<Confirmation>();
+            RevaluationCommand = new DelegateCommand(Revaluation).ObservesCanExecute(() => IsValidate);
             AddProductCommand = new DelegateCommand(AddProduct);
-            RevaluationProducts.CollectionChanged += OnRevaluationProductsCollectionChanged;
+            RevaluationProductsInfos.CollectionChanged += OnRevaluationProductsCollectionChanged;
             DeleteProductCommand = new DelegateCommand<Collection<object>>(DeleteProduct);
+            ListenKeyboardCommand = new DelegateCommand<KeyEventArgs>(ListenKeyboard);
+            TestCommand = new DelegateCommand<object>(Test);
             NewReport();
+        }
+
+        private void Test(object obj)
+        {
+            (((RoutedEventArgs) obj).OriginalSource as RevaluationProductsView).BringPurchasePriceCh.Focus();
         }
 
         #region PropertyChanged
@@ -72,50 +79,40 @@ namespace RevaluationProductsModul.ViewModels
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Remove:
-                    foreach (RevaluationProducts item in e.OldItems)
+                    foreach (RevaluationProductsForRevaluationViewModel item in e.OldItems)
                     {
                         //Removed items
                         item.PropertyChanged -= RevaluationProductsViewModelPropertyChanged;
                     }
                     break;
                 case NotifyCollectionChangedAction.Add:
-                    foreach (RevaluationProducts item in e.NewItems)
+                    foreach (RevaluationProductsForRevaluationViewModel item in e.NewItems)
                     {
                         //Added items
                         item.PropertyChanged += RevaluationProductsViewModelPropertyChanged;
                     }
                     break;
             }
-            RaisePropertyChanged("IsEnabled");
+
+            _barcode = "";
+            RaisePropertyChanged("IsValidate");
+            RaisePropertyChanged("RevaluationProductsView");
         }
 
         private void RevaluationProductsViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             RaisePropertyChanged("RevaluationProductsView");
-            RaisePropertyChanged("IsEnabled");
+            RaisePropertyChanged("IsValidate");
         }
 
         #endregion
 
-        private async void Load()
-        {
-            try
-            {
-                await _dbSetExchangeRates.LoadAsync();
-                RaisePropertyChanged("ExchangeRates");
-                _exchangeUsd = _dbSetExchangeRates.List.FirstOrDefault(e => e.Title == "USD");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
         private void NewReport()
         {
-            Load();
-            RevaluationProducts.Clear();
-            RaisePropertyChanged("IsEnabled");
+            _barcode = "";
+            _revaluationProductsReports = new RevaluationProductsReports();
+            RevaluationProductsInfos.Clear();
+            RaisePropertyChanged("IsValidate");
             RaisePropertyChanged("RevaluationProductsView");
         }
 
@@ -123,14 +120,30 @@ namespace RevaluationProductsModul.ViewModels
 
         private async void Revaluation()
         {
+            _barcode = "";
             if (MessageBox.Show(
                     "Вы уверены, что хотите провести отчет о переоценке товара? Этот отчет невозможно будет изменить после.",
                     "Проведение закупки", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
                 MessageBoxResult.Yes) return;
             try
             {
-                DbSetRevaluationProducts dbSetRevaluation = new DbSetRevaluationProducts();
-                await dbSetRevaluation.AddAsync(RevaluationProducts.ToList());
+                bool ch = false;
+                foreach (var revaluationProductsInfo in RevaluationProductsInfos)
+                {
+                    _revaluationProductsReports.RevaluationProductsInfos.Add(revaluationProductsInfo.RevaluationProductsInfo);
+                    if (revaluationProductsInfo.NewSalesPrice <= revaluationProductsInfo.PurchasePrice) ch = true;
+                }
+
+                if (ch)
+                {
+                    if (MessageBox.Show(
+                            "На некоторый товар цена продажи меньше цены закупки. Все верно?",
+                            "Проведение закупки", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
+                        MessageBoxResult.Yes) return;
+                }
+
+                DbSetRevaluationProducts dbSet = new DbSetRevaluationProducts();
+                await dbSet.AddAsync(_revaluationProductsReports);
                 MessageBox.Show("Отчет о переоценке добавлен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
                 NewReport();
             }
@@ -142,48 +155,130 @@ namespace RevaluationProductsModul.ViewModels
 
         private void AddProduct()
         {
+            _barcode = "";
             AddProductPopupRequest.Raise(new Confirmation { Title = "Выбрать товар" }, Callback);
         }
 
         private void DeleteProduct(Collection<object> obj)
         {
-            List<RevaluationProducts> list = obj.Cast<RevaluationProducts>().ToList();
-            list.ForEach(item => RevaluationProducts.Remove(item));
-            RaisePropertyChanged("RevaluationProducts");
+            _barcode = "";
+            List<RevaluationProductsForRevaluationViewModel> list = obj.Cast<RevaluationProductsForRevaluationViewModel>().ToList();
+            list.ForEach(item => RevaluationProductsInfos.Remove(item));
         }
 
-        private void Callback(INotification obj)
+        private async void Callback(INotification obj)
         {
-            if (obj.Content == null) return;
-            foreach (Products product in (IEnumerable)obj.Content)
+            _barcode = "";
+            if (!(obj.Content is Products)) return;
+            await InsertProduct((Products) obj.Content);
+        }
+
+        private async void ListenKeyboard(KeyEventArgs obj)
+        {
+            if (obj.Key >= Key.D0 && obj.Key <= Key.D9)
             {
-                if (RevaluationProducts.Count(p => p.Products.Id == product.Id) != 0) continue;
-                RevaluationProducts.Add(new RevaluationProducts
-                {
-                    Products = new Products
-                    {
-                        Barcode = product.Barcode,
-                        Groups = product.Groups,
-                        ExchangeRates = product.ExchangeRates,
-                        Id = product.Id,
-                        IdExchangeRate = product.IdExchangeRate,
-                        IdGroup = product.IdGroup,
-                        IdUnitStorage = product.IdUnitStorage,
-                        IdWarrantyPeriod = product.IdWarrantyPeriod,
-                        PurchasePrice = product.PurchasePrice,
-                        SalesPrice = product.SalesPrice,
-                        VendorCode = product.VendorCode,
-                        UnitStorages = product.UnitStorages,
-                        WarrantyPeriods = product.WarrantyPeriods,
-                        Title = product.Title
-                    },
-                    IdProduct = product.Id,
-                    OldSalesPrice = product.SalesPrice
-                });
+                _barcode += obj.Key.ToString()[1].ToString();
             }
-            RaisePropertyChanged("RevaluationProducts");
+            else if (obj.Key >= Key.A && obj.Key <= Key.Z)
+            {
+                _barcode += obj.Key.ToString();
+            }
+            else if (obj.Key == Key.Enter)
+            {
+                try
+                {
+                    if (string.IsNullOrEmpty(_barcode) || _barcode.Length < 8 || _barcode.Length > 13)
+                    {
+                        _barcode = "";
+                        return;
+                    }
+                    DbSetProducts dbSetProducts = new DbSetProducts();
+                    Products product = await dbSetProducts.FindProductByBarcodeAsync(_barcode);
+                    if (product == null) throw new Exception("Товар не найден");
+                    await InsertProduct(product);
+                }
+                catch (Exception ex)
+                {
+                    _barcode = "";
+                    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                _barcode = "";
+            }
+            else
+            {
+                _barcode = "";
+            }
+        }
+
+        private async Task InsertProduct(Products product)
+        {
+            try
+            {
+                if (RevaluationProductsInfos.FirstOrDefault(objRev => objRev.Product.Id == product.Id) != null)
+                {
+                    _barcode = "";
+                    return;
+                }
+                DbSetProducts dbSetProducts = new DbSetProducts();
+                PurchaseStruct purchaseStructCur = await dbSetProducts.GetPurchasePriceAsync(product.Id);
+                PurchaseStruct purchaseStructLast = null;
+                DbSetExchangeRates dbSetExchange = new DbSetExchangeRates();
+                ExchangeRates exchange = await dbSetExchange.LoadAsync("ГРН");
+                if (purchaseStructCur != null)
+                {
+                    purchaseStructLast = await dbSetProducts.GetPurchasePriceAsync(product.Id, 1);
+                }
+                RevaluationProductsInfos.Add(new RevaluationProductsForRevaluationViewModel
+                {
+                    RevaluationProductsInfo = new RevaluationProductsInfos
+                    {
+                        Products = product,
+                        IdProduct = product.Id,
+                        OldSalesPrice = product.SalesPrice,
+                        NewSalesPrice = 0
+                    },
+                    ExchangeRate = purchaseStructCur?.ExchangeRate ?? exchange,
+                    PurchasePrice = purchaseStructCur?.PurchasePrice ?? 0,
+                    ExchangeRateOld = purchaseStructLast?.ExchangeRate ?? exchange,
+                    PurchasePriceOld = purchaseStructLast?.PurchasePrice ?? 0
+                });
+
+                RaisePropertyChanged("RevaluationProductsInfos");
+                RaisePropertyChanged("IsValidate");
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         #endregion
+
+        #region Navigat
+
+        public async void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            if (!(navigationContext.Parameters["RevaluationProducts"] is List<Products> revaluationProducts)) return;
+            foreach (var product in revaluationProducts)
+            {
+                if (RevaluationProductsInfos.FirstOrDefault(objRev => objRev.Product.Id == product.Id) !=
+                    null) continue;
+                await InsertProduct(product);
+            }
+
+            RaisePropertyChanged("RevaluationProductsInfos");
+            RaisePropertyChanged("IsValidate");
+        }
+
+        public bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return false;
+        }
+
+        public void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+        }
+
+            #endregion
     }
 }

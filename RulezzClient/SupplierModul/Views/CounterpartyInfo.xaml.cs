@@ -1,0 +1,27 @@
+﻿using System.Windows.Controls;
+using CounterpartyModul.ViewModels;
+using ModelModul;
+using Prism.Common;
+using Prism.Regions;
+
+namespace CounterpartyModul.Views
+{
+    /// <summary>
+    /// Логика взаимодействия для CounterpartyInfo.xaml
+    /// </summary>
+    public partial class CounterpartyInfo : UserControl
+    {
+        public CounterpartyInfo()
+        {
+            InitializeComponent();
+            RegionContext.GetObservableContext(this).PropertyChanged += CounterpartyInfo_PropertyChanged;
+        }
+
+        private void CounterpartyInfo_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            var context = (ObservableObject<object>)sender;
+            var selectedCounterparty = (Counterparties)context.Value;
+            (DataContext as CounterpartyInfoViewModel).SelectedCounterparty.Counterparty = selectedCounterparty ?? new Counterparties();
+        }
+    }
+}

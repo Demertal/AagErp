@@ -10,20 +10,17 @@
 namespace ModelModul
 {
     using System;
-    using System.Collections.Generic;
-    
+
     public partial class Warranties
     {
         public int Id { get; set; }
         public string Malfunction { get; set; }
-        public System.DateTime DateReceipt { get; set; }
-        public System.DateTime DateDeparture { get; set; }
-        public System.DateTime DateIssue { get; set; }
+        public Nullable<System.DateTime> DateReceipt { get; set; }
+        public Nullable<System.DateTime> DateDeparture { get; set; }
+        public Nullable<System.DateTime> DateIssue { get; set; }
         public string Info { get; set; }
-        public int IdSupplier { get; set; }
-        public Nullable<int> IdSerialNumber { get; set; }
+        public int IdSerialNumber { get; set; }
     
         public virtual SerialNumbers SerialNumbers { get; set; }
-        public virtual Suppliers Suppliers { get; set; }
     }
 }

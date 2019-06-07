@@ -7,88 +7,124 @@ using System.Threading.Tasks;
 
 namespace ModelModul.PropertyName
 {
-    public class DbSetPropertyNames : DbSetModel<PropertyNames>
+    public class DbSetPropertyNames : AutomationAccountingGoodsEntities, IDbSetModel<PropertyNames>
     {
         public async Task<ObservableCollection<PropertyNames>> LoadAsync(int idGroup)
         {
-            List<PropertyNames> temp = await Task.Run(() =>
+            await PropertyNames.Where(obj => obj.IdGroup == idGroup).LoadAsync();
+            return PropertyNames.Local;
+        }
+
+        public async Task AddAsync(PropertyNames obj)
+        {
+            using (var transaction = Database.BeginTransaction())
             {
                 try
                 {
-                    using (StoreEntities db = new StoreEntities())
+                    if (obj.Groups != null)
                     {
-                        return db.PropertyNames.Include(p => p.PropertyValues).Where(obj => obj.IdGroup == idGroup).ToList();
+                        obj.IdGroup = obj.Groups.Id;
+                        obj.Groups = null;
                     }
+                    obj.PropertyValues = null;
+
+                    List<int> groups = new List<int>();
+                    groups.AddRange(GetChildGroup(obj.IdGroup));
+                    groups.AddRange(GetParentGroup(obj.IdGroup));
+
+                    if (await PropertyNames.AnyAsync(objPr => objPr.Title == obj.Title &&  groups.Contains(objPr.IdGroup)))
+                        throw new Exception("Такой параметр уже есть в этой иеррахии групп");
+
+                    PropertyNames.Add(obj);
+                    await SaveChangesAsync();
+                    transaction.Commit();
                 }
                 catch (Exception)
                 {
-                    return null;
-                }
-            });
-            ObservableCollection<PropertyNames> list = new ObservableCollection<PropertyNames>();
-
-            if (temp != null)
-            {
-                foreach (var item in temp)
-                {
-                    list.Add(item);
-                }
-            }
-
-            return list;
-        }
-
-        public override async Task AddAsync(PropertyNames obj)
-        {
-            using (StoreEntities db = new StoreEntities())
-            {
-                using (var transaction = db.Database.BeginTransaction())
-                {
-                    try
-                    {
-                        if (obj.Groups != null)
-                        {
-                            obj.IdGroup = obj.Groups.Id;
-                            obj.Groups = null;
-                        }
-                        obj.PropertyValues = null;
-
-                        db.PropertyNames.Add(obj);
-                        await db.SaveChangesAsync();
-                        transaction.Commit();
-                    }
-                    catch (Exception)
-                    {
-                        transaction.Rollback();
-                        throw;
-                    }
+                    transaction.Rollback();
+                    throw;
                 }
             }
         }
 
-        public override async Task UpdateAsync(PropertyNames obj)
+        public async Task<ObservableCollection<PropertyNames>> GetAllPropertyNames(int idGroup)
         {
-            throw new System.NotImplementedException();
+            List<int> groups = GetParentGroup(idGroup);
+            await PropertyNames.Where(objPr => groups.Contains(objPr.IdGroup)).Include(objPr => objPr.PropertyValues).LoadAsync();
+            return PropertyNames.Local;
         }
 
-        public override async Task DeleteAsync(int objId)
+        private List<int> GetChildGroup(int idParentGroup)
         {
-            using (StoreEntities db = new StoreEntities())
+            List<int> groups = Groups.Where(objGr => objGr.IdParentGroup == idParentGroup).Select(objGr => objGr.Id)
+                .ToList();
+            List<int> temp = new List<int>();
+            foreach (var t in groups)
             {
-                using (var transaction = db.Database.BeginTransaction())
+                temp.AddRange(GetChildGroup(t));
+            }
+            groups.AddRange(temp);
+            return groups;
+        }
+
+        private List<int> GetParentGroup(int? id)
+        {
+            List<int> groups = new List<int>();
+            do
+            {
+                Groups temp = Groups.FirstOrDefault(objGr => objGr.Id == id);
+                if(temp == null) break;
+                groups.Add(temp.Id);
+                id = temp.IdParentGroup;
+            } while (id != null);
+            groups.AddRange(groups);
+            return groups;
+        }
+
+        public async Task UpdateAsync(PropertyNames obj)
+        {
+            using (var transaction = Database.BeginTransaction())
+            {
+                try
                 {
-                    try
-                    {
-                        var propertyNames = db.PropertyNames.Find(objId);
-                        db.Entry(propertyNames).State = EntityState.Deleted;
-                        await db.SaveChangesAsync();
-                        transaction.Commit();
-                    }
-                    catch (Exception)
-                    {
-                        transaction.Rollback();
-                        throw;
-                    }
+                    var property = PropertyNames.Find(obj.Id);
+                    if (property == null) throw new Exception("Изменить не получилось");
+
+                    List<int> groups = new List<int>();
+                    groups.AddRange(GetChildGroup(obj.IdGroup));
+                    groups.AddRange(GetParentGroup(obj.IdGroup));
+
+                    if (await PropertyNames.AnyAsync(objPr => objPr.Title == obj.Title && groups.Contains(objPr.IdGroup)))
+                        throw new Exception("Такой параметр уже есть в этой иеррахии групп");
+
+                    property.Title = obj.Title;
+                    Entry(property).State = EntityState.Modified;
+                    await SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            }
+        }
+
+        public async Task DeleteAsync(int objId)
+        {
+            using (var transaction = Database.BeginTransaction())
+            {
+                try
+                {
+                    var propertyNames = PropertyNames.Find(objId);
+                    Entry(propertyNames).State = EntityState.Deleted;
+                    await SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
                 }
             }
         }

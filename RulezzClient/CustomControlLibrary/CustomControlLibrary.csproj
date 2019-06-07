@@ -38,6 +38,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Interactivity">
       <HintPath>C:\Users\Demertal\.nuget\packages\prism.wpf\7.1.0.431\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
@@ -66,11 +67,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BindingProxy.cs" />
+    <Compile Include="Converters\ConverterSum.cs" />
     <Compile Include="Converters\CurrencyConverter2Parametrs.cs" />
     <Compile Include="Converters\CurrencyConverter4Parametrs.cs" />
-    <Compile Include="Converters\IsReadOnlyConverterFalse.cs" />
-    <Compile Include="Converters\IsReadOnlyConverterTrue.cs" />
+    <Compile Include="Converters\GetProductsTitleFromPurchaseInfo.cs" />
+    <Compile Include="Converters\GetProductsTitleFromRevaluaitionInfo.cs" />
+    <Compile Include="Converters\IsEnabledConverterForBool.cs" />
+    <Compile Include="Converters\IsReadOnlyConverterForBool.cs" />
+    <Compile Include="Converters\IsReadOnlyConverterForSerialNumber.cs" />
+    <Compile Include="Converters\IsReadOnlyConverterForCount.cs" />
+    <Compile Include="Converters\IsReadOnlyConverterForSerialNumberForPurchase.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
+    <Compile Include="Converters\VisibilityConverterForBool.cs" />
+    <Compile Include="Converters\VisibilityConverterForNull.cs" />
+    <Compile Include="Converters\VisibilityConverterForNullAndBool.cs" />
     <Compile Include="ExtendedDataGrid.cs" />
     <Compile Include="ExtendedTreeView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -87,18 +97,17 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="WatermarkTextBox.cs" />
-    <Compile Include="ChangeableTextBlock.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\ModelModul\ModelModul.csproj">
       <Project>{C1088933-3223-41A0-A687-8D34C8A1E104}</Project>

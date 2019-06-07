@@ -20,7 +20,7 @@ namespace GroupModul.ViewModels
             {
                 _groupModel.Title = value;
                 RaisePropertyChanged();
-                RaisePropertyChanged("IsEnabled");
+                RaisePropertyChanged("IsValidate");
             }
         }
 
@@ -33,7 +33,10 @@ namespace GroupModul.ViewModels
             set
             {
                 SetProperty(ref _notification, value as Confirmation);
-                _groupModel.IdParentGroup = (_notification.Content as Groups)?.Id;
+                if(_notification.Content != null)
+                    _groupModel.IdParentGroup = (int?)_notification.Content;
+                else
+                    _groupModel.IdParentGroup = null;
                 Title = "";
             }
         }
@@ -55,7 +58,8 @@ namespace GroupModul.ViewModels
             {
                 DbSetGroups dbSetGroups = new DbSetGroups();
                 await dbSetGroups.AddAsync(_groupModel);
-                MessageBox.Show("Группа добавлена", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(_groupModel.IdParentGroup == null ? "Магазин добавлен" : "Группа добавлена", "Успех",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
 
                 if (_notification != null)
                     _notification.Confirmed = true;

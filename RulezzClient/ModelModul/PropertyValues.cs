@@ -9,7 +9,6 @@
 
 namespace ModelModul
 {
-    using System;
     using System.Collections.Generic;
     
     public partial class PropertyValues

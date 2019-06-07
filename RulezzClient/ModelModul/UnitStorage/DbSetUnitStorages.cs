@@ -1,86 +1,75 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Threading.Tasks;
 
 namespace ModelModul.UnitStorage
 {
-    public class DbSetUnitStorages : DbSetModel<UnitStorages>
+    public class DbSetUnitStorages : AutomationAccountingGoodsEntities, IDbSetModel<UnitStorages>
     {
-        public async Task LoadAsync()
+        public async Task<ObservableCollection<UnitStorages>> LoadAsync()
         {
-            using (StoreEntities db = new StoreEntities())
-            {
-                await db.UnitStorages.LoadAsync();
-                List = db.UnitStorages.Local;
-            }
+            await UnitStorages.LoadAsync();
+            return UnitStorages.Local;
         }
 
-        public override async Task AddAsync(UnitStorages obj)
+        public async Task AddAsync(UnitStorages obj)
         {
-            using (StoreEntities db = new StoreEntities())
+            using (var transaction = Database.BeginTransaction())
             {
-                using (var transaction = db.Database.BeginTransaction())
+                try
                 {
-                    try
-                    {
-                        db.UnitStorages.Add(obj);
-                        await db.SaveChangesAsync();
-                        transaction.Commit();
-                    }
-                    catch (Exception)
-                    {
-                        transaction.Rollback();
-                        throw;
-                    }
+                    UnitStorages.Add(obj);
+                    await SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
                 }
             }
         }
 
-        public override async Task UpdateAsync(UnitStorages obj)
+        public async Task UpdateAsync(UnitStorages obj)
         {
-            using (StoreEntities db = new StoreEntities())
+            using (var transaction = Database.BeginTransaction())
             {
-                using (var transaction = db.Database.BeginTransaction())
+                try
                 {
-                    try
-                    {
-                        var unit = db.UnitStorages.Find(obj.Id);
-                        if (unit == null) throw new Exception("Изменить не получилось");
-                        if (unit.Title == "шт") throw new Exception("Нельзя изменять ед. хр.: \"шт\"");
-                        unit.Title = obj.Title;
-                        db.Entry(unit).State = EntityState.Modified;
-                        await db.SaveChangesAsync();
-                        transaction.Commit();
-                    }
-                    catch (Exception)
-                    {
-                        transaction.Rollback();
-                        throw;
-                    }
+                    var unit = UnitStorages.Find(obj.Id);
+                    if (unit == null) throw new Exception("Изменить не получилось");
+                    if (unit.Title == "шт") throw new Exception("Нельзя изменять ед. хр.: \"шт\"");
+                    unit.Title = obj.Title;
+                    Entry(unit).State = EntityState.Modified;
+                    await SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
                 }
             }
         }
 
-        public override async Task DeleteAsync(int objId)
+        public async Task DeleteAsync(int objId)
         {
-            using (StoreEntities db = new StoreEntities())
+            using (var transaction = Database.BeginTransaction())
             {
-                using (var transaction = db.Database.BeginTransaction())
+                try
                 {
-                    try
-                    {
-                        var unit = db.UnitStorages.Find(objId);
-                        if (unit == null) throw new Exception("Удалить не получилось");
-                        if (unit.Title == "шт") throw new Exception("Нельзя удалять ед. хр.: \"шт\"");
-                        db.Entry(unit).State = EntityState.Deleted;
-                        await db.SaveChangesAsync();
-                        transaction.Commit();
-                    }
-                    catch (Exception)
-                    {
-                        transaction.Rollback();
-                        throw;
-                    }
+                    var unit = UnitStorages.Find(objId);
+                    if (unit == null) throw new Exception("Удалить не получилось");
+                    if (unit.Title == "шт") throw new Exception("Нельзя удалять ед. хр.: \"шт\"");
+                    Entry(unit).State = EntityState.Deleted;
+                    await SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
                 }
             }
         }

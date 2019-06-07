@@ -5,4 +5,12 @@
         <Setter Property="ResizeMode" Value="CanMinimize"/>
         <Setter Property="SizeToContent" Value="WidthAndHeight"/>
     </Style>
+    
+    <Style TargetType="Button" x:Key="ReloadImageButton">
+        <Setter Property="Content">
+            <Setter.Value>
+                <Image Source="../Resources/ReloadImage.bmp"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

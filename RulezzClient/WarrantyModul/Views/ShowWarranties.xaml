@@ -1,0 +1,98 @@
+﻿<UserControl x:Class="WarrantyModul.Views.ShowWarranties"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:customControlLibrary="clr-namespace:CustomControlLibrary;assembly=CustomControlLibrary"
+             xmlns:interactivity="http://prismlibrary.com/"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:views="clr-namespace:WarrantyModul.Views"
+             interactivity:ViewModelLocator.AutoWireViewModel="True" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+    <UserControl.Resources>
+        <ContextMenu x:Key="DataGridMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+            <MenuItem Header="Принять товар по гарантии"
+                          Command="{Binding Path=AddWarrantyCommand}">
+                <i:Interaction.Triggers>
+                    <interactivity:InteractionRequestTrigger SourceObject="{Binding Path=AddWarrantyPopupRequest}">
+                        <interactivity:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True" WindowStyle="{DynamicResource MyWindowStyle}">
+                            <interactivity:PopupWindowAction.WindowContent>
+                                <views:AddWarranty/>
+                            </interactivity:PopupWindowAction.WindowContent>
+                        </interactivity:PopupWindowAction>
+                    </interactivity:InteractionRequestTrigger>
+                </i:Interaction.Triggers>
+            </MenuItem>
+        </ContextMenu>
+
+        <ContextMenu  x:Key="RowMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+            <MenuItem Header="Принять товар по гарантии"
+                Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.AddWarrantyCommand}">
+                <i:Interaction.Triggers>
+                    <interactivity:InteractionRequestTrigger SourceObject="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.AddWarrantyPopupRequest}">
+                        <interactivity:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True" WindowStyle="{DynamicResource MyWindowStyle}">
+                            <interactivity:PopupWindowAction.WindowContent>
+                                <views:AddWarranty/>
+                            </interactivity:PopupWindowAction.WindowContent>
+                        </interactivity:PopupWindowAction>
+                    </interactivity:InteractionRequestTrigger>
+                </i:Interaction.Triggers>
+            </MenuItem>
+        </ContextMenu>
+
+        <Style x:Key="DefaultRowStyle" TargetType="{x:Type DataGridRow}">
+            <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
+        </Style>
+    </UserControl.Resources>
+    <Border Margin="5" CornerRadius="4" BorderBrush="#193441" BorderThickness="2" MaxHeight="800">
+        <StackPanel>
+            <customControlLibrary:WatermarkTextBox WatermarkText="Поиск..." Text="{Binding FindString,  UpdateSourceTrigger=PropertyChanged}" Margin ="5" Padding="0,0,5,0" HorizontalAlignment="Left"
+                                                   Height="23" TextWrapping="Wrap" VerticalAlignment="Top" MinWidth="350" VerticalContentAlignment="Center"/>
+            <StackPanel Orientation="Horizontal" Margin="5">
+                <customControlLibrary:ExtendedDataGrid ItemsSource="{Binding Path=SerialNumbersList, UpdateSourceTrigger=PropertyChanged}" MaxWidth="450" MinWidth="350"
+                          IsSynchronizedWithCurrentItem="True" CanUserResizeRows="False" CanUserDeleteRows="False" CanUserAddRows="False"
+                          CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                          MinHeight="200" MaxHeight="500" HorizontalAlignment="Center" SelectionMode="Single" Background="White" IsReadOnly="True"
+                                                       SelectedItem="{Binding Path=SelectedSerialNumber, UpdateSourceTrigger=PropertyChanged}">
+                    <customControlLibrary:ExtendedDataGrid.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                        </Style>
+                    </customControlLibrary:ExtendedDataGrid.CellStyle>
+                    <customControlLibrary:ExtendedDataGrid.Columns>
+                        <DataGridTextColumn Header="Товар" Binding="{Binding Path=Products.Title, UpdateSourceTrigger=PropertyChanged}"/>
+                        <DataGridTextColumn Header="Серийный номер" Binding="{Binding Path=Value, UpdateSourceTrigger=PropertyChanged}"/>
+                        <DataGridTextColumn Header="Дата закупки" Binding="{Binding Path=PurchaseDate, StringFormat=dd.MM.yyyy, UpdateSourceTrigger=PropertyChanged}"/>
+                        <DataGridTextColumn Header="Дата продажи" Binding="{Binding Path=SelleDate,StringFormat=dd.MM.yyyy, UpdateSourceTrigger=PropertyChanged}"/>
+                        <DataGridTextColumn Header="Поставщик" Binding="{Binding Path=Counterparties.Title, UpdateSourceTrigger=PropertyChanged}"/>
+                    </customControlLibrary:ExtendedDataGrid.Columns>
+                </customControlLibrary:ExtendedDataGrid>
+
+                <customControlLibrary:ExtendedDataGrid x:Name="WarrantiesDataGrid" ItemsSource="{Binding Path=WarrantiesList, UpdateSourceTrigger=PropertyChanged}" MaxWidth="600" MinWidth="350"
+                                                       IsSynchronizedWithCurrentItem="True" CanUserResizeRows="False" CanUserDeleteRows="False" CanUserAddRows="False"
+                                                       CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                                                       MinHeight="200" MaxHeight="500" HorizontalAlignment="Center" SelectionMode="Single" Background="White" Margin="10,0,0,0"
+                                                       ContextMenu="{StaticResource DataGridMenu}" RowStyle="{StaticResource DefaultRowStyle}" IsReadOnly="True">
+                    <customControlLibrary:ExtendedDataGrid.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                        </Style>
+                    </customControlLibrary:ExtendedDataGrid.CellStyle>
+                    <customControlLibrary:ExtendedDataGrid.Columns>
+                        <DataGridTemplateColumn Header="Неисправность">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBox MinWidth="100" MaxWidth="200" TextWrapping="Wrap" Text="{Binding Path=Malfunction, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" BorderThickness="0"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="Дата получения" Binding="{Binding Path=DateReceipt, StringFormat=dd.MM.yyyy, UpdateSourceTrigger=PropertyChanged}"/>
+                        <DataGridTextColumn Header="Дата отправки" Binding="{Binding Path=DateDeparture,StringFormat=dd.MM.yyyy, UpdateSourceTrigger=PropertyChanged}"/>
+                        <DataGridTextColumn Header="Дата выдачи" Binding="{Binding Path=DateIssue,StringFormat=dd.MM.yyyy, UpdateSourceTrigger=PropertyChanged}"/>
+                    </customControlLibrary:ExtendedDataGrid.Columns>
+                </customControlLibrary:ExtendedDataGrid>
+                <ContentControl interactivity:RegionManager.RegionName="WarrantyInfo" interactivity:RegionManager.RegionContext="{Binding Path=SelectedItem, ElementName=WarrantiesDataGrid}" Margin="10"/>
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</UserControl>

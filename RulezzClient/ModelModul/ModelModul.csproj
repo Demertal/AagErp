@@ -13,6 +13,8 @@
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -41,6 +43,7 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationFramework" />
     <Reference Include="Prism, Version=7.1.0.431, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Core.7.1.0.431\lib\net45\Prism.dll</HintPath>
     </Reference>
@@ -48,9 +51,12 @@
       <HintPath>..\packages\Prism.Wpf.7.1.0.431\lib\net45\Prism.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -60,131 +66,151 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutomationAccountingGoodsModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AutomationAccountingGoodsModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AutomationAccountingGoodsModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AutomationAccountingGoodsModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AutomationAccountingGoodsModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Counterparties.cs">
+      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Counterparty\Counterparties.cs" />
+    <Compile Include="Counterparty\CounterpartyViewModel.cs" />
     <Compile Include="CountProducts.cs">
-      <DependentUpon>StoreModel.tt</DependentUpon>
+      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
     </Compile>
     <Compile Include="ExchangeRates.cs">
-      <DependentUpon>StoreModel.tt</DependentUpon>
+      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
     </Compile>
     <Compile Include="ExchangeRate\DbSetExchangeRates.cs" />
     <Compile Include="ExchangeRate\ExchangeRates.cs" />
     <Compile Include="Groups.cs">
-      <DependentUpon>StoreModel.tt</DependentUpon>
+      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Group\DbSetGroups.cs" />
     <Compile Include="DbSetModel.cs" />
     <Compile Include="Group\Groups.cs" />
     <Compile Include="Products.cs">
-      <DependentUpon>StoreModel.tt</DependentUpon>
+      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Product\DbSetProducts.cs" />
+    <Compile Include="Report\DbSetReports.cs" />
+    <Compile Include="Report\FinalReportProductViewModel.cs" />
     <Compile Include="Product\Products.cs" />
+    <Compile Include="Product\ProductViewModel.cs" />
+    <Compile Include="PropertyNames.cs">
+      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyProducts.cs">
+      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyProduct\DbSetPropertyProducts.cs" />
+    <Compile Include="PropertyValues.cs">
+      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyValue\DbSetPropertyValue.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PropertyNames.cs">
-      <DependentUpon>StoreModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="PropertyName\DbSetPropertyNames.cs" />
     <Compile Include="PropertyName\PropertyNames.cs" />
-    <Compile Include="PropertyProducts.cs">
-      <DependentUpon>StoreModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="PropertyValues.cs">
-      <DependentUpon>StoreModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="PurchaseGoods\DbSetPurchaseGoods.cs" />
     <Compile Include="PurchaseGoods\PurchaseInfos.cs" />
+    <Compile Include="PurchaseGoods\PurchaseInfosViewModel.cs" />
     <Compile Include="PurchaseGoods\PurchaseReports.cs" />
     <Compile Include="PurchaseInfos.cs">
-      <DependentUpon>StoreModel.tt</DependentUpon>
+      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
     </Compile>
     <Compile Include="PurchaseReports.cs">
-      <DependentUpon>StoreModel.tt</DependentUpon>
+      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="RevaluationProducts.cs">
-      <DependentUpon>StoreModel.tt</DependentUpon>
+    <Compile Include="RevaluationProductsInfos.cs">
+      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="RevaluationProductsReports.cs">
+      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
     </Compile>
     <Compile Include="RevaluationProduct\DbSetRevaluationProducts.cs" />
-    <Compile Include="RevaluationProduct\RevaluationProducts.cs" />
+    <Compile Include="RevaluationProduct\RevaluationProductsInfos.cs" />
+    <Compile Include="RevaluationProduct\RevaluationProductsReports.cs" />
     <Compile Include="SalesGoods\DbSetSalesGoods.cs" />
     <Compile Include="SalesGoods\SalesInfos.cs" />
+    <Compile Include="SalesGoods\SalesInfosViewModel.cs" />
+    <Compile Include="SalesGoods\SalesReports.cs" />
     <Compile Include="SalesInfos.cs">
-      <DependentUpon>StoreModel.tt</DependentUpon>
+      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
     </Compile>
     <Compile Include="SalesReports.cs">
-      <DependentUpon>StoreModel.tt</DependentUpon>
+      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
     </Compile>
     <Compile Include="SerialNumbers.cs">
-      <DependentUpon>StoreModel.tt</DependentUpon>
+      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="SerialNumber\DbSetSerialNumbers.cs" />
     <Compile Include="SerialNumber\SerialNumbers.cs" />
-    <Compile Include="StoreModel.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>StoreModel.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="StoreModel.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>StoreModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="StoreModel.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>StoreModel.edmx</DependentUpon>
-    </Compile>
     <Compile Include="Stores.cs">
-      <DependentUpon>StoreModel.tt</DependentUpon>
+      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Store\DbSetStores.cs" />
     <Compile Include="Store\Stores.cs" />
-    <Compile Include="Suppliers.cs">
-      <DependentUpon>StoreModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Supplier\DbSetSuppliers.cs" />
+    <Compile Include="Counterparty\DbSetCounterparties.cs" />
     <Compile Include="UnitStorages.cs">
-      <DependentUpon>StoreModel.tt</DependentUpon>
+      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
     </Compile>
     <Compile Include="UnitStorage\DbSetUnitStorages.cs" />
     <Compile Include="UnitStorage\UnitStorages.cs" />
     <Compile Include="Warranties.cs">
-      <DependentUpon>StoreModel.tt</DependentUpon>
+      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
     </Compile>
     <Compile Include="WarrantyPeriods.cs">
-      <DependentUpon>StoreModel.tt</DependentUpon>
+      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
     </Compile>
     <Compile Include="WarrantyPeriod\WarrantyPeriods.cs" />
     <Compile Include="WarrantyPeriod\DbSetWarrantyPeriods.cs" />
+    <Compile Include="Warranty\DbSetWarranties.cs" />
+    <Compile Include="Warranty\WarrantyViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config" />
-    <EntityDeploy Include="StoreModel.edmx">
+    <EntityDeploy Include="AutomationAccountingGoodsModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>StoreModel.Designer.cs</LastGenOutput>
+      <LastGenOutput>AutomationAccountingGoodsModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <None Include="StoreModel.edmx.diagram">
-      <DependentUpon>StoreModel.edmx</DependentUpon>
+    <None Include="AutomationAccountingGoodsModel.edmx.diagram">
+      <DependentUpon>AutomationAccountingGoodsModel.edmx</DependentUpon>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="StoreModel.Context.tt">
+    <Content Include="AutomationAccountingGoodsModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>StoreModel.edmx</DependentUpon>
-      <LastGenOutput>StoreModel.Context.cs</LastGenOutput>
+      <DependentUpon>AutomationAccountingGoodsModel.edmx</DependentUpon>
+      <LastGenOutput>AutomationAccountingGoodsModel.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="StoreModel.tt">
+    <Content Include="AutomationAccountingGoodsModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>StoreModel.edmx</DependentUpon>
-      <LastGenOutput>StoreModel.cs</LastGenOutput>
+      <DependentUpon>AutomationAccountingGoodsModel.edmx</DependentUpon>
+      <LastGenOutput>AutomationAccountingGoodsModel.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
 </Project>

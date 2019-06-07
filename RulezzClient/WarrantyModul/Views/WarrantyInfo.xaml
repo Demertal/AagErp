@@ -1,0 +1,129 @@
+﻿<UserControl x:Class="WarrantyModul.Views.WarrantyInfo"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:interactivity="http://prismlibrary.com/"
+             xmlns:converters="clr-namespace:CustomControlLibrary.Converters;assembly=CustomControlLibrary"
+             interactivity:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d" 
+             VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Padding="10,5,5,10">
+    <UserControl.Resources>
+        <converters:IsReadOnlyConverterForBool x:Key="IsReadOnlyConverterForBool"/>
+        <converters:VisibilityConverterForBool x:Key="VisibilityConverterForBool"/>
+        <converters:VisibilityConverterForNull x:Key="VisibilityConverterForNull"/>
+        <converters:IsEnabledConverterForBool x:Key="IsEnabledConverterForBool"/>
+        <converters:VisibilityConverterForNullAndBool x:Key="VisibilityConverterForNullAndBool"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Text="Неисправность" HorizontalAlignment="Center"  Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+        <TextBox Text="{Binding SelectedWarranty.Malfunction,  UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Center" Height="50"
+                 TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1"
+                 HorizontalContentAlignment="Center" MinWidth="200" MaxWidth="200" VerticalContentAlignment="Center" Margin="5">
+            <TextBox.IsReadOnly>
+                <Binding Converter="{StaticResource IsReadOnlyConverterForBool}" UpdateSourceTrigger="PropertyChanged" Path="IsUpdate"/>
+            </TextBox.IsReadOnly>
+        </TextBox>
+        <TextBlock Text="Информация" HorizontalAlignment="Center"  Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+        <TextBox Text="{Binding SelectedWarranty.Info,  UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Height="50" TextWrapping="Wrap"
+                 VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" HorizontalContentAlignment="Center"
+                 MinWidth="200"  MaxWidth="200" VerticalContentAlignment="Center" Margin="5">
+            <TextBox.IsReadOnly>
+                <Binding Converter="{StaticResource IsReadOnlyConverterForBool}" UpdateSourceTrigger="PropertyChanged" Path="IsUpdate"/>
+            </TextBox.IsReadOnly>
+        </TextBox>
+        <TextBlock Text="Дата получения" HorizontalAlignment="Center" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
+        <TextBlock Text="{Binding SelectedWarranty.DateReceipt, StringFormat=dd.MM.yyyy,  UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Center"
+                 VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" Margin="5"/>
+        <TextBlock Text="Дата отправки" HorizontalAlignment="Center" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center"/>
+        <TextBox HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="3" Grid.Column="1" Margin="5">
+            <TextBox.Template>
+                <ControlTemplate>
+                    <StackPanel>
+                        <TextBlock Text="{Binding SelectedWarranty.DateDeparture, StringFormat=dd.MM.yyyy,  UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" Margin="5">
+                            <TextBlock.Visibility>
+                                <Binding Converter="{StaticResource VisibilityConverterForBool}" Path="IsUpdate" ConverterParameter="True"/>
+                            </TextBlock.Visibility>
+                        </TextBlock>
+                        <DatePicker SelectedDate="{Binding SelectedWarranty.DateDeparture,  UpdateSourceTrigger=PropertyChanged}" DisplayDate="{Binding SelectedWarranty.DateDeparture,  UpdateSourceTrigger=PropertyChanged}">
+                            <DatePicker.Visibility>
+                                <MultiBinding Converter="{StaticResource VisibilityConverterForNullAndBool}" ConverterParameter="InvertValue1">
+                                    <Binding Path="SelectedWarranty.DateDeparture"/>
+                                    <Binding Path="IsUpdate"/>
+                                </MultiBinding>
+                            </DatePicker.Visibility>
+                        </DatePicker>
+                        <Button Content="Товар отправлен" Command="{Binding Path=GoodsDepartureCommand}">
+                            <Button.Visibility>
+                                <MultiBinding Converter="{StaticResource VisibilityConverterForNullAndBool}">
+                                    <Binding Path="SelectedWarranty.DateDeparture"/>
+                                    <Binding Path="IsUpdate"/>
+                                </MultiBinding>
+                            </Button.Visibility>
+                        </Button>
+                    </StackPanel>
+                </ControlTemplate>
+            </TextBox.Template>
+        </TextBox>
+        <TextBlock Text="Дата выдачи" HorizontalAlignment="Center" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center"/>
+        <TextBox HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="4" Grid.Column="1" Margin="5">
+            <TextBox.Template>
+                <ControlTemplate>
+                    <StackPanel>
+                        <TextBlock Text="{Binding SelectedWarranty.DateIssue, StringFormat=dd.MM.yyyy,  UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" Margin="5">
+                            <TextBlock.Visibility>
+                                <Binding Converter="{StaticResource VisibilityConverterForBool}" Path="IsUpdate" ConverterParameter="True"/>
+                            </TextBlock.Visibility>
+                        </TextBlock>
+                        <DatePicker SelectedDate="{Binding SelectedWarranty.DateIssue,  UpdateSourceTrigger=PropertyChanged}" DisplayDate="{Binding SelectedWarranty.DateIssue,  UpdateSourceTrigger=PropertyChanged}">
+                            <DatePicker.Visibility>
+                                <MultiBinding Converter="{StaticResource VisibilityConverterForNullAndBool}" ConverterParameter="InvertValue1">
+                                    <Binding Path="SelectedWarranty.DateIssue"/>
+                                    <Binding Path="IsUpdate"/>
+                                </MultiBinding>
+                            </DatePicker.Visibility>
+                        </DatePicker>
+                        <Button Content="Товар выдан" Command="{Binding Path=GoodsIssueCommand}">
+                            <Button.Visibility>
+                                <MultiBinding Converter="{StaticResource VisibilityConverterForNullAndBool}">
+                                    <Binding Path="SelectedWarranty.DateIssue"/>
+                                    <Binding Path="IsUpdate"/>
+                                </MultiBinding>
+                            </Button.Visibility>
+                        </Button>
+                    </StackPanel>
+                </ControlTemplate>
+            </TextBox.Template>
+        </TextBox>
+        <Button Content="Ок" HorizontalAlignment="Center" VerticalAlignment="Center" Width="75" Command="{Binding OkCommand}" Margin="5" Grid.Row="5" Grid.Column="0">
+            <Button.Visibility>
+                <Binding Converter="{StaticResource VisibilityConverterForBool}" ConverterParameter="False" Path="IsUpdate"/>
+            </Button.Visibility>
+        </Button>
+        <Button Content="Отмена" HorizontalAlignment="Center" VerticalAlignment="Center" Width="75" Command="{Binding ResetCommand}" Margin="5" Grid.Column="1" Grid.Row="5">
+            <Button.Visibility>
+                <Binding Converter="{StaticResource VisibilityConverterForBool}" ConverterParameter="False" Path="IsUpdate"/>
+            </Button.Visibility>
+        </Button>
+        <Button Content="Редактировать" HorizontalAlignment="Center" VerticalAlignment="Center" Width="95" Command="{Binding UpdateCommand}"
+                Grid.Row="5" Grid.Column="1" Margin="5">
+            <Button.Visibility>
+                <Binding Converter="{StaticResource VisibilityConverterForBool}" ConverterParameter="True" Path="IsUpdate"/>
+            </Button.Visibility>
+        </Button>
+    </Grid>
+</UserControl>

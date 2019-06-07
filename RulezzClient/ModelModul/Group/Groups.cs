@@ -2,7 +2,7 @@
 
 namespace ModelModul
 {
-    public partial class Groups : ICloneable, IEquatable<Groups>
+    public partial class Groups : ICloneable
     {
         public object Clone()
         {
@@ -10,16 +10,17 @@ namespace ModelModul
             {
                 Id = Id,
                 IdParentGroup = IdParentGroup,
-                Title = Title,
-                Groups2 = (Groups) Groups2?.Clone()
+                Title = Title
             };
         }
 
-        public bool Equals(Groups other)
+        public override bool Equals(Object obj)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return Id == other.Id && Title == other.Title && IdParentGroup == other.IdParentGroup;
+            if (obj == null || !GetType().Equals(obj.GetType()))
+            {
+                return false;
+            }
+            return Id == ((Groups)obj).Id && Title == ((Groups)obj).Title && IdParentGroup == ((Groups)obj).IdParentGroup;
         }
     }
 }

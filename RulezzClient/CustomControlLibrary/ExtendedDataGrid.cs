@@ -38,6 +38,8 @@ namespace CustomControlLibrary
             base.OnMouseRightButtonDown(e);
         }
 
+
+
         public DelegateCommand<int?> CmHeaderCommand { get; }
     }
 }

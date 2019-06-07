@@ -2,94 +2,87 @@
 using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace ModelModul.Group
 {
-    public class DbSetGroups : DbSetModel<Groups>
+    public class DbSetGroups : AutomationAccountingGoodsEntities, IDbSetModel<Groups>
     {
-        public async Task LoadAsync(Groups parentGroup = null)
+        public async Task<ObservableCollection<Groups>> LoadAsync(Groups parentGroup = null)
         {
             bool Pre(Groups obj)
             {
                 return (obj.IdParentGroup == null && parentGroup == null) ||
                        (obj.IdParentGroup != null && parentGroup != null && obj.IdParentGroup.Value == parentGroup.Id);
             }
-            using (StoreEntities db = new StoreEntities())
-            {
-                await db.Groups.Include("Groups1").LoadAsync();
-                List = new ObservableCollection<Groups>(db.Groups.Local.Where(Pre));
-            }
+            await Groups.Include("Groups1").LoadAsync();
+            return new ObservableCollection<Groups>(Groups.Local.Where(Pre));
         }
 
-        public override async Task AddAsync(Groups obj)
+        public async Task AddAsync(Groups obj)
         {
-            using (StoreEntities db = new StoreEntities())
+            using (var transaction = Database.BeginTransaction())
             {
-                using (var transaction = db.Database.BeginTransaction())
+                try
                 {
-                    try
+                    if (obj.IdParentGroup == 0)
                     {
-                        db.Groups.Add(obj);
-                        await db.SaveChangesAsync();
-                        transaction.Commit();
+                        obj.IdParentGroup = null;
                     }
-                    catch (Exception)
-                    {
-                        transaction.Rollback();
-                        throw;
-                    }
+                    var group = Groups.Find(obj.IdParentGroup);
+                    obj.Groups2 = group;
+                    Entry(obj).State = EntityState.Added;
+                    Entry(obj.Groups2).State = EntityState.Unchanged;
+                    await SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
                 }
             }
         }
 
-        public override async Task DeleteAsync(int objId)
+        public async Task DeleteAsync(int objId)
         {
-            using (StoreEntities db = new StoreEntities())
+            using (var transaction = Database.BeginTransaction())
             {
-                using (var transaction = db.Database.BeginTransaction())
+                try
                 {
-                    try
-                    {
-                        var group = db.Groups.Find(objId);
-                        db.Entry(group).State = EntityState.Deleted;
-                        await db.SaveChangesAsync();
-                        transaction.Commit();
-                    }
-                    catch (Exception)
-                    {
-                        transaction.Rollback();
-                        throw;
-                    }
+                    var group = Groups.Find(objId);
+                    Entry(group).State = EntityState.Deleted;
+                    await SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
                 }
             }
         }
 
-        public override async Task UpdateAsync(Groups obj)
+        public async Task UpdateAsync(Groups obj)
         {
-            using (StoreEntities db = new StoreEntities())
+            using (var transaction = Database.BeginTransaction())
             {
-                using (var transaction = db.Database.BeginTransaction())
+                try
                 {
-                    try
+                    var modifi = Groups.Find(obj.Id);
+                    if (modifi != null)
                     {
-                        var modifi = db.Groups.Find(obj.Id);
-                        if (modifi != null)
-                        {
-                            modifi.Title = obj.Title;
-                            db.Entry(modifi).State = EntityState.Modified;
-                        }
-                        else throw new Exception("Изменение не удалось");
-                        await db.SaveChangesAsync();
-                        transaction.Commit();
+                        modifi.Title = obj.Title;
+                        Entry(modifi).State = EntityState.Modified;
                     }
-                    catch (Exception)
-                    {
-                        transaction.Rollback();
-                        throw;
-                    }
+                    else throw new Exception("Изменение не удалось");
+                    await SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
                 }
             }
         }

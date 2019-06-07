@@ -24,14 +24,14 @@ namespace ModelModul
         public int Id { get; set; }
         //public string Value { get; set; }
         public Nullable<System.DateTime> SelleDate { get; set; }
-        public System.DateTime PurchaseDate { get; set; }
+        public Nullable<System.DateTime> PurchaseDate { get; set; }
         public int IdProduct { get; set; }
-        public int IdSupplier { get; set; }
+        public int IdCounterparty { get; set; }
     
+        public virtual Counterparties Counterparties { get; set; }
         public virtual Products Products { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SalesInfos> SalesInfos { get; set; }
-        public virtual Suppliers Suppliers { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Warranties> Warranties { get; set; }
     }

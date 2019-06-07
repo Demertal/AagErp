@@ -9,7 +9,6 @@
 
 namespace ModelModul
 {
-    using System;
     using System.Collections.Generic;
     
     public partial class PropertyNames
@@ -17,6 +16,7 @@ namespace ModelModul
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public PropertyNames()
         {
+            this.PropertyProducts = new HashSet<PropertyProducts>();
             this.PropertyValues = new HashSet<PropertyValues>();
         }
     
@@ -25,6 +25,8 @@ namespace ModelModul
         public int IdGroup { get; set; }
     
         public virtual Groups Groups { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PropertyProducts> PropertyProducts { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PropertyValues> PropertyValues { get; set; }
     }

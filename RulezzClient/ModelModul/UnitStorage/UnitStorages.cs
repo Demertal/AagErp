@@ -2,7 +2,7 @@
 
 namespace ModelModul
 {
-    public partial class UnitStorages: ICloneable, IEquatable<UnitStorages>
+    public partial class UnitStorages: ICloneable
     {
         public object Clone()
         {
@@ -13,11 +13,13 @@ namespace ModelModul
             };
         }
 
-        public bool Equals(UnitStorages other)
+        public override bool Equals(Object obj)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return Id == other.Id && Title == other.Title;
+            if (obj == null || !GetType().Equals(obj.GetType()))
+            {
+                return false;
+            }
+            return Id == ((UnitStorages)obj).Id && Title == ((UnitStorages)obj).Title;
         }
     }
 }

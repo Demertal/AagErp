@@ -2,15 +2,8 @@
 
 namespace ModelModul
 {
-    public partial class ExchangeRates: IEquatable<ExchangeRates>, ICloneable
+    public partial class ExchangeRates: ICloneable
     {
-        public bool Equals(ExchangeRates other)
-        {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return Id == other.Id && Title == other.Title && Course == other.Course;
-        }
-
         public object Clone()
         {
             return new ExchangeRates
@@ -19,6 +12,15 @@ namespace ModelModul
                 Title = Title,
                 Course = Course
             };
+        }
+
+        public override bool Equals(Object obj)
+        {
+            if (obj == null || !GetType().Equals(obj.GetType()))
+            {
+                return false;
+            }
+            return Id == ((ExchangeRates)obj).Id && Title == ((ExchangeRates)obj).Title && Course == ((ExchangeRates)obj).Course;
         }
     }
 }

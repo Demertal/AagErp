@@ -23,9 +23,8 @@
                     CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center"
                     MinHeight="200" MaxHeight="500" RowStyle="{StaticResource DefaultRowStyle}" SelectionMode="Single" HorizontalAlignment="Center">
             <i:Interaction.Triggers>
-                <i:EventTrigger EventName="RowEditEnding">
-                    <mvvm:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Path=DataContext.AddWarrantyPeriodsCommand}"
-                                              CommandParameter="{Binding ElementName=DataGridWarrantyPeriods, Path=CurrentItem}"/>
+                <i:EventTrigger EventName="CellEditEnding">
+                    <mvvm:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Path=DataContext.ChangeWarrantyPeriodsCommand}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
             <DataGrid.CellStyle>

@@ -35,6 +35,12 @@
     <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.2.0.4\lib\net45\CommonServiceLocator.dll</HintPath>
     </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="Prism, Version=7.1.0.431, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
@@ -44,6 +50,7 @@
       <HintPath>..\packages\Prism.Wpf.7.1.0.431\lib\net45\Prism.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -65,15 +72,15 @@
     <Compile Include="ProductModul.cs" />
     <Compile Include="ViewModels\AddProductViewModel.cs" />
     <Compile Include="ViewModels\ShowProductViewModel.cs" />
-    <Compile Include="ViewModels\UpdateProductViewModel.cs" />
+    <Compile Include="ViewModels\ProductInfoViewModel.cs" />
     <Compile Include="Views\AddProduct.xaml.cs">
       <DependentUpon>AddProduct.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ShowProduct.xaml.cs">
       <DependentUpon>ShowProduct.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\UpdateProduct.xaml.cs">
-      <DependentUpon>UpdateProduct.xaml</DependentUpon>
+    <Compile Include="Views\ProductInfo.xaml.cs">
+      <DependentUpon>ProductInfo.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -85,7 +92,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\UpdateProduct.xaml">
+    <Page Include="Views\ProductInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -94,6 +101,10 @@
     <ProjectReference Include="..\CustomControlLibrary\CustomControlLibrary.csproj">
       <Project>{ba906062-87b9-41e7-b1ee-a44007eb8933}</Project>
       <Name>CustomControlLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GenerationBarcodeLibrary\GenerationBarcodeLibrary.csproj">
+      <Project>{4F2CF7C8-3230-4459-8B64-7AA0750BD3C3}</Project>
+      <Name>GenerationBarcodeLibrary</Name>
     </ProjectReference>
     <ProjectReference Include="..\GroupModul\GroupModul.csproj">
       <Project>{06EB7CE3-8C9C-4BD6-BF72-4CAAB19B22F0}</Project>
@@ -109,6 +120,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

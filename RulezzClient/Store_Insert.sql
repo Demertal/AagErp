@@ -1,3 +1,6 @@
+USE AutomationAccountingGoods
+GO
+
 INSERT INTO UnitStorages VALUES ('шт')
 
 INSERT INTO Groups(Title) VALUES ('Rulezz'), ('Craft')
@@ -10,12 +13,20 @@ INSERT INTO Groups(Title, IdParentGroup) VALUES ('Группа3', 3), ('Группа4', 3)
 
  INSERT INTO ExchangeRates VALUES ('ГРН', 1), ('USD', 20)
 
- INSERT INTO Suppliers VALUES ('Поставщик1')
+ INSERT INTO Counterparties(Title, WhoIsIt) VALUES ('Поставщик1', 0), ('Покупатель', 1)
 
- INSERT INTO Products (Title, VendorCode, Barcode, PurchasePrice, SalesPrice, IdExchangeRate, IdWarrantyPeriod, IdGroup, IdUnitStorage)
- VALUES ('Товар1', 'ven1', '7702655770330',  100, 200, 1, 1, 1, 1), ('Товар2', 'ven2', '2432275136012',  200, 400, 1, 2, 1, 1),
- ('Товар3', 'ven3', '2480403477506',  200, 400, 1, 1, 2, 1), ('Товар4', 'ven4', '5522645663532',  500, 800, 1, 2, 2, 1),
- ('Товар5', 'ven5', '7836688033275',  200, 400, 1, 1, 3, 1), ('Товар6', 'ven6', '2267301887541',  200, 400, 1, 2, 6, 1)
+ INSERT INTO Products (Title, VendorCode, Barcode, IdWarrantyPeriod, IdGroup, IdUnitStorage)
+ VALUES ('Товар1', 'ven1', '8402487158014', 1, 1, 1), ('Товар2', 'ven2', '7131053223351', 2, 1, 1),
+ ('Товар3', 'ven3', '4127230762266', 1, 2, 1), ('Товар4', 'ven4', '8051412688784', 2, 2, 1),
+ ('Товар5', 'ven5', '1123426665840', 1, 3, 1), ('Товар6', 'ven6', '1056263388118', 2, 6, 1)
+
+ INSERT INTO PurchaseReports(Course, IdStore, IdCounterparty) VALUES (1, 1, 1)
+ INSERT INTO PurchaseInfos(Count, PurchasePrice, IdPurchaseReport, IdProduct, IdExchangeRate) VALUES (1, 100, 1, 2, 2)
+ INSERT INTO PurchaseInfos(Count, PurchasePrice, IdPurchaseReport, IdProduct, IdExchangeRate) VALUES (1, 300, 1, 1, 2)
+ INSERT INTO SerialNumbers(Value, IdProduct, IdCounterparty) VALUES ('8521265688755', 2, 1)
+ INSERT INTO SalesReports(IdStore, IdCounterparty) VALUES (1, 2)
+ INSERT INTO SalesInfos(Count,	SellingPrice, IdProduct, IdSalesReport,	IdSerialNumber) VALUES (1, 400, 2, 1, 1)
+ INSERT INTO SalesInfos(Count,	SellingPrice, IdProduct, IdSalesReport) VALUES (1, 400, 1, 1)
 
  SELECT * FROM ExchangeRates;
  SELECT * FROM Stores;
@@ -26,12 +37,13 @@ INSERT INTO Groups(Title, IdParentGroup) VALUES ('Группа3', 3), ('Группа4', 3)
  SELECT * FROM PropertyNames;
  SELECT * FROM PropertyValues;
  SELECT * FROM PropertyProducts;
- SELECT * FROM Suppliers;
+ SELECT * FROM Counterparties;
  SELECT * FROM PurchaseReports;
  SELECT * FROM PurchaseInfos;
  SELECT * FROM SerialNumbers;
  SELECT * FROM SalesReports;
  SELECT * FROM SalesInfos;
  SELECT * FROM Warranties;
- SELECT * FROM RevaluationProducts;
+ SELECT * FROM RevaluationProductsReports;
+ SELECT * FROM RevaluationProductsInfos;
  SELECT * FROM CountProducts;

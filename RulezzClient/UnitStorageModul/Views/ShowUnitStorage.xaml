@@ -24,7 +24,7 @@
                     MinHeight="200" MaxHeight="500" HorizontalAlignment="Center" RowStyle="{StaticResource DefaultRowStyle}" SelectionMode="Single">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="RowEditEnding">
-                    <mvvm:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Path=DataContext.AddUnitStoragesCommand}" CommandParameter="{Binding ElementName=DataGridUnitStorages, Path=CurrentItem}"/>
+                    <mvvm:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Path=DataContext.ChangeUnitStoragesCommand}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
             <DataGrid.CellStyle>
@@ -34,7 +34,7 @@
                 </Style>
             </DataGrid.CellStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Наименование" Binding="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Ед. хр." Binding="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
