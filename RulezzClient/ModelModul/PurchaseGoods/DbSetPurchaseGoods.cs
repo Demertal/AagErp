@@ -11,7 +11,7 @@ namespace ModelModul.PurchaseGoods
     {
         public async Task<ObservableCollection<PurchaseReports>> LoadAsync(int start, int end)
         {
-            await PurchaseReports.Include(obj => obj.PurchaseInfos)/*.(post => post.Author)*/.OrderByDescending(obj => obj.DataOrder)
+            await PurchaseReports.Include(obj => obj.PurchaseInfos).OrderByDescending(obj => obj.DataOrder)
                 .ThenByDescending(obj => obj.Id).Skip(start).Take(end)
                 .Include(obj => obj.Counterparties).Include(obj => obj.Stores).LoadAsync();
             return PurchaseReports.Local;
