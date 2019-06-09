@@ -1,19 +1,19 @@
-﻿<UserControl x:Class="ReportModul.Views.ShowRevaluationReports"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<UserControl x:Class="ReportModul.Views.ShowSalesReports"
+xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:interactivity="http://prismlibrary.com/"
              xmlns:customControlLibrary="clr-namespace:CustomControlLibrary;assembly=CustomControlLibrary"
              xmlns:converters="clr-namespace:CustomControlLibrary.Converters;assembly=CustomControlLibrary"
              interactivity:ViewModelLocator.AutoWireViewModel="True"
-             VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left">
-    
+             VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Padding="5">
+
     <UserControl.Resources>
-        <converters:GetProductsTitleFromRevaluaitionInfo x:Key="GetProductsTitleFromRevaluaitionInfo"/> 
+        <converters:GetProductsTitleFromSalesInfo x:Key="GetProductsTitleFromSalesInfo"/>
     </UserControl.Resources>
 
     <StackPanel Orientation="Horizontal">
         <StackPanel>
-            <customControlLibrary:ExtendedDataGrid x:Name="RevaulationReportsDataGrid" ItemsSource="{Binding Path=ReportsList, UpdateSourceTrigger=PropertyChanged}" MaxWidth="400"
+            <customControlLibrary:ExtendedDataGrid x:Name="SalesReportsDataGrid" ItemsSource="{Binding Path=ReportsList, UpdateSourceTrigger=PropertyChanged}" MaxWidth="400"
                                                    IsSynchronizedWithCurrentItem="True" CanUserResizeRows="False" CanUserDeleteRows="False" CanUserAddRows="False"
                                                    CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Center" VerticalAlignment="Top"
                                                    MinHeight="200" MaxHeight="500" HorizontalAlignment="Left" SelectionMode="Single">
@@ -24,8 +24,10 @@
                     </Style>
                 </DataGrid.CellStyle>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Дата" Binding="{Binding Path=DataRevaluation, StringFormat=dd.MM.yyyy, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Номенклатура" Binding="{Binding Converter={StaticResource GetProductsTitleFromRevaluaitionInfo}, Path=RevaluationProductsInfos, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Дата" Binding="{Binding Path=DataSales, StringFormat=dd.MM.yyyy, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Покупатель" Binding="{Binding Path=Counterparties.Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Номенклатура" Binding="{Binding Converter={StaticResource GetProductsTitleFromSalesInfo}, Path=SalesInfos, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Склад" Binding="{Binding Path=Stores.Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
                 </DataGrid.Columns>
             </customControlLibrary:ExtendedDataGrid>
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
@@ -34,6 +36,8 @@
             </StackPanel>
         </StackPanel>
 
-        <ContentControl interactivity:RegionManager.RegionName="RevaluationReportInfo" interactivity:RegionManager.RegionContext="{Binding Path=SelectedItem, ElementName=RevaulationReportsDataGrid}" Margin="25,0,0,0"/>
+        <Border Margin="25,0,0,0" BorderBrush="Black" BorderThickness="2" CornerRadius="4">
+            <ContentControl interactivity:RegionManager.RegionName="SalesReportInfo" interactivity:RegionManager.RegionContext="{Binding Path=SelectedItem, ElementName=SalesReportsDataGrid}"/>
+        </Border>
     </StackPanel>
 </UserControl>

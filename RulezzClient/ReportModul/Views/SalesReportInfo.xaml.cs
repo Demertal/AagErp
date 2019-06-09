@@ -7,11 +7,11 @@ using ReportModul.ViewModels;
 namespace ReportModul.Views
 {
     /// <summary>
-    /// Логика взаимодействия для RevaluationReportInfo.xaml
+    /// Логика взаимодействия для SalesReportInfo.xaml
     /// </summary>
-    public partial class RevaluationReportInfo : UserControl
+    public partial class SalesReportInfo : UserControl
     {
-        public RevaluationReportInfo()
+        public SalesReportInfo()
         {
             InitializeComponent();
             RegionContext.GetObservableContext(this).PropertyChanged += RevaluationReportInfo_PropertyChanged;
@@ -20,8 +20,8 @@ namespace ReportModul.Views
         private void RevaluationReportInfo_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             var context = (ObservableObject<object>)sender;
-            var revaluationProductsReport = (RevaluationProductsReports)context.Value;
-            (DataContext as RevaluationReportInfoViewModel).Report = revaluationProductsReport ?? new RevaluationProductsReports();
+            var salesReport = (SalesReports)context.Value;
+            (DataContext as SalesReportInfoViewModel).Report = salesReport ?? new SalesReports();
         }
     }
 }

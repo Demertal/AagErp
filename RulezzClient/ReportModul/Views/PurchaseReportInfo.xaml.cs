@@ -21,7 +21,7 @@ namespace ReportModul.Views
         {
             var context = (ObservableObject<object>)sender;
             var purchaseReports = (PurchaseReports)context.Value;
-            (DataContext as PurchaseReportInfoViewModel).PurchaseReport = purchaseReports ?? new PurchaseReports();
+            (DataContext as PurchaseReportInfoViewModel).Report = purchaseReports ?? new PurchaseReports();
         }
     }
 }

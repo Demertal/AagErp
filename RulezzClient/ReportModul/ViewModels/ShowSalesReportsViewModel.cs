@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Windows;
 using ModelModul;
-using ModelModul.RevaluationProduct;
+using ModelModul.SalesGoods;
 using Prism.Regions;
 
 namespace ReportModul.ViewModels
 {
-    class ShowRevaluationReportsViewModel: BufferRead<RevaluationProductsReports>, INavigationAware
+    class ShowSalesReportsViewModel : BufferRead<SalesReports>, INavigationAware
     {
         #region Properties
 
@@ -14,7 +14,7 @@ namespace ReportModul.ViewModels
 
         #endregion
 
-        public ShowRevaluationReportsViewModel(IRegionManager regionManager)
+        public ShowSalesReportsViewModel(IRegionManager regionManager)
         {
             _regionManager = regionManager;
             Load();
@@ -24,7 +24,7 @@ namespace ReportModul.ViewModels
         {
             try
             {
-                DbSetRevaluationProducts dbSet = new DbSetRevaluationProducts();
+                DbSetSalesGoods dbSet = new DbSetSalesGoods();
                 Count = await dbSet.GetCount();
                 ReportsList = await dbSet.LoadAsync(Left, Step);
                 RaisePropertyChanged("IsEnabledRightCommand");
@@ -46,7 +46,7 @@ namespace ReportModul.ViewModels
 
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
-            _regionManager.Regions.Remove("RevaluationReportInfo");
+            _regionManager.Regions.Remove("SalesReportInfo");
         }
     }
 }

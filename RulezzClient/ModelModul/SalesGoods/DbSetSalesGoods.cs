@@ -1,10 +1,26 @@
 ﻿using System;
+using System.Collections.ObjectModel;
+using System.Data.Entity;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ModelModul.SalesGoods
 {
     public class DbSetSalesGoods : AutomationAccountingGoodsEntities, IDbSetModel<SalesReports>
     {
+        public async Task<ObservableCollection<SalesReports>> LoadAsync(int start, int end)
+        {
+            await SalesReports.Include(obj => obj.SalesInfos).OrderByDescending(obj => obj.DataSales)
+                .ThenByDescending(obj => obj.Id).Skip(start).Take(end)
+                .Include(obj => obj.Counterparties).Include(obj => obj.Stores).LoadAsync();
+            return SalesReports.Local;
+        }
+
+        public async Task<int> GetCount()
+        {
+            return await PurchaseReports.CountAsync();
+        }
+
         public async Task AddAsync(SalesReports obj)
         {
             using (var transaction = Database.BeginTransaction())

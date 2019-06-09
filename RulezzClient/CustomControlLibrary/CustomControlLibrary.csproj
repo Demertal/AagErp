@@ -72,6 +72,7 @@
     <Compile Include="Converters\CurrencyConverter4Parametrs.cs" />
     <Compile Include="Converters\GetProductsTitleFromPurchaseInfo.cs" />
     <Compile Include="Converters\GetProductsTitleFromRevaluaitionInfo.cs" />
+    <Compile Include="Converters\GetProductsTitleFromSalesInfo.cs" />
     <Compile Include="Converters\IsEnabledConverterForBool.cs" />
     <Compile Include="Converters\IsReadOnlyConverterForBool.cs" />
     <Compile Include="Converters\IsReadOnlyConverterForSerialNumber.cs" />

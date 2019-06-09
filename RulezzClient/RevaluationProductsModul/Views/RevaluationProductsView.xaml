@@ -65,8 +65,8 @@
                             </MultiBinding>
                         </DataGridTextColumn.Binding>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="Ст. цена прод." Binding="{Binding Path=OldSalesPrice, UpdateSourceTrigger=PropertyChanged, StringFormat=C, ConverterCulture='ua-UA'}"  IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Нов. цена прод."  Binding="{Binding Path=NewSalesPrice, UpdateSourceTrigger=PropertyChanged, StringFormat=C, ConverterCulture='ua-UA', ValidatesOnExceptions=True}"/>
+                    <DataGridTextColumn Header="Текущая" Binding="{Binding Path=OldSalesPrice, UpdateSourceTrigger=PropertyChanged, StringFormat=C, ConverterCulture='ua-UA'}"  IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Переоцененная"  Binding="{Binding Path=NewSalesPrice, UpdateSourceTrigger=PropertyChanged, StringFormat=C, ConverterCulture='ua-UA', ValidatesOnExceptions=True}"/>
                 </customControlLibrary:ExtendedDataGrid.Columns>
             </customControlLibrary:ExtendedDataGrid>
             <DockPanel VerticalAlignment="Center">

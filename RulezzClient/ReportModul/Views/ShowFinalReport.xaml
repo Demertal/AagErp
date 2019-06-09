@@ -10,9 +10,11 @@
              mc:Ignorable="d" 
              VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Padding="10,5,5,10">
     <StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <TextBlock Text="Укажите диапозон времени: "/>
-            <Calendar DisplayMode="Month"/>
+        <StackPanel Orientation="Horizontal" Margin="5">
+            <TextBlock Text="Укажите диапозон времени: От"/>
+            <DatePicker Margin="5,0,0,0" SelectedDate="{Binding Path=StartDate}" SelectedDateFormat="Short" />
+            <TextBlock Text="До"/>
+            <DatePicker Margin="5,0,0,0" SelectedDate="{Binding Path=EndDate}" SelectedDateFormat="Short" />
         </StackPanel>
         <customcontrollibrary:ExtendedDataGrid ItemsSource="{Binding Path=ReportList, UpdateSourceTrigger=PropertyChanged}"
                     IsSynchronizedWithCurrentItem="True" CanUserResizeRows="False" CanUserAddRows="False" CanUserDeleteRows="False"

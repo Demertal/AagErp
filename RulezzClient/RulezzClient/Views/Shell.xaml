@@ -26,11 +26,13 @@
                 </MenuItem>
                 <MenuItem Header="Ед. хранения" Command="{Binding NavigateCommand}" CommandParameter="ShowUnitStorage"/>
                 <MenuItem Header="Гарантийный период" Command="{Binding NavigateCommand}" CommandParameter="ShowWarrantyPeriods"/>
+                <MenuItem Header="Переоценки" Command="{Binding NavigateCommand}" CommandParameter="ShowRevaluationReports"/>
+                <MenuItem Header="Закупки" Command="{Binding NavigateCommand}" CommandParameter="ShowPurchaseReports"/>
+                <MenuItem Header="Продажи" Command="{Binding NavigateCommand}" CommandParameter="ShowSalesReports"/>
             </MenuItem>
             <MenuItem Height="20"  Header="Гарантия" Command="{Binding NavigateCommand}" CommandParameter="ShowWarranties"/>
             <MenuItem Header="Отчет">
-                <MenuItem Header="Отчеты о переоценке" Command="{Binding NavigateCommand}" CommandParameter="ShowRevaluationReports"/>
-                <MenuItem Header="Отчеты о закупке" Command="{Binding NavigateCommand}" CommandParameter="ShowPurchaseReports"/>
+                <MenuItem Header="Отчет" Command="{Binding NavigateCommand}" CommandParameter="ShowFinalReport"/>
             </MenuItem>
         </Menu>
         <ContentControl x:Name="ContentRegionMain" mvvm:RegionManager.RegionName="ContentRegion" Margin="10, 28, 0, 0"/>

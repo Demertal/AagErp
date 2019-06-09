@@ -67,16 +67,23 @@
   <ItemGroup>
     <Compile Include="ReportModul.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\BufferRead.cs" />
+    <Compile Include="ViewModels\InfoReport.cs" />
     <Compile Include="ViewModels\PurchaseReportInfoViewModel.cs" />
     <Compile Include="ViewModels\RevaluationReportInfoViewModel.cs" />
+    <Compile Include="ViewModels\SalesReportInfoViewModel.cs" />
     <Compile Include="ViewModels\ShowFinalReportViewModel.cs" />
     <Compile Include="ViewModels\ShowPurchaseReportsViewModel.cs" />
     <Compile Include="ViewModels\ShowRevaluationReportsViewModel.cs" />
+    <Compile Include="ViewModels\ShowSalesReportsViewModel.cs" />
     <Compile Include="Views\PurchaseReportInfo.xaml.cs">
       <DependentUpon>PurchaseReportInfo.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\RevaluationReportInfo.xaml.cs">
       <DependentUpon>RevaluationReportInfo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SalesReportInfo.xaml.cs">
+      <DependentUpon>SalesReportInfo.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ShowFinalReport.xaml.cs">
       <DependentUpon>ShowFinalReport.xaml</DependentUpon>
@@ -87,6 +94,9 @@
     <Compile Include="Views\ShowRevaluationReports.xaml.cs">
       <DependentUpon>ShowRevaluationReports.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ShowSalesReports.xaml.cs">
+      <DependentUpon>ShowSalesReports.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\PurchaseReportInfo.xaml">
@@ -94,6 +104,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\RevaluationReportInfo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SalesReportInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -106,6 +120,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ShowRevaluationReports.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ShowSalesReports.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -7,7 +7,7 @@ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left">
 
     <StackPanel Orientation="Horizontal">
-        <customControlLibrary:ExtendedDataGrid ItemsSource="{Binding Path=RevaluationProductsReport.RevaluationProductsInfos, UpdateSourceTrigger=PropertyChanged}" MaxWidth="400"
+        <customControlLibrary:ExtendedDataGrid ItemsSource="{Binding Path=Report.RevaluationProductsInfos, UpdateSourceTrigger=PropertyChanged}" MaxWidth="400"
                                                IsSynchronizedWithCurrentItem="True" CanUserResizeRows="False" CanUserDeleteRows="False" CanUserAddRows="False"
                                                CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Center" VerticalAlignment="Top"
                                                MinHeight="200" MaxHeight="500" HorizontalAlignment="Left" SelectionMode="Single" IsReadOnly="True">
@@ -18,9 +18,9 @@ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                 </Style>
             </DataGrid.CellStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Товар" Binding="{Binding Path=Products.Title, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Старая цена продажи" Binding="{Binding Path=OldSalesPrice, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Новая цена продажи" Binding="{Binding Path=NewSalesPrice, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Наименование" Binding="{Binding Path=Products.Title, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Текущая" Binding="{Binding Path=OldSalesPrice, UpdateSourceTrigger=PropertyChanged, StringFormat=C, ConverterCulture='ua-UA'}"/>
+                <DataGridTextColumn Header="Переоцененная" Binding="{Binding Path=NewSalesPrice, UpdateSourceTrigger=PropertyChanged, StringFormat=C, ConverterCulture='ua-UA'}"/>
             </DataGrid.Columns>
         </customControlLibrary:ExtendedDataGrid>
     </StackPanel>

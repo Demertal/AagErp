@@ -5,7 +5,7 @@
              xmlns:customControlLibrary="clr-namespace:CustomControlLibrary;assembly=CustomControlLibrary"
              xmlns:converters="clr-namespace:CustomControlLibrary.Converters;assembly=CustomControlLibrary"
              interactivity:ViewModelLocator.AutoWireViewModel="True"
-             VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left">
+             VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Padding="5">
 
     <UserControl.Resources>
         <converters:GetProductsTitleFromPurchaseInfo x:Key="GetProductsTitleFromPurchaseInfo"/>
@@ -13,7 +13,7 @@
 
     <StackPanel Orientation="Horizontal">
         <StackPanel>
-            <customControlLibrary:ExtendedDataGrid x:Name="PurchaseReportsDataGrid" ItemsSource="{Binding Path=PurchaseProductsReportsList, UpdateSourceTrigger=PropertyChanged}" MaxWidth="400"
+            <customControlLibrary:ExtendedDataGrid x:Name="PurchaseReportsDataGrid" ItemsSource="{Binding Path=ReportsList, UpdateSourceTrigger=PropertyChanged}" MaxWidth="400"
                                                    IsSynchronizedWithCurrentItem="True" CanUserResizeRows="False" CanUserDeleteRows="False" CanUserAddRows="False"
                                                    CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Center" VerticalAlignment="Top"
                                                    MinHeight="200" MaxHeight="500" HorizontalAlignment="Left" SelectionMode="Single">
@@ -24,10 +24,10 @@
                     </Style>
                 </DataGrid.CellStyle>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Поставщик" Binding="{Binding Path=Counterparties.Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Склад" Binding="{Binding Path=Stores.Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Дата" Binding="{Binding Path=DataOrder, StringFormat=dd.MM.yyyy, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Товар" Binding="{Binding Converter={StaticResource GetProductsTitleFromPurchaseInfo}, Path=PurchaseInfos, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Поставщик" Binding="{Binding Path=Counterparties.Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Номенклатура" Binding="{Binding Converter={StaticResource GetProductsTitleFromPurchaseInfo}, Path=PurchaseInfos, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Склад" Binding="{Binding Path=Stores.Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
                 </DataGrid.Columns>
             </customControlLibrary:ExtendedDataGrid>
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
@@ -36,6 +36,8 @@
             </StackPanel>
         </StackPanel>
 
-        <ContentControl interactivity:RegionManager.RegionName="PurchaseReportInfo" interactivity:RegionManager.RegionContext="{Binding Path=SelectedItem, ElementName=PurchaseReportsDataGrid}" Margin="25,0,0,0"/>
+        <Border Margin="25,0,0,0" BorderBrush="Black" BorderThickness="2" CornerRadius="4">
+            <ContentControl interactivity:RegionManager.RegionName="PurchaseReportInfo" interactivity:RegionManager.RegionContext="{Binding Path=SelectedItem, ElementName=PurchaseReportsDataGrid}"/>
+        </Border>
     </StackPanel>
 </UserControl>

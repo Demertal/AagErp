@@ -12,6 +12,7 @@ namespace ReportModul
             var regionManager = containerProvider.Resolve<IRegionManager>();
             regionManager.RegisterViewWithRegion("RevaluationReportInfo", typeof(RevaluationReportInfo));
             regionManager.RegisterViewWithRegion("PurchaseReportInfo", typeof(PurchaseReportInfo));
+            regionManager.RegisterViewWithRegion("SalesReportInfo", typeof(SalesReportInfo));
         }
 
         public void RegisterTypes(IContainerRegistry containerRegistry)
@@ -19,6 +20,7 @@ namespace ReportModul
             containerRegistry.RegisterForNavigation<ShowFinalReport>();
             containerRegistry.RegisterForNavigation<ShowRevaluationReports>();
             containerRegistry.RegisterForNavigation<ShowPurchaseReports>();
+            containerRegistry.RegisterForNavigation<ShowSalesReports>();
         }
     }
 }

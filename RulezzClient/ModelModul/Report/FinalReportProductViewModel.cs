@@ -1,35 +1,21 @@
-﻿namespace ModelModul.Product
+﻿using ModelModul.Product;
+
+namespace ModelModul.Report
 {
     public class FinalReportProductViewModel : ProductViewModel
     {
-        private int _countPurchase;
-
-        public int CountPurchase
+        private decimal _finalSum;
+        public decimal FinalSum
         {
-            get => _countPurchase;
-            set => SetProperty(ref _countPurchase, value);
+            get => _finalSum;
+            set => SetProperty(ref _finalSum, value);
         }
 
-        private decimal _finalPurchase;
-        public decimal FinalPurchase
+        private double _count;
+        public new double Count
         {
-            get => _finalPurchase;
-            set => SetProperty(ref _finalPurchase, value);
-        }
-
-        private int _countSale;
-
-        public int CountSale
-        {
-            get => _countSale;
-            set => SetProperty(ref _countSale, value);
-        }
-
-        private decimal _finalSale;
-        public decimal FinalSale
-        {
-            get => _finalSale;
-            set => SetProperty(ref _finalSale, value);
+            get => _count;
+            set => SetProperty(ref _count, value);
         }
     }
 }
