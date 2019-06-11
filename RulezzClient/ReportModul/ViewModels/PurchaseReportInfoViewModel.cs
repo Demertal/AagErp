@@ -7,9 +7,5 @@ namespace ReportModul.ViewModels
         #region Properties
 
         #endregion
-
-        public PurchaseReportInfoViewModel()
-        {
-        }
     }
 }

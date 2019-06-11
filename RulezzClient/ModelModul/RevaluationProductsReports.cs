@@ -7,23 +7,24 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+
 namespace ModelModul
 {
-    using System;
-    using System.Collections.Generic;
-    
     public partial class RevaluationProductsReports
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        [SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public RevaluationProductsReports()
         {
-            this.RevaluationProductsInfos = new HashSet<RevaluationProductsInfos>();
+            RevaluationProductsInfos = new HashSet<RevaluationProductsInfos>();
         }
     
         public int Id { get; set; }
-        public Nullable<System.DateTime> DataRevaluation { get; set; }
+        public DateTime? DataRevaluation { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RevaluationProductsInfos> RevaluationProductsInfos { get; set; }
     }
 }

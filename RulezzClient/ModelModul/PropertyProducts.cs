@@ -9,14 +9,12 @@
 
 namespace ModelModul
 {
-    using System;
-
-    public partial class PropertyProducts
+    public class PropertyProducts
     {
         public int Id { get; set; }
         public int IdProduct { get; set; }
         public int IdPropertyName { get; set; }
-        public Nullable<int> IdPropertyValue { get; set; }
+        public int? IdPropertyValue { get; set; }
     
         public virtual Products Products { get; set; }
         public virtual PropertyNames PropertyNames { get; set; }

@@ -3,35 +3,35 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace ModelModul.PropertyProduct
 {
-    public class DbSetPropertyProducts : AutomationAccountingGoodsEntities, IDbSetModel<PropertyProducts>
+    public class DbSetPropertyProducts : IDbSetModel<PropertyProducts>
     {
-        public async Task<ObservableCollection<PropertyProducts>> LoadAsync(int idProduct)
+        public ObservableCollection<PropertyProducts> Load(int idProduct)
         {
-            await PropertyProducts.Where(obj => obj.IdProduct == idProduct).Include(obj => obj.PropertyNames).Include(obj => obj.PropertyNames.PropertyValues).LoadAsync();
-            return PropertyProducts.Local;
+            return new ObservableCollection<PropertyProducts>(AutomationAccountingGoodsEntities.GetInstance()
+                .PropertyProducts.Where(obj => obj.IdProduct == idProduct).Include(obj => obj.PropertyNames)
+                .Include(obj => obj.PropertyNames.PropertyValues));
         }
 
-        public Task AddAsync(PropertyProducts obj)
+        public void Add(PropertyProducts obj)
         {
             throw new NotImplementedException();
         }
 
-        public async Task UpdateAsync(PropertyProducts obj)
+        public void Update(PropertyProducts obj)
         {
-            using (var transaction = Database.BeginTransaction())
+            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
             {
                 try
                 {
-                    var property = PropertyProducts.Find(obj.Id);
+                    var property = AutomationAccountingGoodsEntities.GetInstance().PropertyProducts.Find(obj.Id);
                     if (property == null) throw new Exception("Изменить не получилось");
 
                     property.IdPropertyValue = obj.IdPropertyValue;
-                    Entry(property).State = EntityState.Modified;
-                    await SaveChangesAsync();
+                    AutomationAccountingGoodsEntities.GetInstance().Entry(property).State = EntityState.Modified;
+                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
                     transaction.Commit();
                 }
                 catch (Exception)
@@ -42,26 +42,21 @@ namespace ModelModul.PropertyProduct
             }
         }
 
-        public Task DeleteAsync(int objId)
+        public void Update(List<PropertyProducts> objList)
         {
-            throw new NotImplementedException();
-        }
-
-        public async Task UpdateAsync(List<PropertyProducts> objList)
-        {
-            using (var transaction = Database.BeginTransaction())
+            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
             {
                 try
                 {
                     foreach (var obj in objList)
                     {
-                        var property = PropertyProducts.Find(obj.Id);
+                        var property = AutomationAccountingGoodsEntities.GetInstance().PropertyProducts.Find(obj.Id);
                         if (property == null) throw new Exception("Изменить не получилось");
 
                         property.IdPropertyValue = obj.IdPropertyValue;
-                        Entry(property).State = EntityState.Modified;
+                        AutomationAccountingGoodsEntities.GetInstance().Entry(property).State = EntityState.Modified;
                     }
-                    await SaveChangesAsync();
+                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
                     transaction.Commit();
                 }
                 catch (Exception)
@@ -70,6 +65,11 @@ namespace ModelModul.PropertyProduct
                     throw;
                 }
             }
+        }
+
+        public void Delete(int objId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

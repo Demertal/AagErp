@@ -1,26 +1,25 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Data.Entity;
-using System.Threading.Tasks;
 
 namespace ModelModul.WarrantyPeriod
 {
-    public class DbSetWarrantyPeriods : AutomationAccountingGoodsEntities, IDbSetModel<WarrantyPeriods>
+    public class DbSetWarrantyPeriods : IDbSetModel<WarrantyPeriods>
     {
-        public async Task<ObservableCollection<WarrantyPeriods>> LoadAsync()
+        public ObservableCollection<WarrantyPeriods> Load()
         {
-            await WarrantyPeriods.LoadAsync();
-            return WarrantyPeriods.Local;
+            return new ObservableCollection<WarrantyPeriods>(AutomationAccountingGoodsEntities.GetInstance()
+                .WarrantyPeriods);
         }
 
-        public async Task AddAsync(WarrantyPeriods obj)
+        public void Add(WarrantyPeriods obj)
         {
-            using (var transaction = Database.BeginTransaction())
+            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
             {
                 try
                 {
-                    WarrantyPeriods.Add(obj);
-                    await SaveChangesAsync();
+                    AutomationAccountingGoodsEntities.GetInstance().WarrantyPeriods.Add(obj);
+                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
                     transaction.Commit();
                 }
                 catch (Exception)
@@ -31,18 +30,18 @@ namespace ModelModul.WarrantyPeriod
             }
         }
 
-        public async Task UpdateAsync(WarrantyPeriods obj)
+        public void Update(WarrantyPeriods obj)
         {
-            using (var transaction = Database.BeginTransaction())
+            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
             {
                 try
                 {
-                    var unit = WarrantyPeriods.Find(obj.Id);
+                    var unit = AutomationAccountingGoodsEntities.GetInstance().WarrantyPeriods.Find(obj.Id);
                     if (unit == null) throw new Exception("Изменить не получилось");
                     if (unit.Period == "Нет") throw new Exception("Нельзя изменять гарантийный период: \"Нет\"");
                     unit.Period = obj.Period;
-                    Entry(unit).State = EntityState.Modified;
-                    await SaveChangesAsync();
+                    AutomationAccountingGoodsEntities.GetInstance().Entry(unit).State = EntityState.Modified;
+                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
                     transaction.Commit();
                 }
                 catch (Exception)
@@ -53,17 +52,17 @@ namespace ModelModul.WarrantyPeriod
             }
         }
 
-        public async Task DeleteAsync(int objId)
+        public void Delete(int objId)
         {
-            using (var transaction = Database.BeginTransaction())
+            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
             {
                 try
                 {
-                    var unit = WarrantyPeriods.Find(objId);
+                    var unit = AutomationAccountingGoodsEntities.GetInstance().WarrantyPeriods.Find(objId);
                     if (unit == null) throw new Exception("Удалить не получилось");
                     if (unit.Period == "Нет") throw new Exception("Нельзя удалять гарантийный период: \"Нет\"");
-                    Entry(unit).State = EntityState.Deleted;
-                    await SaveChangesAsync();
+                    AutomationAccountingGoodsEntities.GetInstance().Entry(unit).State = EntityState.Deleted;
+                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
                     transaction.Commit();
                 }
                 catch (Exception)

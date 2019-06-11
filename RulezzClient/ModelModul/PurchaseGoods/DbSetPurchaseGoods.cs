@@ -3,28 +3,27 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace ModelModul.PurchaseGoods
 {
-    public class DbSetPurchaseGoods : AutomationAccountingGoodsEntities, IDbSetModel<PurchaseReports>
+    public class DbSetPurchaseGoods : IDbSetModel<PurchaseReports>
     {
-        public async Task<ObservableCollection<PurchaseReports>> LoadAsync(int start, int end)
+        public ObservableCollection<PurchaseReports> Load(int start, int end)
         {
-            await PurchaseReports.Include(obj => obj.PurchaseInfos).OrderByDescending(obj => obj.DataOrder)
-                .ThenByDescending(obj => obj.Id).Skip(start).Take(end)
-                .Include(obj => obj.Counterparties).Include(obj => obj.Stores).LoadAsync();
-            return PurchaseReports.Local;
+            return new ObservableCollection<PurchaseReports>(AutomationAccountingGoodsEntities.GetInstance()
+                .PurchaseReports.Include(obj => obj.PurchaseInfos).OrderByDescending(obj => obj.DataOrder)
+                .ThenByDescending(obj => obj.Id).Skip(start).Take(end).Include(obj => obj.Counterparties)
+                .Include(obj => obj.Stores));
         }
 
-        public async Task<int> GetCount()
+        public int GetCount()
         {
-            return await PurchaseReports.CountAsync();
+            return AutomationAccountingGoodsEntities.GetInstance().PurchaseReports.Count();
         }
 
-        public async Task AddAsync(PurchaseReports obj)
+        public void Add(PurchaseReports obj)
         {
-            using (var transaction = Database.BeginTransaction())
+            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
             {
                 try
                 {
@@ -63,11 +62,11 @@ namespace ModelModul.PurchaseGoods
                         serialNumber.Counterparties = null;
                     }
 
-                    PurchaseReports.Add(obj);
+                    AutomationAccountingGoodsEntities.GetInstance().PurchaseReports.Add(obj);
 
-                    SerialNumbers.AddRange(serialNumbers);
+                    AutomationAccountingGoodsEntities.GetInstance().SerialNumbers.AddRange(serialNumbers);
 
-                    await SaveChangesAsync();
+                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
                     transaction.Commit();
                 }
                 catch (Exception)
@@ -78,12 +77,12 @@ namespace ModelModul.PurchaseGoods
             }
         }
 
-        public async Task UpdateAsync(PurchaseReports obj)
+        public void Update(PurchaseReports obj)
         {
             throw new NotImplementedException();
         }
 
-        public async Task DeleteAsync(int objId)
+        public void Delete(int objId)
         {
             throw new NotImplementedException();
         }

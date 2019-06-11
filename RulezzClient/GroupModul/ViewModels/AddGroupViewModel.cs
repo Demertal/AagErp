@@ -4,11 +4,11 @@ using ModelModul;
 using ModelModul.Group;
 using Prism.Commands;
 using Prism.Interactivity.InteractionRequest;
-using Prism.Mvvm;
+using Prism.Regions;
 
 namespace GroupModul.ViewModels
 {
-    class AddGroupViewModel : BindableBase, IInteractionRequestAware
+    class AddGroupViewModel : ViewModelBase, IInteractionRequestAware
     {
         #region Properties
 
@@ -52,12 +52,12 @@ namespace GroupModul.ViewModels
             AddGroupCommand = new DelegateCommand(AddGroup).ObservesCanExecute(() => IsEnabled);
         }
 
-        public async void AddGroup()
+        public void AddGroup()
         {
             try
             {
                 DbSetGroups dbSetGroups = new DbSetGroups();
-                await dbSetGroups.AddAsync(_groupModel);
+                dbSetGroups.Add(_groupModel);
                 MessageBox.Show(_groupModel.IdParentGroup == null ? "Магазин добавлен" : "Группа добавлена", "Успех",
                     MessageBoxButton.OK, MessageBoxImage.Information);
 
@@ -70,5 +70,22 @@ namespace GroupModul.ViewModels
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        #region INavigationAware
+
+        public override void OnNavigatedTo(NavigationContext navigationContext)
+        {
+        }
+
+        public override bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return false;
+        }
+
+        public override void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+        }
+
+        #endregion
     }
 }

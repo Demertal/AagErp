@@ -5,12 +5,11 @@ using ModelModul;
 using ModelModul.Counterparty;
 using Prism.Commands;
 using Prism.Interactivity.InteractionRequest;
-using Prism.Mvvm;
 using Prism.Regions;
 
 namespace CounterpartyModul.ViewModels
 {
-    public class ShowCounterpartiesViewModel: BindableBase, INavigationAware
+    public class ShowCounterpartiesViewModel: ViewModelBase
     {
         #region Properties
 
@@ -63,7 +62,7 @@ namespace CounterpartyModul.ViewModels
             Load();
         }
 
-        private async void DeleteSuppliers(Counterparties obj)
+        private void DeleteSuppliers(Counterparties obj)
         {
             if (obj == null) return;
             if (MessageBox.Show("Удалить контрагента?", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
@@ -71,7 +70,7 @@ namespace CounterpartyModul.ViewModels
             try
             {
                 DbSetCounterparties dbSet = new DbSetCounterparties();
-                await dbSet.DeleteAsync(obj.Id);
+                dbSet.Delete(obj.Id);
                 Load();
             }
             catch (Exception e)
@@ -80,12 +79,12 @@ namespace CounterpartyModul.ViewModels
             }
         }
 
-        private async void Load()
+        private void Load()
         {
             try
             {
                 DbSetCounterparties dbSet = new DbSetCounterparties();
-                CounterpartiesList = new ObservableCollection<Counterparties>(await dbSet.LoadAsync(_type));
+                CounterpartiesList = new ObservableCollection<Counterparties>(dbSet.Load(_type));
                 RaisePropertyChanged("CounterpartiesList");
             }
             catch (Exception e)
@@ -94,19 +93,23 @@ namespace CounterpartyModul.ViewModels
             }
         }
 
-        public void OnNavigatedTo(NavigationContext navigationContext)
+        #region INavigationAware
+
+        public override void OnNavigatedTo(NavigationContext navigationContext)
         {
             Type = (TypeCounterparties)navigationContext.Parameters["type"];
         }
 
-        public bool IsNavigationTarget(NavigationContext navigationContext)
+        public override bool IsNavigationTarget(NavigationContext navigationContext)
         {
             return false;
         }
 
-        public void OnNavigatedFrom(NavigationContext navigationContext)
+        public override void OnNavigatedFrom(NavigationContext navigationContext)
         {
             _regionManager.Regions.Remove("CounterpartyInfo");
         }
+
+        #endregion
     }
 }

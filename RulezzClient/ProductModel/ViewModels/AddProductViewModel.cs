@@ -9,11 +9,11 @@ using ModelModul.UnitStorage;
 using ModelModul.WarrantyPeriod;
 using Prism.Commands;
 using Prism.Interactivity.InteractionRequest;
-using Prism.Mvvm;
+using Prism.Regions;
 
 namespace ProductModul.ViewModels
 {
-    class AddProductViewModel : BindableBase, IInteractionRequestAware
+    class AddProductViewModel : ViewModelBase, IInteractionRequestAware
     {
         #region ProductProperties
 
@@ -70,20 +70,20 @@ namespace ProductModul.ViewModels
 
         public AddProductViewModel()
         {
-            LoadAsync();
+            Load();
             Product.PropertyChanged += (o, e) => RaisePropertyChanged(e.PropertyName);
             AddProductCommand = new DelegateCommand(AddProduct).ObservesCanExecute(() => Product.IsValidate);
             GenerateBarcodeCommand = new DelegateCommand(GenerateBarcode);
         }
 
-        private async void LoadAsync()
+        private void Load()
         {
             try
             {
                 DbSetUnitStorages dbSetUnitStorages = new DbSetUnitStorages();
-                UnitStorages = await dbSetUnitStorages.LoadAsync();
+                UnitStorages = dbSetUnitStorages.Load();
                 DbSetWarrantyPeriods dbSetWarrantyPeriods = new DbSetWarrantyPeriods();
-                WarrantyPeriods = await dbSetWarrantyPeriods.LoadAsync();
+                WarrantyPeriods = dbSetWarrantyPeriods.Load();
             }
             catch (Exception ex)
             {
@@ -91,7 +91,7 @@ namespace ProductModul.ViewModels
             }
         }
 
-        public async void AddProduct()
+        public void AddProduct()
         {
             Groups temp = _product.Group;
             try
@@ -102,7 +102,7 @@ namespace ProductModul.ViewModels
                 _product.UnitStorage = null;
                 _product.WarrantyPeriod = null;
                 DbSetProducts dbSetProducts = new DbSetProducts();
-                await dbSetProducts.AddAsync((Products)_product.Product.Clone());
+                dbSetProducts.Add((Products)_product.Product.Clone());
                 MessageBox.Show("Товар добавлен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
                 if (_notification != null)
                     _notification.Confirmed = true;
@@ -115,7 +115,7 @@ namespace ProductModul.ViewModels
             }
         }
 
-        private async void GenerateBarcode()
+        private void GenerateBarcode()
         {
             try
             {
@@ -124,7 +124,7 @@ namespace ProductModul.ViewModels
                 do
                 {
                     temp = GenerationBarcode.GenerateBarcode();
-                } while (await dbSetProducts.CheckBarcodeAsync(temp) != 0);
+                } while (dbSetProducts.CheckBarcode(temp));
 
                 Product.Barcode = temp;
             }
@@ -133,5 +133,22 @@ namespace ProductModul.ViewModels
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        #region INavigationAware
+
+        public override void OnNavigatedTo(NavigationContext navigationContext)
+        {
+        }
+
+        public override bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return false;
+        }
+
+        public override void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+        }
+
+        #endregion
     }
 }

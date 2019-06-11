@@ -72,6 +72,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutomationAccountingGoodsEntities.cs" />
     <Compile Include="AutomationAccountingGoodsModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -174,6 +175,7 @@
     </Compile>
     <Compile Include="UnitStorage\DbSetUnitStorages.cs" />
     <Compile Include="UnitStorage\UnitStorages.cs" />
+    <Compile Include="ViewModelBase.cs" />
     <Compile Include="Warranties.cs">
       <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
     </Compile>

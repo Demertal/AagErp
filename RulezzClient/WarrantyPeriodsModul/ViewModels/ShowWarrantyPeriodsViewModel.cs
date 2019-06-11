@@ -5,11 +5,11 @@ using System.Windows.Controls;
 using ModelModul;
 using ModelModul.WarrantyPeriod;
 using Prism.Commands;
-using Prism.Mvvm;
+using Prism.Regions;
 
 namespace WarrantyPeriodsModul.ViewModels
 {
-    class ShowWarrantyPeriodsViewModel: BindableBase
+    class ShowWarrantyPeriodsViewModel: ViewModelBase
     {
         #region Properties
 
@@ -27,7 +27,6 @@ namespace WarrantyPeriodsModul.ViewModels
 
         public ShowWarrantyPeriodsViewModel()
         {
-            Load();
             ChangeWarrantyPeriodsCommand = new DelegateCommand<DataGridCellEditEndingEventArgs>(ChangeWarrantyPeriods);
             DeleteWarrantyPeriodsCommand = new DelegateCommand<WarrantyPeriods>(DeleteWarrantyPeriods);
         }
@@ -52,12 +51,12 @@ namespace WarrantyPeriodsModul.ViewModels
             }
         }
 
-        private async void AddWarrantyPeriods(WarrantyPeriods obj)
+        private void AddWarrantyPeriods(WarrantyPeriods obj)
         {
             try
             {
                 DbSetWarrantyPeriods dbSet = new DbSetWarrantyPeriods();
-                await dbSet.AddAsync(obj);
+                dbSet.Add(obj);
             }
             catch (Exception e)
             {
@@ -66,12 +65,12 @@ namespace WarrantyPeriodsModul.ViewModels
             Load();
         }
 
-        private async void UpdateWarrantyPeriods(WarrantyPeriods obj)
+        private void UpdateWarrantyPeriods(WarrantyPeriods obj)
         {
             try
             {
                 DbSetWarrantyPeriods dbSet = new DbSetWarrantyPeriods();
-                await dbSet.UpdateAsync(obj);
+                dbSet.Update(obj);
             }
             catch (Exception e)
             {
@@ -80,7 +79,7 @@ namespace WarrantyPeriodsModul.ViewModels
             Load();
         }
 
-        private async void DeleteWarrantyPeriods(WarrantyPeriods obj)
+        private void DeleteWarrantyPeriods(WarrantyPeriods obj)
         {
             if (obj == null) return;
             if (obj.Period == "Нет")
@@ -93,7 +92,7 @@ namespace WarrantyPeriodsModul.ViewModels
             try
             {
                 DbSetWarrantyPeriods dbSet = new DbSetWarrantyPeriods();
-                await dbSet.DeleteAsync(obj.Id);
+                dbSet.Delete(obj.Id);
             }
             catch (Exception e)
             {
@@ -102,12 +101,12 @@ namespace WarrantyPeriodsModul.ViewModels
             Load();
         }
 
-        private async void Load()
+        private void Load()
         {
             try
             {
                 DbSetWarrantyPeriods dbSet = new DbSetWarrantyPeriods();
-                WarrantyPeriodsList = new ObservableCollection<WarrantyPeriods>(await dbSet.LoadAsync());
+                WarrantyPeriodsList = new ObservableCollection<WarrantyPeriods>(dbSet.Load());
                 RaisePropertyChanged("WarrantyPeriodsList");
             }
             catch (Exception e)
@@ -115,5 +114,23 @@ namespace WarrantyPeriodsModul.ViewModels
                 MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        #region INavigationAware
+
+        public override void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            Load();
+        }
+
+        public override bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return false;
+        }
+
+        public override void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+        }
+
+        #endregion
     }
 }

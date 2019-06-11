@@ -2,33 +2,32 @@
 using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace ModelModul.Counterparty
 {
-    public class DbSetCounterparties: AutomationAccountingGoodsEntities, IDbSetModel<Counterparties>
+    public class DbSetCounterparties: IDbSetModel<Counterparties>
     {
-        public async Task<ObservableCollection<Counterparties>> LoadAsync()
+        public ObservableCollection<Counterparties> Load()
         {
-            await Counterparties.LoadAsync();
-            return Counterparties.Local;
+            return new ObservableCollection<Counterparties>(AutomationAccountingGoodsEntities.GetInstance()
+                .Counterparties.ToList());
         }
 
-        public async Task<ObservableCollection<Counterparties>> LoadAsync(TypeCounterparties whoIsIt)
+        public ObservableCollection<Counterparties> Load(TypeCounterparties whoIsIt)
         {
             bool temp = whoIsIt == TypeCounterparties.Buyers;
-            await Counterparties.Where(obj => obj.WhoIsIt == temp).LoadAsync();
-            return Counterparties.Local;
+            return new ObservableCollection<Counterparties>(AutomationAccountingGoodsEntities.GetInstance()
+                .Counterparties.Where(obj => obj.WhoIsIt == temp).ToList());
         }
 
-        public async Task AddAsync(Counterparties obj)
+        public void Add(Counterparties obj)
         {
-            using (var transaction = Database.BeginTransaction())
+            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
             {
                 try
                 {
-                    Counterparties.Add(obj);
-                    await SaveChangesAsync();
+                    AutomationAccountingGoodsEntities.GetInstance().Counterparties.Add(obj);
+                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
                     transaction.Commit();
                 }
                 catch (Exception)
@@ -39,13 +38,13 @@ namespace ModelModul.Counterparty
             }
         }
 
-        public async Task UpdateAsync(Counterparties obj)
+        public void Update(Counterparties obj)
         {
-            using (var transaction = Database.BeginTransaction())
+            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
             {
                 try
                 {
-                    var counterparty = Counterparties.Find(obj.Id);
+                    var counterparty = AutomationAccountingGoodsEntities.GetInstance().Counterparties.Find(obj.Id);
                     if (counterparty != null)
                     {
                         counterparty.Title = obj.Title;
@@ -53,10 +52,10 @@ namespace ModelModul.Counterparty
                         counterparty.ContactPerson = obj.ContactPerson;
                         counterparty.ContactPhone = obj.ContactPhone;
                         counterparty.Props = obj.Props;
-                        Entry(counterparty).State = EntityState.Modified;
+                        AutomationAccountingGoodsEntities.GetInstance().Entry(counterparty).State = EntityState.Modified;
                     }
                     else throw new Exception("Изменение не удалось");
-                    await SaveChangesAsync();
+                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
                     transaction.Commit();
                 }
                 catch (Exception)
@@ -67,17 +66,17 @@ namespace ModelModul.Counterparty
             }
         }
 
-        public async Task DeleteAsync(int objId)
+        public void Delete(int objId)
         {
-            using (var transaction = Database.BeginTransaction())
+            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
             {
                 try
                 {
-                    var counterparties = Counterparties.Find(objId);
+                    var counterparties = AutomationAccountingGoodsEntities.GetInstance().Counterparties.Find(objId);
                     if(counterparties == null) throw new Exception("Контрагент не найден");
                     if (counterparties.Title == "Покупатель") throw new Exception("Нельзя удалить контрагента \"Покупатель\"");
-                    Entry(counterparties).State = EntityState.Deleted;
-                    await SaveChangesAsync();
+                    AutomationAccountingGoodsEntities.GetInstance().Entry(counterparties).State = EntityState.Deleted;
+                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
                     transaction.Commit();
                 }
                 catch (Exception)

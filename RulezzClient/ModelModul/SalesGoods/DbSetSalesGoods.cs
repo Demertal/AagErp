@@ -2,28 +2,26 @@
 using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace ModelModul.SalesGoods
 {
-    public class DbSetSalesGoods : AutomationAccountingGoodsEntities, IDbSetModel<SalesReports>
+    public class DbSetSalesGoods : IDbSetModel<SalesReports>
     {
-        public async Task<ObservableCollection<SalesReports>> LoadAsync(int start, int end)
+        public ObservableCollection<SalesReports> Load(int start, int end)
         {
-            await SalesReports.Include(obj => obj.SalesInfos).OrderByDescending(obj => obj.DataSales)
+            return new ObservableCollection<SalesReports>(AutomationAccountingGoodsEntities.GetInstance().SalesReports.Include(obj => obj.SalesInfos).OrderByDescending(obj => obj.DataSales)
                 .ThenByDescending(obj => obj.Id).Skip(start).Take(end)
-                .Include(obj => obj.Counterparties).Include(obj => obj.Stores).LoadAsync();
-            return SalesReports.Local;
+                .Include(obj => obj.Counterparties).Include(obj => obj.Stores));
         }
 
-        public async Task<int> GetCount()
+        public int GetCount()
         {
-            return await PurchaseReports.CountAsync();
+            return AutomationAccountingGoodsEntities.GetInstance().PurchaseReports.Count();
         }
 
-        public async Task AddAsync(SalesReports obj)
+        public void Add(SalesReports obj)
         {
-            using (var transaction = Database.BeginTransaction())
+            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
             {
                 try
                 {
@@ -52,8 +50,8 @@ namespace ModelModul.SalesGoods
                             salesInfo.SerialNumbers = null;
                         }
                     }
-                    SalesReports.Add(obj);
-                    await SaveChangesAsync();
+                    AutomationAccountingGoodsEntities.GetInstance().SalesReports.Add(obj);
+                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
                     transaction.Commit();
                 }
                 catch (Exception)
@@ -64,12 +62,12 @@ namespace ModelModul.SalesGoods
             }
         }
 
-        public async Task UpdateAsync(SalesReports obj)
+        public void Update(SalesReports obj)
         {
             throw new NotImplementedException();
         }
 
-        public async Task DeleteAsync(int objId)
+        public void Delete(int objId)
         {
             throw new NotImplementedException();
         }

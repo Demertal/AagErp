@@ -1,15 +1,15 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows;
+using ModelModul;
 using ModelModul.Warranty;
 using Prism.Commands;
 using Prism.Interactivity.InteractionRequest;
-using Prism.Mvvm;
 using Prism.Regions;
 
 namespace WarrantyModul.ViewModels
 {
-    class AddWarrantyViewModel : BindableBase, IInteractionRequestAware, INavigationAware
+    class AddWarrantyViewModel : ViewModelBase, IInteractionRequestAware
     {
         #region ProductProperties
 
@@ -44,7 +44,7 @@ namespace WarrantyModul.ViewModels
             AddWarrantyCommand = new DelegateCommand(AddWarranty).ObservesCanExecute(() => Warranty.IsValidate);
         }
 
-        public async void AddWarranty()
+        public void AddWarranty()
         {
             try
             {
@@ -52,7 +52,7 @@ namespace WarrantyModul.ViewModels
                 Warranty.DateIssue = null;
                 Warranty.DateReceipt = null;
                 DbSetWarranties dbSet = new DbSetWarranties();
-                await dbSet.AddAsync(Warranty.Warranty);
+                dbSet.Add(Warranty.Warranty);
                 MessageBox.Show("Товар принят на гарантию", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
                 if (_notification != null)
                     _notification.Confirmed = true;
@@ -65,17 +65,21 @@ namespace WarrantyModul.ViewModels
         }
 
 
-        public void OnNavigatedTo(NavigationContext navigationContext)
+        #region INavigationAware
+
+        public override void OnNavigatedTo(NavigationContext navigationContext)
         {
         }
 
-        public bool IsNavigationTarget(NavigationContext navigationContext)
+        public override bool IsNavigationTarget(NavigationContext navigationContext)
         {
             return false;
         }
 
-        public void OnNavigatedFrom(NavigationContext navigationContext)
+        public override void OnNavigatedFrom(NavigationContext navigationContext)
         {
         }
+
+        #endregion
     }
 }

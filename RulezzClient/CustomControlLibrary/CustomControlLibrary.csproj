@@ -83,6 +83,7 @@
     <Compile Include="Converters\VisibilityConverterForNull.cs" />
     <Compile Include="Converters\VisibilityConverterForNullAndBool.cs" />
     <Compile Include="ExtendedDataGrid.cs" />
+    <Compile Include="PasswordBehavior.cs" />
     <Compile Include="ExtendedTreeView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

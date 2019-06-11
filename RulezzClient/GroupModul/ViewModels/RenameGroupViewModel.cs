@@ -4,11 +4,11 @@ using ModelModul;
 using ModelModul.Group;
 using Prism.Commands;
 using Prism.Interactivity.InteractionRequest;
-using Prism.Mvvm;
+using Prism.Regions;
 
 namespace GroupModul.ViewModels
 {
-    class RenameGroupViewModel : BindableBase, IInteractionRequestAware
+    class RenameGroupViewModel : ViewModelBase, IInteractionRequestAware
     {
         #region Properties
 
@@ -51,7 +51,7 @@ namespace GroupModul.ViewModels
             UpdateStoreCommand = new DelegateCommand(UpdateStore).ObservesCanExecute(() => IsEnabled);
         }
 
-        public async void UpdateStore()
+        public void UpdateStore()
         {
             string temp = _oldGroupModel.Title;
             try
@@ -60,7 +60,7 @@ namespace GroupModul.ViewModels
                 {
                     DbSetGroups dbSetGroups = new DbSetGroups();
                     _oldGroupModel.Title = Title;
-                    await dbSetGroups.UpdateAsync(_oldGroupModel);
+                    dbSetGroups.Update(_oldGroupModel);
                     MessageBox.Show("Группа изменена", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
 
                     if (_notification != null)
@@ -74,5 +74,22 @@ namespace GroupModul.ViewModels
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        #region INavigationAware
+
+        public override void OnNavigatedTo(NavigationContext navigationContext)
+        {
+        }
+
+        public override bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return false;
+        }
+
+        public override void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+        }
+
+        #endregion
     }
 }

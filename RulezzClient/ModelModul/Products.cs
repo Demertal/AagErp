@@ -7,21 +7,22 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+
 namespace ModelModul
 {
-    using System.Collections.Generic;
-    
     public partial class Products
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        [SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Products()
         {
-            this.CountProducts = new HashSet<CountProducts>();
-            this.PropertyProducts = new HashSet<PropertyProducts>();
-            this.PurchaseInfos = new HashSet<PurchaseInfos>();
-            this.RevaluationProductsInfos = new HashSet<RevaluationProductsInfos>();
-            this.SalesInfos = new HashSet<SalesInfos>();
-            this.SerialNumbers = new HashSet<SerialNumbers>();
+            CountProducts = new HashSet<CountProducts>();
+            PropertyProducts = new HashSet<PropertyProducts>();
+            PurchaseInfos = new HashSet<PurchaseInfos>();
+            RevaluationProductsInfos = new HashSet<RevaluationProductsInfos>();
+            SalesInfos = new HashSet<SalesInfos>();
+            SerialNumbers = new HashSet<SerialNumbers>();
         }
     
         public int Id { get; set; }
@@ -34,19 +35,19 @@ namespace ModelModul
         public int IdUnitStorage { get; set; }
     
         public virtual Groups Groups { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CountProducts> CountProducts { get; set; }
         public virtual UnitStorages UnitStorages { get; set; }
         public virtual WarrantyPeriods WarrantyPeriods { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PropertyProducts> PropertyProducts { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PurchaseInfos> PurchaseInfos { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RevaluationProductsInfos> RevaluationProductsInfos { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SalesInfos> SalesInfos { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SerialNumbers> SerialNumbers { get; set; }
     }
 }

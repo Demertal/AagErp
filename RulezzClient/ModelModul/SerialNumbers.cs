@@ -7,32 +7,33 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+
 namespace ModelModul
 {
-    using System;
-    using System.Collections.Generic;
-    
     public partial class SerialNumbers
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        [SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public SerialNumbers()
         {
-            this.SalesInfos = new HashSet<SalesInfos>();
-            this.Warranties = new HashSet<Warranties>();
+            SalesInfos = new HashSet<SalesInfos>();
+            Warranties = new HashSet<Warranties>();
         }
     
         public int Id { get; set; }
         //public string Value { get; set; }
-        public Nullable<System.DateTime> SelleDate { get; set; }
-        public Nullable<System.DateTime> PurchaseDate { get; set; }
+        public DateTime? SelleDate { get; set; }
+        public DateTime? PurchaseDate { get; set; }
         public int IdProduct { get; set; }
         public int IdCounterparty { get; set; }
     
         public virtual Counterparties Counterparties { get; set; }
         public virtual Products Products { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SalesInfos> SalesInfos { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Warranties> Warranties { get; set; }
     }
 }

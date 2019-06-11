@@ -2,26 +2,26 @@
 using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace ModelModul.Group
 {
-    public class DbSetGroups : AutomationAccountingGoodsEntities, IDbSetModel<Groups>
+    public class DbSetGroups : IDbSetModel<Groups>
     {
-        public async Task<ObservableCollection<Groups>> LoadAsync(Groups parentGroup = null)
+        public ObservableCollection<Groups> Load(Groups parentGroup = null)
         {
             bool Pre(Groups obj)
             {
                 return (obj.IdParentGroup == null && parentGroup == null) ||
                        (obj.IdParentGroup != null && parentGroup != null && obj.IdParentGroup.Value == parentGroup.Id);
             }
-            await Groups.Include("Groups1").LoadAsync();
-            return new ObservableCollection<Groups>(Groups.Local.Where(Pre));
+
+            return new ObservableCollection<Groups>(AutomationAccountingGoodsEntities.GetInstance().Groups
+                .Include("Groups1").Where(Pre));
         }
 
-        public async Task AddAsync(Groups obj)
+        public void Add(Groups obj)
         {
-            using (var transaction = Database.BeginTransaction())
+            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
             {
                 try
                 {
@@ -29,11 +29,11 @@ namespace ModelModul.Group
                     {
                         obj.IdParentGroup = null;
                     }
-                    var group = Groups.Find(obj.IdParentGroup);
+                    var group = AutomationAccountingGoodsEntities.GetInstance().Groups.Find(obj.IdParentGroup);
                     obj.Groups2 = group;
-                    Entry(obj).State = EntityState.Added;
-                    Entry(obj.Groups2).State = EntityState.Unchanged;
-                    await SaveChangesAsync();
+                    AutomationAccountingGoodsEntities.GetInstance().Entry(obj).State = EntityState.Added;
+                    AutomationAccountingGoodsEntities.GetInstance().Entry(obj.Groups2).State = EntityState.Unchanged;
+                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
                     transaction.Commit();
                 }
                 catch (Exception)
@@ -44,15 +44,15 @@ namespace ModelModul.Group
             }
         }
 
-        public async Task DeleteAsync(int objId)
+        public void Delete(int objId)
         {
-            using (var transaction = Database.BeginTransaction())
+            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
             {
                 try
                 {
-                    var group = Groups.Find(objId);
-                    Entry(group).State = EntityState.Deleted;
-                    await SaveChangesAsync();
+                    var group = AutomationAccountingGoodsEntities.GetInstance().Groups.Find(objId);
+                    AutomationAccountingGoodsEntities.GetInstance().Entry(group).State = EntityState.Deleted;
+                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
                     transaction.Commit();
                 }
                 catch (Exception)
@@ -63,20 +63,20 @@ namespace ModelModul.Group
             }
         }
 
-        public async Task UpdateAsync(Groups obj)
+        public void Update(Groups obj)
         {
-            using (var transaction = Database.BeginTransaction())
+            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
             {
                 try
                 {
-                    var modifi = Groups.Find(obj.Id);
+                    var modifi = AutomationAccountingGoodsEntities.GetInstance().Groups.Find(obj.Id);
                     if (modifi != null)
                     {
                         modifi.Title = obj.Title;
-                        Entry(modifi).State = EntityState.Modified;
+                        AutomationAccountingGoodsEntities.GetInstance().Entry(modifi).State = EntityState.Modified;
                     }
                     else throw new Exception("Изменение не удалось");
-                    await SaveChangesAsync();
+                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
                     transaction.Commit();
                 }
                 catch (Exception)

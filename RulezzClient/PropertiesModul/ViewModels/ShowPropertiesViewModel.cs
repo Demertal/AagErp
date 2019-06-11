@@ -8,11 +8,11 @@ using ModelModul.PropertyName;
 using ModelModul.PropertyValue;
 using Prism.Commands;
 using Prism.Interactivity.InteractionRequest;
-using Prism.Mvvm;
+using Prism.Regions;
 
 namespace PropertiesModul.ViewModels
 {
-    class ShowPropertiesViewModel : BindableBase, IInteractionRequestAware
+    class ShowPropertiesViewModel : ViewModelBase, IInteractionRequestAware
     {
         #region Properties
 
@@ -83,7 +83,6 @@ namespace PropertiesModul.ViewModels
 
         public ShowPropertiesViewModel()
         {
-            LoadNames();
             SelectedPropertyNamesCommand = new DelegateCommand<SelectedCellsChangedEventArgs>(SelectedPropertyNames);
             ChangePropertyNamesCommand = new DelegateCommand<DataGridCellEditEndingEventArgs>(ChangePropertyNames);
             DeletePropertyNamesCommand = new DelegateCommand<PropertyNames>(DeletePropertyNames);
@@ -118,13 +117,13 @@ namespace PropertiesModul.ViewModels
             }
         }
 
-        private async void AddPropertyNames(PropertyNames obj)
+        private void AddPropertyNames(PropertyNames obj)
         {
             try
             {
                 obj.IdGroup = Group.Id;
                 DbSetPropertyNames dbSet = new DbSetPropertyNames();
-                await dbSet.AddAsync(obj);
+                dbSet.Add(obj);
             }
             catch (Exception e)
             {
@@ -133,12 +132,12 @@ namespace PropertiesModul.ViewModels
             LoadNames();
         }
 
-        private async void UpdatePropertyNames(PropertyNames obj)
+        private void UpdatePropertyNames(PropertyNames obj)
         {
             try
             {
                 DbSetPropertyNames dbSet = new DbSetPropertyNames();
-                await dbSet.UpdateAsync(obj);
+                dbSet.Update(obj);
             }
             catch (Exception e)
             {
@@ -147,7 +146,7 @@ namespace PropertiesModul.ViewModels
             LoadNames();
         }
 
-        private async void DeletePropertyNames(PropertyNames obj)
+        private void DeletePropertyNames(PropertyNames obj)
         {
             if (obj == null) return;
             if (MessageBox.Show("Удалить параметр? Внимание, если у какого-то товара был установлен этот параметр он лишится его", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
@@ -155,7 +154,7 @@ namespace PropertiesModul.ViewModels
             try
             {
                 DbSetPropertyNames dbSet = new DbSetPropertyNames();
-                await dbSet.DeleteAsync(obj.Id);
+                dbSet.Delete(obj.Id);
             }
             catch (Exception e)
             {
@@ -164,12 +163,12 @@ namespace PropertiesModul.ViewModels
             LoadNames();
         }
 
-        private async void LoadNames()
+        private void LoadNames()
         {
             try
             {
                 DbSetPropertyNames dbSet = new DbSetPropertyNames();
-                PropertyNamesList = new ObservableCollection<PropertyNames>(await dbSet.LoadAsync(_group.Id));
+                PropertyNamesList = new ObservableCollection<PropertyNames>(dbSet.Load(_group.Id));
                 if (PropertyName == null || PropertyName.Id == 0)
                 {
                     PropertyName = PropertyNamesList.FirstOrDefault();
@@ -212,13 +211,13 @@ namespace PropertiesModul.ViewModels
             }
         }
 
-        private async void AddPropertyValues(PropertyValues obj)
+        private void AddPropertyValues(PropertyValues obj)
         {
             try
             {
                 obj.IdPropertyName = PropertyName.Id;
                 DbSetPropertyValue dbSet = new DbSetPropertyValue();
-                await dbSet.AddAsync(obj);
+                dbSet.Add(obj);
             }
             catch (Exception e)
             {
@@ -227,12 +226,12 @@ namespace PropertiesModul.ViewModels
             LoadValues();
         }
 
-        private async void UpdatePropertyValues(PropertyValues obj)
+        private void UpdatePropertyValues(PropertyValues obj)
         {
             try
             {
                 DbSetPropertyValue dbSet = new DbSetPropertyValue();
-                await dbSet.UpdateAsync(obj);
+                dbSet.Update(obj);
             }
             catch (Exception e)
             {
@@ -241,7 +240,7 @@ namespace PropertiesModul.ViewModels
             LoadValues();
         }
 
-        private async void DeletePropertyValues(PropertyValues obj)
+        private void DeletePropertyValues(PropertyValues obj)
         {
             if (obj == null) return;
             if (MessageBox.Show("Удалить значение параметра? Внимание, если у какого-то товара был установлено этот значение он лишится его", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
@@ -249,7 +248,7 @@ namespace PropertiesModul.ViewModels
             try
             {
                 DbSetPropertyValue dbSet = new DbSetPropertyValue();
-                await dbSet.DeleteAsync(obj.Id);
+                dbSet.Delete(obj.Id);
             }
             catch (Exception e)
             {
@@ -258,19 +257,37 @@ namespace PropertiesModul.ViewModels
             LoadValues();
         }
 
-        private async void LoadValues()
+        private void LoadValues()
         {
             try
             {
                 DbSetPropertyValue dbSet = new DbSetPropertyValue();
                 PropertyValuesList = PropertyName != null
-                    ? new ObservableCollection<PropertyValues>(await dbSet.LoadAsync(PropertyName.Id))
+                    ? new ObservableCollection<PropertyValues>(dbSet.Load(PropertyName.Id))
                     : new ObservableCollection<PropertyValues>();
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        #endregion
+
+        #region INavigationAware
+
+        public override void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            LoadNames();
+        }
+
+        public override bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return false;
+        }
+
+        public override void OnNavigatedFrom(NavigationContext navigationContext)
+        {
         }
 
         #endregion

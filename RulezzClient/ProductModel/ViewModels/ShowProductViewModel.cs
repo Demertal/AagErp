@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using ModelModul;
 using ModelModul.Group;
@@ -10,13 +9,14 @@ using ModelModul.UnitStorage;
 using ModelModul.WarrantyPeriod;
 using Prism.Commands;
 using Prism.Interactivity.InteractionRequest;
-using Prism.Mvvm;
 using Prism.Regions;
 
 namespace ProductModul.ViewModels
 {
-    class ShowProductViewModel : BindableBase, INavigationAware, IRegionMemberLifetime, IInteractionRequestAware
+    class ShowProductViewModel : ViewModelBase, IInteractionRequestAware
     {
+        private readonly IRegionManager _regionManager;
+
         #region Purchase
 
         private bool _isAddPurchase;
@@ -36,7 +36,7 @@ namespace ProductModul.ViewModels
                 IsAddPurchase = true;
                 FindString = "";
                 SelectedGroup = null;
-                LoadGroupAsync();
+                LoadGroup();
             }
         }
 
@@ -93,7 +93,7 @@ namespace ProductModul.ViewModels
             set
             {
                 SetProperty(ref _selectedGroup, value);
-                LoadProductAsync();
+                LoadProduct();
                 RaisePropertyChanged("IsEnabledAddProduct");
             }
         }
@@ -105,7 +105,7 @@ namespace ProductModul.ViewModels
             set
             {
                 SetProperty(ref _findString, value);
-                LoadProductAsync();
+                LoadProduct();
             }
         }
 
@@ -124,9 +124,9 @@ namespace ProductModul.ViewModels
         public bool IsEnabledAddProduct => SelectedGroup != null;
         #endregion
 
-        public ShowProductViewModel()
+        public ShowProductViewModel(IRegionManager regionManager)
         {
-            LoadGroupAsync();
+            _regionManager = regionManager;
             IsAddPurchase = false;
             SelectedGroupCommand = new DelegateCommand<Groups>(SelectedGroupChange);
             AddStorePopupRequest = new InteractionRequest<INotification>();
@@ -149,13 +149,12 @@ namespace ProductModul.ViewModels
 
         #region GroupCommands
 
-        private async Task LoadGroupAsync()
+        private void LoadGroup()
         {
             try
             {
                 DbSetGroups dbSet = new DbSetGroups();
-                GroupsList = await dbSet.LoadAsync();
-                RaisePropertyChanged("GroupsList");
+                GroupsList = dbSet.Load();
             }
             catch (Exception e)
             {
@@ -175,7 +174,7 @@ namespace ProductModul.ViewModels
 
         private void AddGroup(Groups group)
         {
-            AddGroupPopupRequest.Raise(new Confirmation { Title = "Добавить группу", Content = @group.Id }, Callback);
+            AddGroupPopupRequest.Raise(new Confirmation { Title = "Добавить группу", Content = group.Id }, Callback);
         }
 
         private void RenameGroup(Groups group)
@@ -188,7 +187,7 @@ namespace ProductModul.ViewModels
             ShowPropertiesPopupRequest.Raise(new Notification { Title = "Свойства", Content = group });
         }
 
-        private async void DeleteGroup(Groups group)
+        private void DeleteGroup(Groups group)
         {
             try
             {
@@ -197,18 +196,18 @@ namespace ProductModul.ViewModels
                     if (MessageBox.Show("Удалить магазин?", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
                         MessageBoxResult.Yes) return;
                     DbSetGroups dbSet = new DbSetGroups();
-                    await dbSet.DeleteAsync(group.Id);
+                    dbSet.Delete(group.Id);
                     MessageBox.Show("Магазин удален.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                    LoadGroupAsync();
+                    LoadGroup();
                 }
                 else
                 {
                     if (MessageBox.Show("Удалить группу?", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
                         MessageBoxResult.Yes) return;
                     DbSetGroups dbSet = new DbSetGroups();
-                    await dbSet.DeleteAsync(group.Id);
+                    dbSet.Delete(group.Id);
                     MessageBox.Show("Группа удалена.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                    LoadGroupAsync();
+                    LoadGroup();
                 }
             }
             catch (Exception e)
@@ -220,36 +219,35 @@ namespace ProductModul.ViewModels
         private void Callback(INotification notification)
         {
             if (!((Confirmation) notification).Confirmed) return;
-            LoadGroupAsync();
-            LoadProductAsync();
+            LoadGroup();
+            LoadProduct();
         }
 
         #endregion
 
         #region ProductCommands
 
-        private async Task LoadProductAsync()
+        private void LoadProduct()
         {
             try
             {
                 DbSetUnitStorages dbSetUnitStorages = new DbSetUnitStorages();
-                UnitStoragesList = await dbSetUnitStorages.LoadAsync();
+                UnitStoragesList = dbSetUnitStorages.Load();
                 DbSetWarrantyPeriods dbSetWarrantyPeriods = new DbSetWarrantyPeriods();
-                WarrantyPeriodsList = await dbSetWarrantyPeriods.LoadAsync();
+                WarrantyPeriodsList = dbSetWarrantyPeriods.Load();
                 DbSetProducts dbSet = new DbSetProducts();
                 if (SelectedGroup == null)
                     ProductsList = new ObservableCollection<ProductViewModel>(
-                        (await dbSet.LoadAsync(-1, FindString)).Select(objPr => new ProductViewModel
+                        (dbSet.Load(-1, FindString)).Select(objPr => new ProductViewModel
                         {
                             Product = objPr
                         }));
                 else
                     ProductsList = new ObservableCollection<ProductViewModel>(
-                        (await dbSet.LoadAsync(SelectedGroup.Id, FindString)).Select(objPr => new ProductViewModel
+                        (dbSet.Load(SelectedGroup.Id, FindString)).Select(objPr => new ProductViewModel
                         {
                             Product = objPr
                         }));
-                RaisePropertyChanged("ProductsList");
             }
             catch (Exception e)
             {
@@ -262,7 +260,7 @@ namespace ProductModul.ViewModels
             AddProductPopupRequest.Raise(new Confirmation { Title = "Добавить товар", Content = SelectedGroup}, Callback);
         }
 
-        private async void DeleteProduct(ProductViewModel obj)
+        private void DeleteProduct(ProductViewModel obj)
         {
             if (obj == null) return;
             if (MessageBox.Show("Удалить товар?", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
@@ -270,9 +268,9 @@ namespace ProductModul.ViewModels
             try
             {
                 DbSetProducts dbSet = new DbSetProducts();
-                await dbSet.DeleteAsync(obj.Id);
+                dbSet.Delete(obj.Id);
                 MessageBox.Show("Товар удален.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                await LoadProductAsync();
+                LoadProduct();
             }
             catch (Exception e)
             {
@@ -282,27 +280,28 @@ namespace ProductModul.ViewModels
 
         #endregion
 
-        #region Navigat
+        #region INavigationAware
 
-        public void OnNavigatedTo(NavigationContext navigationContext)
+        public override void OnNavigatedTo(NavigationContext navigationContext)
         {
-            FindString = "";
-            SelectedGroup = null;
-            LoadGroupAsync();
+            LoadGroup();
+            //FindString = "";
+            //SelectedGroup = null;
+            //LoadGroup();
         }
 
-        public bool IsNavigationTarget(NavigationContext navigationContext)
+        public override bool IsNavigationTarget(NavigationContext navigationContext)
         {
             return false;
         }
 
-        public void OnNavigatedFrom(NavigationContext navigationContext)
+        public override void OnNavigatedFrom(NavigationContext navigationContext)
         {
+            _regionManager.Regions.Remove("ProductInfo");
         }
 
-        public bool KeepAlive => false;
-
         #endregion
+
 
         private void AddPurchaseGoods(ProductViewModel obj)
         {

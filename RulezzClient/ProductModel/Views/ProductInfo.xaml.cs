@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.ComponentModel;
+using System.Windows.Controls;
 using ModelModul.Product;
 using Prism.Common;
 using Prism.Regions;
@@ -17,7 +18,7 @@ namespace ProductModul.Views
             RegionContext.GetObservableContext(this).PropertyChanged += ProductInfo_PropertyChanged;
         }
 
-        private void ProductInfo_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void ProductInfo_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             var context = (ObservableObject<object>)sender;
             var selectedProduct = (ProductViewModel)context.Value;

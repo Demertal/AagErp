@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using ModelModul;
@@ -15,11 +14,11 @@ using ModelModul.SerialNumber;
 using ModelModul.Store;
 using Prism.Commands;
 using Prism.Interactivity.InteractionRequest;
-using Prism.Mvvm;
+using Prism.Regions;
 
 namespace CashierWorkplaceModul.ViewModels
 {
-    class CashierWorkplaceViewModel: BindableBase
+    class CashierWorkplaceViewModel: ViewModelBase
     {
         #region Properties
 
@@ -121,7 +120,7 @@ namespace CashierWorkplaceModul.ViewModels
 
         public CashierWorkplaceViewModel()
         {
-            LoadAsync();
+            Load();
             AddProductPopupRequest = new InteractionRequest<INotification>();
             SaleCommand = new DelegateCommand(Sale).ObservesCanExecute(() => IsEnabledSale);
             AddProductCommand = new DelegateCommand(AddProduct).ObservesCanExecute(() => IsEnabledAddProduct);
@@ -171,15 +170,15 @@ namespace CashierWorkplaceModul.ViewModels
 
         #endregion
 
-        private async Task LoadAsync()
+        private void Load()
         {
             try
             {
                 DbSetStores dbSetStores = new DbSetStores();
-                Stores = await dbSetStores.LoadAsync();
+                Stores = dbSetStores.Load();
                 IdStore = Stores.FirstOrDefault()?.Id ?? 0;
                 DbSetCounterparties dbSetCounterparties = new DbSetCounterparties();
-                Customers = await dbSetCounterparties.LoadAsync(TypeCounterparties.Buyers);
+                Customers = dbSetCounterparties.Load(TypeCounterparties.Buyers);
                 IdCustomer = Customers.FirstOrDefault(objCus => objCus.Title == "Покупатель")?.Id ?? 0;
             }
             catch (Exception ex)
@@ -190,7 +189,7 @@ namespace CashierWorkplaceModul.ViewModels
 
         private void NewReport()
         {
-            LoadAsync();
+            Load();
             SalesInfos.Clear();
             RaisePropertyChanged("IsEnabledSale");
             RaisePropertyChanged("IsEnabledAddProduct");
@@ -199,7 +198,7 @@ namespace CashierWorkplaceModul.ViewModels
 
         #region DelegateCommand
 
-        private async void Sale()
+        private void Sale()
         {
             if (MessageBox.Show(
                     "Вы уверены, что хотите провести продажу? Этот отчет невозможно будет изменить после.",
@@ -215,7 +214,7 @@ namespace CashierWorkplaceModul.ViewModels
                         (Products)purchaseInfo.Product.Clone();
                 }
                 DbSetSalesGoods dbSet = new DbSetSalesGoods();
-                await dbSet.AddAsync((SalesReports)_salesReports.Clone());
+                dbSet.Add((SalesReports)_salesReports.Clone());
                 MessageBox.Show("Продажа добавлена", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
                 NewReport();
             }
@@ -258,7 +257,7 @@ namespace CashierWorkplaceModul.ViewModels
             }
         }
 
-        private async void ListenKeyboard(KeyEventArgs obj)
+        private void ListenKeyboard(KeyEventArgs obj)
         {
             if (obj.Key >= Key.D0 && obj.Key <= Key.D9)
             {
@@ -273,7 +272,7 @@ namespace CashierWorkplaceModul.ViewModels
                 try
                 {
                     DbSetSerialNumbers dbSetSerialNumbers = new DbSetSerialNumbers();
-                    ObservableCollection<SerialNumbers> serialNumberses = await dbSetSerialNumbers.FindFreeSerialNumbersAsync(_barcode);
+                    ObservableCollection<SerialNumbers> serialNumberses = dbSetSerialNumbers.FindFreeSerialNumbers(_barcode);
 
                     SerialNumbers freeSerialNumbers = null;
                     foreach (var objSer in serialNumberses)
@@ -300,7 +299,7 @@ namespace CashierWorkplaceModul.ViewModels
                     Products product = null;
                     if (freeSerialNumbers != null)
                     {
-                        product = await ((DbSetProducts) dbSetProducts).FindProductByIdAsync(freeSerialNumbers.IdProduct);
+                        product = dbSetProducts.FindProductById(freeSerialNumbers.IdProduct);
                         if(product == null) throw new Exception("Товар не найден");
                         SalesInfos.Add(new SalesInfosViewModel
                         {
@@ -315,7 +314,7 @@ namespace CashierWorkplaceModul.ViewModels
                     if (freeSerialNumbers == null)
                     {
                         if(serialNumberses.Count != 0) throw new Exception("Не свободного серийного номера: " + _barcode);
-                        product = await ((DbSetProducts)dbSetProducts).FindProductByBarcodeAsync(_barcode);
+                        product = dbSetProducts.FindProductByBarcode(_barcode);
                         if (product == null) throw new Exception("Товар не найден");
                         saleInfos = SalesInfos.FirstOrDefault(objSale => objSale.IdProduct == product.Id);
                         SalesInfosViewModel temp = new SalesInfosViewModel
@@ -350,7 +349,7 @@ namespace CashierWorkplaceModul.ViewModels
             }
         }
 
-        private async void ListenKeyboardSerialNumbers(KeyEventArgs obj)
+        private void ListenKeyboardSerialNumbers(KeyEventArgs obj)
         {
             if (obj.Key >= Key.D0 && obj.Key <= Key.D9)
             {
@@ -367,7 +366,7 @@ namespace CashierWorkplaceModul.ViewModels
                     SalesInfosViewModel sale = SalesInfos.FirstOrDefault(objSale => objSale.SerialNumber.Id == 0 && objSale.Product.WarrantyPeriods.Period != "Нет");
                     if (sale == null) throw new Exception("Возникла непредвиденная ошибка");
                     DbSetSerialNumbers dbSetSerialNumbers = new DbSetSerialNumbers();
-                    ObservableCollection<SerialNumbers> serialNumberses = await dbSetSerialNumbers.FindFreeSerialNumbersAsync(_serialNumber, sale.IdProduct);
+                    ObservableCollection<SerialNumbers> serialNumberses = dbSetSerialNumbers.FindFreeSerialNumbers(_serialNumber, sale.IdProduct);
                     if(serialNumberses.Count == 0) throw new Exception("Cерийный номер: \"" + _serialNumber + "\" для этого товара не найден: ");
                     SerialNumbers freeSerialNumbers = null;
                     foreach (var objSer in serialNumberses)
@@ -392,6 +391,23 @@ namespace CashierWorkplaceModul.ViewModels
                 _barcode = "";
                 _serialNumber = "";
             }
+        }
+
+        #endregion
+
+        #region INavigationAware
+
+        public override void OnNavigatedTo(NavigationContext navigationContext)
+        {
+        }
+
+        public override bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return true;
+        }
+
+        public override void OnNavigatedFrom(NavigationContext navigationContext)
+        {
         }
 
         #endregion

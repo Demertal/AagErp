@@ -1,5 +1,4 @@
-﻿using System;
-using ModelModul.Product;
+﻿using ModelModul.Product;
 
 namespace ModelModul.SalesGoods
 {
@@ -70,7 +69,7 @@ namespace ModelModul.SalesGoods
                 RaisePropertyChanged();
             }
         }
-        public Nullable<int> IdSerialNumber
+        public int? IdSerialNumber
         {
             get => SalesInfo.IdSerialNumber;
             set

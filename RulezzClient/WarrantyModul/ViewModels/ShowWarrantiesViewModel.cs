@@ -7,12 +7,11 @@ using ModelModul.SerialNumber;
 using ModelModul.Warranty;
 using Prism.Commands;
 using Prism.Interactivity.InteractionRequest;
-using Prism.Mvvm;
 using Prism.Regions;
 
 namespace WarrantyModul.ViewModels
 {
-    class ShowWarrantiesViewModel: BindableBase, INavigationAware
+    class ShowWarrantiesViewModel: ViewModelBase
     {
         private readonly IRegionManager _regionManager;
 
@@ -26,7 +25,7 @@ namespace WarrantyModul.ViewModels
             {
                 SetProperty(ref _findString, value);
                 RaisePropertyChanged("IsEnabled");
-                LoadSerialNumbersAsync();
+                LoadSerialNumbers();
             }
         }
 
@@ -47,7 +46,7 @@ namespace WarrantyModul.ViewModels
                     SetProperty(ref _selectedSerialNumber, value);
                 else
                     SetProperty(ref _selectedSerialNumber, new SerialNumbers());
-                LoadWarrantiesAsync();
+                LoadWarranties();
             }
         }
         #endregion
@@ -71,17 +70,16 @@ namespace WarrantyModul.ViewModels
         public ShowWarrantiesViewModel(IRegionManager regionManager)
         {
             _regionManager = regionManager;
-            LoadSerialNumbersAsync();
             AddWarrantyPopupRequest = new InteractionRequest<INotification>();
             AddWarrantyCommand = new DelegateCommand(AddWarranty).ObservesCanExecute(() => IsEnabled);
         }
 
-        private async void LoadSerialNumbersAsync()
+        private void LoadSerialNumbers()
         {
             try
             {
                 DbSetSerialNumbers dbSet = new DbSetSerialNumbers();
-                SerialNumbersList = await dbSet.LoadAsync(FindString);
+                SerialNumbersList = dbSet.Load(FindString);
             }
             catch (Exception e)
             {
@@ -89,13 +87,13 @@ namespace WarrantyModul.ViewModels
             }
         }
 
-        private async void LoadWarrantiesAsync()
+        private void LoadWarranties()
         {
             try
             {
                 DbSetWarranties dbSet = new DbSetWarranties();
                 WarrantiesList = new ObservableCollection<WarrantyViewModel>(
-                    (await dbSet.LoadAsync(SelectedSerialNumber.Id)).Select(obj =>
+                    (dbSet.Load(SelectedSerialNumber.Id)).Select(obj =>
                         new WarrantyViewModel {Warranty = obj}));
             }
             catch (Exception e)
@@ -112,21 +110,22 @@ namespace WarrantyModul.ViewModels
         private void Callback(INotification obj)
         {
             if (!((Confirmation)obj).Confirmed) return;
-            LoadWarrantiesAsync();
+            LoadWarranties();
         }
 
-        #region Navigat
+        #region INavigationAware
 
-        public void OnNavigatedTo(NavigationContext navigationContext)
+        public override void OnNavigatedTo(NavigationContext navigationContext)
         {
+            LoadSerialNumbers();
         }
 
-        public bool IsNavigationTarget(NavigationContext navigationContext)
+        public override bool IsNavigationTarget(NavigationContext navigationContext)
         {
             return false;
         }
 
-        public void OnNavigatedFrom(NavigationContext navigationContext)
+        public override void OnNavigatedFrom(NavigationContext navigationContext)
         {
             _regionManager.Regions.Remove("WarrantyInfo");
         }

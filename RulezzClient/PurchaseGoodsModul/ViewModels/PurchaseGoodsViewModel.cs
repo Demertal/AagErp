@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using ModelModul;
@@ -15,12 +14,11 @@ using ModelModul.PurchaseGoods;
 using ModelModul.Store;
 using Prism.Commands;
 using Prism.Interactivity.InteractionRequest;
-using Prism.Mvvm;
 using Prism.Regions;
 
 namespace PurchaseGoodsModul.ViewModels
 {
-    public class PurchaseGoodsViewModel: BindableBase, INavigationAware
+    public class PurchaseGoodsViewModel: ViewModelBase
     {
         #region Properties
 
@@ -124,11 +122,11 @@ namespace PurchaseGoodsModul.ViewModels
                 {
                     if (purchaseInfo.ExchangeRate.Title == "ГРН")
                     {
-                        total += purchaseInfo.PurchasePrice * (decimal)purchaseInfo.Count;
+                        total += purchaseInfo.PurchasePrice * purchaseInfo.Count;
                     }
                     else
                     {
-                        total += purchaseInfo.PurchasePrice * (decimal)purchaseInfo.Count * Course;
+                        total += purchaseInfo.PurchasePrice * purchaseInfo.Count * Course;
                     }
                 }
 
@@ -204,17 +202,17 @@ namespace PurchaseGoodsModul.ViewModels
 
         #endregion
 
-        private async Task LoadAsync()
+        private void Load()
         {
             try
             {
                 DbSetStores dbSetStores = new DbSetStores();
-                Stores = await dbSetStores.LoadAsync();
+                Stores = dbSetStores.Load();
                 DbSetExchangeRates dbSetExchange = new DbSetExchangeRates();
-                ExchangeRates = await dbSetExchange.LoadAsync();
+                ExchangeRates = dbSetExchange.Load();
                 RaisePropertyChanged("ExchangeRates");
                 DbSetCounterparties dbSetSuppliers = new DbSetCounterparties();
-                Suppliers = await dbSetSuppliers.LoadAsync(TypeCounterparties.Suppliers);
+                Suppliers = dbSetSuppliers.Load(TypeCounterparties.Suppliers);
             }
             catch (Exception ex)
             {
@@ -222,9 +220,9 @@ namespace PurchaseGoodsModul.ViewModels
             }
         }
 
-        private async void NewReport()
+        private void NewReport()
         {
-            await LoadAsync();
+            Load();
             _report = new PurchaseReports();
             SelectedStore = Stores.FirstOrDefault();
             SelectedSupplier = Suppliers.FirstOrDefault();
@@ -245,7 +243,7 @@ namespace PurchaseGoodsModul.ViewModels
 
         #region DelegateCommand
 
-        private async void PurchaseInvoice()
+        private void PurchaseInvoice()
         {
             if (MessageBox.Show(
                     "Вы уверены, что хотите провести отчет о закупке товара? Этот отчет невозможно будет изменить после.",
@@ -261,7 +259,7 @@ namespace PurchaseGoodsModul.ViewModels
                         (Products) purchaseInfo.Product.Clone();
                 }
                 DbSetPurchaseGoods dbSet = new DbSetPurchaseGoods();
-                await dbSet.AddAsync((PurchaseReports)_report.Clone());
+                dbSet.Add((PurchaseReports)_report.Clone());
                 MessageBox.Show("Отчет о закупке добавлен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
                 if (PurchaseInfos.FirstOrDefault(objPr =>
                         objPr.Product.SalesPrice == 0 ||
@@ -314,7 +312,7 @@ namespace PurchaseGoodsModul.ViewModels
             }
         }
 
-        private async void ListenKeyboard(KeyEventArgs obj)
+        private void ListenKeyboard(KeyEventArgs obj)
         {
             if (obj.Key >= Key.D0 && obj.Key <= Key.D9)
             {
@@ -334,7 +332,7 @@ namespace PurchaseGoodsModul.ViewModels
                         return;
                     }
                     DbSetProducts dbSetProducts = new DbSetProducts();
-                    Products product = await dbSetProducts.FindProductByBarcodeAsync(_barcode);
+                    Products product = dbSetProducts.FindProductByBarcode(_barcode);
                     if (product == null) throw new Exception("Товар не найден");
                     AddProduct(product);
                 }
@@ -351,10 +349,10 @@ namespace PurchaseGoodsModul.ViewModels
             }
         }
 
-        private async void AddProduct(Products product)
+        private void AddProduct(Products product)
         {
             DbSetProducts dbSetProducts = new DbSetProducts();
-            PurchaseStruct purchaseStruct = await dbSetProducts.GetPurchasePriceAsync(product.Id);
+            PurchaseStruct purchaseStruct = dbSetProducts.GetPurchasePrice(product.Id);
             PurchaseInfosViewModel purchaseInfo = PurchaseInfos.FirstOrDefault(oblPur => oblPur.PurchaseInfo.IdProduct == product.Id);
             if (purchaseStruct?.ExchangeRate == null)
             {
@@ -390,17 +388,21 @@ namespace PurchaseGoodsModul.ViewModels
 
         #endregion
 
-        public void OnNavigatedTo(NavigationContext navigationContext)
+        #region INavigationAware
+
+        public override void OnNavigatedTo(NavigationContext navigationContext)
         {
         }
 
-        public bool IsNavigationTarget(NavigationContext navigationContext)
+        public override bool IsNavigationTarget(NavigationContext navigationContext)
         {
-            return false;
+            return true;
         }
 
-        public void OnNavigatedFrom(NavigationContext navigationContext)
+        public override void OnNavigatedFrom(NavigationContext navigationContext)
         {
         }
+
+        #endregion
     }
 }

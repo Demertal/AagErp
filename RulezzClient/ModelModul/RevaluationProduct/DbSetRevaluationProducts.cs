@@ -2,28 +2,26 @@
 using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace ModelModul.RevaluationProduct
 {
-    public class DbSetRevaluationProducts: AutomationAccountingGoodsEntities, IDbSetModel<RevaluationProductsReports>
+    public class DbSetRevaluationProducts: IDbSetModel<RevaluationProductsReports>
     {
-        public async Task<ObservableCollection<RevaluationProductsReports>> LoadAsync(int start, int end)
+        public ObservableCollection<RevaluationProductsReports> Load(int start, int end)
         {
-            await RevaluationProductsReports.OrderByDescending(obj => obj.DataRevaluation)
-                .ThenByDescending(obj => obj.Id).Skip(start).Take(end).Include(obj => obj.RevaluationProductsInfos)
-                .LoadAsync();
-            return RevaluationProductsReports.Local;
+            return new ObservableCollection<RevaluationProductsReports>(AutomationAccountingGoodsEntities.GetInstance()
+                .RevaluationProductsReports.OrderByDescending(obj => obj.DataRevaluation)
+                .ThenByDescending(obj => obj.Id).Skip(start).Take(end).Include(obj => obj.RevaluationProductsInfos));
         }
 
-        public async Task<int> GetCount()
+        public int GetCount()
         {
-            return await RevaluationProductsReports.CountAsync();
+            return AutomationAccountingGoodsEntities.GetInstance().RevaluationProductsReports.Count();
         }
 
-        public async Task AddAsync(RevaluationProductsReports obj)
+        public void Add(RevaluationProductsReports obj)
         {
-            using (var transaction = Database.BeginTransaction())
+            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
             {
                 try
                 {
@@ -35,8 +33,8 @@ namespace ModelModul.RevaluationProduct
                             revaluationProductsInfo.Products = null;
                         }
                     }
-                    RevaluationProductsReports.Add(obj);
-                    await SaveChangesAsync();
+                    AutomationAccountingGoodsEntities.GetInstance().RevaluationProductsReports.Add(obj);
+                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
                     transaction.Commit();
                 }
                 catch (Exception)
@@ -47,12 +45,12 @@ namespace ModelModul.RevaluationProduct
             }
         }
 
-        public async Task UpdateAsync(RevaluationProductsReports obj)
+        public void Update(RevaluationProductsReports obj)
         {
             throw new NotImplementedException();
         }
 
-        public async Task DeleteAsync(int objId)
+        public void Delete(int objId)
         {
             throw new NotImplementedException();
         }

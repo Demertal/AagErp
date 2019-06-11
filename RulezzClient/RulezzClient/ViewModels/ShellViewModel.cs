@@ -1,11 +1,10 @@
 ﻿using ModelModul;
 using Prism.Commands;
-using Prism.Mvvm;
 using Prism.Regions;
 
 namespace RulezzClient.ViewModels
 {
-    class ShellViewModel : BindableBase
+    class ShellViewModel : ViewModelBase
     {
         #region Parametr
 
@@ -16,6 +15,10 @@ namespace RulezzClient.ViewModels
 
         public ShellViewModel(IRegionManager regionManager)
         {
+            //AutomationAccountingGoodsEntities au = new AutomationAccountingGoodsEntities();
+            //au.Database.Connection.Open();
+            //var t = au.Database.SqlQuery<int>("SELECT Is_Member (\'Seller\')").ToList();
+           
             _regionManager = regionManager;
             NavigateCommand = new DelegateCommand<string>(Navigate);
         }
@@ -23,14 +26,35 @@ namespace RulezzClient.ViewModels
         private void Navigate(string navigatePath)
         {
             if (navigatePath == null) return;
-            if(navigatePath == "ShowCounterparties")
-                _regionManager.RequestNavigate("ContentRegion", "ShowCounterparties", new NavigationParameters{
-                    {"type", TypeCounterparties.Suppliers}});
+            NavigationParameters navigation = new NavigationParameters();
+            if (navigatePath == "ShowSuppliers")
+            {
+                navigation.Add("type", TypeCounterparties.Suppliers);
+                navigatePath = "ShowCounterparties";
+            }
             else if(navigatePath == "ShowCustomers")
-                _regionManager.RequestNavigate("ContentRegion", "ShowCounterparties", new NavigationParameters{
-                    {"type", TypeCounterparties.Buyers}});
-            else
-                _regionManager.RequestNavigate("ContentRegion", navigatePath, new NavigationParameters());
+            {
+                navigation.Add("type", TypeCounterparties.Buyers);
+                navigatePath = "ShowCounterparties";
+            }
+            _regionManager.RequestNavigate("ContentRegion", navigatePath, navigation);
         }
+
+        #region INavigationAware
+
+        public override void OnNavigatedTo(NavigationContext navigationContext)
+        {
+        }
+
+        public override bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return false;
+        }
+
+        public override void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+        }
+
+        #endregion
     }
 }

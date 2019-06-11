@@ -1,26 +1,24 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Data.Entity;
-using System.Threading.Tasks;
 
 namespace ModelModul.UnitStorage
 {
-    public class DbSetUnitStorages : AutomationAccountingGoodsEntities, IDbSetModel<UnitStorages>
+    public class DbSetUnitStorages : IDbSetModel<UnitStorages>
     {
-        public async Task<ObservableCollection<UnitStorages>> LoadAsync()
+        public ObservableCollection<UnitStorages> Load()
         {
-            await UnitStorages.LoadAsync();
-            return UnitStorages.Local;
+            return new ObservableCollection<UnitStorages>(AutomationAccountingGoodsEntities.GetInstance().UnitStorages);
         }
 
-        public async Task AddAsync(UnitStorages obj)
+        public void Add(UnitStorages obj)
         {
-            using (var transaction = Database.BeginTransaction())
+            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
             {
                 try
                 {
-                    UnitStorages.Add(obj);
-                    await SaveChangesAsync();
+                    AutomationAccountingGoodsEntities.GetInstance().UnitStorages.Add(obj);
+                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
                     transaction.Commit();
                 }
                 catch (Exception)
@@ -31,18 +29,18 @@ namespace ModelModul.UnitStorage
             }
         }
 
-        public async Task UpdateAsync(UnitStorages obj)
+        public void Update(UnitStorages obj)
         {
-            using (var transaction = Database.BeginTransaction())
+            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
             {
                 try
                 {
-                    var unit = UnitStorages.Find(obj.Id);
+                    var unit = AutomationAccountingGoodsEntities.GetInstance().UnitStorages.Find(obj.Id);
                     if (unit == null) throw new Exception("Изменить не получилось");
                     if (unit.Title == "шт") throw new Exception("Нельзя изменять ед. хр.: \"шт\"");
                     unit.Title = obj.Title;
-                    Entry(unit).State = EntityState.Modified;
-                    await SaveChangesAsync();
+                    AutomationAccountingGoodsEntities.GetInstance().Entry(unit).State = EntityState.Modified;
+                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
                     transaction.Commit();
                 }
                 catch (Exception)
@@ -53,17 +51,17 @@ namespace ModelModul.UnitStorage
             }
         }
 
-        public async Task DeleteAsync(int objId)
+        public void Delete(int objId)
         {
-            using (var transaction = Database.BeginTransaction())
+            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
             {
                 try
                 {
-                    var unit = UnitStorages.Find(objId);
+                    var unit = AutomationAccountingGoodsEntities.GetInstance().UnitStorages.Find(objId);
                     if (unit == null) throw new Exception("Удалить не получилось");
                     if (unit.Title == "шт") throw new Exception("Нельзя удалять ед. хр.: \"шт\"");
-                    Entry(unit).State = EntityState.Deleted;
-                    await SaveChangesAsync();
+                    AutomationAccountingGoodsEntities.GetInstance().Entry(unit).State = EntityState.Deleted;
+                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
                     transaction.Commit();
                 }
                 catch (Exception)

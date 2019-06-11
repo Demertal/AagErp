@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.ComponentModel;
+using System.Windows.Controls;
 using ModelModul.Warranty;
 using Prism.Common;
 using Prism.Regions;
@@ -17,7 +18,7 @@ namespace WarrantyModul.Views
             RegionContext.GetObservableContext(this).PropertyChanged += WarrantyInfo_PropertyChanged;
         }
 
-        private void WarrantyInfo_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void WarrantyInfo_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             var context = (ObservableObject<object>)sender;
             var selectedWarranty = (WarrantyViewModel)context.Value;

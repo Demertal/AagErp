@@ -4,11 +4,11 @@ using System.Windows;
 using ModelModul;
 using ModelModul.Counterparty;
 using Prism.Commands;
-using Prism.Mvvm;
+using Prism.Regions;
 
 namespace CounterpartyModul.ViewModels
 {
-    class CounterpartyInfoViewModel: BindableBase
+    class CounterpartyInfoViewModel: ViewModelBase
     {
         #region Properties
 
@@ -51,12 +51,12 @@ namespace CounterpartyModul.ViewModels
             OkCommand = new DelegateCommand(Accept).ObservesCanExecute(() => SelectedCounterparty.IsValidate);
         }
 
-        private async void Accept()
+        private void Accept()
         {
             try
             {
                 DbSetCounterparties dbSet = new DbSetCounterparties();
-                await dbSet.UpdateAsync(SelectedCounterparty.Counterparty);
+                dbSet.Update(SelectedCounterparty.Counterparty);
                 MessageBox.Show("Контрагент изменен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
                 IsUpdate = false;
             }
@@ -77,5 +77,22 @@ namespace CounterpartyModul.ViewModels
             _oldCounterparty = (Counterparties)SelectedCounterparty.Counterparty.Clone();
             IsUpdate = true;
         }
+
+        #region INavigationAware
+
+        public override void OnNavigatedTo(NavigationContext navigationContext)
+        {
+        }
+
+        public override bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return false;
+        }
+
+        public override void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+        }
+
+        #endregion
     }
 }

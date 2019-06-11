@@ -1,10 +1,11 @@
 ﻿using System.Collections.ObjectModel;
+using ModelModul;
 using Prism.Commands;
-using Prism.Mvvm;
+using Prism.Regions;
 
 namespace ReportModul.ViewModels
 {
-    public class BufferRead<T>: BindableBase
+    public class BufferRead<T>: ViewModelBase
     {
         private ObservableCollection<T> _reportsList = new ObservableCollection<T>();
         public ObservableCollection<T> ReportsList
@@ -69,5 +70,23 @@ namespace ReportModul.ViewModels
         }
 
         protected virtual void Load(){}
+
+        #region INavigationAware
+
+        public override void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            Load();
+        }
+
+        public override bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return false;
+        }
+
+        public override void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+        }
+
+        #endregion
     }
 }

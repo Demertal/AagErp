@@ -6,7 +6,7 @@ using Prism.Regions;
 
 namespace ReportModul.ViewModels
 {
-    class ShowRevaluationReportsViewModel: BufferRead<RevaluationProductsReports>, INavigationAware
+    class ShowRevaluationReportsViewModel: BufferRead<RevaluationProductsReports>
     {
         #region Properties
 
@@ -20,13 +20,13 @@ namespace ReportModul.ViewModels
             Load();
         }
 
-        protected sealed override async void Load()
+        protected sealed override void Load()
         {
             try
             {
                 DbSetRevaluationProducts dbSet = new DbSetRevaluationProducts();
-                Count = await dbSet.GetCount();
-                ReportsList = await dbSet.LoadAsync(Left, Step);
+                Count = dbSet.GetCount();
+                ReportsList = dbSet.Load(Left, Step);
                 RaisePropertyChanged("IsEnabledRightCommand");
             }
             catch (Exception e)
@@ -35,16 +35,7 @@ namespace ReportModul.ViewModels
             }
         }
 
-        public void OnNavigatedTo(NavigationContext navigationContext)
-        {
-        }
-
-        public bool IsNavigationTarget(NavigationContext navigationContext)
-        {
-            return false;
-        }
-
-        public void OnNavigatedFrom(NavigationContext navigationContext)
+        public override void OnNavigatedFrom(NavigationContext navigationContext)
         {
             _regionManager.Regions.Remove("RevaluationReportInfo");
         }

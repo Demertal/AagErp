@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Windows;
-using ModelModul.Product;
+using ModelModul;
 using ModelModul.Report;
-using Prism.Mvvm;
 using Prism.Regions;
 
 namespace ReportModul.ViewModels
 {
-    class ShowFinalReportViewModel: BindableBase, INavigationAware
+    class ShowFinalReportViewModel: ViewModelBase
     {
         #region Property
 
@@ -39,15 +38,15 @@ namespace ReportModul.ViewModels
         {
             EndDate = DateTime.Today;
             StartDate = DateTime.Today;
-            LoadAsync();
+            Load();
         }
 
-        private async void LoadAsync()
+        private void Load()
         {
             try
             {
                 DbSetReports dbSet = new DbSetReports();
-                ReportList = await dbSet.GetFinalReport(StartDate, EndDate);
+                ReportList = dbSet.GetFinalReport(StartDate, EndDate);
             }
             catch (Exception e)
             {
@@ -55,17 +54,21 @@ namespace ReportModul.ViewModels
             }
         }
 
-        public void OnNavigatedTo(NavigationContext navigationContext)
+        #region INavigationAware
+
+        public override void OnNavigatedTo(NavigationContext navigationContext)
         {
         }
 
-        public bool IsNavigationTarget(NavigationContext navigationContext)
+        public override bool IsNavigationTarget(NavigationContext navigationContext)
         {
             return false;
         }
 
-        public void OnNavigatedFrom(NavigationContext navigationContext)
+        public override void OnNavigatedFrom(NavigationContext navigationContext)
         {
         }
+
+        #endregion
     }
 }

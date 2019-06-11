@@ -2,58 +2,61 @@
 using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace ModelModul.SerialNumber
 {
-    public class DbSetSerialNumbers: AutomationAccountingGoodsEntities, IDbSetModel<SerialNumbers>
+    public class DbSetSerialNumbers: IDbSetModel<SerialNumbers>
     {
-        public async Task<ObservableCollection<SerialNumbers>>LoadAsync(string findString = null)
+        public ObservableCollection<SerialNumbers> Load(string findString = null)
         {
             if (string.IsNullOrEmpty(findString))
             {
-                await SerialNumbers.Include(objSer => objSer.Counterparties).LoadAsync();
-                return SerialNumbers.Local;
+                return new ObservableCollection<SerialNumbers>(AutomationAccountingGoodsEntities.GetInstance().SerialNumbers.Include(objSer => objSer.Counterparties));
             }
 
-            await SerialNumbers.Where(obj => obj.Value.Contains(findString)).Include(objSer => objSer.Counterparties)
-                .OrderBy(obj => obj.PurchaseDate).Include(objSer => objSer.Products).OrderBy(obj => obj.PurchaseDate)
-                .LoadAsync();
-            if (SerialNumbers.Local.Count != 0) return SerialNumbers.Local;
-            await Products.Where(obj =>
-                obj.Title.Contains(findString) || obj.Barcode.Contains(findString) ||
-                obj.VendorCode.Contains(findString)).Include(obj => obj.SerialNumbers).LoadAsync();
-            ObservableCollection<SerialNumbers> temp = new ObservableCollection<SerialNumbers>();
-            foreach (var prod in Products.Local)
+            if (AutomationAccountingGoodsEntities.GetInstance().SerialNumbers.Count(obj => obj.Value.Contains(findString)) != 0)
             {
-                temp.AddRange(prod.SerialNumbers);
+                return new ObservableCollection<SerialNumbers>(AutomationAccountingGoodsEntities.GetInstance()
+                    .SerialNumbers.Where(obj => obj.Value.Contains(findString)).Include(objSer => objSer.Counterparties)
+                    .OrderBy(obj => obj.PurchaseDate).Include(objSer => objSer.Products)
+                    .OrderBy(obj => obj.PurchaseDate));
             }
+
+            ObservableCollection<SerialNumbers> temp = new ObservableCollection<SerialNumbers>();
+
+            AutomationAccountingGoodsEntities.GetInstance().Products
+                .Where(obj =>
+                    obj.Title.Contains(findString) || obj.Barcode.Contains(findString) ||
+                    obj.VendorCode.Contains(findString)).Include(obj => obj.SerialNumbers).ToList()
+                .ForEach(obj => temp.AddRange(obj.SerialNumbers));
+            
             return temp;
         }
 
-        public async Task<ObservableCollection<SerialNumbers>> FindFreeSerialNumbersAsync(string value)
+        public ObservableCollection<SerialNumbers> FindFreeSerialNumbers(string value)
         {
-            await SerialNumbers.Where(obj => obj.Value.Contains(value) && obj.SelleDate == null).OrderBy(obj => obj.PurchaseDate).LoadAsync();
-            return SerialNumbers.Local;
+            return new ObservableCollection<SerialNumbers>(AutomationAccountingGoodsEntities.GetInstance().SerialNumbers
+                .Where(obj => obj.Value.Contains(value) && obj.SelleDate == null).OrderBy(obj => obj.PurchaseDate));
         }
 
-        public async Task<ObservableCollection<SerialNumbers>> FindFreeSerialNumbersAsync(string value, int idProduct)
+        public ObservableCollection<SerialNumbers> FindFreeSerialNumbers(string value, int idProduct)
         {
-            await SerialNumbers.Where(obj => obj.Value.Contains(value) && obj.SelleDate == null && obj.IdProduct == idProduct).OrderBy(obj => obj.PurchaseDate).LoadAsync();
-            return SerialNumbers.Local;
+            return new ObservableCollection<SerialNumbers>(AutomationAccountingGoodsEntities.GetInstance().SerialNumbers
+                .Where(obj => obj.Value.Contains(value) && obj.SelleDate == null && obj.IdProduct == idProduct)
+                .OrderBy(obj => obj.PurchaseDate));
         }
 
-        public Task AddAsync(SerialNumbers obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task UpdateAsync(SerialNumbers obj)
+        public void Add(SerialNumbers obj)
         {
             throw new NotImplementedException();
         }
 
-        public Task DeleteAsync(int objId)
+        public void Update(SerialNumbers obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Delete(int objId)
         {
             throw new NotImplementedException();
         }

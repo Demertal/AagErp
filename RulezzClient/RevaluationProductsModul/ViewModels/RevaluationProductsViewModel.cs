@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using ModelModul;
@@ -13,13 +12,12 @@ using ModelModul.Product;
 using ModelModul.RevaluationProduct;
 using Prism.Commands;
 using Prism.Interactivity.InteractionRequest;
-using Prism.Mvvm;
 using Prism.Regions;
 using RevaluationProductsModul.Views;
 
 namespace RevaluationProductsModul.ViewModels
 {
-    public class RevaluationProductsViewModel : BindableBase, INavigationAware
+    public class RevaluationProductsViewModel : ViewModelBase
     {
         #region Properties
 
@@ -118,7 +116,7 @@ namespace RevaluationProductsModul.ViewModels
 
         #region DelegateCommand
 
-        private async void Revaluation()
+        private void Revaluation()
         {
             _barcode = "";
             if (MessageBox.Show(
@@ -143,7 +141,7 @@ namespace RevaluationProductsModul.ViewModels
                 }
 
                 DbSetRevaluationProducts dbSet = new DbSetRevaluationProducts();
-                await dbSet.AddAsync(_revaluationProductsReports);
+                dbSet.Add(_revaluationProductsReports);
                 MessageBox.Show("Отчет о переоценке добавлен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
                 NewReport();
             }
@@ -166,14 +164,14 @@ namespace RevaluationProductsModul.ViewModels
             list.ForEach(item => RevaluationProductsInfos.Remove(item));
         }
 
-        private async void Callback(INotification obj)
+        private void Callback(INotification obj)
         {
             _barcode = "";
             if (!(obj.Content is Products)) return;
-            await InsertProduct((Products) obj.Content);
+            InsertProduct((Products) obj.Content);
         }
 
-        private async void ListenKeyboard(KeyEventArgs obj)
+        private void ListenKeyboard(KeyEventArgs obj)
         {
             if (obj.Key >= Key.D0 && obj.Key <= Key.D9)
             {
@@ -193,9 +191,9 @@ namespace RevaluationProductsModul.ViewModels
                         return;
                     }
                     DbSetProducts dbSetProducts = new DbSetProducts();
-                    Products product = await dbSetProducts.FindProductByBarcodeAsync(_barcode);
+                    Products product = dbSetProducts.FindProductByBarcode(_barcode);
                     if (product == null) throw new Exception("Товар не найден");
-                    await InsertProduct(product);
+                    InsertProduct(product);
                 }
                 catch (Exception ex)
                 {
@@ -210,7 +208,7 @@ namespace RevaluationProductsModul.ViewModels
             }
         }
 
-        private async Task InsertProduct(Products product)
+        private void InsertProduct(Products product)
         {
             try
             {
@@ -220,13 +218,13 @@ namespace RevaluationProductsModul.ViewModels
                     return;
                 }
                 DbSetProducts dbSetProducts = new DbSetProducts();
-                PurchaseStruct purchaseStructCur = await dbSetProducts.GetPurchasePriceAsync(product.Id);
+                PurchaseStruct purchaseStructCur = dbSetProducts.GetPurchasePrice(product.Id);
                 PurchaseStruct purchaseStructLast = null;
                 DbSetExchangeRates dbSetExchange = new DbSetExchangeRates();
-                ExchangeRates exchange = await dbSetExchange.LoadAsync("ГРН");
+                ExchangeRates exchange = dbSetExchange.Load("ГРН");
                 if (purchaseStructCur != null)
                 {
-                    purchaseStructLast = await dbSetProducts.GetPurchasePriceAsync(product.Id, 1);
+                    purchaseStructLast = dbSetProducts.GetPurchasePrice(product.Id, 1);
                 }
                 RevaluationProductsInfos.Add(new RevaluationProductsForRevaluationViewModel
                 {
@@ -254,31 +252,31 @@ namespace RevaluationProductsModul.ViewModels
 
         #endregion
 
-        #region Navigat
+        #region INavigationAware
 
-        public async void OnNavigatedTo(NavigationContext navigationContext)
+        public override void OnNavigatedTo(NavigationContext navigationContext)
         {
             if (!(navigationContext.Parameters["RevaluationProducts"] is List<Products> revaluationProducts)) return;
             foreach (var product in revaluationProducts)
             {
                 if (RevaluationProductsInfos.FirstOrDefault(objRev => objRev.Product.Id == product.Id) !=
                     null) continue;
-                await InsertProduct(product);
+                InsertProduct(product);
             }
 
             RaisePropertyChanged("RevaluationProductsInfos");
             RaisePropertyChanged("IsValidate");
         }
 
-        public bool IsNavigationTarget(NavigationContext navigationContext)
+        public override bool IsNavigationTarget(NavigationContext navigationContext)
         {
-            return false;
+            return true;
         }
 
-        public void OnNavigatedFrom(NavigationContext navigationContext)
+        public override void OnNavigatedFrom(NavigationContext navigationContext)
         {
         }
 
-            #endregion
+        #endregion
     }
 }

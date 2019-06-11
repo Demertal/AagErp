@@ -4,12 +4,11 @@ using System.Windows;
 using ModelModul;
 using ModelModul.Warranty;
 using Prism.Commands;
-using Prism.Mvvm;
 using Prism.Regions;
 
 namespace WarrantyModul.ViewModels
 {
-    class WarrantyInfoViewModel : BindableBase, INavigationAware
+    class WarrantyInfoViewModel : ViewModelBase
     { 
         #region Properties
 
@@ -53,12 +52,12 @@ namespace WarrantyModul.ViewModels
             OkCommand = new DelegateCommand(Accept).ObservesCanExecute(() => SelectedWarranty.IsValidate);
         }
         
-        private async void Accept()
+        private void Accept()
         {
             try
             {
                 DbSetWarranties dbSet = new DbSetWarranties();
-                await dbSet.UpdateAsync(SelectedWarranty.Warranty);
+                dbSet.Update(SelectedWarranty.Warranty);
                 MessageBox.Show("Информация о гарантии изменена", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
                 IsUpdate = false;
             }
@@ -82,13 +81,13 @@ namespace WarrantyModul.ViewModels
             IsUpdate = true;
         }
 
-        private async void GoodsIssue()
+        private void GoodsIssue()
         {
             try
             {
                 DbSetWarranties dbSet = new DbSetWarranties();
-                dbSet.GoodsIssued(SelectedWarranty.Warranty.Id);
-                SelectedWarranty.Warranty = await dbSet.FindAsync(SelectedWarranty.Warranty.Id);
+                AutomationAccountingGoodsEntities.GetInstance().GoodsIssued(SelectedWarranty.Warranty.Id);
+                SelectedWarranty.Warranty = dbSet.Find(SelectedWarranty.Warranty.Id);
             }
             catch (Exception ex)
             {
@@ -96,13 +95,13 @@ namespace WarrantyModul.ViewModels
             }
         }
 
-        private async void GoodsDeparture()
+        private void GoodsDeparture()
         {
             try
             {
                 DbSetWarranties dbSet = new DbSetWarranties();
-                dbSet.GoodsShipped(SelectedWarranty.Warranty.Id);
-                SelectedWarranty.Warranty = await dbSet.FindAsync(SelectedWarranty.Warranty.Id);
+                AutomationAccountingGoodsEntities.GetInstance().GoodsShipped(SelectedWarranty.Warranty.Id);
+                SelectedWarranty.Warranty = dbSet.Find(SelectedWarranty.Warranty.Id);
             }
             catch (Exception ex)
             {
@@ -110,17 +109,21 @@ namespace WarrantyModul.ViewModels
             }
         }
 
-        public void OnNavigatedTo(NavigationContext navigationContext)
+        #region INavigationAware
+
+        public override void OnNavigatedTo(NavigationContext navigationContext)
         {
         }
 
-        public bool IsNavigationTarget(NavigationContext navigationContext)
+        public override bool IsNavigationTarget(NavigationContext navigationContext)
         {
             return false;
         }
 
-        public void OnNavigatedFrom(NavigationContext navigationContext)
+        public override void OnNavigatedFrom(NavigationContext navigationContext)
         {
         }
+
+        #endregion
     }
 }

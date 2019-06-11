@@ -7,28 +7,29 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+
 namespace ModelModul
 {
-    using System;
-    using System.Collections.Generic;
-    
     public partial class PurchaseReports
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        [SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public PurchaseReports()
         {
-            this.PurchaseInfos = new HashSet<PurchaseInfos>();
+            PurchaseInfos = new HashSet<PurchaseInfos>();
         }
     
         public int Id { get; set; }
-        public Nullable<System.DateTime> DataOrder { get; set; }
+        public DateTime? DataOrder { get; set; }
         public decimal Course { get; set; }
         public string TextInfo { get; set; }
         public int IdStore { get; set; }
         public int IdCounterparty { get; set; }
     
         public virtual Counterparties Counterparties { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PurchaseInfos> PurchaseInfos { get; set; }
         public virtual Stores Stores { get; set; }
     }

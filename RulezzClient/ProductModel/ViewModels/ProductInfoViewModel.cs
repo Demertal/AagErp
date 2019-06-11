@@ -10,11 +10,11 @@ using ModelModul.PropertyProduct;
 using ModelModul.UnitStorage;
 using ModelModul.WarrantyPeriod;
 using Prism.Commands;
-using Prism.Mvvm;
+using Prism.Regions;
 
 namespace ProductModul.ViewModels
 {
-    class ProductInfoViewModel : BindableBase
+    class ProductInfoViewModel : ViewModelBase
     {
         #region ProductProperties
 
@@ -72,7 +72,7 @@ namespace ProductModul.ViewModels
             {
                 _selectedProduct = value;
                 IsUpdate = false;
-                LoadAsync();
+                Load();
                 _selectedProduct.Product = _selectedProduct.Product;
                 GetCountProduct();
                 RaisePropertyChanged();
@@ -123,16 +123,16 @@ namespace ProductModul.ViewModels
             OkCommand = new DelegateCommand(Accept).ObservesCanExecute(() => SelectedProduct.IsValidate); 
         }
 
-        private async void LoadAsync()
+        private void Load()
         {
             try
             {
                 DbSetUnitStorages dbSetUnitStorages = new DbSetUnitStorages();
-                UnitStorages = await dbSetUnitStorages.LoadAsync();
+                UnitStorages = dbSetUnitStorages.Load();
                 DbSetWarrantyPeriods dbSetWarrantyPeriods = new DbSetWarrantyPeriods();
-                WarrantyPeriods = await dbSetWarrantyPeriods.LoadAsync();
+                WarrantyPeriods = dbSetWarrantyPeriods.Load();
                 DbSetPropertyProducts dbSetPropertyProducts = new DbSetPropertyProducts();
-                PropertyProductsList = await dbSetPropertyProducts.LoadAsync(SelectedProduct.Id);
+                PropertyProductsList = dbSetPropertyProducts.Load(SelectedProduct.Id);
             }
             catch (Exception ex)
             {
@@ -140,12 +140,12 @@ namespace ProductModul.ViewModels
             }
         }
 
-        private async void GetCountProduct()
+        private void GetCountProduct()
         {
             try
             {
                 DbSetProducts dbSet = new DbSetProducts();
-                CountProducts = await dbSet.GetCountProduct(SelectedProduct.Product.Id);
+                CountProducts = dbSet.GetCountProduct(SelectedProduct.Product.Id);
             }
             catch (Exception ex)
             {
@@ -159,7 +159,7 @@ namespace ProductModul.ViewModels
             IsUpdate = true;
         }
 
-        private async void Accept()
+        private void Accept()
         {
             try
             {
@@ -174,9 +174,9 @@ namespace ProductModul.ViewModels
                 pr.UnitStorages = null;
                 pr.WarrantyPeriods = null;
                 DbSetProducts dbSet = new DbSetProducts();
-                await dbSet.UpdateAsync(pr);
+                dbSet.Update(pr);
                 DbSetPropertyProducts dbSetProperty = new DbSetPropertyProducts();
-                await dbSetProperty.UpdateAsync(PropertyProductsList.ToList());
+                dbSetProperty.Update(PropertyProductsList.ToList());
                 MessageBox.Show("Товар изменен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
                 IsUpdate = false;
             }
@@ -190,10 +190,10 @@ namespace ProductModul.ViewModels
         {
             SelectedProduct.Product = _oldProduct;
             IsUpdate = false;
-            LoadAsync();
+            Load();
         }
 
-        private async void GenerateBarcode()
+        private void GenerateBarcode()
         {
             try
             {
@@ -202,7 +202,7 @@ namespace ProductModul.ViewModels
                 do
                 {
                     temp = GenerationBarcode.GenerateBarcode();
-                } while (await dbSetProducts.CheckBarcodeAsync(temp) != 0);
+                } while (dbSetProducts.CheckBarcode(temp));
 
                 SelectedProduct.Barcode = temp;
             }
@@ -211,5 +211,22 @@ namespace ProductModul.ViewModels
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        #region INavigationAware
+
+        public override void OnNavigatedTo(NavigationContext navigationContext)
+        {
+        }
+
+        public override bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return false;
+        }
+
+        public override void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+        }
+
+        #endregion
     }
 }

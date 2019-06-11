@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.ComponentModel;
+using System.Windows.Controls;
 using ModelModul;
 using Prism.Common;
 using Prism.Regions;
@@ -17,7 +18,7 @@ namespace ReportModul.Views
             RegionContext.GetObservableContext(this).PropertyChanged += RevaluationReportInfo_PropertyChanged;
         }
 
-        private void RevaluationReportInfo_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void RevaluationReportInfo_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             var context = (ObservableObject<object>)sender;
             var salesReport = (SalesReports)context.Value;

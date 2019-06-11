@@ -2,21 +2,20 @@
 using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace ModelModul.PropertyValue
 {
-    public class DbSetPropertyValue : AutomationAccountingGoodsEntities, IDbSetModel<PropertyValues>
+    public class DbSetPropertyValue : IDbSetModel<PropertyValues>
     {
-        public async Task<ObservableCollection<PropertyValues>> LoadAsync(int idPropertyName)
+        public ObservableCollection<PropertyValues> Load(int idPropertyName)
         {
-            await PropertyValues.Where(obj => obj.IdPropertyName == idPropertyName).LoadAsync();
-            return PropertyValues.Local;
+            return new ObservableCollection<PropertyValues>(AutomationAccountingGoodsEntities.GetInstance()
+                .PropertyValues.Where(obj => obj.IdPropertyName == idPropertyName));
         }
 
-        public async Task AddAsync(PropertyValues obj)
+        public void Add(PropertyValues obj)
         {
-            using (var transaction = Database.BeginTransaction())
+            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
             {
                 try
                 {
@@ -26,8 +25,8 @@ namespace ModelModul.PropertyValue
                         obj.PropertyNames = null;
                     }
 
-                    PropertyValues.Add(obj);
-                    await SaveChangesAsync();
+                    AutomationAccountingGoodsEntities.GetInstance().PropertyValues.Add(obj);
+                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
                     transaction.Commit();
                 }
                 catch (Exception)
@@ -38,18 +37,18 @@ namespace ModelModul.PropertyValue
             }
         }
 
-        public async Task UpdateAsync(PropertyValues obj)
+        public void Update(PropertyValues obj)
         {
-            using (var transaction = Database.BeginTransaction())
+            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
             {
                 try
                 {
-                    var property = PropertyValues.Find(obj.Id);
+                    var property = AutomationAccountingGoodsEntities.GetInstance().PropertyValues.Find(obj.Id);
                     if (property == null) throw new Exception("Изменить не получилось");
 
                        property.Value = obj.Value;
-                    Entry(property).State = EntityState.Modified;
-                    await SaveChangesAsync();
+                    AutomationAccountingGoodsEntities.GetInstance().Entry(property).State = EntityState.Modified;
+                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
                     transaction.Commit();
                 }
                 catch (Exception)
@@ -60,15 +59,15 @@ namespace ModelModul.PropertyValue
             }
         }
 
-        public async Task DeleteAsync(int objId)
+        public void Delete(int objId)
         {
-            using (var transaction = Database.BeginTransaction())
+            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
             {
                 try
                 {
-                    var property = PropertyValues.Find(objId);
-                    Entry(property).State = EntityState.Deleted;
-                    await SaveChangesAsync();
+                    var property = AutomationAccountingGoodsEntities.GetInstance().PropertyValues.Find(objId);
+                    AutomationAccountingGoodsEntities.GetInstance().Entry(property).State = EntityState.Deleted;
+                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
                     transaction.Commit();
                 }
                 catch (Exception)

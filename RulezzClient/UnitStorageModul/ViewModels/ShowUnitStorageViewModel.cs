@@ -5,12 +5,11 @@ using System.Windows.Controls;
 using ModelModul;
 using ModelModul.UnitStorage;
 using Prism.Commands;
-using Prism.Mvvm;
 using Prism.Regions;
 
 namespace UnitStorageModul.ViewModels
 {
-    class ShowUnitStorageViewModel : BindableBase, INavigationAware
+    class ShowUnitStorageViewModel : ViewModelBase
     {
         #region Properties
 
@@ -29,12 +28,11 @@ namespace UnitStorageModul.ViewModels
 
         public ShowUnitStorageViewModel()
         {
-            Load();
             ChangeUnitStoragesCommand = new DelegateCommand<DataGridRowEditEndingEventArgs>(ChangeUnitStorages);
             DeleteUnitStoragesCommand = new DelegateCommand<UnitStorages>(DeleteUnitStorages);
         }
 
-        private async void ChangeUnitStorages(DataGridRowEditEndingEventArgs obj)
+        private void ChangeUnitStorages(DataGridRowEditEndingEventArgs obj)
         {
             if (obj == null) return;
             if (string.IsNullOrEmpty(((UnitStorages)obj.Row.DataContext).Title))
@@ -54,12 +52,12 @@ namespace UnitStorageModul.ViewModels
             }
         }
 
-        private async void AddUnitStorages(UnitStorages obj)
+        private void AddUnitStorages(UnitStorages obj)
         {
             try
             {
                 DbSetUnitStorages dbSet = new DbSetUnitStorages();
-                await dbSet.AddAsync(obj);
+                dbSet.Add(obj);
             }
             catch (Exception e)
             {
@@ -68,12 +66,12 @@ namespace UnitStorageModul.ViewModels
             Load();
         }
 
-        private async void UpdateUnitStorages(UnitStorages obj)
+        private void UpdateUnitStorages(UnitStorages obj)
         {
             try
             {
                 DbSetUnitStorages dbSet = new DbSetUnitStorages();
-                await dbSet.UpdateAsync(obj);
+                dbSet.Update(obj);
             }
             catch (Exception e)
             {
@@ -82,7 +80,7 @@ namespace UnitStorageModul.ViewModels
             Load();
         }
 
-        private async void DeleteUnitStorages(UnitStorages obj)
+        private void DeleteUnitStorages(UnitStorages obj)
         {
             if (obj == null) return;
             if (obj.Title == "шт")
@@ -95,7 +93,7 @@ namespace UnitStorageModul.ViewModels
             try
             {
                 DbSetUnitStorages dbSet = new DbSetUnitStorages();
-                await dbSet.DeleteAsync(obj.Id);
+                dbSet.Delete(obj.Id);
             }
             catch (Exception e)
             {
@@ -104,12 +102,12 @@ namespace UnitStorageModul.ViewModels
             Load();
         }
 
-        private async void Load()
+        private void Load()
         {
             try
             {
                 DbSetUnitStorages dbSet = new DbSetUnitStorages();
-                UnitStoragesList = new ObservableCollection<UnitStorages>(await dbSet.LoadAsync());
+                UnitStoragesList = new ObservableCollection<UnitStorages>(dbSet.Load());
                 RaisePropertyChanged("UnitStoragesList");
             }
             catch (Exception e)
@@ -118,18 +116,22 @@ namespace UnitStorageModul.ViewModels
             }
         }
 
-        public void OnNavigatedTo(NavigationContext navigationContext)
+        #region INavigationAware
+
+        public override void OnNavigatedTo(NavigationContext navigationContext)
         {
             Load();
         }
 
-        public bool IsNavigationTarget(NavigationContext navigationContext)
+        public override bool IsNavigationTarget(NavigationContext navigationContext)
         {
-            return true;
+            return false;
         }
 
-        public void OnNavigatedFrom(NavigationContext navigationContext)
+        public override void OnNavigatedFrom(NavigationContext navigationContext)
         {
         }
+
+        #endregion
     }
 }

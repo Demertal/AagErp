@@ -1,11 +1,9 @@
-﻿using System.Threading.Tasks;
-
-namespace ModelModul
+﻿namespace ModelModul
 {
     public interface IDbSetModel<in T>
     {
-        Task AddAsync(T obj);
-        Task UpdateAsync(T obj);
-        Task DeleteAsync(int objId);
+        void Add(T obj);
+        void Update(T obj);
+        void Delete(int objId);
     }
 }

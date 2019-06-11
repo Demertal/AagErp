@@ -2,31 +2,30 @@
 using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace ModelModul.Warranty
 {
-    public class DbSetWarranties : AutomationAccountingGoodsEntities, IDbSetModel<Warranties>
+    public class DbSetWarranties : IDbSetModel<Warranties>
     {
-        public async Task<ObservableCollection<Warranties>> LoadAsync(int idSerials)
+        public ObservableCollection<Warranties> Load(int idSerials)
         {
-            await Warranties.Where(obj => obj.IdSerialNumber == idSerials).LoadAsync();
-            return Warranties.Local;
+            return new ObservableCollection<Warranties>(AutomationAccountingGoodsEntities.GetInstance().Warranties
+                .Where(obj => obj.IdSerialNumber == idSerials));
         }
 
-        public async Task<Warranties> FindAsync(int id)
+        public Warranties Find(int id)
         {
-            return await Warranties.Where(obj => obj.Id == id).SingleAsync();
+            return AutomationAccountingGoodsEntities.GetInstance().Warranties.SingleOrDefault(obj => obj.Id == id);
         }
 
-        public async Task AddAsync(Warranties obj)
+        public void Add(Warranties obj)
         {
-            using (var transaction = Database.BeginTransaction())
+            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
             {
                 try
                 {
-                    Warranties.Add(obj);
-                    await SaveChangesAsync();
+                    AutomationAccountingGoodsEntities.GetInstance().Warranties.Add(obj);
+                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
                     transaction.Commit();
                 }
                 catch (Exception)
@@ -37,18 +36,18 @@ namespace ModelModul.Warranty
             }
         }
 
-        public async Task UpdateAsync(Warranties obj)
+        public void Update(Warranties obj)
         {
-            using (var transaction = Database.BeginTransaction())
+            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
             {
                 try
                 {
-                    var warranty = Warranties.Find(obj.Id);
+                    var warranty = AutomationAccountingGoodsEntities.GetInstance().Warranties.Find(obj.Id);
                     if (warranty == null) throw new Exception("Изменить не получилось");
                     warranty.Malfunction = obj.Malfunction;
                     warranty.Info = obj.Info;
-                    Entry(warranty).State = EntityState.Modified;
-                    await SaveChangesAsync();
+                    AutomationAccountingGoodsEntities.GetInstance().Entry(warranty).State = EntityState.Modified;
+                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
                     transaction.Commit();
                 }
                 catch (Exception)
@@ -59,7 +58,7 @@ namespace ModelModul.Warranty
             }
         }
 
-        public Task DeleteAsync(int objId)
+        public void Delete(int objId)
         {
             throw new NotImplementedException();
         }

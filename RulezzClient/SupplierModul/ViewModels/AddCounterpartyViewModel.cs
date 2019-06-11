@@ -5,11 +5,11 @@ using ModelModul;
 using ModelModul.Counterparty;
 using Prism.Commands;
 using Prism.Interactivity.InteractionRequest;
-using Prism.Mvvm;
+using Prism.Regions;
 
 namespace CounterpartyModul.ViewModels
 {
-    class AddCounterpartyViewModel: BindableBase, IInteractionRequestAware
+    class AddCounterpartyViewModel: ViewModelBase, IInteractionRequestAware
     {
         #region Parametrs
 
@@ -58,13 +58,13 @@ namespace CounterpartyModul.ViewModels
             Counterparty.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args) {RaisePropertyChanged(args.PropertyName); };
         }
 
-        public async void AddCounterparty()
+        public void AddCounterparty()
         {
             try
             {
                 Counterparty.TypeCounterparty = Type;
                 DbSetCounterparties dbSetCounterparties = new DbSetCounterparties();
-                await dbSetCounterparties.AddAsync(Counterparty.Counterparty);
+                dbSetCounterparties.Add(Counterparty.Counterparty);
                 MessageBox.Show("Контрагент добавлен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
                 if (_notification != null)
                     _notification.Confirmed = true;
@@ -75,5 +75,22 @@ namespace CounterpartyModul.ViewModels
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        #region INavigationAware
+
+        public override void OnNavigatedTo(NavigationContext navigationContext)
+        {
+        }
+
+        public override bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return false;
+        }
+
+        public override void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+        }
+
+        #endregion
     }
 }

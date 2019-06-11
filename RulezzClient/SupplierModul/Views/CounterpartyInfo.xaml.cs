@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.ComponentModel;
+using System.Windows.Controls;
 using CounterpartyModul.ViewModels;
 using ModelModul;
 using Prism.Common;
@@ -17,7 +18,7 @@ namespace CounterpartyModul.Views
             RegionContext.GetObservableContext(this).PropertyChanged += CounterpartyInfo_PropertyChanged;
         }
 
-        private void CounterpartyInfo_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void CounterpartyInfo_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             var context = (ObservableObject<object>)sender;
             var selectedCounterparty = (Counterparties)context.Value;

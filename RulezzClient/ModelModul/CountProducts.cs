@@ -9,7 +9,7 @@
 
 namespace ModelModul
 {
-    public partial class CountProducts
+    public class CountProducts
     {
         public int IdProduct { get; set; }
         public int IdStore { get; set; }

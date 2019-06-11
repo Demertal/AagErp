@@ -3,21 +3,20 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace ModelModul.PropertyName
 {
-    public class DbSetPropertyNames : AutomationAccountingGoodsEntities, IDbSetModel<PropertyNames>
+    public class DbSetPropertyNames : IDbSetModel<PropertyNames>
     {
-        public async Task<ObservableCollection<PropertyNames>> LoadAsync(int idGroup)
+        public ObservableCollection<PropertyNames> Load(int idGroup)
         {
-            await PropertyNames.Where(obj => obj.IdGroup == idGroup).LoadAsync();
-            return PropertyNames.Local;
+            return new ObservableCollection<PropertyNames>(AutomationAccountingGoodsEntities.GetInstance().PropertyNames
+                .Where(obj => obj.IdGroup == idGroup));
         }
 
-        public async Task AddAsync(PropertyNames obj)
+        public void Add(PropertyNames obj)
         {
-            using (var transaction = Database.BeginTransaction())
+            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
             {
                 try
                 {
@@ -32,11 +31,11 @@ namespace ModelModul.PropertyName
                     groups.AddRange(GetChildGroup(obj.IdGroup));
                     groups.AddRange(GetParentGroup(obj.IdGroup));
 
-                    if (await PropertyNames.AnyAsync(objPr => objPr.Title == obj.Title &&  groups.Contains(objPr.IdGroup)))
+                    if (AutomationAccountingGoodsEntities.GetInstance().PropertyNames.Any(objPr => objPr.Title == obj.Title &&  groups.Contains(objPr.IdGroup)))
                         throw new Exception("Такой параметр уже есть в этой иеррахии групп");
 
-                    PropertyNames.Add(obj);
-                    await SaveChangesAsync();
+                    AutomationAccountingGoodsEntities.GetInstance().PropertyNames.Add(obj);
+                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
                     transaction.Commit();
                 }
                 catch (Exception)
@@ -47,16 +46,16 @@ namespace ModelModul.PropertyName
             }
         }
 
-        public async Task<ObservableCollection<PropertyNames>> GetAllPropertyNames(int idGroup)
+        public ObservableCollection<PropertyNames> GetAllPropertyNames(int idGroup)
         {
             List<int> groups = GetParentGroup(idGroup);
-            await PropertyNames.Where(objPr => groups.Contains(objPr.IdGroup)).Include(objPr => objPr.PropertyValues).LoadAsync();
-            return PropertyNames.Local;
+            return new ObservableCollection<PropertyNames>(AutomationAccountingGoodsEntities.GetInstance().PropertyNames
+                .Where(objPr => groups.Contains(objPr.IdGroup)).Include(objPr => objPr.PropertyValues));
         }
 
         private List<int> GetChildGroup(int idParentGroup)
         {
-            List<int> groups = Groups.Where(objGr => objGr.IdParentGroup == idParentGroup).Select(objGr => objGr.Id)
+            List<int> groups = AutomationAccountingGoodsEntities.GetInstance().Groups.Where(objGr => objGr.IdParentGroup == idParentGroup).Select(objGr => objGr.Id)
                 .ToList();
             List<int> temp = new List<int>();
             foreach (var t in groups)
@@ -72,7 +71,7 @@ namespace ModelModul.PropertyName
             List<int> groups = new List<int>();
             do
             {
-                Groups temp = Groups.FirstOrDefault(objGr => objGr.Id == id);
+                Groups temp = AutomationAccountingGoodsEntities.GetInstance().Groups.SingleOrDefault(objGr => objGr.Id == id);
                 if(temp == null) break;
                 groups.Add(temp.Id);
                 id = temp.IdParentGroup;
@@ -81,25 +80,25 @@ namespace ModelModul.PropertyName
             return groups;
         }
 
-        public async Task UpdateAsync(PropertyNames obj)
+        public void Update(PropertyNames obj)
         {
-            using (var transaction = Database.BeginTransaction())
+            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
             {
                 try
                 {
-                    var property = PropertyNames.Find(obj.Id);
+                    var property = AutomationAccountingGoodsEntities.GetInstance().PropertyNames.Find(obj.Id);
                     if (property == null) throw new Exception("Изменить не получилось");
 
                     List<int> groups = new List<int>();
                     groups.AddRange(GetChildGroup(obj.IdGroup));
                     groups.AddRange(GetParentGroup(obj.IdGroup));
 
-                    if (await PropertyNames.AnyAsync(objPr => objPr.Title == obj.Title && groups.Contains(objPr.IdGroup)))
+                    if (AutomationAccountingGoodsEntities.GetInstance().PropertyNames.Any(objPr => objPr.Title == obj.Title && groups.Contains(objPr.IdGroup)))
                         throw new Exception("Такой параметр уже есть в этой иеррахии групп");
 
                     property.Title = obj.Title;
-                    Entry(property).State = EntityState.Modified;
-                    await SaveChangesAsync();
+                    AutomationAccountingGoodsEntities.GetInstance().Entry(property).State = EntityState.Modified;
+                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
                     transaction.Commit();
                 }
                 catch (Exception)
@@ -110,15 +109,15 @@ namespace ModelModul.PropertyName
             }
         }
 
-        public async Task DeleteAsync(int objId)
+        public void Delete(int objId)
         {
-            using (var transaction = Database.BeginTransaction())
+            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
             {
                 try
                 {
-                    var propertyNames = PropertyNames.Find(objId);
-                    Entry(propertyNames).State = EntityState.Deleted;
-                    await SaveChangesAsync();
+                    var propertyNames = AutomationAccountingGoodsEntities.GetInstance().PropertyNames.Find(objId);
+                    AutomationAccountingGoodsEntities.GetInstance().Entry(propertyNames).State = EntityState.Deleted;
+                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
                     transaction.Commit();
                 }
                 catch (Exception)

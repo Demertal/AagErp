@@ -6,7 +6,7 @@ using Prism.Regions;
 
 namespace ReportModul.ViewModels
 {
-    class ShowSalesReportsViewModel : BufferRead<SalesReports>, INavigationAware
+    class ShowSalesReportsViewModel : BufferRead<SalesReports>
     {
         #region Properties
 
@@ -17,16 +17,15 @@ namespace ReportModul.ViewModels
         public ShowSalesReportsViewModel(IRegionManager regionManager)
         {
             _regionManager = regionManager;
-            Load();
         }
 
-        protected sealed override async void Load()
+        protected sealed override void Load()
         {
             try
             {
                 DbSetSalesGoods dbSet = new DbSetSalesGoods();
-                Count = await dbSet.GetCount();
-                ReportsList = await dbSet.LoadAsync(Left, Step);
+                Count = dbSet.GetCount();
+                ReportsList = dbSet.Load(Left, Step);
                 RaisePropertyChanged("IsEnabledRightCommand");
             }
             catch (Exception e)
@@ -35,16 +34,7 @@ namespace ReportModul.ViewModels
             }
         }
 
-        public void OnNavigatedTo(NavigationContext navigationContext)
-        {
-        }
-
-        public bool IsNavigationTarget(NavigationContext navigationContext)
-        {
-            return false;
-        }
-
-        public void OnNavigatedFrom(NavigationContext navigationContext)
+        public override void OnNavigatedFrom(NavigationContext navigationContext)
         {
             _regionManager.Regions.Remove("SalesReportInfo");
         }
