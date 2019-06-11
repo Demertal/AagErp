@@ -11,7 +11,8 @@ namespace ModelModul.Report
         public ObservableCollection<FinalReportProductViewModel> GetFinalReport(DateTime start, DateTime end)
         {
             ObservableCollection<FinalReportProductViewModel> finalReport = new ObservableCollection<FinalReportProductViewModel>();
-            List<SalesReports> tempSales = AutomationAccountingGoodsEntities.GetInstance().SalesReports.Where(objSale => objSale.DataSales >= start && objSale.DataSales <= end)
+            List<SalesReports> tempSales = AutomationAccountingGoodsEntities.GetInstance().SalesReports
+                .Where(objSale => objSale.DataSales >= start && objSale.DataSales <= end)
                 .Include(objSale => objSale.SalesInfos).ToList();
             foreach (var sales in tempSales)
             {
