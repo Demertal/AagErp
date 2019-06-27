@@ -13,11 +13,6 @@ namespace ModelModul
     {
         public object Clone()
         {
-            List<SerialNumbers> temp = null;
-            if (SerialNumbers != null)
-            {
-                temp = new List<SerialNumbers>(SerialNumbers);
-            }
             return new Products
             {
                 Title = Title,
@@ -31,7 +26,6 @@ namespace ModelModul
                 UnitStorages = (UnitStorages)UnitStorages?.Clone(),
                 WarrantyPeriods = (WarrantyPeriods) WarrantyPeriods?.Clone(),
                 Groups = (Groups) Groups?.Clone(),
-                SerialNumbers = temp
             };
         }
     }

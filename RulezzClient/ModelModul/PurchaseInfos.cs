@@ -9,8 +9,17 @@
 
 namespace ModelModul
 {
+    using System;
+    using System.Collections.Generic;
+    
     public partial class PurchaseInfos
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public PurchaseInfos()
+        {
+            this.SerialNumbers = new HashSet<SerialNumbers>();
+        }
+    
         public int Id { get; set; }
         public int Count { get; set; }
         public decimal PurchasePrice { get; set; }
@@ -21,5 +30,7 @@ namespace ModelModul
         public virtual ExchangeRates ExchangeRates { get; set; }
         public virtual Products Products { get; set; }
         public virtual PurchaseReports PurchaseReports { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<SerialNumbers> SerialNumbers { get; set; }
     }
 }

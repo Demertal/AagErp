@@ -146,7 +146,18 @@ namespace ModelModul.PurchaseGoods
             }
         }
 
-        public bool IsValidate
+        public override ObservableCollection<SerialNumbers> SerialNumbers
+        {
+            get => PurchaseInfo.SerialNumbers as ObservableCollection<SerialNumbers>;
+            set
+            {
+                PurchaseInfo.SerialNumbers = value;
+                SerialNumbers.CollectionChanged += SerialNumbersCollectionChanged;
+                RaisePropertyChanged();
+            }
+        }
+
+        public override bool IsValidate
         {
             get
             {
@@ -178,7 +189,7 @@ namespace ModelModul.PurchaseGoods
         private void ReloadSerialNumber(int? obj)
         {
             if (obj == null) return;
-            ((ObservableCollection<SerialNumbers>)PurchaseInfo.Products.SerialNumbers)[obj.Value].Value = "";
+            SerialNumbers[obj.Value].Value = "";
             RaisePropertyChanged("SerialNumbers");
         }
     }

@@ -71,6 +71,9 @@ namespace WarrantyModul.ViewModels
         {
             SelectedWarranty.Malfunction = _oldWarranty.Malfunction;
             SelectedWarranty.Info = _oldWarranty.Info;
+            SelectedWarranty.DateIssue = _oldWarranty.DateIssue;
+            SelectedWarranty.DateDeparture = _oldWarranty.DateDeparture;
+            SelectedWarranty.DateReceipt = _oldWarranty.DateReceipt;
             IsUpdate = false;
         }
 
@@ -78,6 +81,9 @@ namespace WarrantyModul.ViewModels
         {
             _oldWarranty.Malfunction = SelectedWarranty.Malfunction;
             _oldWarranty.Info = SelectedWarranty.Info;
+            _oldWarranty.DateIssue = SelectedWarranty.DateIssue;
+            _oldWarranty.DateDeparture = SelectedWarranty.DateDeparture;
+            _oldWarranty.DateReceipt = SelectedWarranty.DateReceipt;
             IsUpdate = true;
         }
 
@@ -86,7 +92,8 @@ namespace WarrantyModul.ViewModels
             try
             {
                 DbSetWarranties dbSet = new DbSetWarranties();
-                AutomationAccountingGoodsEntities.GetInstance().GoodsIssued(SelectedWarranty.Warranty.Id);
+                AutomationAccountingGoodsEntities db = new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString);
+                db.GoodsIssued(SelectedWarranty.Warranty.Id);
                 SelectedWarranty.Warranty = dbSet.Find(SelectedWarranty.Warranty.Id);
             }
             catch (Exception ex)
@@ -100,7 +107,8 @@ namespace WarrantyModul.ViewModels
             try
             {
                 DbSetWarranties dbSet = new DbSetWarranties();
-                AutomationAccountingGoodsEntities.GetInstance().GoodsShipped(SelectedWarranty.Warranty.Id);
+                AutomationAccountingGoodsEntities db = new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString);
+                db.GoodsShipped(SelectedWarranty.Warranty.Id);
                 SelectedWarranty.Warranty = dbSet.Find(SelectedWarranty.Warranty.Id);
             }
             catch (Exception ex)

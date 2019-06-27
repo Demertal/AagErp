@@ -25,7 +25,7 @@ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         <customControlLibrary:ExtendedDataGrid ItemsSource="{Binding Path=Report.PurchaseInfos, UpdateSourceTrigger=PropertyChanged}" MaxWidth="400"
                                                IsSynchronizedWithCurrentItem="True" CanUserResizeRows="False" CanUserDeleteRows="False" CanUserAddRows="False"
                                                CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Center" VerticalAlignment="Top"
-                                               MinHeight="200" MaxHeight="500" HorizontalAlignment="Left" SelectionMode="Single" IsReadOnly="True">
+                                               MinHeight="200" MaxHeight="500" HorizontalAlignment="Left" SelectionMode="Single" IsReadOnly="True" FontSize="14">
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
                     <Setter Property="BorderThickness" Value="0"/>
@@ -33,7 +33,13 @@ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                 </Style>
             </DataGrid.CellStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Наименование" Binding="{Binding Path=Products.Title, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTemplateColumn Header="Наименование">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBox  Text="{Binding Path=Products.Title, UpdateSourceTrigger=PropertyChanged}" MaxWidth="200" TextWrapping="Wrap"  IsReadOnly="True"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Цена">
                     <DataGridTextColumn.Binding>
                         <MultiBinding Converter="{StaticResource CurrencyConverter2}" UpdateSourceTrigger="PropertyChanged" ValidatesOnExceptions="True">
@@ -56,6 +62,6 @@ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                 </DataGridTextColumn>
             </DataGrid.Columns>
         </customControlLibrary:ExtendedDataGrid>
-        <CheckBox x:Name="BringPurchasePriceCh" Content="Привести закупочную цену к гривне" Margin="5" DockPanel.Dock="Bottom" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <CheckBox x:Name="BringPurchasePriceCh" Content="Привести закупочную цену к гривне" Margin="5" DockPanel.Dock="Bottom" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="14"/>
     </StackPanel>
 </UserControl>

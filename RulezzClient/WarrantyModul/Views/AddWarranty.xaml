@@ -23,15 +23,15 @@
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Неисправность" HorizontalAlignment="Center"  Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+            <TextBlock Text="Неисправность" HorizontalAlignment="Left"  Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" FontSize="14"/>
             <TextBox Text="{Binding Warranty.Malfunction,  UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Center" Height="50"
                      TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1"
-                     HorizontalContentAlignment="Center" MinWidth="200" MaxWidth="200" VerticalContentAlignment="Center" Margin="5"/>
-            <TextBlock Text="Информация" HorizontalAlignment="Center"  Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+                     HorizontalContentAlignment="Center" MinWidth="200" MaxWidth="200" VerticalContentAlignment="Center" Margin="5" FontSize="14"/>
+            <TextBlock Text="Информация" HorizontalAlignment="Left"  Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" FontSize="14"/>
             <TextBox Text="{Binding Warranty.Info,  UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Height="50" TextWrapping="Wrap"
                      VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" HorizontalContentAlignment="Center"
-                     MinWidth="200"  MaxWidth="200" VerticalContentAlignment="Center" Margin="5"/>
-            <Button Grid.Column="1" Content="Добавить" HorizontalAlignment="Center" Grid.Row="6" VerticalAlignment="Center" Width="75" Command="{Binding AddWarrantyCommand}"/>
+                     MinWidth="200"  MaxWidth="200" VerticalContentAlignment="Center" Margin="5" FontSize="14"/>
+            <Button Grid.Column="1" Content="Добавить" HorizontalAlignment="Center" Grid.Row="6" VerticalAlignment="Center" Width="75" Command="{Binding AddWarrantyCommand}" FontSize="14"/>
         </Grid>
     </StackPanel>
 </UserControl>

@@ -34,7 +34,7 @@
             <DataGrid ItemsSource="{Binding Path=PropertyNamesList, UpdateSourceTrigger=PropertyChanged}" MaxWidth="400"
                       IsSynchronizedWithCurrentItem="True" CanUserResizeRows="False" CanUserDeleteRows="False"
                       CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center"
-                      MinHeight="200" MaxHeight="500" RowStyle="{StaticResource PropertyNamesRowStyle}" SelectionMode="Single" HorizontalAlignment="Center">
+                      MinHeight="200" MaxHeight="500" RowStyle="{StaticResource PropertyNamesRowStyle}" SelectionMode="Single" HorizontalAlignment="Center" FontSize="14">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="CellEditEnding">
                         <interactivity:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.ChangePropertyNamesCommand}"/>
@@ -56,7 +56,7 @@
             <DataGrid ItemsSource="{Binding Path=PropertyValuesList, UpdateSourceTrigger=PropertyChanged}" MaxWidth="400"
                       IsSynchronizedWithCurrentItem="True" CanUserResizeRows="False" CanUserDeleteRows="False" CanUserAddRows="{Binding CanUserAddValues}"
                       CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center"
-                      MinHeight="200" MaxHeight="500" RowStyle="{StaticResource PropertyValuesRowStyle}" SelectionMode="Single" HorizontalAlignment="Center" Margin="5">
+                      MinHeight="200" MaxHeight="500" RowStyle="{StaticResource PropertyValuesRowStyle}" SelectionMode="Single" HorizontalAlignment="Center" Margin="5" FontSize="14">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="CellEditEnding">
                         <interactivity:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.ChangePropertyValuesCommand}"/>

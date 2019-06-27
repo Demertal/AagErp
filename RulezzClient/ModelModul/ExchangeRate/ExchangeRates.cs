@@ -13,14 +13,5 @@ namespace ModelModul
                 Course = Course
             };
         }
-
-        public override bool Equals(Object obj)
-        {
-            if (obj == null || !GetType().Equals(obj.GetType()))
-            {
-                return false;
-            }
-            return Id == ((ExchangeRates)obj).Id && Title == ((ExchangeRates)obj).Title && Course == ((ExchangeRates)obj).Course;
-        }
     }
 }

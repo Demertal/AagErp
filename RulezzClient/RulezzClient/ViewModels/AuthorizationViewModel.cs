@@ -43,22 +43,10 @@ namespace RulezzClient.ViewModels
             EnterCommand = new DelegateCommand(Enter);
         }
 
-        private void Enter()
+        private async void Enter()
         {
             try
             {
-                Configuration config = ConfigurationManager.
-                    OpenExeConfiguration("RulezzClient.exe");
-
-                ConnectionStringsSection section =
-                    config.GetSection("connectionStrings")
-                        as ConnectionStringsSection;
-
-                if (section.SectionInformation.IsProtected)
-                {
-                    section.SectionInformation.UnprotectSection();
-                }
-
                 string dataSource;
                 using (StreamReader r = new StreamReader("appsettings.json"))
                 {
@@ -83,11 +71,10 @@ namespace RulezzClient.ViewModels
                     Provider = "System.Data.SqlClient",
                     ProviderConnectionString = sqlConnection.ConnectionString
                 };
-                section.ConnectionStrings["AutomationAccountingGoodsEntities"].ConnectionString = connectionString.ConnectionString;
-                config.Save();
-                AutomationAccountingGoodsEntities.GetInstance(connectionString.ConnectionString);
-                AutomationAccountingGoodsEntities.GetInstance().Database.Connection.ConnectionString = sqlConnection.ConnectionString;
-                AutomationAccountingGoodsEntities.GetInstance().Database.Connection.Open();
+
+                AutomationAccountingGoodsEntities.ConnectionString = connectionString.ConnectionString;
+                AutomationAccountingGoodsEntities au = new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString);
+                await au.Database.Connection.OpenAsync();
                 LoginCompleted?.Invoke(true);
             }
             catch (Exception e)

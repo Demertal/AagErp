@@ -8,7 +8,11 @@ namespace ModelModul.Store
     {
         public ObservableCollection<Stores> Load()
         {
-            return new ObservableCollection<Stores>(AutomationAccountingGoodsEntities.GetInstance().Stores);
+            using (AutomationAccountingGoodsEntities db =
+                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            {
+                return new ObservableCollection<Stores>(db.Stores);
+            }
         }
 
         public void Add(Stores obj)

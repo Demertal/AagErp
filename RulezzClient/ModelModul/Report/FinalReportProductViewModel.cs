@@ -4,8 +4,8 @@ namespace ModelModul.Report
 {
     public class FinalReportProductViewModel : ProductViewModel
     {
-        private decimal _finalSum;
-        public decimal FinalSum
+        private double _finalSum;
+        public double FinalSum
         {
             get => _finalSum;
             set => SetProperty(ref _finalSum, value);

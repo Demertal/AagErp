@@ -16,7 +16,7 @@
             <customControlLibrary:ExtendedDataGrid x:Name="RevaulationReportsDataGrid" ItemsSource="{Binding Path=ReportsList, UpdateSourceTrigger=PropertyChanged}" MaxWidth="400"
                                                    IsSynchronizedWithCurrentItem="True" CanUserResizeRows="False" CanUserDeleteRows="False" CanUserAddRows="False"
                                                    CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Center" VerticalAlignment="Top"
-                                                   MinHeight="200" MaxHeight="500" HorizontalAlignment="Left" SelectionMode="Single">
+                                                   MinHeight="200" MaxHeight="500" HorizontalAlignment="Left" SelectionMode="Single" FontSize="14">
                 <DataGrid.CellStyle>
                     <Style TargetType="DataGridCell">
                         <Setter Property="BorderThickness" Value="0"/>
@@ -25,12 +25,18 @@
                 </DataGrid.CellStyle>
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Дата" Binding="{Binding Path=DataRevaluation, StringFormat=dd.MM.yyyy, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Номенклатура" Binding="{Binding Converter={StaticResource GetProductsTitleFromRevaluaitionInfo}, Path=RevaluationProductsInfos, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+                    <DataGridTemplateColumn Header="Номенклатура">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox  Text="{Binding Converter={StaticResource GetProductsTitleFromRevaluaitionInfo}, Path=RevaluationProductsInfos, UpdateSourceTrigger=PropertyChanged}" MaxWidth="200" MaxHeight="60"  TextWrapping="Wrap"  IsReadOnly="True"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </customControlLibrary:ExtendedDataGrid>
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
-                <Button Content="{Binding Path=Left, UpdateSourceTrigger=PropertyChanged}" Command="{Binding Path=GoLeftCommand}" Margin="5" Width="30" Height="30"/>
-                <Button Content="{Binding Path=Right, UpdateSourceTrigger=PropertyChanged}" Command="{Binding Path=GoRightCommand}"  Margin="5" Width="30" Height="30"/>
+                <Button Content="{Binding Path=Left, UpdateSourceTrigger=PropertyChanged}" Command="{Binding Path=GoLeftCommand}" Margin="5" Width="30" Height="30" FontSize="14"/>
+                <Button Content="{Binding Path=Right, UpdateSourceTrigger=PropertyChanged}" Command="{Binding Path=GoRightCommand}"  Margin="5" Width="30" Height="30" FontSize="14"/>
             </StackPanel>
         </StackPanel>
 

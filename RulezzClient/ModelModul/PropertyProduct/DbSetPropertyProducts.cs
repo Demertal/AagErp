@@ -10,9 +10,13 @@ namespace ModelModul.PropertyProduct
     {
         public ObservableCollection<PropertyProducts> Load(int idProduct)
         {
-            return new ObservableCollection<PropertyProducts>(AutomationAccountingGoodsEntities.GetInstance()
-                .PropertyProducts.Where(obj => obj.IdProduct == idProduct).Include(obj => obj.PropertyNames)
-                .Include(obj => obj.PropertyNames.PropertyValues));
+            using (AutomationAccountingGoodsEntities db =
+                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            {
+                return new ObservableCollection<PropertyProducts>(db.PropertyProducts
+                    .Where(obj => obj.IdProduct == idProduct).Include(obj => obj.PropertyNames)
+                    .Include(obj => obj.PropertyNames.PropertyValues));
+            }
         }
 
         public void Add(PropertyProducts obj)
@@ -22,47 +26,57 @@ namespace ModelModul.PropertyProduct
 
         public void Update(PropertyProducts obj)
         {
-            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
+            using (AutomationAccountingGoodsEntities db =
+                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
-                try
+                using (var transaction = db.Database.BeginTransaction())
                 {
-                    var property = AutomationAccountingGoodsEntities.GetInstance().PropertyProducts.Find(obj.Id);
-                    if (property == null) throw new Exception("Изменить не получилось");
+                    try
+                    {
+                        var property = db.PropertyProducts.Find(obj.Id);
+                        if (property == null) throw new Exception("Изменить не получилось");
 
-                    property.IdPropertyValue = obj.IdPropertyValue;
-                    AutomationAccountingGoodsEntities.GetInstance().Entry(property).State = EntityState.Modified;
-                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
-                    transaction.Commit();
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
+                        property.IdPropertyValue = obj.IdPropertyValue;
+                        db.Entry(property).State = EntityState.Modified;
+                        db.SaveChanges();
+                        transaction.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
             }
         }
 
         public void Update(List<PropertyProducts> objList)
         {
-            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
+            using (AutomationAccountingGoodsEntities db =
+                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
-                try
+                using (var transaction = db.Database.BeginTransaction())
                 {
-                    foreach (var obj in objList)
+                    try
                     {
-                        var property = AutomationAccountingGoodsEntities.GetInstance().PropertyProducts.Find(obj.Id);
-                        if (property == null) throw new Exception("Изменить не получилось");
+                        foreach (var obj in objList)
+                        {
+                            var property = db.PropertyProducts
+                                .Find(obj.Id);
+                            if (property == null) throw new Exception("Изменить не получилось");
 
-                        property.IdPropertyValue = obj.IdPropertyValue;
-                        AutomationAccountingGoodsEntities.GetInstance().Entry(property).State = EntityState.Modified;
+                            property.IdPropertyValue = obj.IdPropertyValue;
+                            db.Entry(property).State = EntityState.Modified;
+                        }
+
+                        db.SaveChanges();
+                        transaction.Commit();
                     }
-                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
-                    transaction.Commit();
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
             }
         }

@@ -9,51 +9,70 @@ namespace ModelModul.Warranty
     {
         public ObservableCollection<Warranties> Load(int idSerials)
         {
-            return new ObservableCollection<Warranties>(AutomationAccountingGoodsEntities.GetInstance().Warranties
-                .Where(obj => obj.IdSerialNumber == idSerials));
+            using (AutomationAccountingGoodsEntities db =
+                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            {
+                return new ObservableCollection<Warranties>(db.Warranties.Where(obj =>
+                    obj.IdSerialNumber == idSerials));
+            }
         }
 
         public Warranties Find(int id)
         {
-            return AutomationAccountingGoodsEntities.GetInstance().Warranties.SingleOrDefault(obj => obj.Id == id);
+            using (AutomationAccountingGoodsEntities db =
+                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            {
+                return db.Warranties.SingleOrDefault(obj => obj.Id == id);
+            }
         }
 
         public void Add(Warranties obj)
         {
-            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
+            using (AutomationAccountingGoodsEntities db =
+                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
-                try
+                using (var transaction = db.Database.BeginTransaction())
                 {
-                    AutomationAccountingGoodsEntities.GetInstance().Warranties.Add(obj);
-                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
-                    transaction.Commit();
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
+                    try
+                    {
+                        db.Warranties.Add(obj);
+                        db.SaveChanges();
+                        transaction.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
             }
         }
 
         public void Update(Warranties obj)
         {
-            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
+            using (AutomationAccountingGoodsEntities db =
+                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
-                try
+                using (var transaction = db.Database.BeginTransaction())
                 {
-                    var warranty = AutomationAccountingGoodsEntities.GetInstance().Warranties.Find(obj.Id);
-                    if (warranty == null) throw new Exception("Изменить не получилось");
-                    warranty.Malfunction = obj.Malfunction;
-                    warranty.Info = obj.Info;
-                    AutomationAccountingGoodsEntities.GetInstance().Entry(warranty).State = EntityState.Modified;
-                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
-                    transaction.Commit();
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
+                    try
+                    {
+                        var warranty = db.Warranties.Find(obj.Id);
+                        if (warranty == null) throw new Exception("Изменить не получилось");
+                        warranty.Malfunction = obj.Malfunction;
+                        warranty.Info = obj.Info;
+                        warranty.DateDeparture = obj.DateDeparture;
+                        warranty.DateIssue = obj.DateIssue;
+                        warranty.DateReceipt = obj.DateReceipt;
+                        db.Entry(warranty).State = EntityState.Modified;
+                        db.SaveChanges();
+                        transaction.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
             }
         }

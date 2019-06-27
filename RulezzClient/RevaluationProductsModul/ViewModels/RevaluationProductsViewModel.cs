@@ -162,6 +162,7 @@ namespace RevaluationProductsModul.ViewModels
             _barcode = "";
             List<RevaluationProductsForRevaluationViewModel> list = obj.Cast<RevaluationProductsForRevaluationViewModel>().ToList();
             list.ForEach(item => RevaluationProductsInfos.Remove(item));
+            list.ForEach(item => _revaluationProductsReports.RevaluationProductsInfos.Remove(item.RevaluationProductsInfo));
         }
 
         private void Callback(INotification obj)

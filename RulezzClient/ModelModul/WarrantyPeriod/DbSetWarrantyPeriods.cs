@@ -8,67 +8,82 @@ namespace ModelModul.WarrantyPeriod
     {
         public ObservableCollection<WarrantyPeriods> Load()
         {
-            return new ObservableCollection<WarrantyPeriods>(AutomationAccountingGoodsEntities.GetInstance()
-                .WarrantyPeriods);
+            using (AutomationAccountingGoodsEntities db =
+                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            {
+                return new ObservableCollection<WarrantyPeriods>(db.WarrantyPeriods);
+            }
         }
 
         public void Add(WarrantyPeriods obj)
         {
-            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
+            using (AutomationAccountingGoodsEntities db =
+                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
-                try
+                using (var transaction = db.Database.BeginTransaction())
                 {
-                    AutomationAccountingGoodsEntities.GetInstance().WarrantyPeriods.Add(obj);
-                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
-                    transaction.Commit();
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
+                    try
+                    {
+                        db.WarrantyPeriods.Add(obj);
+                        db.SaveChanges();
+                        transaction.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
             }
         }
 
         public void Update(WarrantyPeriods obj)
         {
-            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
+            using (AutomationAccountingGoodsEntities db =
+                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
-                try
+                using (var transaction = db.Database.BeginTransaction())
                 {
-                    var unit = AutomationAccountingGoodsEntities.GetInstance().WarrantyPeriods.Find(obj.Id);
-                    if (unit == null) throw new Exception("Изменить не получилось");
-                    if (unit.Period == "Нет") throw new Exception("Нельзя изменять гарантийный период: \"Нет\"");
-                    unit.Period = obj.Period;
-                    AutomationAccountingGoodsEntities.GetInstance().Entry(unit).State = EntityState.Modified;
-                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
-                    transaction.Commit();
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
+                    try
+                    {
+                        var unit = db.WarrantyPeriods.Find(obj.Id);
+                        if (unit == null) throw new Exception("Изменить не получилось");
+                        if (unit.Period == "Нет") throw new Exception("Нельзя изменять гарантийный период: \"Нет\"");
+                        unit.Period = obj.Period;
+                        db.Entry(unit).State = EntityState.Modified;
+                        db.SaveChanges();
+                        transaction.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
             }
         }
 
         public void Delete(int objId)
         {
-            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
+            using (AutomationAccountingGoodsEntities db =
+                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
-                try
+                using (var transaction = db.Database.BeginTransaction())
                 {
-                    var unit = AutomationAccountingGoodsEntities.GetInstance().WarrantyPeriods.Find(objId);
-                    if (unit == null) throw new Exception("Удалить не получилось");
-                    if (unit.Period == "Нет") throw new Exception("Нельзя удалять гарантийный период: \"Нет\"");
-                    AutomationAccountingGoodsEntities.GetInstance().Entry(unit).State = EntityState.Deleted;
-                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
-                    transaction.Commit();
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
+                    try
+                    {
+                        var unit = db.WarrantyPeriods.Find(objId);
+                        if (unit == null) throw new Exception("Удалить не получилось");
+                        if (unit.Period == "Нет") throw new Exception("Нельзя удалять гарантийный период: \"Нет\"");
+                        db.Entry(unit).State = EntityState.Deleted;
+                        db.SaveChanges();
+                        transaction.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
             }
         }

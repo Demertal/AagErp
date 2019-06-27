@@ -122,6 +122,7 @@
     </ApplicationDefinition>
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ViewModels\AuthorizationViewModel.cs" />
+    <Compile Include="ViewModels\СhangeСourseViewModel.cs" />
     <Compile Include="Views\Authorization.xaml.cs">
       <DependentUpon>Authorization.xaml</DependentUpon>
     </Compile>
@@ -133,11 +134,19 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Views\СhangeСourse.xaml.cs">
+      <DependentUpon>СhangeСourse.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="VisibilityFromRole.cs" />
     <Page Include="Views\Authorization.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Shell.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\СhangeСourse.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

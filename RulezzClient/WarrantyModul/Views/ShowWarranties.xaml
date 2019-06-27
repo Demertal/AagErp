@@ -45,13 +45,13 @@
     <Border Margin="5" CornerRadius="4" BorderBrush="#193441" BorderThickness="2" MaxHeight="800">
         <StackPanel>
             <customControlLibrary:WatermarkTextBox WatermarkText="Поиск..." Text="{Binding FindString,  UpdateSourceTrigger=PropertyChanged}" Margin ="5" Padding="0,0,5,0" HorizontalAlignment="Left"
-                                                   Height="23" TextWrapping="Wrap" VerticalAlignment="Top" MinWidth="350" VerticalContentAlignment="Center"/>
+                                                   Height="23" TextWrapping="Wrap" VerticalAlignment="Top" MinWidth="350" VerticalContentAlignment="Center" FontSize="14"/>
             <StackPanel Orientation="Horizontal" Margin="5">
                 <customControlLibrary:ExtendedDataGrid ItemsSource="{Binding Path=SerialNumbersList, UpdateSourceTrigger=PropertyChanged}" MaxWidth="450" MinWidth="350"
                           IsSynchronizedWithCurrentItem="True" CanUserResizeRows="False" CanUserDeleteRows="False" CanUserAddRows="False"
-                          CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                          CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Top"
                           MinHeight="200" MaxHeight="500" HorizontalAlignment="Center" SelectionMode="Single" Background="White" IsReadOnly="True"
-                                                       SelectedItem="{Binding Path=SelectedSerialNumber, UpdateSourceTrigger=PropertyChanged}">
+                                                       SelectedItem="{Binding Path=SelectedSerialNumber, UpdateSourceTrigger=PropertyChanged}" FontSize="14">
                     <customControlLibrary:ExtendedDataGrid.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Setter Property="BorderThickness" Value="0"/>
@@ -59,7 +59,13 @@
                         </Style>
                     </customControlLibrary:ExtendedDataGrid.CellStyle>
                     <customControlLibrary:ExtendedDataGrid.Columns>
-                        <DataGridTextColumn Header="Товар" Binding="{Binding Path=Products.Title, UpdateSourceTrigger=PropertyChanged}"/>
+                        <DataGridTemplateColumn Header="Товар">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBox  Text="{Binding Path=Products.Title, UpdateSourceTrigger=PropertyChanged}" MaxWidth="200" MaxHeight="60"  TextWrapping="Wrap"  IsReadOnly="True"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                         <DataGridTextColumn Header="Серийный номер" Binding="{Binding Path=Value, UpdateSourceTrigger=PropertyChanged}"/>
                         <DataGridTextColumn Header="Дата закупки" Binding="{Binding Path=PurchaseDate, StringFormat=dd.MM.yyyy, UpdateSourceTrigger=PropertyChanged}"/>
                         <DataGridTextColumn Header="Дата продажи" Binding="{Binding Path=SelleDate,StringFormat=dd.MM.yyyy, UpdateSourceTrigger=PropertyChanged}"/>
@@ -69,9 +75,9 @@
 
                 <customControlLibrary:ExtendedDataGrid x:Name="WarrantiesDataGrid" ItemsSource="{Binding Path=WarrantiesList, UpdateSourceTrigger=PropertyChanged}" MaxWidth="600" MinWidth="350"
                                                        IsSynchronizedWithCurrentItem="True" CanUserResizeRows="False" CanUserDeleteRows="False" CanUserAddRows="False"
-                                                       CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                                                       CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Top"
                                                        MinHeight="200" MaxHeight="500" HorizontalAlignment="Center" SelectionMode="Single" Background="White" Margin="10,0,0,0"
-                                                       ContextMenu="{StaticResource DataGridMenu}" RowStyle="{StaticResource DefaultRowStyle}" IsReadOnly="True">
+                                                       ContextMenu="{StaticResource DataGridMenu}" RowStyle="{StaticResource DefaultRowStyle}" IsReadOnly="True" FontSize="14">
                     <customControlLibrary:ExtendedDataGrid.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Setter Property="BorderThickness" Value="0"/>
@@ -91,7 +97,7 @@
                         <DataGridTextColumn Header="Дата выдачи" Binding="{Binding Path=DateIssue,StringFormat=dd.MM.yyyy, UpdateSourceTrigger=PropertyChanged}"/>
                     </customControlLibrary:ExtendedDataGrid.Columns>
                 </customControlLibrary:ExtendedDataGrid>
-                <ContentControl interactivity:RegionManager.RegionName="WarrantyInfo" interactivity:RegionManager.RegionContext="{Binding Path=SelectedItem, ElementName=WarrantiesDataGrid}" Margin="10"/>
+                <ContentControl interactivity:RegionManager.RegionName="WarrantyInfo" interactivity:RegionManager.RegionContext="{Binding Path=SelectedItem, ElementName=WarrantiesDataGrid}" Margin="10" VerticalAlignment="Top"/>
             </StackPanel>
         </StackPanel>
     </Border>

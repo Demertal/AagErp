@@ -16,8 +16,8 @@
             <ColumnDefinition Width="Auto"></ColumnDefinition>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <Label Content="Группа" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center"/>
-        <TextBox Text="{Binding Title,  UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Center" Height="23" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1" HorizontalContentAlignment="Center" MinWidth="100" VerticalContentAlignment="Center"/>
-        <Button Grid.Column="1" Content="Изменить" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center" Width="75" Command="{Binding UpdateStoreCommand}" Margin="0,5,0,0"/>
+        <Label Content="Группа" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" FontSize="14"/>
+        <TextBox Text="{Binding Title,  UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1" HorizontalContentAlignment="Center" MinWidth="100" VerticalContentAlignment="Center" FontSize="14"/>
+        <Button Grid.Column="1" Content="Изменить" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center" Width="75" Command="{Binding UpdateStoreCommand}" Margin="0,5,0,0" FontSize="14"/>
     </Grid>
 </UserControl>

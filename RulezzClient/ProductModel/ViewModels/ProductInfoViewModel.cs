@@ -10,6 +10,7 @@ using ModelModul.PropertyProduct;
 using ModelModul.UnitStorage;
 using ModelModul.WarrantyPeriod;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Regions;
 
 namespace ProductModul.ViewModels
@@ -25,6 +26,15 @@ namespace ProductModul.ViewModels
             get => _isUpdate;
             set => SetProperty(ref _isUpdate, value);
         }
+
+        private bool _isAddPurchase;
+        public bool IsAddPurchase
+        {
+            get => _isAddPurchase;
+            set => SetProperty(ref _isAddPurchase, value);
+        }
+
+        IEventAggregator _ea;
 
         private Products _oldProduct = new Products();
 
@@ -70,9 +80,14 @@ namespace ProductModul.ViewModels
             get => _selectedProduct;
             set
             {
-                _selectedProduct = value;
-                IsUpdate = false;
+                _selectedProduct = new ProductViewModel{Id = value .Id};
                 Load();
+                IsUpdate = false;
+                _selectedProduct = value;
+                _selectedProduct.PropertyChanged += delegate (object sender, PropertyChangedEventArgs args)
+                {
+                    RaisePropertyChanged(args.PropertyName);
+                };
                 _selectedProduct.Product = _selectedProduct.Product;
                 GetCountProduct();
                 RaisePropertyChanged();
@@ -108,19 +123,29 @@ namespace ProductModul.ViewModels
         public DelegateCommand GenerateBarcodeCommand { get; }
         public DelegateCommand ResetCommand { get; }
         public DelegateCommand OkCommand { get; }
+        public DelegateCommand LoadedCommand { get; }
 
         #endregion
 
-        public ProductInfoViewModel()
+        public ProductInfoViewModel(IEventAggregator ea)
         {
-            SelectedProduct.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
-            {
-                RaisePropertyChanged(args.PropertyName);
-            };
+            _ea = ea;
+            _ea.GetEvent<BoolSentEvent>().Subscribe(MessageReceived);
             UpdateProductCommand = new DelegateCommand(UpdateProduct).ObservesCanExecute(() => SelectedProduct.IsValidate);
             GenerateBarcodeCommand = new DelegateCommand(GenerateBarcode);
             ResetCommand = new DelegateCommand(Reset);
-            OkCommand = new DelegateCommand(Accept).ObservesCanExecute(() => SelectedProduct.IsValidate); 
+            OkCommand = new DelegateCommand(Accept).ObservesCanExecute(() => SelectedProduct.IsValidate);
+            LoadedCommand = new DelegateCommand(Loaded);
+        }
+
+        private void Loaded()
+        {
+            _ea.GetEvent<IsReadySentEvent>().Publish(true);
+        }
+
+        private void MessageReceived(bool obj)
+        {
+            IsAddPurchase = obj;
         }
 
         private void Load()

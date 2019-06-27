@@ -7,23 +7,38 @@ AS
 BEGIN
 	INSERT INTO CountProducts(IdProduct, IdStore) SELECT IdProduct, IdStore FROM (SELECT INSERTED.Id as IdProduct, 1 as commonId FROM INSERTED) as tempA 
 		INNER JOIN (SELECT Stores.Id as IdStore, 1 as commonId FROM Stores) as tempB on tempA.commonId = tempB.commonId;
-
+	DECLARE @skip INT;
+	SET @skip = 0
 	DECLARE @groupsTable TABLE (Id INT, IdParentGroup INT)
-	DECLARE @temp1 TABLE (Id INT, IdParentGroup INT);
+	DECLARE @temp1 TABLE (IdParentGroup INT);
 	DECLARE @temp2 TABLE (Id INT, IdParentGroup INT);
-	INSERT INTO @groupsTable SELECT Groups.Id, Groups.IdParentGroup FROM Groups INNER JOIN inserted on Groups.Id = inserted.IdGroup;
-	INSERT INTO @temp1 SELECT grT.Id, grT.IdParentGroup FROM @groupsTable as grT;
-	WHILE @@ROWCOUNT != 0 BEGIN
-		INSERT INTO @temp2 SELECT Groups.Id, Groups.IdParentGroup FROM Groups INNER JOIN @temp1 as tp1 on Groups.Id = tp1.IdParentGroup;
-		INSERT INTO @groupsTable SELECT tp2.Id, tp2.IdParentGroup FROM @temp2 as tp2
-		DELETE FROM @temp1
-		INSERT INTO @temp1 SELECT tp2.Id, tp2.IdParentGroup FROM @temp2 as tp2;
-		DELETE FROM @temp2
-	END
-	INSERT INTO PropertyProducts(IdProduct, IdPropertyName) SELECT IdProduct, IdPropertyName FROM (SELECT INSERTED.Id as IdProduct, 1 as commonId FROM INSERTED) as tempA 
-		INNER JOIN (SELECT PropertyNames.Id as IdPropertyName, 1 as commonId FROM PropertyNames INNER JOIN @groupsTable as grT on grT.Id = PropertyNames.IdGroup) as tempB on tempA.commonId = tempB.commonId;
+	DECLARE @idProduct INT, @idGroup INT;
+	WHILE @skip != (SELECT COUNT(*) FROM inserted) BEGIN		
+		SELECT @idProduct = Id, @idGroup = IdGroup FROM inserted ORDER BY Id OFFSET @skip ROWS FETCH NEXT 1 ROWS ONLY
+		INSERT INTO @groupsTable SELECT Groups.Id, Groups.IdParentGroup FROM Groups WHERE Groups.Id = @idGroup;
+		INSERT INTO @temp1 SELECT grT.IdParentGroup FROM @groupsTable as grT;
+		WHILE @@ROWCOUNT != 0 BEGIN
+			INSERT INTO @temp2 SELECT Groups.Id, Groups.IdParentGroup FROM Groups INNER JOIN @temp1 as tp1 on Groups.Id = tp1.IdParentGroup;
+			INSERT INTO @groupsTable SELECT tp2.Id, tp2.IdParentGroup FROM @temp2 as tp2
+			DELETE FROM @temp1
+			INSERT INTO @temp1 SELECT tp2.IdParentGroup FROM @temp2 as tp2;
+			DELETE FROM @temp2
+		END
+		SET @skip = @skip + 1;
+		INSERT INTO PropertyProducts(IdProduct, IdPropertyName) SELECT @idProduct, PropertyNames.Id FROM PropertyNames INNER JOIN @groupsTable as grT on grT.Id = PropertyNames.IdGroup;
+		DELETE FROM @groupsTable
+	END	
 END
 GO
+
+CREATE TRIGGER Products_DELETE ON Products
+INSTEAD OF DELETE
+AS
+BEGIN
+	DELETE FROM PropertyProducts WHERE Id IN (SELECT PropertyProducts.Id FROM PropertyProducts INNER JOIN deleted on (PropertyProducts.IdProduct = deleted.Id))
+	DELETE FROM Products WHERE Id IN (SELECT Products.Id FROM Products INNER JOIN deleted on (Products.Id = deleted.Id))
+END
+GO  
 
 CREATE TRIGGER Stores_INSERT ON Stores
 AFTER INSERT
@@ -50,6 +65,15 @@ BEGIN
 	INSERT INTO Stores(Title) SELECT INSERTED.Title FROM INSERTED INNER JOIN DELETED ON INSERTED.Id = DELETED.Id WHERE INSERTED.IdParentGroup IS NULL AND DELETED.IdParentGroup IS NOT NULL
 END
 GO
+
+CREATE TRIGGER Groups_INSTEAD_DELETE ON Groups
+INSTEAD OF DELETE
+AS
+BEGIN
+	DELETE FROM PropertyNames WHERE Id IN (SELECT PropertyNames.Id FROM PropertyNames INNER JOIN deleted on (PropertyNames.IdGroup = deleted.Id))
+	DELETE FROM Groups WHERE Id IN (SELECT Groups.Id FROM Groups INNER JOIN deleted on (Groups.Id = deleted.Id))
+END
+GO  
 
 CREATE TRIGGER Groups_DELETE ON Groups
 AFTER DELETE
@@ -85,7 +109,7 @@ CREATE TRIGGER ExchangeRates_UPDATE ON ExchangeRates
 AFTER UPDATE
 AS
 BEGIN
-	IF EXISTS(SELECT * FROM DELETED WHERE Title = 'ГРН' or Title = 'USD') BEGIN
+	IF NOT EXISTS(SELECT * FROM inserted WHERE Title = 'ГРН' or Title = 'USD') BEGIN
 		RAISERROR('Нельзя изменять валюты: "ГРН" и "USD"', 16, 1)
 		ROLLBACK TRAN
 	END
@@ -196,34 +220,45 @@ CREATE TRIGGER PropertyNames_INSERT ON PropertyNames
 AFTER INSERT
 AS
 BEGIN
-	DECLARE @tabl TABLE (id INT)
-	INSERT INTO @tabl SELECT inserted.IdGroup FROM inserted
-	CREATE TABLE #tmp1(id INT)
-	INSERT INTO #tmp1(id) SELECT Groups.Id FROM Groups INNER JOIN @tabl as tb ON Groups.IdParentGroup = tb.id
-	INSERT INTO @tabl SELECT id FROM #tmp1
+	DECLARE @tabl TABLE (id INT)	
+	CREATE TABLE #tmp1(id INT)	
 	CREATE TABLE #tmp2(id INT)
-	WHILE EXISTS(SELECT Groups.Id FROM Groups INNER JOIN #tmp1 ON Groups.Id = #tmp1.id WHERE Groups.IdParentGroup IS NOT NULL)
-	BEGIN
-		INSERT INTO #tmp2(id) SELECT Groups.Id FROM Groups INNER JOIN #tmp1 ON Groups.IdParentGroup = #tmp1.id
-		INSERT INTO @tabl SELECT id FROM #tmp2
-		DELETE FROM #tmp1
-		INSERT INTO #tmp1 SELECT id FROM #tmp2
-		DELETE FROM #tmp2
-	END
-	INSERT INTO PropertyProducts(IdProduct, IdPropertyName) SELECT IdProduct, IdPropertyName FROM
-	(SELECT inserted.Id as IdPropertyName, 1 as commonId FROM inserted) as tempA 
-	INNER JOIN (SELECT Products.Id as IdProduct, 1 as commonId FROM Products INNER JOIN @tabl as tb ON Products.IdGroup = tb.id)
-	 as tempB on tempA.commonId = tempB.commonId
+
+	DECLARE @skip INT;
+	SET @skip = 0
+	DECLARE @groupsTable TABLE (Id INT, IdParentGroup INT)
+	DECLARE @temp1 TABLE (IdParentGroup INT);
+	DECLARE @temp2 TABLE (Id INT, IdParentGroup INT);
+	DECLARE @idProperty INT, @idGroup INT;
+	WHILE @skip != (SELECT COUNT(*) FROM inserted) BEGIN
+		SELECT @idProperty = inserted.Id, @idGroup = inserted.IdGroup FROM inserted ORDER BY Id OFFSET @skip ROWS FETCH NEXT 1 ROWS ONLY
+		INSERT INTO @tabl VALUES (@idGroup)
+		INSERT INTO #tmp1(id) SELECT Groups.Id FROM Groups WHERE Groups.IdParentGroup = @idGroup
+		INSERT INTO @tabl SELECT id FROM #tmp1
+		WHILE EXISTS(SELECT Groups.Id FROM Groups INNER JOIN #tmp1 ON Groups.Id = #tmp1.id WHERE Groups.IdParentGroup IS NOT NULL)
+		BEGIN
+			INSERT INTO #tmp2(id) SELECT Groups.Id FROM Groups INNER JOIN #tmp1 ON Groups.IdParentGroup = #tmp1.id
+			INSERT INTO @tabl SELECT id FROM #tmp2
+			DELETE FROM #tmp1
+			INSERT INTO #tmp1 SELECT id FROM #tmp2
+			DELETE FROM #tmp2
+		END
+		SET @skip = @skip + 1;
+		INSERT INTO PropertyProducts(IdProduct, IdPropertyName) SELECT Products.Id, @idProperty FROM Products INNER JOIN @tabl as tb ON Products.IdGroup = tb.id
+		DELETE FROM @tabl
+	END	
 	 DROP TABLE #tmp1
 	 DROP TABLE #tmp2
 END
 GO
 
-CREATE TRIGGER PropertyValues_DELETE ON PropertyValues
-AFTER DELETE
+CREATE TRIGGER PropertyNames_DELETE ON PropertyNames
+INSTEAD OF DELETE
 AS
 BEGIN
-	UPDATE PropertyProducts SET PropertyProducts.IdPropertyValue = NULL FROM deleted INNER JOIN PropertyProducts ON deleted.Id = PropertyProducts.IdPropertyValue
+	DELETE FROM PropertyProducts WHERE Id IN (SELECT PropertyProducts.Id FROM PropertyProducts INNER JOIN deleted on (PropertyProducts.IdPropertyName = deleted.Id))
+	DELETE FROM PropertyValues WHERE Id IN (SELECT PropertyValues.Id FROM PropertyValues INNER JOIN deleted on (PropertyValues.IdPropertyName = deleted.Id))
+	DELETE FROM PropertyNames WHERE Id IN (SELECT PropertyNames.Id FROM PropertyNames INNER JOIN deleted on (PropertyNames.Id = deleted.Id))
 END
 GO  
 

@@ -21,7 +21,7 @@
         <DataGrid x:Name="DataGridUnitStorages" ItemsSource="{Binding Path=UnitStoragesList, UpdateSourceTrigger=PropertyChanged}" MaxWidth="400"
                     IsSynchronizedWithCurrentItem="True" CanUserResizeRows="False" CanUserDeleteRows="False"
                     CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center"
-                    MinHeight="200" MaxHeight="500" HorizontalAlignment="Center" RowStyle="{StaticResource DefaultRowStyle}" SelectionMode="Single">
+                    MinHeight="200" MaxHeight="500" HorizontalAlignment="Center" RowStyle="{StaticResource DefaultRowStyle}" SelectionMode="Single" FontSize="14">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="RowEditEnding">
                     <mvvm:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Path=DataContext.ChangeUnitStoragesCommand}"/>

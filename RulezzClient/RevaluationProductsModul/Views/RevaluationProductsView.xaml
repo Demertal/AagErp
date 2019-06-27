@@ -34,7 +34,7 @@
                                                        HorizontalAlignment="Center" Margin="5" CanUserResizeRows="False"
                                                        CanUserReorderColumns="False" AutoGenerateColumns="False" VerticalAlignment="Center"
                                                        MinHeight="200" MaxHeight="600" RowStyle="{StaticResource DefaultRowStyle}" CanUserAddRows="False"
-                                                       CanUserDeleteRows="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="White" BorderBrush="Black">
+                                                       CanUserDeleteRows="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="White" BorderBrush="Black" FontSize="14">
                 <customControlLibrary:ExtendedDataGrid.CellStyle>
                     <Style TargetType="DataGridCell">
                         <Setter Property="BorderThickness" Value="0"/>
@@ -42,7 +42,13 @@
                     </Style>
                 </customControlLibrary:ExtendedDataGrid.CellStyle>
                 <customControlLibrary:ExtendedDataGrid.Columns>
-                    <DataGridTextColumn Header="Наименование" Binding="{Binding Path=Product.Title, UpdateSourceTrigger=PropertyChanged}"       IsReadOnly="True"/>
+                    <DataGridTemplateColumn Header="Наименование">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox  Text="{Binding Path=Product.Title, UpdateSourceTrigger=PropertyChanged}" MaxWidth="200" MaxHeight="60"  TextWrapping="Wrap"  IsReadOnly="True"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                     <DataGridTextColumn Header="Артикул" Binding="{Binding Path=Product.VendorCode, UpdateSourceTrigger=PropertyChanged}"  Visibility="Collapsed"/>
                     <DataGridTextColumn Header="Штрихкод" Binding="{Binding Path=Product.Barcode, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True" Visibility="Collapsed"/>
                         <DataGridTextColumn Header="Цена зак." IsReadOnly="True">
@@ -70,7 +76,7 @@
                 </customControlLibrary:ExtendedDataGrid.Columns>
             </customControlLibrary:ExtendedDataGrid>
             <DockPanel VerticalAlignment="Center">
-                <Button Content="Добавить товар" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" Command="{Binding AddProductCommand}" HorizontalContentAlignment="Center">
+                <Button Content="Добавить товар" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" Command="{Binding AddProductCommand}" HorizontalContentAlignment="Center" FontSize="14">
                     <i:Interaction.Triggers>
                         <interactivity:InteractionRequestTrigger SourceObject="{Binding AddProductPopupRequest}">
                             <interactivity:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True" WindowStyle="{DynamicResource MyWindowStyle}">
@@ -81,8 +87,8 @@
                         </interactivity:InteractionRequestTrigger>
                     </i:Interaction.Triggers>
                 </Button>
-                <CheckBox x:Name="BringPurchasePriceCh" Content="Привести закупочную цену к гривне" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                <Button Content="Провести" HorizontalAlignment="Right" VerticalAlignment="Center" Command="{Binding RevaluationCommand}" Margin="5"/>
+                <CheckBox x:Name="BringPurchasePriceCh" Content="Привести закупочную цену к гривне" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14"/>
+                <Button Content="Провести" HorizontalAlignment="Right" VerticalAlignment="Center" Command="{Binding RevaluationCommand}" Margin="5" FontSize="14"/>
             </DockPanel>
         </StackPanel>
     </Border>

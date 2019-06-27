@@ -288,7 +288,7 @@ namespace CashierWorkplaceModul.ViewModels
                     if (freeSerialNumbers == null && saleInfos != null)
                         throw new Exception("Сначала нужно указать серийный номер к товару: \"" +
                                             saleInfos.Product.Title +
-                                            "\".\nЕсли это был серийный номер попробуйте указать его еще раз или используйте другой серийный номер или ввести вручную");
+                                            "\".\nЕсли это был серийный номер попробуйте указать его еще раз или используйте другой серийный номер, или ввести вручную");
                     if (freeSerialNumbers != null && saleInfos != null)
                     {
                         saleInfos.SerialNumber = freeSerialNumbers;
@@ -313,7 +313,7 @@ namespace CashierWorkplaceModul.ViewModels
 
                     if (freeSerialNumbers == null)
                     {
-                        if(serialNumberses.Count != 0) throw new Exception("Не свободного серийного номера: " + _barcode);
+                        if(serialNumberses.Count != 0) throw new Exception("Нет свободного серийного номера: " + _barcode);
                         product = dbSetProducts.FindProductByBarcode(_barcode);
                         if (product == null) throw new Exception("Товар не найден");
                         saleInfos = SalesInfos.FirstOrDefault(objSale => objSale.IdProduct == product.Id);

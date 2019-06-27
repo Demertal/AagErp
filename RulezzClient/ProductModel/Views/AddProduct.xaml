@@ -24,34 +24,34 @@
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <Label Content="{Binding Path=Group}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" />
-            <Label Content="Наименование товара" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" />
-            <TextBox Text="{Binding Product.Title,  UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Center" Height="23"
-                     TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="1" Grid.Column="2"
-                     HorizontalContentAlignment="Center" MinWidth="100" VerticalContentAlignment="Center" Padding="0"/>
-            <Label Content="Артикул товара" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" />
-            <TextBox Text="{Binding Product.VendorCode,  UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Height="23" TextWrapping="Wrap"
+            <Label Content="{Binding Path=Group}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Left" FontSize="14" />
+            <Label Content="Наименование товара" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" FontSize="14" />
+            <TextBox Text="{Binding Product.Title,  UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Left" MinHeight="23"
+                     VerticalAlignment="Center" Grid.Row="1" Grid.Column="2"
+                     HorizontalContentAlignment="Center" MinWidth="100" VerticalContentAlignment="Center" Padding="0" FontSize="14" MaxWidth="200"  TextWrapping="Wrap"/>
+            <Label Content="Артикул товара" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left" FontSize="14" />
+            <TextBox Text="{Binding Product.VendorCode,  UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" MinHeight="23" MaxWidth="200"  TextWrapping="Wrap"
                      VerticalAlignment="Center" Grid.Row="2" Grid.Column="2" HorizontalContentAlignment="Center"
-                     MinWidth="100" VerticalContentAlignment="Center"/>
-            <Label Content="Штрих код" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Center" />
+                     MinWidth="100" VerticalContentAlignment="Center" FontSize="14"/>
+            <Label Content="Штрих код" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Left" FontSize="14" />
             <Button Background="White" BorderThickness="0" Grid.Row="3" Grid.Column="1" Command="{Binding GenerateBarcodeCommand}" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Button.Content>
                     <Image Width="25" Height="25" Source="/Resources/ReloadImage.png"/>
                 </Button.Content>
             </Button>
-            <TextBox Text="{Binding Product.Barcode,  UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Height="23"
-                     TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="3" Grid.Column="2" HorizontalContentAlignment="Center"
-                     MinWidth="100" VerticalContentAlignment="Center"/>
-            <Label Content="Гарантия" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Center" />
+            <TextBox Text="{Binding Product.Barcode,  UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" MinHeight="23"
+                     VerticalAlignment="Center" Grid.Row="3" Grid.Column="2" HorizontalContentAlignment="Center"
+                     MinWidth="100" VerticalContentAlignment="Center" FontSize="14" MaxWidth="200"  TextWrapping="Wrap"/>
+            <Label Content="Гарантия" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Left" FontSize="14" />
             <ComboBox ItemsSource="{Binding WarrantyPeriods, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True" SelectedValuePath="Id"
                       SelectedValue="{Binding Product.IdWarrantyPeriod, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Period" Grid.Column="2" 
-                      HorizontalAlignment="Center" Grid.Row="4" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" MinWidth="50"/>
-            <Label Content="Ед. хр." Grid.Row="5" Grid.Column="0" HorizontalAlignment="Center" />
+                      HorizontalAlignment="Left" Grid.Row="4" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" MinWidth="50" FontSize="14"/>
+            <Label Content="Ед. хр." Grid.Row="5" Grid.Column="0" HorizontalAlignment="Left" FontSize="14" />
             <ComboBox ItemsSource="{Binding UnitStorages, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True" SelectedValuePath="Id"
                       SelectedValue="{Binding Product.IdUnitStorage, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Title"
-                      Grid.Column="2" HorizontalAlignment="Center" Grid.Row="5" VerticalAlignment="Center"
-                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center" MinWidth="50"/>
-            <Button Grid.Column="0" Grid.ColumnSpan="3" Content="Добавить" HorizontalAlignment="Center" Grid.Row="6" VerticalAlignment="Center" Width="75" Command="{Binding AddProductCommand}"/>
+                      Grid.Column="2" HorizontalAlignment="Left" Grid.Row="5" VerticalAlignment="Center"
+                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center" MinWidth="50" FontSize="14"/>
+            <Button Grid.Column="0" Grid.ColumnSpan="3" Content="Добавить" HorizontalAlignment="Center" Grid.Row="6" VerticalAlignment="Center" Width="75" Command="{Binding AddProductCommand}" FontSize="14"/>
         </Grid>
     </StackPanel>
 </UserControl>

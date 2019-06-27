@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Linq;
 using System.Windows;
 using ModelModul;
 using ModelModul.Report;
@@ -22,14 +24,27 @@ namespace ReportModul.ViewModels
         public DateTime StartDate
         {
             get => _startDate;
-            set => SetProperty(ref _startDate, value);
+            set
+            {
+                SetProperty(ref _startDate, value);
+                Load();
+            }
         }
 
         private DateTime _endDate;
         public DateTime EndDate
         {
             get => _endDate;
-            set => SetProperty(ref _endDate, value);
+            set
+            {
+                SetProperty(ref _endDate, value);
+                Load();
+            }
+        }
+
+        public string FinalSum
+        {
+            get { return "Итого прибыль: " + ReportList.Sum(obj => obj.FinalSum).ToString("C", new CultureInfo("UA-ua")); }
         }
 
         #endregion
@@ -52,6 +67,7 @@ namespace ReportModul.ViewModels
             {
                 MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+            RaisePropertyChanged("FinalSum");
         }
 
         #region INavigationAware

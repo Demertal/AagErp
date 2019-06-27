@@ -79,6 +79,7 @@
     <Compile Include="Converters\IsReadOnlyConverterForCount.cs" />
     <Compile Include="Converters\IsReadOnlyConverterForSerialNumberForPurchase.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
+    <Compile Include="Converters\VisibilityConverterFor2Bool.cs" />
     <Compile Include="Converters\VisibilityConverterForBool.cs" />
     <Compile Include="Converters\VisibilityConverterForNull.cs" />
     <Compile Include="Converters\VisibilityConverterForNullAndBool.cs" />

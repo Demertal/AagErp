@@ -58,6 +58,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Serialization" />
@@ -111,20 +112,31 @@
       <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Product\DbSetProducts.cs" />
-    <Compile Include="Report\DbSetReports.cs" />
-    <Compile Include="Report\FinalReportProductViewModel.cs" />
-    <Compile Include="Product\Products.cs" />
-    <Compile Include="Product\ProductViewModel.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="PropertyNames.cs">
       <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
     </Compile>
     <Compile Include="PropertyProducts.cs">
       <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="PropertyProduct\DbSetPropertyProducts.cs" />
     <Compile Include="PropertyValues.cs">
       <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="PurchaseInfos.cs">
+      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PurchaseReports.cs">
+      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Report\DbSetReports.cs" />
+    <Compile Include="Report\FinalReportProductViewModel.cs" />
+    <Compile Include="Product\Products.cs" />
+    <Compile Include="Product\ProductViewModel.cs" />
+    <Compile Include="PropertyProduct\DbSetPropertyProducts.cs" />
     <Compile Include="PropertyValue\DbSetPropertyValue.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -134,12 +146,6 @@
     <Compile Include="PurchaseGoods\PurchaseInfos.cs" />
     <Compile Include="PurchaseGoods\PurchaseInfosViewModel.cs" />
     <Compile Include="PurchaseGoods\PurchaseReports.cs" />
-    <Compile Include="PurchaseInfos.cs">
-      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="PurchaseReports.cs">
-      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="RevaluationProductsInfos.cs">
       <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
     </Compile>
@@ -197,8 +203,13 @@
       <DependentUpon>AutomationAccountingGoodsModel.edmx</DependentUpon>
     </None>
     <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
+    <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>

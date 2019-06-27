@@ -16,7 +16,7 @@
             <customControlLibrary:ExtendedDataGrid x:Name="PurchaseReportsDataGrid" ItemsSource="{Binding Path=ReportsList, UpdateSourceTrigger=PropertyChanged}" MaxWidth="400"
                                                    IsSynchronizedWithCurrentItem="True" CanUserResizeRows="False" CanUserDeleteRows="False" CanUserAddRows="False"
                                                    CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Center" VerticalAlignment="Top"
-                                                   MinHeight="200" MaxHeight="500" HorizontalAlignment="Left" SelectionMode="Single">
+                                                   MinHeight="200" MaxHeight="500" HorizontalAlignment="Left" SelectionMode="Single" FontSize="14">
                 <DataGrid.CellStyle>
                     <Style TargetType="DataGridCell">
                         <Setter Property="BorderThickness" Value="0"/>
@@ -26,18 +26,24 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Дата" Binding="{Binding Path=DataOrder, StringFormat=dd.MM.yyyy, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Поставщик" Binding="{Binding Path=Counterparties.Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Номенклатура" Binding="{Binding Converter={StaticResource GetProductsTitleFromPurchaseInfo}, Path=PurchaseInfos, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+                    <DataGridTemplateColumn Header="Номенклатура">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox  Text="{Binding Converter={StaticResource GetProductsTitleFromPurchaseInfo}, Path=PurchaseInfos, UpdateSourceTrigger=PropertyChanged}" MaxWidth="200" MaxHeight="60"  TextWrapping="Wrap"  IsReadOnly="True"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                     <DataGridTextColumn Header="Склад" Binding="{Binding Path=Stores.Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
                 </DataGrid.Columns>
             </customControlLibrary:ExtendedDataGrid>
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
-                <Button Content="{Binding Path=Left, UpdateSourceTrigger=PropertyChanged}" Command="{Binding Path=GoLeftCommand}" Margin="5" Width="30" Height="30"/>
-                <Button Content="{Binding Path=Right, UpdateSourceTrigger=PropertyChanged}" Command="{Binding Path=GoRightCommand}"  Margin="5" Width="30" Height="30"/>
+                <Button Content="{Binding Path=Left, UpdateSourceTrigger=PropertyChanged}" Command="{Binding Path=GoLeftCommand}" Margin="5" Width="30" Height="30" FontSize="14"/>
+                <Button Content="{Binding Path=Right, UpdateSourceTrigger=PropertyChanged}" Command="{Binding Path=GoRightCommand}"  Margin="5" Width="30" Height="30" FontSize="14"/>
             </StackPanel>
         </StackPanel>
 
         <Border Margin="25,0,0,0" BorderBrush="Black" BorderThickness="2" CornerRadius="4">
-            <ContentControl interactivity:RegionManager.RegionName="PurchaseReportInfo" interactivity:RegionManager.RegionContext="{Binding Path=SelectedItem, ElementName=PurchaseReportsDataGrid}"/>
+            <ContentControl interactivity:RegionManager.RegionName="PurchaseReportInfo" interactivity:RegionManager.RegionContext="{Binding Path=SelectedItem, ElementName=PurchaseReportsDataGrid}" FontSize="14"/>
         </Border>
     </StackPanel>
 </UserControl>

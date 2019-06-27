@@ -10,21 +10,19 @@
              mc:Ignorable="d" 
              VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Padding="10,5,5,10">
     <StackPanel>
-        <StackPanel Orientation="Horizontal" Margin="5">
-            <TextBlock Text="Укажите диапозон времени: От"/>
-            <DatePicker Margin="5,0,0,0" SelectedDate="{Binding Path=StartDate}" SelectedDateFormat="Short" />
-            <TextBlock Text="До"/>
-            <DatePicker Margin="5,0,0,0" SelectedDate="{Binding Path=EndDate}" SelectedDateFormat="Short" />
+        <StackPanel Margin="5">
+            <TextBlock Text="Укажите диапозон времени" FontSize="14" VerticalAlignment="Center"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="С: " FontSize="14" VerticalAlignment="Center"/>
+                <DatePicker Margin="5,0,0,0" SelectedDate="{Binding Path=StartDate}" SelectedDateFormat="Short" FontSize="14" />
+                <TextBlock Text="По: " FontSize="14" VerticalAlignment="Center"/>
+                <DatePicker Margin="5,0,0,0" SelectedDate="{Binding Path=EndDate}" SelectedDateFormat="Short" FontSize="14" />
+            </StackPanel>
         </StackPanel>
         <customcontrollibrary:ExtendedDataGrid ItemsSource="{Binding Path=ReportList, UpdateSourceTrigger=PropertyChanged}"
                     IsSynchronizedWithCurrentItem="True" CanUserResizeRows="False" CanUserAddRows="False" CanUserDeleteRows="False"
                     CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Center"
-                    MinHeight="200" MaxHeight="500" SelectionMode="Single" Background="White" IsReadOnly="True">
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="MouseDoubleClick">
-                    <interactivity:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.AddCommandPurchaseGoods}" CommandParameter="{Binding ElementName=ProductData, Path=SelectedItem}"/>
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
+                    MinHeight="200" MaxHeight="500" SelectionMode="Single" Background="White" IsReadOnly="True" HorizontalAlignment="Left" FontSize="14">
             <customcontrollibrary:ExtendedDataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
                     <Setter Property="BorderThickness" Value="0"/>
@@ -32,14 +30,19 @@
                 </Style>
             </customcontrollibrary:ExtendedDataGrid.CellStyle>
             <customcontrollibrary:ExtendedDataGrid.Columns>
-                <DataGridTextColumn Header="Наименование"     Binding="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTemplateColumn Header="Наименование">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBox  Text="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}" MaxWidth="200" TextWrapping="Wrap"  IsReadOnly="True"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Артикул"          Binding="{Binding Path=VendorCode, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed"/>
                 <DataGridTextColumn Header="Штрихкод"         Binding="{Binding Path=Barcode, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed"/>
-                <DataGridTextColumn Header="Кол-во зкуп."     Binding="{Binding Path=Count, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Сумма закуп."             Binding="{Binding Path=SalesPrice, UpdateSourceTrigger=PropertyChanged, StringFormat=C, ConverterCulture='ua-UA'}"/>
                 <DataGridTextColumn Header="Кол-во прод."     Binding="{Binding Path=Count, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Сумма прод."             Binding="{Binding Path=SalesPrice, UpdateSourceTrigger=PropertyChanged, StringFormat=C, ConverterCulture='ua-UA'}"/>
+                <DataGridTextColumn Header="Прибыль"             Binding="{Binding Path=FinalSum, UpdateSourceTrigger=PropertyChanged, StringFormat=C, ConverterCulture='ua-UA'}"/>
             </customcontrollibrary:ExtendedDataGrid.Columns>
         </customcontrollibrary:ExtendedDataGrid>
+        <TextBlock Text="{Binding Path=FinalSum, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" FontSize="14" Margin="0,5,0,0"/>
     </StackPanel>
 </UserControl>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Linq;
@@ -9,38 +10,52 @@ namespace ModelModul.RevaluationProduct
     {
         public ObservableCollection<RevaluationProductsReports> Load(int start, int end)
         {
-            return new ObservableCollection<RevaluationProductsReports>(AutomationAccountingGoodsEntities.GetInstance()
-                .RevaluationProductsReports.OrderByDescending(obj => obj.DataRevaluation)
-                .ThenByDescending(obj => obj.Id).Skip(start).Take(end).Include(obj => obj.RevaluationProductsInfos));
+            using (AutomationAccountingGoodsEntities db =
+                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            {
+                List<RevaluationProductsReports> temp = new List<RevaluationProductsReports>(db.RevaluationProductsReports
+                    .OrderByDescending(obj => obj.DataRevaluation).ThenByDescending(obj => obj.Id).Skip(start).Take(end)
+                    .Include(obj => obj.RevaluationProductsInfos).ToList());
+                temp.ForEach(obj => obj.RevaluationProductsInfos.ToList().ForEach(objInfo => db.Entry(objInfo).Reference(objInf => objInf.Products).Load()));
+
+                return new ObservableCollection<RevaluationProductsReports>(temp);
+            }
         }
 
         public int GetCount()
         {
-            return AutomationAccountingGoodsEntities.GetInstance().RevaluationProductsReports.Count();
+            using (AutomationAccountingGoodsEntities db =
+                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            {
+                return db.RevaluationProductsReports.Count();
+            }
         }
 
         public void Add(RevaluationProductsReports obj)
         {
-            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
+            using (AutomationAccountingGoodsEntities db =
+                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
-                try
+                using (var transaction = db.Database.BeginTransaction())
                 {
-                    foreach (var revaluationProductsInfo in obj.RevaluationProductsInfos)
+                    try
                     {
-                        if (revaluationProductsInfo.Products != null)
+                        foreach (var revaluationProductsInfo in obj.RevaluationProductsInfos)
                         {
+                            if (revaluationProductsInfo.Products == null) continue;
                             revaluationProductsInfo.IdProduct = revaluationProductsInfo.Products.Id;
                             revaluationProductsInfo.Products = null;
                         }
+
+                        db.RevaluationProductsReports.Add(obj);
+                        db.SaveChanges();
+                        transaction.Commit();
                     }
-                    AutomationAccountingGoodsEntities.GetInstance().RevaluationProductsReports.Add(obj);
-                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
-                    transaction.Commit();
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
             }
         }

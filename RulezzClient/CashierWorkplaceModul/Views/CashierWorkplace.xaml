@@ -38,14 +38,14 @@
                 <ComboBox  Margin="5" ItemsSource="{Binding Stores, UpdateSourceTrigger=PropertyChanged}"
                            IsSynchronizedWithCurrentItem="True" SelectedValuePath="Id"
                            SelectedValue="{Binding IdStore, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Title"
-                           Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" MinWidth="50" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+                           Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" MinWidth="50" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14" />
             </StackPanel>
             <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                <TextBlock Text="Выберете склад: " FontSize="14" Margin="5"/>
+                <TextBlock Text="Выберете покупателя: " FontSize="14" Margin="5"/>
                 <ComboBox  Margin="5" ItemsSource="{Binding Customers, UpdateSourceTrigger=PropertyChanged}"
                            IsSynchronizedWithCurrentItem="True" SelectedValuePath="Id"
                            SelectedValue="{Binding IdCustomer, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Title"
-                           Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" MinWidth="50" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+                           Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" MinWidth="50" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14" />
             </StackPanel>
         </DockPanel>
         <Border Margin="5" CornerRadius="4" BorderBrush="#193441" BorderThickness="2" MaxHeight="900" ScrollViewer.VerticalScrollBarVisibility="Auto">
@@ -57,7 +57,7 @@
                             <customControlLibrary:ExtendedDataGrid ItemsSource="{Binding SalesInfos, UpdateSourceTrigger=PropertyChanged}"
                             IsSynchronizedWithCurrentItem="True" HorizontalAlignment="Left" Margin="5" CanUserResizeRows="False"
                             CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Top"
-                            MinHeight="200" MaxHeight="600" RowStyle="{StaticResource DefaultRowStyle}" CanUserDeleteRows="False" CanUserAddRows="False">
+                            MinHeight="200" MaxHeight="600" RowStyle="{StaticResource DefaultRowStyle}" CanUserDeleteRows="False" CanUserAddRows="False" FontSize="14">
                                 <customControlLibrary:ExtendedDataGrid.CellStyle>
                                     <Style TargetType="DataGridCell">
                                         <Setter Property="BorderThickness" Value="0"/>
@@ -71,7 +71,13 @@
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
                                 <customControlLibrary:ExtendedDataGrid.Columns>
-                                    <DataGridTextColumn Header="Наименование" Binding="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True"/>
+                                    <DataGridTemplateColumn Header="Наименование">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBox  Text="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}" MaxWidth="200" MaxHeight="60"  TextWrapping="Wrap"  IsReadOnly="True"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
                                     <DataGridTextColumn Header="Артикул" Binding="{Binding Path=VendorCode, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True" Visibility="Collapsed"/>
                                     <DataGridTextColumn Header="Штрихкод" Binding="{Binding Path=Barcode, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Visibility="Collapsed"/>
                                     <DataGridTextColumn Header="Цена" Binding="{Binding Path=SellingPrice, UpdateSourceTrigger=PropertyChanged, StringFormat=C, ConverterCulture='ua-UA'}"  IsReadOnly="True"/>
@@ -99,7 +105,7 @@
                                     <DataGridTemplateColumn Header="Серийный номер">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <TextBox Text="{Binding Path=SerialNumber.Value, UpdateSourceTrigger=PropertyChanged}">
+                                                <TextBox Text="{Binding Path=SerialNumber.Value, UpdateSourceTrigger=PropertyChanged}" FontSize="14">
                                                     <TextBox.IsReadOnly>
                                                         <MultiBinding Converter="{StaticResource IsReadOnlyConverterForSerialNumber}" UpdateSourceTrigger="PropertyChanged">
                                                             <Binding Path="WarrantyPeriod.Period"/>
@@ -141,7 +147,7 @@
                         </StackPanel>
                     </ScrollViewer>
                     <DockPanel>
-                        <Button Content="Добавить товар" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" Command="{Binding AddProductCommand}">
+                        <Button Content="Добавить товар" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" Command="{Binding AddProductCommand}" FontSize="14">
                             <i:Interaction.Triggers>
                                 <interactivity:InteractionRequestTrigger SourceObject="{Binding AddProductPopupRequest}">
                                     <interactivity:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True" WindowStyle="{DynamicResource MyWindowStyle}">
@@ -152,8 +158,8 @@
                                 </interactivity:InteractionRequestTrigger>
                             </i:Interaction.Triggers>
                         </Button>
-                        <Button Content="Провести" HorizontalAlignment="Left" VerticalAlignment="Center" Command="{Binding SaleCommand}" Margin="5" DockPanel.Dock="Right"/>
-                        <TextBlock Text="{Binding ConverterCulture='ua-UA', StringFormat=Итого: {0:C}, Path=Total}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <Button Content="Провести" HorizontalAlignment="Left" VerticalAlignment="Center" Command="{Binding SaleCommand}" Margin="5" DockPanel.Dock="Right" FontSize="14"/>
+                        <TextBlock Text="{Binding ConverterCulture='ua-UA', StringFormat=Итого: {0:C}, Path=Total}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14"/>
                     </DockPanel>
                 </StackPanel>
             </ScrollViewer>

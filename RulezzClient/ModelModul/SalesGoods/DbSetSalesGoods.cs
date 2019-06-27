@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Linq;
@@ -9,55 +10,71 @@ namespace ModelModul.SalesGoods
     {
         public ObservableCollection<SalesReports> Load(int start, int end)
         {
-            return new ObservableCollection<SalesReports>(AutomationAccountingGoodsEntities.GetInstance().SalesReports.Include(obj => obj.SalesInfos).OrderByDescending(obj => obj.DataSales)
-                .ThenByDescending(obj => obj.Id).Skip(start).Take(end)
-                .Include(obj => obj.Counterparties).Include(obj => obj.Stores));
+            using (AutomationAccountingGoodsEntities db =
+                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            {
+                List<SalesReports> temp = new List<SalesReports>(db.SalesReports.Include(obj => obj.SalesInfos)
+                    .OrderByDescending(obj => obj.DataSales).ThenByDescending(obj => obj.Id).Skip(start).Take(end)
+                    .Include(obj => obj.Counterparties).Include(obj => obj.Stores).ToList());
+                temp.ForEach(obj => obj.SalesInfos.ToList().ForEach(objInfo => db.Entry(objInfo).Reference(objInf => objInf.Products).Load()));
+
+                return new ObservableCollection<SalesReports>(temp);
+            }
         }
 
         public int GetCount()
         {
-            return AutomationAccountingGoodsEntities.GetInstance().PurchaseReports.Count();
+            using (AutomationAccountingGoodsEntities db =
+                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            {
+                return db.PurchaseReports.Count();
+            }
         }
 
         public void Add(SalesReports obj)
         {
-            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
+            using (AutomationAccountingGoodsEntities db =
+                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
-                try
+                using (var transaction = db.Database.BeginTransaction())
                 {
-                    if (obj.Stores != null)
+                    try
                     {
-                        obj.IdStore = obj.Stores.Id;
-                        obj.Stores = null;
-                    }
-
-                    foreach (var salesInfo in obj.SalesInfos)
-                    {
-                        if (salesInfo.Products != null)
+                        if (obj.Stores != null)
                         {
-                            salesInfo.IdProduct = salesInfo.Products.Id;
-                            salesInfo.Products = null;
+                            obj.IdStore = obj.Stores.Id;
+                            obj.Stores = null;
                         }
 
-                        if (salesInfo.SerialNumbers != null && salesInfo.SerialNumbers.Id != 0)
+                        foreach (var salesInfo in obj.SalesInfos)
                         {
-                            salesInfo.IdSerialNumber = salesInfo.SerialNumbers.Id;
-                            salesInfo.SerialNumbers = null;
+                            if (salesInfo.Products != null)
+                            {
+                                salesInfo.IdProduct = salesInfo.Products.Id;
+                                salesInfo.Products = null;
+                            }
+
+                            if (salesInfo.SerialNumbers != null && salesInfo.SerialNumbers.Id != 0)
+                            {
+                                salesInfo.IdSerialNumber = salesInfo.SerialNumbers.Id;
+                                salesInfo.SerialNumbers = null;
+                            }
+                            else
+                            {
+                                salesInfo.IdSerialNumber = null;
+                                salesInfo.SerialNumbers = null;
+                            }
                         }
-                        else
-                        {
-                            salesInfo.IdSerialNumber = null;
-                            salesInfo.SerialNumbers = null;
-                        }
+
+                        db.SalesReports.Add(obj);
+                        db.SaveChanges();
+                        transaction.Commit();
                     }
-                    AutomationAccountingGoodsEntities.GetInstance().SalesReports.Add(obj);
-                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
-                    transaction.Commit();
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
             }
         }

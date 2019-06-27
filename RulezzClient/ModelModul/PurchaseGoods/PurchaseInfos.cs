@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Windows.Documents;
 
 namespace ModelModul
 {
@@ -6,6 +8,11 @@ namespace ModelModul
     {
         public object Clone()
         {
+            List<SerialNumbers> temp = new List<SerialNumbers>();
+            foreach (var serialNumber in SerialNumbers)
+            {
+                temp.Add((SerialNumbers)serialNumber.Clone());
+            }
             return new PurchaseInfos
             {
                 Id = Id,
@@ -14,6 +21,7 @@ namespace ModelModul
                 PurchasePrice = PurchasePrice,
                 IdExchangeRate = IdExchangeRate,
                 IdProduct = IdProduct,
+                SerialNumbers = temp,
                 ExchangeRates = (ExchangeRates) ExchangeRates?.Clone()
             };
         }

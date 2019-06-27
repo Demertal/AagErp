@@ -191,7 +191,7 @@ namespace ModelModul.Product
                 RaisePropertyChanged();
             }
         }
-        public ObservableCollection<SerialNumbers> SerialNumbers
+        public virtual ObservableCollection<SerialNumbers> SerialNumbers
         {
             get => Product.SerialNumbers as ObservableCollection<SerialNumbers>;
             set
@@ -216,10 +216,10 @@ namespace ModelModul.Product
             }
         }
 
-        public bool IsValidate => !string.IsNullOrEmpty(Title) && !string.IsNullOrEmpty(Barcode) && IdUnitStorage != 0 && IdWarrantyPeriod != 0;
+        public virtual bool IsValidate => !string.IsNullOrEmpty(Title) && !string.IsNullOrEmpty(Barcode) && IdUnitStorage != 0 && IdWarrantyPeriod != 0;
         #endregion
 
-        private void SerialNumbersCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        protected void SerialNumbersCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {

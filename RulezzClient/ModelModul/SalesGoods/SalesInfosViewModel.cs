@@ -90,6 +90,6 @@ namespace ModelModul.SalesGoods
             }
         }
 
-        public bool IsValidate => SellingPrice != 0 && Count > 0 && (SerialNumber.Id != 0 || WarrantyPeriod.Period == "Нет");
+        public override bool IsValidate => SellingPrice != 0 && Count > 0 && (SerialNumber.Id != 0 || WarrantyPeriod.Period == "Нет");
     }
 }

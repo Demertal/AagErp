@@ -9,80 +9,100 @@ namespace ModelModul.Counterparty
     {
         public ObservableCollection<Counterparties> Load()
         {
-            return new ObservableCollection<Counterparties>(AutomationAccountingGoodsEntities.GetInstance()
-                .Counterparties.ToList());
+            using (AutomationAccountingGoodsEntities db = new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            {
+                return new ObservableCollection<Counterparties>(db.Counterparties.ToList());
+            }
         }
 
         public ObservableCollection<Counterparties> Load(TypeCounterparties whoIsIt)
         {
             bool temp = whoIsIt == TypeCounterparties.Buyers;
-            return new ObservableCollection<Counterparties>(AutomationAccountingGoodsEntities.GetInstance()
-                .Counterparties.Where(obj => obj.WhoIsIt == temp).ToList());
+            using (AutomationAccountingGoodsEntities db =
+                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            {
+                return new ObservableCollection<Counterparties>(db.Counterparties.Where(obj => obj.WhoIsIt == temp)
+                    .ToList());
+            }
         }
 
         public void Add(Counterparties obj)
         {
-            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
+            using (AutomationAccountingGoodsEntities db =
+                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
-                try
+                using (var transaction = db.Database.BeginTransaction())
                 {
-                    AutomationAccountingGoodsEntities.GetInstance().Counterparties.Add(obj);
-                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
-                    transaction.Commit();
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
+                    try
+                    {
+                        db.Counterparties.Add(obj);
+                        db.SaveChanges();
+                        transaction.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
             }
         }
 
         public void Update(Counterparties obj)
         {
-            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
+            using (AutomationAccountingGoodsEntities db =
+                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
-                try
+                using (var transaction = db.Database.BeginTransaction())
                 {
-                    var counterparty = AutomationAccountingGoodsEntities.GetInstance().Counterparties.Find(obj.Id);
-                    if (counterparty != null)
+                    try
                     {
-                        counterparty.Title = obj.Title;
-                        counterparty.Address = obj.Address;
-                        counterparty.ContactPerson = obj.ContactPerson;
-                        counterparty.ContactPhone = obj.ContactPhone;
-                        counterparty.Props = obj.Props;
-                        AutomationAccountingGoodsEntities.GetInstance().Entry(counterparty).State = EntityState.Modified;
+                        var counterparty = db.Counterparties.Find(obj.Id);
+                        if (counterparty != null)
+                        {
+                            counterparty.Title = obj.Title;
+                            counterparty.Address = obj.Address;
+                            counterparty.ContactPerson = obj.ContactPerson;
+                            counterparty.ContactPhone = obj.ContactPhone;
+                            counterparty.Props = obj.Props;
+                            db.Entry(counterparty).State = EntityState.Modified;
+                        }
+                        else throw new Exception("Изменение не удалось");
+
+                        db.SaveChanges();
+                        transaction.Commit();
                     }
-                    else throw new Exception("Изменение не удалось");
-                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
-                    transaction.Commit();
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
             }
         }
 
         public void Delete(int objId)
         {
-            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
+            using (AutomationAccountingGoodsEntities db =
+                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
-                try
+                using (var transaction = db.Database.BeginTransaction())
                 {
-                    var counterparties = AutomationAccountingGoodsEntities.GetInstance().Counterparties.Find(objId);
-                    if(counterparties == null) throw new Exception("Контрагент не найден");
-                    if (counterparties.Title == "Покупатель") throw new Exception("Нельзя удалить контрагента \"Покупатель\"");
-                    AutomationAccountingGoodsEntities.GetInstance().Entry(counterparties).State = EntityState.Deleted;
-                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
-                    transaction.Commit();
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
+                    try
+                    {
+                        var counterparties = db.Counterparties.Find(objId);
+                        if (counterparties == null) throw new Exception("Контрагент не найден");
+                        if (counterparties.Title == "Покупатель")
+                            throw new Exception("Нельзя удалить контрагента \"Покупатель\"");
+                        db.Entry(counterparties).State = EntityState.Deleted;
+                        db.SaveChanges();
+                        transaction.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
             }
         }

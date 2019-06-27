@@ -24,15 +24,14 @@ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                 </Style>
             </DataGrid.CellStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Наименование" Binding="{Binding Path=Products.Title, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Цена">
-                    <DataGridTextColumn.Binding>
-                        <MultiBinding Converter="{StaticResource CurrencyConverter2}" UpdateSourceTrigger="PropertyChanged" ValidatesOnExceptions="True">
-                            <Binding Path="SellingPrice"/>
-                            <Binding Path="ExchangeRates"/>
-                        </MultiBinding>
-                    </DataGridTextColumn.Binding>
-                </DataGridTextColumn>
+                <DataGridTemplateColumn Header="Наименование">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBox  Text="{Binding Path=Products.Title, UpdateSourceTrigger=PropertyChanged}" MaxWidth="200" TextWrapping="Wrap"  IsReadOnly="True"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Цена" Binding="{Binding Path=SellingPrice, UpdateSourceTrigger=PropertyChanged, StringFormat=C, ConverterCulture='ua-UA'}" FontSize="14"/>
                 <DataGridTextColumn Header="Ко-во" Binding="{Binding Path=Count, UpdateSourceTrigger=PropertyChanged}"/>
                 <DataGridTextColumn Header="Сумма">
                     <DataGridTextColumn.Binding>

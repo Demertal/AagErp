@@ -8,6 +8,7 @@ using ModelModul.Product;
 using ModelModul.UnitStorage;
 using ModelModul.WarrantyPeriod;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Interactivity.InteractionRequest;
 using Prism.Regions;
 
@@ -16,6 +17,8 @@ namespace ProductModul.ViewModels
     class ShowProductViewModel : ViewModelBase, IInteractionRequestAware
     {
         private readonly IRegionManager _regionManager;
+
+        private IEventAggregator _ea;
 
         #region Purchase
 
@@ -36,6 +39,7 @@ namespace ProductModul.ViewModels
                 IsAddPurchase = true;
                 FindString = "";
                 SelectedGroup = null;
+                ProductsList = new ObservableCollection<ProductViewModel>();
                 LoadGroup();
             }
         }
@@ -124,8 +128,9 @@ namespace ProductModul.ViewModels
         public bool IsEnabledAddProduct => SelectedGroup != null;
         #endregion
 
-        public ShowProductViewModel(IRegionManager regionManager)
+        public ShowProductViewModel(IRegionManager regionManager, IEventAggregator ea)
         {
+            _ea = ea;
             _regionManager = regionManager;
             IsAddPurchase = false;
             SelectedGroupCommand = new DelegateCommand<Groups>(SelectedGroupChange);
@@ -138,7 +143,7 @@ namespace ProductModul.ViewModels
             RenameGroupCommand = new DelegateCommand<Groups>(RenameGroup);
             DeleteGroupCommand = new DelegateCommand<Groups>(DeleteGroup);
             ShowPropertiesCommand = new DelegateCommand<Groups>(ShowProperties);
-
+            _ea.GetEvent<IsReadySentEvent>().Subscribe(obj => _ea.GetEvent<BoolSentEvent>().Publish(IsAddPurchase));
 
             AddProductPopupRequest = new InteractionRequest<INotification>();
             DeleteProductCommand = new DelegateCommand<ProductViewModel>(DeleteProduct);
@@ -285,9 +290,6 @@ namespace ProductModul.ViewModels
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
             LoadGroup();
-            //FindString = "";
-            //SelectedGroup = null;
-            //LoadGroup();
         }
 
         public override bool IsNavigationTarget(NavigationContext navigationContext)

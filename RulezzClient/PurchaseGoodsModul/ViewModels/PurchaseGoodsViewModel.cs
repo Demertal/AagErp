@@ -255,8 +255,6 @@ namespace PurchaseGoodsModul.ViewModels
                 foreach (var purchaseInfo in PurchaseInfos)
                 {
                     _report.PurchaseInfos.Add(purchaseInfo.PurchaseInfo);
-                    ((List<PurchaseInfos>) _report.PurchaseInfos)[_report.PurchaseInfos.Count-1].Products =
-                        (Products) purchaseInfo.Product.Clone();
                 }
                 DbSetPurchaseGoods dbSet = new DbSetPurchaseGoods();
                 dbSet.Add((PurchaseReports)_report.Clone());

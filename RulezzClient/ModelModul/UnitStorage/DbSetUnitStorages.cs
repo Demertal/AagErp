@@ -8,66 +8,82 @@ namespace ModelModul.UnitStorage
     {
         public ObservableCollection<UnitStorages> Load()
         {
-            return new ObservableCollection<UnitStorages>(AutomationAccountingGoodsEntities.GetInstance().UnitStorages);
+            using (AutomationAccountingGoodsEntities db =
+                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            {
+                return new ObservableCollection<UnitStorages>(db.UnitStorages);
+            }
         }
 
         public void Add(UnitStorages obj)
         {
-            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
+            using (AutomationAccountingGoodsEntities db =
+                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
-                try
+                using (var transaction = db.Database.BeginTransaction())
                 {
-                    AutomationAccountingGoodsEntities.GetInstance().UnitStorages.Add(obj);
-                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
-                    transaction.Commit();
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
+                    try
+                    {
+                        db.UnitStorages.Add(obj);
+                        db.SaveChanges();
+                        transaction.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
             }
         }
 
         public void Update(UnitStorages obj)
         {
-            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
+            using (AutomationAccountingGoodsEntities db =
+                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
-                try
+                using (var transaction = db.Database.BeginTransaction())
                 {
-                    var unit = AutomationAccountingGoodsEntities.GetInstance().UnitStorages.Find(obj.Id);
-                    if (unit == null) throw new Exception("Изменить не получилось");
-                    if (unit.Title == "шт") throw new Exception("Нельзя изменять ед. хр.: \"шт\"");
-                    unit.Title = obj.Title;
-                    AutomationAccountingGoodsEntities.GetInstance().Entry(unit).State = EntityState.Modified;
-                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
-                    transaction.Commit();
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
+                    try
+                    {
+                        var unit = db.UnitStorages.Find(obj.Id);
+                        if (unit == null) throw new Exception("Изменить не получилось");
+                        if (unit.Title == "шт") throw new Exception("Нельзя изменять ед. хр.: \"шт\"");
+                        unit.Title = obj.Title;
+                        db.Entry(unit).State = EntityState.Modified;
+                        db.SaveChanges();
+                        transaction.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
             }
         }
 
         public void Delete(int objId)
         {
-            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
+            using (AutomationAccountingGoodsEntities db =
+                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
-                try
+                using (var transaction = db.Database.BeginTransaction())
                 {
-                    var unit = AutomationAccountingGoodsEntities.GetInstance().UnitStorages.Find(objId);
-                    if (unit == null) throw new Exception("Удалить не получилось");
-                    if (unit.Title == "шт") throw new Exception("Нельзя удалять ед. хр.: \"шт\"");
-                    AutomationAccountingGoodsEntities.GetInstance().Entry(unit).State = EntityState.Deleted;
-                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
-                    transaction.Commit();
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
+                    try
+                    {
+                        var unit = db.UnitStorages.Find(objId);
+                        if (unit == null) throw new Exception("Удалить не получилось");
+                        if (unit.Title == "шт") throw new Exception("Нельзя удалять ед. хр.: \"шт\"");
+                        db.Entry(unit).State = EntityState.Deleted;
+                        db.SaveChanges();
+                        transaction.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
             }
         }

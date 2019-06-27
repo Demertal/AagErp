@@ -28,6 +28,7 @@ namespace WarrantyModul.ViewModels
             set
             {
                 SetProperty(ref _notification, value as Confirmation);
+                Warranty = new WarrantyViewModel();
                 _warranty.IdSerialNumber = (int) _notification.Content;
             }
         }

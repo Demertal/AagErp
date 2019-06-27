@@ -52,7 +52,7 @@
                 <customControlLibrary:ExtendedDataGrid x:Name="CounterpartiesDataGrid" ItemsSource="{Binding Path=CounterpartiesList, UpdateSourceTrigger=PropertyChanged}" MaxWidth="400"
                             IsSynchronizedWithCurrentItem="True" CanUserResizeRows="False" CanUserDeleteRows="False" CanUserAddRows="False"
                             CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Center" VerticalAlignment="Top"
-                            MinHeight="200" MaxHeight="500" HorizontalAlignment="Left" RowStyle="{StaticResource DefaultRowStyle}" SelectionMode="Single" ContextMenu="{StaticResource DataGridMenu}">
+                            MinHeight="200" MaxHeight="500" HorizontalAlignment="Left" RowStyle="{StaticResource DefaultRowStyle}" SelectionMode="Single" ContextMenu="{StaticResource DataGridMenu}" FontSize="14">
                     <DataGrid.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Setter Property="BorderThickness" Value="0"/>

@@ -9,80 +9,99 @@ namespace ModelModul.Group
     {
         public ObservableCollection<Groups> Load(Groups parentGroup = null)
         {
-            bool Pre(Groups obj)
+            using (AutomationAccountingGoodsEntities db =
+                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
-                return (obj.IdParentGroup == null && parentGroup == null) ||
-                       (obj.IdParentGroup != null && parentGroup != null && obj.IdParentGroup.Value == parentGroup.Id);
-            }
+                bool Pre(Groups obj)
+                {
+                    return (obj.IdParentGroup == null && parentGroup == null) ||
+                           (obj.IdParentGroup != null && parentGroup != null &&
+                            obj.IdParentGroup.Value == parentGroup.Id);
+                }
 
-            return new ObservableCollection<Groups>(AutomationAccountingGoodsEntities.GetInstance().Groups
-                .Include("Groups1").Where(Pre));
+                return new ObservableCollection<Groups>(db.Groups.Include("Groups1").Where(Pre));
+            }
         }
 
         public void Add(Groups obj)
         {
-            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
+            using (AutomationAccountingGoodsEntities db =
+                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
-                try
+                using (var transaction = db.Database.BeginTransaction())
                 {
-                    if (obj.IdParentGroup == 0)
+                    try
                     {
-                        obj.IdParentGroup = null;
+                        if (obj.IdParentGroup == 0)
+                        {
+                            obj.IdParentGroup = null;
+                        }
+
+                        var group = db.Groups.Find(obj.IdParentGroup);
+                        obj.Groups2 = group;
+                        db.Entry(obj).State = EntityState.Added;
+                        if(obj.Groups2 != null)
+                            db.Entry(obj.Groups2).State = EntityState.Unchanged;
+                        db.SaveChanges();
+                        transaction.Commit();
                     }
-                    var group = AutomationAccountingGoodsEntities.GetInstance().Groups.Find(obj.IdParentGroup);
-                    obj.Groups2 = group;
-                    AutomationAccountingGoodsEntities.GetInstance().Entry(obj).State = EntityState.Added;
-                    AutomationAccountingGoodsEntities.GetInstance().Entry(obj.Groups2).State = EntityState.Unchanged;
-                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
-                    transaction.Commit();
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
             }
         }
 
         public void Delete(int objId)
         {
-            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
+            using (AutomationAccountingGoodsEntities db =
+                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
-                try
+                using (var transaction = db.Database.BeginTransaction())
                 {
-                    var group = AutomationAccountingGoodsEntities.GetInstance().Groups.Find(objId);
-                    AutomationAccountingGoodsEntities.GetInstance().Entry(group).State = EntityState.Deleted;
-                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
-                    transaction.Commit();
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
+                    try
+                    {
+                        var group = db.Groups.Find(objId);
+                        db.Entry(group).State = EntityState.Deleted;
+                        db.SaveChanges();
+                        transaction.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
             }
         }
 
         public void Update(Groups obj)
         {
-            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
+            using (AutomationAccountingGoodsEntities db =
+                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
-                try
+                using (var transaction = db.Database.BeginTransaction())
                 {
-                    var modifi = AutomationAccountingGoodsEntities.GetInstance().Groups.Find(obj.Id);
-                    if (modifi != null)
+                    try
                     {
-                        modifi.Title = obj.Title;
-                        AutomationAccountingGoodsEntities.GetInstance().Entry(modifi).State = EntityState.Modified;
+                        var modifi = db.Groups.Find(obj.Id);
+                        if (modifi != null)
+                        {
+                            modifi.Title = obj.Title;
+                            db.Entry(modifi).State = EntityState.Modified;
+                        }
+                        else throw new Exception("Изменение не удалось");
+
+                        db.SaveChanges();
+                        transaction.Commit();
                     }
-                    else throw new Exception("Изменение не удалось");
-                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
-                    transaction.Commit();
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
             }
         }

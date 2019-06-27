@@ -25,47 +25,47 @@
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <TextBlock Text="Наименование" HorizontalAlignment="Center" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
-        <TextBox Text="{Binding SelectedCounterparty.Title,  UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Center" Height="23"
+        <TextBlock Text="Наименование" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" FontSize="14"/>
+        <TextBox Text="{Binding SelectedCounterparty.Title,  UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Left" Height="23"
                  TextWrapping="Wrap" VerticalAlignment="Center" HorizontalContentAlignment="Center" MinWidth="100"
-                 VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="1" Margin="5">
+                 VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="1" Margin="5" FontSize="14">
             <TextBox.IsReadOnly>
                 <Binding Converter="{StaticResource IsReadOnlyConverterForBool}" UpdateSourceTrigger="PropertyChanged" Path="IsUpdate"/>
             </TextBox.IsReadOnly>
         </TextBox>
-        <TextBlock Text="Контактное лицо" HorizontalAlignment="Center" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
-        <TextBox Text="{Binding SelectedCounterparty.ContactPerson,  UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Center" Height="23"
+        <TextBlock Text="Контактное лицо" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" FontSize="14"/>
+        <TextBox Text="{Binding SelectedCounterparty.ContactPerson,  UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Left" Height="23"
                  TextWrapping="Wrap" VerticalAlignment="Center" HorizontalContentAlignment="Center" MinWidth="100"
-                 VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="1" Margin="5">
+                 VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="1" Margin="5" FontSize="14">
             <TextBox.IsReadOnly>
                 <Binding Converter="{StaticResource IsReadOnlyConverterForBool}" UpdateSourceTrigger="PropertyChanged" Path="IsUpdate"/>
             </TextBox.IsReadOnly>
         </TextBox>
-        <TextBlock Text="Контактный телефон" HorizontalAlignment="Center" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
-        <TextBox Text="{Binding SelectedCounterparty.ContactPhone,  UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Center" Height="23"
+        <TextBlock Text="Контактный телефон" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" FontSize="14"/>
+        <TextBox Text="{Binding SelectedCounterparty.ContactPhone,  UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Left" Height="23"
                  TextWrapping="Wrap" VerticalAlignment="Center" HorizontalContentAlignment="Center" MinWidth="100"
-                 VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="1" Margin="5">
+                 VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="1" Margin="5" FontSize="14">
             <TextBox.IsReadOnly>
                 <Binding Converter="{StaticResource IsReadOnlyConverterForBool}" UpdateSourceTrigger="PropertyChanged" Path="IsUpdate"/>
             </TextBox.IsReadOnly>
         </TextBox>
-        <TextBlock Text="Реквезит" HorizontalAlignment="Center" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center"/>
-        <TextBox Text="{Binding SelectedCounterparty.Props,  UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Center" Height="23"
+        <TextBlock Text="Реквизит" HorizontalAlignment="Left" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" FontSize="14"/>
+        <TextBox Text="{Binding SelectedCounterparty.Props,  UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Left" Height="23"
                  TextWrapping="Wrap" VerticalAlignment="Center" HorizontalContentAlignment="Center" MinWidth="100"
-                 VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="1" Margin="5">
+                 VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="1" Margin="5" FontSize="14">
             <TextBox.IsReadOnly>
                 <Binding Converter="{StaticResource IsReadOnlyConverterForBool}" UpdateSourceTrigger="PropertyChanged" Path="IsUpdate"/>
             </TextBox.IsReadOnly>
         </TextBox>
-        <TextBlock Text="Адрес" HorizontalAlignment="Center" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center"/>
-        <TextBox Text="{Binding SelectedCounterparty.Address,  UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Center" Height="23"
+        <TextBlock Text="Адрес" HorizontalAlignment="Left" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" FontSize="14"/>
+        <TextBox Text="{Binding SelectedCounterparty.Address,  UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Left" Height="23"
                  TextWrapping="Wrap" VerticalAlignment="Center" HorizontalContentAlignment="Center" MinWidth="100"
-                 VerticalContentAlignment="Center" Grid.Row="4" Grid.Column="1" Margin="5">
+                 VerticalContentAlignment="Center" Grid.Row="4" Grid.Column="1" Margin="5" FontSize="14">
             <TextBox.IsReadOnly>
                 <Binding Converter="{StaticResource IsReadOnlyConverterForBool}" UpdateSourceTrigger="PropertyChanged" Path="IsUpdate"/>
             </TextBox.IsReadOnly>
         </TextBox>
-        <Button Content="Ок" HorizontalAlignment="Center" VerticalAlignment="Center" Width="75" Command="{Binding OkCommand}" Margin="5" Grid.Row="5" Grid.Column="0">
+        <Button Content="Ок" HorizontalAlignment="Center" VerticalAlignment="Center" Width="75" Command="{Binding OkCommand}" Margin="5" Grid.Row="5" Grid.Column="0" FontSize="14">
             <Button.Visibility>
                 <Binding Converter="{StaticResource VisibilityConverterForBool}" ConverterParameter="False" Path="IsUpdate"/>
             </Button.Visibility>
@@ -75,8 +75,8 @@
                 <Binding Converter="{StaticResource VisibilityConverterForBool}" ConverterParameter="False" Path="IsUpdate"/>
             </Button.Visibility>
         </Button>
-        <Button Content="Редактировать" HorizontalAlignment="Center" VerticalAlignment="Center" Width="95" Command="{Binding UpdateCommand}"
-                Grid.Row="5" Grid.Column="1" Margin="5">
+        <Button Content="Редактировать" HorizontalAlignment="Center" VerticalAlignment="Center" Command="{Binding UpdateCommand}"
+                Grid.Row="5" Grid.Column="1" Margin="5" FontSize="14">
             <Button.Visibility>
                 <Binding Converter="{StaticResource VisibilityConverterForBool}" ConverterParameter="True" Path="IsUpdate"/>
             </Button.Visibility>

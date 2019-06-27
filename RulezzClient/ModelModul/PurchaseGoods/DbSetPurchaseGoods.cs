@@ -10,69 +10,82 @@ namespace ModelModul.PurchaseGoods
     {
         public ObservableCollection<PurchaseReports> Load(int start, int end)
         {
-            return new ObservableCollection<PurchaseReports>(AutomationAccountingGoodsEntities.GetInstance()
-                .PurchaseReports.Include(obj => obj.PurchaseInfos).OrderByDescending(obj => obj.DataOrder)
-                .ThenByDescending(obj => obj.Id).Skip(start).Take(end).Include(obj => obj.Counterparties)
-                .Include(obj => obj.Stores));
+            using (AutomationAccountingGoodsEntities db =
+                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            {
+                List<PurchaseReports> temp = new List<PurchaseReports>(db.PurchaseReports.Include(obj => obj.PurchaseInfos)
+                    .OrderByDescending(obj => obj.DataOrder).ThenByDescending(obj => obj.Id).Skip(start).Take(end)
+                    .Include(obj => obj.Counterparties).Include(obj => obj.Stores).ToList());
+                temp.ForEach(obj => obj.PurchaseInfos.ToList().ForEach(objInfo => db.Entry(objInfo).Reference(objInf => objInf.Products).Load()));
+                temp.ForEach(obj => obj.PurchaseInfos.ToList().ForEach(objInfo => db.Entry(objInfo).Reference(objInf => objInf.ExchangeRates).Load()));
+
+                return new ObservableCollection<PurchaseReports>(temp);
+            }
         }
 
         public int GetCount()
         {
-            return AutomationAccountingGoodsEntities.GetInstance().PurchaseReports.Count();
+            using (AutomationAccountingGoodsEntities db =
+                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            {
+                return db.PurchaseReports.Count();
+            }
         }
 
         public void Add(PurchaseReports obj)
         {
-            using (var transaction = AutomationAccountingGoodsEntities.GetInstance().Database.BeginTransaction())
+            using (AutomationAccountingGoodsEntities db =
+                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
-                try
+                using (var transaction = db.Database.BeginTransaction())
                 {
-                    if (obj.Counterparties != null)
+                    try
                     {
-                        obj.IdCounterparty = obj.Counterparties.Id;
-                        obj.Counterparties = null;
-                    }
-                    if (obj.Stores != null)
-                    {
-                        obj.IdStore = obj.Stores.Id;
-                        obj.Stores = null;
-                    }
-
-                    List<SerialNumbers> serialNumbers = new List<SerialNumbers>();
-
-                    foreach (var purchaseInfo in obj.PurchaseInfos)
-                    {
-                        if (purchaseInfo.Products != null)
+                        if (obj.Counterparties != null)
                         {
-                            purchaseInfo.IdProduct = purchaseInfo.Products.Id;
-                            serialNumbers.AddRange(purchaseInfo.Products.SerialNumbers);
-                            purchaseInfo.Products = null;
+                            obj.IdCounterparty = obj.Counterparties.Id;
+                            obj.Counterparties = null;
                         }
 
-                        if (purchaseInfo.ExchangeRates != null)
+                        if (obj.Stores != null)
                         {
-                            purchaseInfo.IdExchangeRate = purchaseInfo.ExchangeRates.Id;
-                            purchaseInfo.ExchangeRates = null;
+                            obj.IdStore = obj.Stores.Id;
+                            obj.Stores = null;
                         }
-                    }
 
-                    foreach (var serialNumber in serialNumbers)
+                        List<SerialNumbers> serialNumbers = new List<SerialNumbers>();
+                        foreach (var purchaseInfo in obj.PurchaseInfos)
+                        {
+                            serialNumbers.AddRange(purchaseInfo.SerialNumbers);
+                            if (purchaseInfo.Products != null)
+                            {
+                                purchaseInfo.IdProduct = purchaseInfo.Products.Id;
+                                purchaseInfo.Products = null;
+                            }
+
+                            if (purchaseInfo.ExchangeRates != null)
+                            {
+                                purchaseInfo.IdExchangeRate = purchaseInfo.ExchangeRates.Id;
+                                purchaseInfo.ExchangeRates = null;
+                            }
+                        }
+
+                        foreach (var serialNumber in serialNumbers)
+                        {
+                            serialNumber.IdCounterparty = obj.IdCounterparty;
+                            serialNumber.Counterparties = null;
+                        }
+
+                        db.PurchaseReports.Add(obj);
+                        db.SerialNumbers.AddRange(serialNumbers);
+                        db.SaveChanges();
+                        transaction.Commit();
+                    }
+                    catch (Exception)
                     {
-                        serialNumber.IdCounterparty = obj.IdCounterparty;
-                        serialNumber.Counterparties = null;
+                        transaction.Rollback();
+                        throw;
                     }
-
-                    AutomationAccountingGoodsEntities.GetInstance().PurchaseReports.Add(obj);
-
-                    AutomationAccountingGoodsEntities.GetInstance().SerialNumbers.AddRange(serialNumbers);
-
-                    AutomationAccountingGoodsEntities.GetInstance().SaveChanges();
-                    transaction.Commit();
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
                 }
             }
         }

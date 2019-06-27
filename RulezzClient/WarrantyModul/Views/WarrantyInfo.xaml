@@ -58,7 +58,9 @@
                                 <Binding Converter="{StaticResource VisibilityConverterForBool}" Path="IsUpdate" ConverterParameter="True"/>
                             </TextBlock.Visibility>
                         </TextBlock>
-                        <DatePicker SelectedDate="{Binding SelectedWarranty.DateDeparture,  UpdateSourceTrigger=PropertyChanged}" DisplayDate="{Binding SelectedWarranty.DateDeparture,  UpdateSourceTrigger=PropertyChanged}">
+                        <DatePicker SelectedDate="{Binding SelectedWarranty.DateDeparture,  UpdateSourceTrigger=PropertyChanged}"
+                                    DisplayDate="{Binding SelectedWarranty.DateDeparture,  UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+                                    DisplayDateStart="{Binding SelectedWarranty.DateReceipt, UpdateSourceTrigger=PropertyChanged}">
                             <DatePicker.Visibility>
                                 <MultiBinding Converter="{StaticResource VisibilityConverterForNullAndBool}" ConverterParameter="InvertValue1">
                                     <Binding Path="SelectedWarranty.DateDeparture"/>
@@ -89,7 +91,9 @@
                                 <Binding Converter="{StaticResource VisibilityConverterForBool}" Path="IsUpdate" ConverterParameter="True"/>
                             </TextBlock.Visibility>
                         </TextBlock>
-                        <DatePicker SelectedDate="{Binding SelectedWarranty.DateIssue,  UpdateSourceTrigger=PropertyChanged}" DisplayDate="{Binding SelectedWarranty.DateIssue,  UpdateSourceTrigger=PropertyChanged}">
+                        <DatePicker SelectedDate="{Binding SelectedWarranty.DateIssue,  UpdateSourceTrigger=PropertyChanged}"
+                                DisplayDate="{Binding SelectedWarranty.DateIssue,  UpdateSourceTrigger=PropertyChanged, Mode=OneWay }"
+                                DisplayDateStart="{Binding SelectedWarranty.DateDeparture, UpdateSourceTrigger=PropertyChanged}">
                             <DatePicker.Visibility>
                                 <MultiBinding Converter="{StaticResource VisibilityConverterForNullAndBool}" ConverterParameter="InvertValue1">
                                     <Binding Path="SelectedWarranty.DateIssue"/>

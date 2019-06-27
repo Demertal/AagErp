@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using ModelModul;
 using ModelModul.Counterparty;
@@ -28,8 +29,8 @@ namespace CounterpartyModul.ViewModels
             }
         }
 
-        private ObservableCollection<Counterparties> _counterpartiesList = new ObservableCollection<Counterparties>();
-        public ObservableCollection<Counterparties> CounterpartiesList
+        private ObservableCollection<CounterpartyViewModel> _counterpartiesList = new ObservableCollection<CounterpartyViewModel>();
+        public ObservableCollection<CounterpartyViewModel> CounterpartiesList
         {
             get => _counterpartiesList;
             set => SetProperty(ref _counterpartiesList, value);
@@ -39,7 +40,7 @@ namespace CounterpartyModul.ViewModels
 
         public InteractionRequest<INotification> AddCounterpartyPopupRequest { get; set; }
 
-        public DelegateCommand<Counterparties> DeleteCounterpartyCommand { get; }
+        public DelegateCommand<CounterpartyViewModel> DeleteCounterpartyCommand { get; }
         public DelegateCommand AddCounterpartyCommand { get; }
         #endregion
 
@@ -47,7 +48,7 @@ namespace CounterpartyModul.ViewModels
         {
             _regionManager = regionManager;
             AddCounterpartyPopupRequest = new InteractionRequest<INotification>();
-            DeleteCounterpartyCommand = new DelegateCommand<Counterparties>(DeleteSuppliers);
+            DeleteCounterpartyCommand = new DelegateCommand<CounterpartyViewModel>(DeleteSuppliers);
             AddCounterpartyCommand = new DelegateCommand(AddCounterparty);
         }
 
@@ -62,7 +63,7 @@ namespace CounterpartyModul.ViewModels
             Load();
         }
 
-        private void DeleteSuppliers(Counterparties obj)
+        private void DeleteSuppliers(CounterpartyViewModel obj)
         {
             if (obj == null) return;
             if (MessageBox.Show("Удалить контрагента?", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
@@ -84,7 +85,8 @@ namespace CounterpartyModul.ViewModels
             try
             {
                 DbSetCounterparties dbSet = new DbSetCounterparties();
-                CounterpartiesList = new ObservableCollection<Counterparties>(dbSet.Load(_type));
+                CounterpartiesList = new ObservableCollection<CounterpartyViewModel>(dbSet.Load(_type)
+                    .Select(obj => new CounterpartyViewModel {Counterparty = obj}));
                 RaisePropertyChanged("CounterpartiesList");
             }
             catch (Exception e)

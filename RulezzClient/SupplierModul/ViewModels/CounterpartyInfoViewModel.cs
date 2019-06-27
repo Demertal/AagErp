@@ -68,7 +68,11 @@ namespace CounterpartyModul.ViewModels
 
         private void Reset()
         {
-            SelectedCounterparty.Counterparty = _oldCounterparty;
+            SelectedCounterparty.Counterparty.Title = _oldCounterparty.Title;
+            SelectedCounterparty.Counterparty.Address = _oldCounterparty.Address;
+            SelectedCounterparty.Counterparty.ContactPerson = _oldCounterparty.ContactPerson;
+            SelectedCounterparty.Counterparty.ContactPhone = _oldCounterparty.ContactPhone;
+            SelectedCounterparty.Counterparty.Props = _oldCounterparty.Props;
             IsUpdate = false;
         }
 

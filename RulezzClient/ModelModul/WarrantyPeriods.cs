@@ -7,23 +7,23 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-
 namespace ModelModul
 {
+    using System;
+    using System.Collections.Generic;
+    
     public partial class WarrantyPeriods
     {
-        [SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public WarrantyPeriods()
         {
-            Products = new HashSet<Products>();
+            this.Products = new HashSet<Products>();
         }
     
         public int Id { get; set; }
         public string Period { get; set; }
     
-        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Products> Products { get; set; }
     }
 }

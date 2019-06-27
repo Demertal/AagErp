@@ -7,26 +7,28 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System;
-using System.Data.Entity;
-using System.Data.Entity.Core.Objects;
-using System.Data.Entity.Infrastructure;
-
 namespace ModelModul
 {
+    using System;
+    using System.Data.Entity;
+    using System.Data.Entity.Infrastructure;
+    using System.Data.Entity.Core.Objects;
+    using System.Linq;
+    
     public partial class AutomationAccountingGoodsEntities : DbContext
     {
-        protected AutomationAccountingGoodsEntities()
+        public AutomationAccountingGoodsEntities()
             : base("name=AutomationAccountingGoodsEntities")
         {
         }
-
+    
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             throw new UnintentionalCodeFirstException();
         }
     
         public virtual DbSet<Counterparties> Counterparties { get; set; }
+        public virtual DbSet<CountProducts> CountProducts { get; set; }
         public virtual DbSet<ExchangeRates> ExchangeRates { get; set; }
         public virtual DbSet<Groups> Groups { get; set; }
         public virtual DbSet<Products> Products { get; set; }
@@ -44,7 +46,6 @@ namespace ModelModul
         public virtual DbSet<UnitStorages> UnitStorages { get; set; }
         public virtual DbSet<Warranties> Warranties { get; set; }
         public virtual DbSet<WarrantyPeriods> WarrantyPeriods { get; set; }
-        public virtual DbSet<CountProducts> CountProducts { get; set; }
     
         public virtual int GoodsIssued(Nullable<int> id)
         {

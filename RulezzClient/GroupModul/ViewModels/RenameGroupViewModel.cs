@@ -22,7 +22,7 @@ namespace GroupModul.ViewModels
             {
                 _title = value;
                 RaisePropertyChanged();
-                RaisePropertyChanged("IsValidate");
+                RaisePropertyChanged("IsEnabled");
             }
         }
 
