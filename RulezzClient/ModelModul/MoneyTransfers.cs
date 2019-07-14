@@ -12,24 +12,14 @@ namespace ModelModul
     using System;
     using System.Collections.Generic;
     
-    public partial class PurchaseReports
+    public partial class MoneyTransfers
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public PurchaseReports()
-        {
-            this.PurchaseInfos = new HashSet<PurchaseInfos>();
-        }
-    
         public int Id { get; set; }
-        public Nullable<System.DateTime> DataOrder { get; set; }
-        public decimal Course { get; set; }
-        public string TextInfo { get; set; }
-        public int IdStore { get; set; }
+        public Nullable<System.DateTime> Date { get; set; }
         public int IdCounterparty { get; set; }
+        public decimal MoneyAmount { get; set; }
+        public int TypeTransfer { get; set; }
     
         public virtual Counterparties Counterparties { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PurchaseInfos> PurchaseInfos { get; set; }
-        public virtual Stores Stores { get; set; }
     }
 }

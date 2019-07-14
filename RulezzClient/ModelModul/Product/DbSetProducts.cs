@@ -10,28 +10,26 @@ namespace ModelModul.Product
     {
         public ObservableCollection<Products> Load(int idGroup, string findString)
         {
-            using (AutomationAccountingGoodsEntities db =
-                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            using (var db = new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
                 if (string.IsNullOrEmpty(findString))
                 {
                     return new ObservableCollection<Products>(db.Products.Where(obj => obj.IdGroup == idGroup)
                         .Include(p => p.CountProducts).Include(p => p.WarrantyPeriods).Include(p => p.UnitStorages)
-                        .Include(p => p.Groups));
+                        .Include(p => p.Groups).Include(p => p.PriceGroups));
                 }
 
                 return new ObservableCollection<Products>(db.Products.Include(p => p.CountProducts)
                     .Where(obj =>
                         obj.Title.Contains(findString) || obj.VendorCode.Contains(findString) ||
                         obj.Barcode.Contains(findString)).Include(p => p.WarrantyPeriods).Include(p => p.UnitStorages)
-                    .Include(p => p.Groups));
+                    .Include(p => p.Groups).Include(p => p.PriceGroups));
             }
         }
 
         public bool CheckBarcode(string barcode)
         {
-            using (AutomationAccountingGoodsEntities db =
-                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            using (var db = new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
                 return db.Products.Any(obj => obj.Barcode == barcode);
             }
@@ -39,46 +37,40 @@ namespace ModelModul.Product
 
         public Products FindProductByBarcode(string barcode)
         {
-            using (AutomationAccountingGoodsEntities db =
-                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            using (var db = new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
                 return db.Products.Include(p => p.CountProducts).Include(p => p.WarrantyPeriods)
-                    .Include(p => p.UnitStorages).Include(p => p.Groups).SingleOrDefault(obj => obj.Barcode == barcode);
+                    .Include(p => p.UnitStorages).Include(p => p.Groups).Include(p => p.PriceGroups).SingleOrDefault(obj => obj.Barcode == barcode);
             }
         }
 
         public Products FindProductById(int id)
         {
-            using (AutomationAccountingGoodsEntities db =
-                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            using (var db = new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
                 return db.Products.Include(p => p.CountProducts).Include(p => p.WarrantyPeriods)
-                    .Include(p => p.UnitStorages).Include(p => p.Groups).Single(obj => obj.Id == id);
+                    .Include(p => p.UnitStorages).Include(p => p.Groups).Include(p => p.PriceGroups).Single(obj => obj.Id == id);
             }
         }
 
         public PurchaseStruct GetPurchasePrice(int id, int last = 0)
         {
-            using (AutomationAccountingGoodsEntities db =
-                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            using (var db = new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
-                PurchaseInfos temp = db.PurchaseInfos.Include(obj => obj.PurchaseReports)
-                    .Include(obj => obj.ExchangeRates)
-                    .OrderByDescending(obj => obj.PurchaseReports.DataOrder.Value.Year)
-                    .ThenByDescending(obj => obj.PurchaseReports.DataOrder.Value.Month)
-                    .ThenByDescending(obj => obj.PurchaseReports.DataOrder.Value.Day)
-                    .ThenByDescending(obj => obj.PurchaseReports.Id).Skip(last)
+                MovementGoodsInfos temp = db.MovementGoodsInfos.Include(obj => obj.MovementGoodsReports).Where(obj => obj.MovementGoodsReports.TypeAction == 0)
+                    .Include(obj => obj.MovementGoodsReports.ExchangeRates)
+                    .OrderByDescending(obj => obj.MovementGoodsReports.Date)
+                    .ThenByDescending(obj => obj.MovementGoodsReports.Id).Skip(last)
                     .FirstOrDefault(obj => obj.IdProduct == id);
                 return temp == null
                     ? null
-                    : new PurchaseStruct {ExchangeRate = temp.ExchangeRates, PurchasePrice = temp.PurchasePrice};
+                    : new PurchaseStruct {ExchangeRate = temp.MovementGoodsReports.ExchangeRates, PurchasePrice = temp.Price.Value};
             }
         }
 
         public ObservableCollection<string> GetCountProduct(int id)
         {
-            using (AutomationAccountingGoodsEntities db =
-                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            using (var db = new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
                 ObservableCollection<string> temp = new ObservableCollection<string>();
                 db.CountProducts.Where(objCt => objCt.IdProduct == id).Include(objCt => objCt.Stores).ToList().ForEach(
@@ -89,8 +81,7 @@ namespace ModelModul.Product
 
         public void Delete(int id)
         {
-            using (AutomationAccountingGoodsEntities db =
-                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            using (var db = new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
                 using (var transaction = db.Database.BeginTransaction())
                 {
@@ -112,8 +103,7 @@ namespace ModelModul.Product
 
         public void Add(Products product)
         {
-            using (AutomationAccountingGoodsEntities db =
-                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            using (var db = new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
                 using (var transaction = db.Database.BeginTransaction())
                 {
@@ -134,8 +124,7 @@ namespace ModelModul.Product
 
         public void Update(Products product)
         {
-            using (AutomationAccountingGoodsEntities db =
-                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            using (var db = new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
                 using (var transaction = db.Database.BeginTransaction())
                 {
@@ -154,8 +143,8 @@ namespace ModelModul.Product
                         temp.Title = product.Title;
                         temp.VendorCode = product.VendorCode;
                         temp.PropertyProducts = null;
-                        temp.PurchaseInfos = null;
-                        temp.RevaluationProductsInfos = null;
+                        temp.InvoiceInfos = null;
+                        temp.PriceProducts = null;
                         db.Entry(temp).State = EntityState.Modified;
                         db.SaveChanges();
                         transaction.Commit();

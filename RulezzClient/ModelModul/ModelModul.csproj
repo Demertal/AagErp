@@ -73,43 +73,64 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutomationAccountingGoodsEntities.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AutomationAccountingGoodsEntities.Context.tt</DependentUpon>
+    </Compile>
     <Compile Include="AutomationAccountingGoodsEntities.cs" />
-    <Compile Include="AutomationAccountingGoodsModel.Context.cs">
+    <Compile Include="AutomationAccountingGoodsEntities.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>AutomationAccountingGoodsModel.Context.tt</DependentUpon>
+      <DependentUpon>AutomationAccountingGoodsEntities.edmx</DependentUpon>
     </Compile>
-    <Compile Include="AutomationAccountingGoodsModel.cs">
+    <Compile Include="AutomationAccountingGoodsEntities1.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="AutomationAccountingGoodsModel.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>AutomationAccountingGoodsModel.edmx</DependentUpon>
+      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Counterparties.cs">
-      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
+      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Counterparty\Counterparties.cs" />
     <Compile Include="Counterparty\CounterpartyViewModel.cs" />
     <Compile Include="CountProducts.cs">
-      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
+      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="ExchangeRates.cs">
-      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
+      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="ExchangeRate\DbSetExchangeRates.cs" />
     <Compile Include="ExchangeRate\ExchangeRates.cs" />
     <Compile Include="Groups.cs">
-      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
+      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Group\DbSetGroups.cs" />
     <Compile Include="DbSetModel.cs" />
     <Compile Include="Group\Groups.cs" />
+    <Compile Include="InvoiceInfos.cs">
+      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InvoiceReport.cs">
+      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MoneyTransfers.cs">
+      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MovementGoodsInfos.cs">
+      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MovementGoodsReports.cs">
+      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PriceGroups.cs">
+      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PriceProducts.cs">
+      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="Products.cs">
-      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
+      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Product\DbSetProducts.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -118,19 +139,13 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="PropertyNames.cs">
-      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
+      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="PropertyProducts.cs">
-      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
+      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="PropertyValues.cs">
-      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="PurchaseInfos.cs">
-      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="PurchaseReports.cs">
-      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
+      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Report\DbSetReports.cs" />
     <Compile Include="Report\FinalReportProductViewModel.cs" />
@@ -146,11 +161,8 @@
     <Compile Include="PurchaseGoods\PurchaseInfos.cs" />
     <Compile Include="PurchaseGoods\PurchaseInfosViewModel.cs" />
     <Compile Include="PurchaseGoods\PurchaseReports.cs" />
-    <Compile Include="RevaluationProductsInfos.cs">
-      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="RevaluationProductsReports.cs">
-      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
+      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="RevaluationProduct\DbSetRevaluationProducts.cs" />
     <Compile Include="RevaluationProduct\RevaluationProductsInfos.cs" />
@@ -159,34 +171,28 @@
     <Compile Include="SalesGoods\SalesInfos.cs" />
     <Compile Include="SalesGoods\SalesInfosViewModel.cs" />
     <Compile Include="SalesGoods\SalesReports.cs" />
-    <Compile Include="SalesInfos.cs">
-      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="SalesReports.cs">
-      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="SerialNumbers.cs">
-      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
+      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="SerialNumber\DbSetSerialNumbers.cs" />
     <Compile Include="SerialNumber\SerialNumbers.cs" />
     <Compile Include="Stores.cs">
-      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
+      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Store\DbSetStores.cs" />
     <Compile Include="Store\Stores.cs" />
     <Compile Include="Counterparty\DbSetCounterparties.cs" />
     <Compile Include="UnitStorages.cs">
-      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
+      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="UnitStorage\DbSetUnitStorages.cs" />
     <Compile Include="UnitStorage\UnitStorages.cs" />
     <Compile Include="ViewModelBase.cs" />
     <Compile Include="Warranties.cs">
-      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
+      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="WarrantyPeriods.cs">
-      <DependentUpon>AutomationAccountingGoodsModel.tt</DependentUpon>
+      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="WarrantyPeriod\WarrantyPeriods.cs" />
     <Compile Include="WarrantyPeriod\DbSetWarrantyPeriods.cs" />
@@ -195,12 +201,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <EntityDeploy Include="AutomationAccountingGoodsModel.edmx">
+    <EntityDeploy Include="AutomationAccountingGoodsEntities.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>AutomationAccountingGoodsModel.Designer.cs</LastGenOutput>
+      <LastGenOutput>AutomationAccountingGoodsEntities.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <None Include="AutomationAccountingGoodsModel.edmx.diagram">
-      <DependentUpon>AutomationAccountingGoodsModel.edmx</DependentUpon>
+    <None Include="AutomationAccountingGoodsEntities.edmx.diagram">
+      <DependentUpon>AutomationAccountingGoodsEntities.edmx</DependentUpon>
     </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -213,15 +219,15 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="AutomationAccountingGoodsModel.Context.tt">
+    <Content Include="AutomationAccountingGoodsEntities.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>AutomationAccountingGoodsModel.edmx</DependentUpon>
-      <LastGenOutput>AutomationAccountingGoodsModel.Context.cs</LastGenOutput>
+      <DependentUpon>AutomationAccountingGoodsEntities.edmx</DependentUpon>
+      <LastGenOutput>AutomationAccountingGoodsEntities.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="AutomationAccountingGoodsModel.tt">
+    <Content Include="AutomationAccountingGoodsEntities.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>AutomationAccountingGoodsModel.edmx</DependentUpon>
-      <LastGenOutput>AutomationAccountingGoodsModel.cs</LastGenOutput>
+      <DependentUpon>AutomationAccountingGoodsEntities.edmx</DependentUpon>
+      <LastGenOutput>AutomationAccountingGoodsEntities1.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

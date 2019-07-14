@@ -12,22 +12,17 @@ namespace ModelModul
     using System;
     using System.Collections.Generic;
     
-    public partial class SalesReports
+    public partial class InvoiceReport
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public SalesReports()
+        public InvoiceReport()
         {
-            this.SalesInfos = new HashSet<SalesInfos>();
+            this.InvoiceInfos = new HashSet<InvoiceInfos>();
         }
     
         public int Id { get; set; }
-        public Nullable<System.DateTime> DataSales { get; set; }
-        public int IdStore { get; set; }
-        public int IdCounterparty { get; set; }
     
-        public virtual Counterparties Counterparties { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<SalesInfos> SalesInfos { get; set; }
-        public virtual Stores Stores { get; set; }
+        public virtual ICollection<InvoiceInfos> InvoiceInfos { get; set; }
     }
 }

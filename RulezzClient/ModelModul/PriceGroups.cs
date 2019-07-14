@@ -12,25 +12,18 @@ namespace ModelModul
     using System;
     using System.Collections.Generic;
     
-    public partial class PurchaseInfos
+    public partial class PriceGroups
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public PurchaseInfos()
+        public PriceGroups()
         {
-            this.SerialNumbers = new HashSet<SerialNumbers>();
+            this.Products = new HashSet<Products>();
         }
     
         public int Id { get; set; }
-        public int Count { get; set; }
-        public decimal PurchasePrice { get; set; }
-        public int IdPurchaseReport { get; set; }
-        public int IdProduct { get; set; }
-        public int IdExchangeRate { get; set; }
+        public double Markup { get; set; }
     
-        public virtual ExchangeRates ExchangeRates { get; set; }
-        public virtual Products Products { get; set; }
-        public virtual PurchaseReports PurchaseReports { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<SerialNumbers> SerialNumbers { get; set; }
+        public virtual ICollection<Products> Products { get; set; }
     }
 }

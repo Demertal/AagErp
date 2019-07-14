@@ -31,16 +31,18 @@ namespace ModelModul
         public virtual DbSet<CountProducts> CountProducts { get; set; }
         public virtual DbSet<ExchangeRates> ExchangeRates { get; set; }
         public virtual DbSet<Groups> Groups { get; set; }
+        public virtual DbSet<InvoiceInfos> InvoiceInfos { get; set; }
+        public virtual DbSet<InvoiceReport> InvoiceReport { get; set; }
+        public virtual DbSet<MoneyTransfers> MoneyTransfers { get; set; }
+        public virtual DbSet<MovementGoodsInfos> MovementGoodsInfos { get; set; }
+        public virtual DbSet<MovementGoodsReports> MovementGoodsReports { get; set; }
+        public virtual DbSet<PriceGroups> PriceGroups { get; set; }
+        public virtual DbSet<PriceProducts> PriceProducts { get; set; }
         public virtual DbSet<Products> Products { get; set; }
         public virtual DbSet<PropertyNames> PropertyNames { get; set; }
         public virtual DbSet<PropertyProducts> PropertyProducts { get; set; }
         public virtual DbSet<PropertyValues> PropertyValues { get; set; }
-        public virtual DbSet<PurchaseInfos> PurchaseInfos { get; set; }
-        public virtual DbSet<PurchaseReports> PurchaseReports { get; set; }
-        public virtual DbSet<RevaluationProductsInfos> RevaluationProductsInfos { get; set; }
         public virtual DbSet<RevaluationProductsReports> RevaluationProductsReports { get; set; }
-        public virtual DbSet<SalesInfos> SalesInfos { get; set; }
-        public virtual DbSet<SalesReports> SalesReports { get; set; }
         public virtual DbSet<SerialNumbers> SerialNumbers { get; set; }
         public virtual DbSet<Stores> Stores { get; set; }
         public virtual DbSet<UnitStorages> UnitStorages { get; set; }

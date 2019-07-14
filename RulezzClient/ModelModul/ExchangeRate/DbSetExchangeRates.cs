@@ -9,8 +9,7 @@ namespace ModelModul.ExchangeRate
     {
         public ObservableCollection<ExchangeRates> Load()
         {
-            using (AutomationAccountingGoodsEntities db =
-                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            using (var db = new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
                 return new ObservableCollection<ExchangeRates>(db.ExchangeRates.ToList());
             }
@@ -18,8 +17,7 @@ namespace ModelModul.ExchangeRate
 
         public ExchangeRates Load(string title)
         {
-            using (AutomationAccountingGoodsEntities db =
-                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            using (var db = new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
                 return db.ExchangeRates.FirstOrDefault(ex => ex.Title == title);
             }
@@ -27,8 +25,7 @@ namespace ModelModul.ExchangeRate
 
         public void Add(ExchangeRates obj)
         {
-            using (AutomationAccountingGoodsEntities db =
-                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            using (var db = new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
                 using (var transaction = db.Database.BeginTransaction())
                 {
@@ -49,22 +46,18 @@ namespace ModelModul.ExchangeRate
 
         public void Update(ExchangeRates obj)
         {
-            using (AutomationAccountingGoodsEntities db =
-                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            using (var db = new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
                 using (var transaction = db.Database.BeginTransaction())
                 {
                     try
                     {
                         var modifi = db.ExchangeRates.Find(obj.Id);
-                        if (modifi != null)
-                        {
-                            modifi.Title = obj.Title;
-                            modifi.Course = obj.Course;
-                            db.Entry(modifi).State = EntityState.Modified;
-                        }
-                        else throw new Exception("Изменение не удалось");
-
+                        if (modifi == null) throw new Exception("Изменение не удалось");
+                        modifi.Title = obj.Title;
+                        modifi.Course = obj.Course;
+                        modifi.IsDefault = obj.IsDefault;
+                        db.Entry(modifi).State = EntityState.Modified;
                         db.SaveChanges();
                         transaction.Commit();
                     }
@@ -79,7 +72,25 @@ namespace ModelModul.ExchangeRate
 
         public void Delete(int objId)
         {
-            throw new NotImplementedException();
+            using (var db = new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            {
+                using (var transaction = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var exchangeRate = db.ExchangeRates.Find(objId);
+                        if (exchangeRate == null) throw new Exception("Валюта не найдена");
+                        db.Entry(exchangeRate).State = EntityState.Deleted;
+                        db.SaveChanges();
+                        transaction.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
+                }
+            }
         }
     }
 }

@@ -1,0 +1,1668 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="Хранилище AutomationAccountingGoodsModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Counterparties">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="40" Nullable="false" />
+          <Property Name="ContactPerson" Type="nvarchar" MaxLength="40" />
+          <Property Name="ContactPhone" Type="nvarchar" MaxLength="50" />
+          <Property Name="Props" Type="nvarchar" MaxLength="40" />
+          <Property Name="Address" Type="nvarchar" MaxLength="40" />
+          <Property Name="WhoIsIt" Type="int" Nullable="false" />
+          <Property Name="Debt" Type="money" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CountProducts">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdProduct" Type="int" Nullable="false" />
+          <Property Name="IdStore" Type="int" Nullable="false" />
+          <Property Name="Count" Type="float" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ExchangeRates">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="Course" Type="money" Nullable="false" />
+          <Property Name="IsDefault" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Groups">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="IdParentGroup" Type="int" />
+        </EntityType>
+        <EntityType Name="InvoiceInfos">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdProduct" Type="int" Nullable="false" />
+          <Property Name="Count" Type="float" Nullable="false" />
+          <Property Name="IdInvoiceReport" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="InvoiceReport">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MoneyTransfers">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Date" Type="datetime" />
+          <Property Name="IdCounterparty" Type="int" Nullable="false" />
+          <Property Name="MoneyAmount" Type="money" Nullable="false" />
+          <Property Name="TypeTransfer" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MovementGoodsInfos">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Count" Type="int" Nullable="false" />
+          <Property Name="Price" Type="money" />
+          <Property Name="IdReport" Type="int" Nullable="false" />
+          <Property Name="IdProduct" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MovementGoodsReports">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Date" Type="datetime" />
+          <Property Name="Course" Type="money" />
+          <Property Name="TextInfo" Type="nvarchar" MaxLength="50" />
+          <Property Name="IdArrivalStore" Type="int" />
+          <Property Name="IdDisposalStore" Type="int" />
+          <Property Name="IdCounterparty" Type="int" />
+          <Property Name="IdExchangeRate" Type="int" />
+          <Property Name="TypeAction" Type="int" Nullable="false" />
+          <Property Name="IdMovementGoodsReport" Type="int" />
+        </EntityType>
+        <EntityType Name="PriceGroups">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Markup" Type="float" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PriceProducts">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdProduct" Type="int" Nullable="false" />
+          <Property Name="IdRevaluationProductsReports" Type="int" Nullable="false" />
+          <Property Name="Price" Type="money" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Products">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="120" Nullable="false" />
+          <Property Name="VendorCode" Type="nvarchar" MaxLength="20" />
+          <Property Name="Barcode" Type="nvarchar" MaxLength="13" />
+          <Property Name="IdWarrantyPeriod" Type="int" Nullable="false" />
+          <Property Name="IdGroup" Type="int" Nullable="false" />
+          <Property Name="IdPriceGroup" Type="int" Nullable="false" />
+          <Property Name="IdUnitStorage" Type="int" Nullable="false" />
+          <Property Name="KeepTrackSerialNumbers" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PropertyNames">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="IdGroup" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PropertyProducts">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdProduct" Type="int" Nullable="false" />
+          <Property Name="IdPropertyName" Type="int" Nullable="false" />
+          <Property Name="IdPropertyValue" Type="int" />
+        </EntityType>
+        <EntityType Name="PropertyValues">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Value" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="IdPropertyName" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="RevaluationProductsReports">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DateRevaluation" Type="datetime" />
+        </EntityType>
+        <EntityType Name="SerialNumbers">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Value" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="IdProduct" Type="int" Nullable="false" />
+          <Property Name="IdPurchaseReport" Type="int" Nullable="false" />
+          <Property Name="IdSaleReport" Type="int" />
+        </EntityType>
+        <EntityType Name="Stores">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UnitStorages">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="IsWeightGoods" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Warranties">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Malfunction" Type="nvarchar" MaxLength="256" Nullable="false" />
+          <Property Name="DateReceipt" Type="date" />
+          <Property Name="DateDeparture" Type="date" />
+          <Property Name="DateIssue" Type="date" />
+          <Property Name="Info" Type="nvarchar" MaxLength="256" />
+          <Property Name="IdSerialNumber" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="WarrantyPeriods">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Period" Type="nvarchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__CountProd__IdPro__151B244E">
+          <End Role="Products" Type="Self.Products" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="CountProducts" Type="Self.CountProducts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Products">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="CountProducts">
+              <PropertyRef Name="IdProduct" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__CountProd__IdSto__160F4887">
+          <End Role="Stores" Type="Self.Stores" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="CountProducts" Type="Self.CountProducts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Stores">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="CountProducts">
+              <PropertyRef Name="IdStore" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Groups__IdParent__4BAC3F29">
+          <End Role="Groups" Type="Self.Groups" Multiplicity="0..1" />
+          <End Role="Groups1" Type="Self.Groups" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Groups">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Groups1">
+              <PropertyRef Name="IdParentGroup" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__InvoiceIn__IdInv__114A936A">
+          <End Role="InvoiceReport" Type="Self.InvoiceReport" Multiplicity="1" />
+          <End Role="InvoiceInfos" Type="Self.InvoiceInfos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InvoiceReport">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="InvoiceInfos">
+              <PropertyRef Name="IdInvoiceReport" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__InvoiceIn__IdPro__10566F31">
+          <End Role="Products" Type="Self.Products" Multiplicity="1" />
+          <End Role="InvoiceInfos" Type="Self.InvoiceInfos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Products">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="InvoiceInfos">
+              <PropertyRef Name="IdProduct" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__MoneyTran__IdCou__19DFD96B">
+          <End Role="Counterparties" Type="Self.Counterparties" Multiplicity="1" />
+          <End Role="MoneyTransfers" Type="Self.MoneyTransfers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Counterparties">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MoneyTransfers">
+              <PropertyRef Name="IdCounterparty" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__MovementG__IdArr__70DDC3D8">
+          <End Role="Stores" Type="Self.Stores" Multiplicity="0..1" />
+          <End Role="MovementGoodsReports" Type="Self.MovementGoodsReports" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Stores">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MovementGoodsReports">
+              <PropertyRef Name="IdArrivalStore" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__MovementG__IdCou__72C60C4A">
+          <End Role="Counterparties" Type="Self.Counterparties" Multiplicity="0..1" />
+          <End Role="MovementGoodsReports" Type="Self.MovementGoodsReports" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Counterparties">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MovementGoodsReports">
+              <PropertyRef Name="IdCounterparty" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__MovementG__IdDis__71D1E811">
+          <End Role="Stores" Type="Self.Stores" Multiplicity="0..1" />
+          <End Role="MovementGoodsReports" Type="Self.MovementGoodsReports" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Stores">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MovementGoodsReports">
+              <PropertyRef Name="IdDisposalStore" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__MovementG__IdExc__73BA3083">
+          <End Role="ExchangeRates" Type="Self.ExchangeRates" Multiplicity="0..1" />
+          <End Role="MovementGoodsReports" Type="Self.MovementGoodsReports" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ExchangeRates">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MovementGoodsReports">
+              <PropertyRef Name="IdExchangeRate" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__MovementG__IdMov__74AE54BC">
+          <End Role="MovementGoodsReports" Type="Self.MovementGoodsReports" Multiplicity="0..1" />
+          <End Role="MovementGoodsReports1" Type="Self.MovementGoodsReports" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MovementGoodsReports">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MovementGoodsReports1">
+              <PropertyRef Name="IdMovementGoodsReport" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__MovementG__IdPro__7A672E12">
+          <End Role="Products" Type="Self.Products" Multiplicity="1" />
+          <End Role="MovementGoodsInfos" Type="Self.MovementGoodsInfos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Products">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MovementGoodsInfos">
+              <PropertyRef Name="IdProduct" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__MovementG__IdRep__797309D9">
+          <End Role="MovementGoodsReports" Type="Self.MovementGoodsReports" Multiplicity="1" />
+          <End Role="MovementGoodsInfos" Type="Self.MovementGoodsInfos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MovementGoodsReports">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MovementGoodsInfos">
+              <PropertyRef Name="IdReport" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PriceProd__IdPro__09A971A2">
+          <End Role="Products" Type="Self.Products" Multiplicity="1" />
+          <End Role="PriceProducts" Type="Self.PriceProducts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Products">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PriceProducts">
+              <PropertyRef Name="IdProduct" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PriceProd__IdRev__0A9D95DB">
+          <End Role="RevaluationProductsReports" Type="Self.RevaluationProductsReports" Multiplicity="1" />
+          <End Role="PriceProducts" Type="Self.PriceProducts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RevaluationProductsReports">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PriceProducts">
+              <PropertyRef Name="IdRevaluationProductsReports" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Products__IdGrou__5812160E">
+          <End Role="Groups" Type="Self.Groups" Multiplicity="1" />
+          <End Role="Products" Type="Self.Products" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Groups">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Products">
+              <PropertyRef Name="IdGroup" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Products__IdPric__59063A47">
+          <End Role="PriceGroups" Type="Self.PriceGroups" Multiplicity="1" />
+          <End Role="Products" Type="Self.Products" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PriceGroups">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Products">
+              <PropertyRef Name="IdPriceGroup" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Products__IdUnit__5629CD9C">
+          <End Role="UnitStorages" Type="Self.UnitStorages" Multiplicity="1" />
+          <End Role="Products" Type="Self.Products" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UnitStorages">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Products">
+              <PropertyRef Name="IdUnitStorage" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Products__IdWarr__571DF1D5">
+          <End Role="WarrantyPeriods" Type="Self.WarrantyPeriods" Multiplicity="1" />
+          <End Role="Products" Type="Self.Products" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WarrantyPeriods">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Products">
+              <PropertyRef Name="IdWarrantyPeriod" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PropertyN__IdGro__5DCAEF64">
+          <End Role="Groups" Type="Self.Groups" Multiplicity="1" />
+          <End Role="PropertyNames" Type="Self.PropertyNames" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Groups">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PropertyNames">
+              <PropertyRef Name="IdGroup" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PropertyP__IdPro__66603565">
+          <End Role="Products" Type="Self.Products" Multiplicity="1" />
+          <End Role="PropertyProducts" Type="Self.PropertyProducts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Products">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PropertyProducts">
+              <PropertyRef Name="IdProduct" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PropertyP__IdPro__6754599E">
+          <End Role="PropertyNames" Type="Self.PropertyNames" Multiplicity="1" />
+          <End Role="PropertyProducts" Type="Self.PropertyProducts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PropertyNames">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PropertyProducts">
+              <PropertyRef Name="IdPropertyName" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PropertyP__IdPro__68487DD7">
+          <End Role="PropertyValues" Type="Self.PropertyValues" Multiplicity="0..1" />
+          <End Role="PropertyProducts" Type="Self.PropertyProducts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PropertyValues">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PropertyProducts">
+              <PropertyRef Name="IdPropertyValue" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PropertyV__IdPro__619B8048">
+          <End Role="PropertyNames" Type="Self.PropertyNames" Multiplicity="1" />
+          <End Role="PropertyValues" Type="Self.PropertyValues" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PropertyNames">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PropertyValues">
+              <PropertyRef Name="IdPropertyName" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SerialNum__IdPro__00200768">
+          <End Role="Products" Type="Self.Products" Multiplicity="1" />
+          <End Role="SerialNumbers" Type="Self.SerialNumbers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Products">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SerialNumbers">
+              <PropertyRef Name="IdProduct" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SerialNum__IdPur__7E37BEF6">
+          <End Role="MovementGoodsReports" Type="Self.MovementGoodsReports" Multiplicity="1" />
+          <End Role="SerialNumbers" Type="Self.SerialNumbers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MovementGoodsReports">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SerialNumbers">
+              <PropertyRef Name="IdPurchaseReport" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SerialNum__IdSal__7F2BE32F">
+          <End Role="MovementGoodsReports" Type="Self.MovementGoodsReports" Multiplicity="0..1" />
+          <End Role="SerialNumbers" Type="Self.SerialNumbers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MovementGoodsReports">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SerialNumbers">
+              <PropertyRef Name="IdSaleReport" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Warrantie__IdSer__03F0984C">
+          <End Role="SerialNumbers" Type="Self.SerialNumbers" Multiplicity="1" />
+          <End Role="Warranties" Type="Self.Warranties" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SerialNumbers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Warranties">
+              <PropertyRef Name="IdSerialNumber" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="GoodsIssued" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="GoodsShipped" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+        </Function>
+        <EntityContainer Name="Хранилище AutomationAccountingGoodsModelContainer">
+          <EntitySet Name="Counterparties" EntityType="Self.Counterparties" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CountProducts" EntityType="Self.CountProducts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ExchangeRates" EntityType="Self.ExchangeRates" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Groups" EntityType="Self.Groups" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="InvoiceInfos" EntityType="Self.InvoiceInfos" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="InvoiceReport" EntityType="Self.InvoiceReport" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MoneyTransfers" EntityType="Self.MoneyTransfers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MovementGoodsInfos" EntityType="Self.MovementGoodsInfos" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MovementGoodsReports" EntityType="Self.MovementGoodsReports" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PriceGroups" EntityType="Self.PriceGroups" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PriceProducts" EntityType="Self.PriceProducts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Products" EntityType="Self.Products" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PropertyNames" EntityType="Self.PropertyNames" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PropertyProducts" EntityType="Self.PropertyProducts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PropertyValues" EntityType="Self.PropertyValues" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RevaluationProductsReports" EntityType="Self.RevaluationProductsReports" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SerialNumbers" EntityType="Self.SerialNumbers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Stores" EntityType="Self.Stores" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UnitStorages" EntityType="Self.UnitStorages" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Warranties" EntityType="Self.Warranties" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="WarrantyPeriods" EntityType="Self.WarrantyPeriods" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__CountProd__IdPro__151B244E" Association="Self.FK__CountProd__IdPro__151B244E">
+            <End Role="Products" EntitySet="Products" />
+            <End Role="CountProducts" EntitySet="CountProducts" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CountProd__IdSto__160F4887" Association="Self.FK__CountProd__IdSto__160F4887">
+            <End Role="Stores" EntitySet="Stores" />
+            <End Role="CountProducts" EntitySet="CountProducts" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Groups__IdParent__4BAC3F29" Association="Self.FK__Groups__IdParent__4BAC3F29">
+            <End Role="Groups" EntitySet="Groups" />
+            <End Role="Groups1" EntitySet="Groups" />
+          </AssociationSet>
+          <AssociationSet Name="FK__InvoiceIn__IdInv__114A936A" Association="Self.FK__InvoiceIn__IdInv__114A936A">
+            <End Role="InvoiceReport" EntitySet="InvoiceReport" />
+            <End Role="InvoiceInfos" EntitySet="InvoiceInfos" />
+          </AssociationSet>
+          <AssociationSet Name="FK__InvoiceIn__IdPro__10566F31" Association="Self.FK__InvoiceIn__IdPro__10566F31">
+            <End Role="Products" EntitySet="Products" />
+            <End Role="InvoiceInfos" EntitySet="InvoiceInfos" />
+          </AssociationSet>
+          <AssociationSet Name="FK__MoneyTran__IdCou__19DFD96B" Association="Self.FK__MoneyTran__IdCou__19DFD96B">
+            <End Role="Counterparties" EntitySet="Counterparties" />
+            <End Role="MoneyTransfers" EntitySet="MoneyTransfers" />
+          </AssociationSet>
+          <AssociationSet Name="FK__MovementG__IdArr__70DDC3D8" Association="Self.FK__MovementG__IdArr__70DDC3D8">
+            <End Role="Stores" EntitySet="Stores" />
+            <End Role="MovementGoodsReports" EntitySet="MovementGoodsReports" />
+          </AssociationSet>
+          <AssociationSet Name="FK__MovementG__IdCou__72C60C4A" Association="Self.FK__MovementG__IdCou__72C60C4A">
+            <End Role="Counterparties" EntitySet="Counterparties" />
+            <End Role="MovementGoodsReports" EntitySet="MovementGoodsReports" />
+          </AssociationSet>
+          <AssociationSet Name="FK__MovementG__IdDis__71D1E811" Association="Self.FK__MovementG__IdDis__71D1E811">
+            <End Role="Stores" EntitySet="Stores" />
+            <End Role="MovementGoodsReports" EntitySet="MovementGoodsReports" />
+          </AssociationSet>
+          <AssociationSet Name="FK__MovementG__IdExc__73BA3083" Association="Self.FK__MovementG__IdExc__73BA3083">
+            <End Role="ExchangeRates" EntitySet="ExchangeRates" />
+            <End Role="MovementGoodsReports" EntitySet="MovementGoodsReports" />
+          </AssociationSet>
+          <AssociationSet Name="FK__MovementG__IdMov__74AE54BC" Association="Self.FK__MovementG__IdMov__74AE54BC">
+            <End Role="MovementGoodsReports" EntitySet="MovementGoodsReports" />
+            <End Role="MovementGoodsReports1" EntitySet="MovementGoodsReports" />
+          </AssociationSet>
+          <AssociationSet Name="FK__MovementG__IdPro__7A672E12" Association="Self.FK__MovementG__IdPro__7A672E12">
+            <End Role="Products" EntitySet="Products" />
+            <End Role="MovementGoodsInfos" EntitySet="MovementGoodsInfos" />
+          </AssociationSet>
+          <AssociationSet Name="FK__MovementG__IdRep__797309D9" Association="Self.FK__MovementG__IdRep__797309D9">
+            <End Role="MovementGoodsReports" EntitySet="MovementGoodsReports" />
+            <End Role="MovementGoodsInfos" EntitySet="MovementGoodsInfos" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PriceProd__IdPro__09A971A2" Association="Self.FK__PriceProd__IdPro__09A971A2">
+            <End Role="Products" EntitySet="Products" />
+            <End Role="PriceProducts" EntitySet="PriceProducts" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PriceProd__IdRev__0A9D95DB" Association="Self.FK__PriceProd__IdRev__0A9D95DB">
+            <End Role="RevaluationProductsReports" EntitySet="RevaluationProductsReports" />
+            <End Role="PriceProducts" EntitySet="PriceProducts" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Products__IdGrou__5812160E" Association="Self.FK__Products__IdGrou__5812160E">
+            <End Role="Groups" EntitySet="Groups" />
+            <End Role="Products" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Products__IdPric__59063A47" Association="Self.FK__Products__IdPric__59063A47">
+            <End Role="PriceGroups" EntitySet="PriceGroups" />
+            <End Role="Products" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Products__IdUnit__5629CD9C" Association="Self.FK__Products__IdUnit__5629CD9C">
+            <End Role="UnitStorages" EntitySet="UnitStorages" />
+            <End Role="Products" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Products__IdWarr__571DF1D5" Association="Self.FK__Products__IdWarr__571DF1D5">
+            <End Role="WarrantyPeriods" EntitySet="WarrantyPeriods" />
+            <End Role="Products" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PropertyN__IdGro__5DCAEF64" Association="Self.FK__PropertyN__IdGro__5DCAEF64">
+            <End Role="Groups" EntitySet="Groups" />
+            <End Role="PropertyNames" EntitySet="PropertyNames" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PropertyP__IdPro__66603565" Association="Self.FK__PropertyP__IdPro__66603565">
+            <End Role="Products" EntitySet="Products" />
+            <End Role="PropertyProducts" EntitySet="PropertyProducts" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PropertyP__IdPro__6754599E" Association="Self.FK__PropertyP__IdPro__6754599E">
+            <End Role="PropertyNames" EntitySet="PropertyNames" />
+            <End Role="PropertyProducts" EntitySet="PropertyProducts" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PropertyP__IdPro__68487DD7" Association="Self.FK__PropertyP__IdPro__68487DD7">
+            <End Role="PropertyValues" EntitySet="PropertyValues" />
+            <End Role="PropertyProducts" EntitySet="PropertyProducts" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PropertyV__IdPro__619B8048" Association="Self.FK__PropertyV__IdPro__619B8048">
+            <End Role="PropertyNames" EntitySet="PropertyNames" />
+            <End Role="PropertyValues" EntitySet="PropertyValues" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SerialNum__IdPro__00200768" Association="Self.FK__SerialNum__IdPro__00200768">
+            <End Role="Products" EntitySet="Products" />
+            <End Role="SerialNumbers" EntitySet="SerialNumbers" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SerialNum__IdPur__7E37BEF6" Association="Self.FK__SerialNum__IdPur__7E37BEF6">
+            <End Role="MovementGoodsReports" EntitySet="MovementGoodsReports" />
+            <End Role="SerialNumbers" EntitySet="SerialNumbers" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SerialNum__IdSal__7F2BE32F" Association="Self.FK__SerialNum__IdSal__7F2BE32F">
+            <End Role="MovementGoodsReports" EntitySet="MovementGoodsReports" />
+            <End Role="SerialNumbers" EntitySet="SerialNumbers" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Warrantie__IdSer__03F0984C" Association="Self.FK__Warrantie__IdSer__03F0984C">
+            <End Role="SerialNumbers" EntitySet="SerialNumbers" />
+            <End Role="Warranties" EntitySet="Warranties" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="AutomationAccountingGoodsModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Counterparties">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="40" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ContactPerson" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="ContactPhone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Props" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="WhoIsIt" Type="Int32" Nullable="false" />
+          <Property Name="Debt" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <NavigationProperty Name="MoneyTransfers" Relationship="Self.FK__MoneyTran__IdCou__19DFD96B" FromRole="Counterparties" ToRole="MoneyTransfers" />
+          <NavigationProperty Name="MovementGoodsReports" Relationship="Self.FK__MovementG__IdCou__72C60C4A" FromRole="Counterparties" ToRole="MovementGoodsReports" />
+        </EntityType>
+        <EntityType Name="CountProducts">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdProduct" Type="Int32" Nullable="false" />
+          <Property Name="IdStore" Type="Int32" Nullable="false" />
+          <Property Name="Count" Type="Double" Nullable="false" />
+          <NavigationProperty Name="Products" Relationship="Self.FK__CountProd__IdPro__151B244E" FromRole="CountProducts" ToRole="Products" />
+          <NavigationProperty Name="Stores" Relationship="Self.FK__CountProd__IdSto__160F4887" FromRole="CountProducts" ToRole="Stores" />
+        </EntityType>
+        <EntityType Name="ExchangeRates">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Course" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="IsDefault" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="MovementGoodsReports" Relationship="Self.FK__MovementG__IdExc__73BA3083" FromRole="ExchangeRates" ToRole="MovementGoodsReports" />
+        </EntityType>
+        <EntityType Name="Groups">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="IdParentGroup" Type="Int32" />
+          <NavigationProperty Name="Groups1" Relationship="Self.FK__Groups__IdParent__4BAC3F29" FromRole="Groups" ToRole="Groups1" />
+          <NavigationProperty Name="Groups2" Relationship="Self.FK__Groups__IdParent__4BAC3F29" FromRole="Groups1" ToRole="Groups" />
+          <NavigationProperty Name="Products" Relationship="Self.FK__Products__IdGrou__5812160E" FromRole="Groups" ToRole="Products" />
+          <NavigationProperty Name="PropertyNames" Relationship="Self.FK__PropertyN__IdGro__5DCAEF64" FromRole="Groups" ToRole="PropertyNames" />
+        </EntityType>
+        <EntityType Name="InvoiceInfos">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdProduct" Type="Int32" Nullable="false" />
+          <Property Name="Count" Type="Double" Nullable="false" />
+          <Property Name="IdInvoiceReport" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="InvoiceReport" Relationship="Self.FK__InvoiceIn__IdInv__114A936A" FromRole="InvoiceInfos" ToRole="InvoiceReport" />
+          <NavigationProperty Name="Products" Relationship="Self.FK__InvoiceIn__IdPro__10566F31" FromRole="InvoiceInfos" ToRole="Products" />
+        </EntityType>
+        <EntityType Name="InvoiceReport">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="InvoiceInfos" Relationship="Self.FK__InvoiceIn__IdInv__114A936A" FromRole="InvoiceReport" ToRole="InvoiceInfos" />
+        </EntityType>
+        <EntityType Name="MoneyTransfers">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Date" Type="DateTime" Precision="3" />
+          <Property Name="IdCounterparty" Type="Int32" Nullable="false" />
+          <Property Name="MoneyAmount" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="TypeTransfer" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Counterparties" Relationship="Self.FK__MoneyTran__IdCou__19DFD96B" FromRole="MoneyTransfers" ToRole="Counterparties" />
+        </EntityType>
+        <EntityType Name="MovementGoodsInfos">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Count" Type="Int32" Nullable="false" />
+          <Property Name="Price" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="IdReport" Type="Int32" Nullable="false" />
+          <Property Name="IdProduct" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Products" Relationship="Self.FK__MovementG__IdPro__7A672E12" FromRole="MovementGoodsInfos" ToRole="Products" />
+          <NavigationProperty Name="MovementGoodsReports" Relationship="Self.FK__MovementG__IdRep__797309D9" FromRole="MovementGoodsInfos" ToRole="MovementGoodsReports" />
+        </EntityType>
+        <EntityType Name="MovementGoodsReports">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Date" Type="DateTime" Precision="3" />
+          <Property Name="Course" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="TextInfo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IdArrivalStore" Type="Int32" />
+          <Property Name="IdDisposalStore" Type="Int32" />
+          <Property Name="IdCounterparty" Type="Int32" />
+          <Property Name="IdExchangeRate" Type="Int32" />
+          <Property Name="TypeAction" Type="Int32" Nullable="false" />
+          <Property Name="IdMovementGoodsReport" Type="Int32" />
+          <NavigationProperty Name="Counterparties" Relationship="Self.FK__MovementG__IdCou__72C60C4A" FromRole="MovementGoodsReports" ToRole="Counterparties" />
+          <NavigationProperty Name="ExchangeRates" Relationship="Self.FK__MovementG__IdExc__73BA3083" FromRole="MovementGoodsReports" ToRole="ExchangeRates" />
+          <NavigationProperty Name="MovementGoodsInfos" Relationship="Self.FK__MovementG__IdRep__797309D9" FromRole="MovementGoodsReports" ToRole="MovementGoodsInfos" />
+          <NavigationProperty Name="Stores" Relationship="Self.FK__MovementG__IdArr__70DDC3D8" FromRole="MovementGoodsReports" ToRole="Stores" />
+          <NavigationProperty Name="Stores1" Relationship="Self.FK__MovementG__IdDis__71D1E811" FromRole="MovementGoodsReports" ToRole="Stores" />
+          <NavigationProperty Name="MovementGoodsReports1" Relationship="Self.FK__MovementG__IdMov__74AE54BC" FromRole="MovementGoodsReports" ToRole="MovementGoodsReports1" />
+          <NavigationProperty Name="MovementGoodsReports2" Relationship="Self.FK__MovementG__IdMov__74AE54BC" FromRole="MovementGoodsReports1" ToRole="MovementGoodsReports" />
+          <NavigationProperty Name="SerialNumbers" Relationship="Self.FK__SerialNum__IdPur__7E37BEF6" FromRole="MovementGoodsReports" ToRole="SerialNumbers" />
+          <NavigationProperty Name="SerialNumbers1" Relationship="Self.FK__SerialNum__IdSal__7F2BE32F" FromRole="MovementGoodsReports" ToRole="SerialNumbers" />
+        </EntityType>
+        <EntityType Name="PriceGroups">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Markup" Type="Double" Nullable="false" />
+          <NavigationProperty Name="Products" Relationship="Self.FK__Products__IdPric__59063A47" FromRole="PriceGroups" ToRole="Products" />
+        </EntityType>
+        <EntityType Name="PriceProducts">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdProduct" Type="Int32" Nullable="false" />
+          <Property Name="IdRevaluationProductsReports" Type="Int32" Nullable="false" />
+          <Property Name="Price" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <NavigationProperty Name="Products" Relationship="Self.FK__PriceProd__IdPro__09A971A2" FromRole="PriceProducts" ToRole="Products" />
+          <NavigationProperty Name="RevaluationProductsReports" Relationship="Self.FK__PriceProd__IdRev__0A9D95DB" FromRole="PriceProducts" ToRole="RevaluationProductsReports" />
+        </EntityType>
+        <EntityType Name="Products">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="120" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="VendorCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Barcode" Type="String" MaxLength="13" FixedLength="false" Unicode="true" />
+          <Property Name="IdWarrantyPeriod" Type="Int32" Nullable="false" />
+          <Property Name="IdGroup" Type="Int32" Nullable="false" />
+          <Property Name="IdPriceGroup" Type="Int32" Nullable="false" />
+          <Property Name="IdUnitStorage" Type="Int32" Nullable="false" />
+          <Property Name="KeepTrackSerialNumbers" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="CountProducts" Relationship="Self.FK__CountProd__IdPro__151B244E" FromRole="Products" ToRole="CountProducts" />
+          <NavigationProperty Name="Groups" Relationship="Self.FK__Products__IdGrou__5812160E" FromRole="Products" ToRole="Groups" />
+          <NavigationProperty Name="InvoiceInfos" Relationship="Self.FK__InvoiceIn__IdPro__10566F31" FromRole="Products" ToRole="InvoiceInfos" />
+          <NavigationProperty Name="MovementGoodsInfos" Relationship="Self.FK__MovementG__IdPro__7A672E12" FromRole="Products" ToRole="MovementGoodsInfos" />
+          <NavigationProperty Name="PriceGroups" Relationship="Self.FK__Products__IdPric__59063A47" FromRole="Products" ToRole="PriceGroups" />
+          <NavigationProperty Name="PriceProducts" Relationship="Self.FK__PriceProd__IdPro__09A971A2" FromRole="Products" ToRole="PriceProducts" />
+          <NavigationProperty Name="UnitStorages" Relationship="Self.FK__Products__IdUnit__5629CD9C" FromRole="Products" ToRole="UnitStorages" />
+          <NavigationProperty Name="WarrantyPeriods" Relationship="Self.FK__Products__IdWarr__571DF1D5" FromRole="Products" ToRole="WarrantyPeriods" />
+          <NavigationProperty Name="PropertyProducts" Relationship="Self.FK__PropertyP__IdPro__66603565" FromRole="Products" ToRole="PropertyProducts" />
+          <NavigationProperty Name="SerialNumbers" Relationship="Self.FK__SerialNum__IdPro__00200768" FromRole="Products" ToRole="SerialNumbers" />
+        </EntityType>
+        <EntityType Name="PropertyNames">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="IdGroup" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Groups" Relationship="Self.FK__PropertyN__IdGro__5DCAEF64" FromRole="PropertyNames" ToRole="Groups" />
+          <NavigationProperty Name="PropertyProducts" Relationship="Self.FK__PropertyP__IdPro__6754599E" FromRole="PropertyNames" ToRole="PropertyProducts" />
+          <NavigationProperty Name="PropertyValues" Relationship="Self.FK__PropertyV__IdPro__619B8048" FromRole="PropertyNames" ToRole="PropertyValues" />
+        </EntityType>
+        <EntityType Name="PropertyProducts">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdProduct" Type="Int32" Nullable="false" />
+          <Property Name="IdPropertyName" Type="Int32" Nullable="false" />
+          <Property Name="IdPropertyValue" Type="Int32" />
+          <NavigationProperty Name="Products" Relationship="Self.FK__PropertyP__IdPro__66603565" FromRole="PropertyProducts" ToRole="Products" />
+          <NavigationProperty Name="PropertyNames" Relationship="Self.FK__PropertyP__IdPro__6754599E" FromRole="PropertyProducts" ToRole="PropertyNames" />
+          <NavigationProperty Name="PropertyValues" Relationship="Self.FK__PropertyP__IdPro__68487DD7" FromRole="PropertyProducts" ToRole="PropertyValues" />
+        </EntityType>
+        <EntityType Name="PropertyValues">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Value" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="IdPropertyName" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="PropertyNames" Relationship="Self.FK__PropertyV__IdPro__619B8048" FromRole="PropertyValues" ToRole="PropertyNames" />
+          <NavigationProperty Name="PropertyProducts" Relationship="Self.FK__PropertyP__IdPro__68487DD7" FromRole="PropertyValues" ToRole="PropertyProducts" />
+        </EntityType>
+        <EntityType Name="RevaluationProductsReports">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DateRevaluation" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="PriceProducts" Relationship="Self.FK__PriceProd__IdRev__0A9D95DB" FromRole="RevaluationProductsReports" ToRole="PriceProducts" />
+        </EntityType>
+        <EntityType Name="SerialNumbers">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Value" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="IdProduct" Type="Int32" Nullable="false" />
+          <Property Name="IdPurchaseReport" Type="Int32" Nullable="false" />
+          <Property Name="IdSaleReport" Type="Int32" />
+          <NavigationProperty Name="MovementGoodsReports" Relationship="Self.FK__SerialNum__IdPur__7E37BEF6" FromRole="SerialNumbers" ToRole="MovementGoodsReports" />
+          <NavigationProperty Name="MovementGoodsReports1" Relationship="Self.FK__SerialNum__IdSal__7F2BE32F" FromRole="SerialNumbers" ToRole="MovementGoodsReports" />
+          <NavigationProperty Name="Products" Relationship="Self.FK__SerialNum__IdPro__00200768" FromRole="SerialNumbers" ToRole="Products" />
+          <NavigationProperty Name="Warranties" Relationship="Self.FK__Warrantie__IdSer__03F0984C" FromRole="SerialNumbers" ToRole="Warranties" />
+        </EntityType>
+        <EntityType Name="Stores">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="CountProducts" Relationship="Self.FK__CountProd__IdSto__160F4887" FromRole="Stores" ToRole="CountProducts" />
+          <NavigationProperty Name="MovementGoodsReports" Relationship="Self.FK__MovementG__IdArr__70DDC3D8" FromRole="Stores" ToRole="MovementGoodsReports" />
+          <NavigationProperty Name="MovementGoodsReports1" Relationship="Self.FK__MovementG__IdDis__71D1E811" FromRole="Stores" ToRole="MovementGoodsReports" />
+        </EntityType>
+        <EntityType Name="UnitStorages">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="IsWeightGoods" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Products" Relationship="Self.FK__Products__IdUnit__5629CD9C" FromRole="UnitStorages" ToRole="Products" />
+        </EntityType>
+        <EntityType Name="Warranties">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Malfunction" Type="String" MaxLength="256" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DateReceipt" Type="DateTime" Precision="0" />
+          <Property Name="DateDeparture" Type="DateTime" Precision="0" />
+          <Property Name="DateIssue" Type="DateTime" Precision="0" />
+          <Property Name="Info" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="IdSerialNumber" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="SerialNumbers" Relationship="Self.FK__Warrantie__IdSer__03F0984C" FromRole="Warranties" ToRole="SerialNumbers" />
+        </EntityType>
+        <EntityType Name="WarrantyPeriods">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Period" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Products" Relationship="Self.FK__Products__IdWarr__571DF1D5" FromRole="WarrantyPeriods" ToRole="Products" />
+        </EntityType>
+        <Association Name="FK__MoneyTran__IdCou__19DFD96B">
+          <End Role="Counterparties" Type="Self.Counterparties" Multiplicity="1" />
+          <End Role="MoneyTransfers" Type="Self.MoneyTransfers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Counterparties">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MoneyTransfers">
+              <PropertyRef Name="IdCounterparty" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__MovementG__IdCou__72C60C4A">
+          <End Role="Counterparties" Type="Self.Counterparties" Multiplicity="0..1" />
+          <End Role="MovementGoodsReports" Type="Self.MovementGoodsReports" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Counterparties">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MovementGoodsReports">
+              <PropertyRef Name="IdCounterparty" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__CountProd__IdPro__151B244E">
+          <End Role="Products" Type="Self.Products" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="CountProducts" Type="Self.CountProducts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Products">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="CountProducts">
+              <PropertyRef Name="IdProduct" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__CountProd__IdSto__160F4887">
+          <End Role="Stores" Type="Self.Stores" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="CountProducts" Type="Self.CountProducts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Stores">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="CountProducts">
+              <PropertyRef Name="IdStore" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__MovementG__IdExc__73BA3083">
+          <End Role="ExchangeRates" Type="Self.ExchangeRates" Multiplicity="0..1" />
+          <End Role="MovementGoodsReports" Type="Self.MovementGoodsReports" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ExchangeRates">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MovementGoodsReports">
+              <PropertyRef Name="IdExchangeRate" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Groups__IdParent__4BAC3F29">
+          <End Role="Groups" Type="Self.Groups" Multiplicity="0..1" />
+          <End Role="Groups1" Type="Self.Groups" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Groups">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Groups1">
+              <PropertyRef Name="IdParentGroup" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Products__IdGrou__5812160E">
+          <End Role="Groups" Type="Self.Groups" Multiplicity="1" />
+          <End Role="Products" Type="Self.Products" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Groups">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Products">
+              <PropertyRef Name="IdGroup" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PropertyN__IdGro__5DCAEF64">
+          <End Role="Groups" Type="Self.Groups" Multiplicity="1" />
+          <End Role="PropertyNames" Type="Self.PropertyNames" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Groups">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PropertyNames">
+              <PropertyRef Name="IdGroup" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__InvoiceIn__IdInv__114A936A">
+          <End Role="InvoiceReport" Type="Self.InvoiceReport" Multiplicity="1" />
+          <End Role="InvoiceInfos" Type="Self.InvoiceInfos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InvoiceReport">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="InvoiceInfos">
+              <PropertyRef Name="IdInvoiceReport" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__InvoiceIn__IdPro__10566F31">
+          <End Role="Products" Type="Self.Products" Multiplicity="1" />
+          <End Role="InvoiceInfos" Type="Self.InvoiceInfos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Products">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="InvoiceInfos">
+              <PropertyRef Name="IdProduct" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__MovementG__IdPro__7A672E12">
+          <End Role="Products" Type="Self.Products" Multiplicity="1" />
+          <End Role="MovementGoodsInfos" Type="Self.MovementGoodsInfos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Products">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MovementGoodsInfos">
+              <PropertyRef Name="IdProduct" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__MovementG__IdRep__797309D9">
+          <End Role="MovementGoodsReports" Type="Self.MovementGoodsReports" Multiplicity="1" />
+          <End Role="MovementGoodsInfos" Type="Self.MovementGoodsInfos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MovementGoodsReports">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MovementGoodsInfos">
+              <PropertyRef Name="IdReport" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__MovementG__IdArr__70DDC3D8">
+          <End Role="Stores" Type="Self.Stores" Multiplicity="0..1" />
+          <End Role="MovementGoodsReports" Type="Self.MovementGoodsReports" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Stores">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MovementGoodsReports">
+              <PropertyRef Name="IdArrivalStore" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__MovementG__IdDis__71D1E811">
+          <End Role="Stores" Type="Self.Stores" Multiplicity="0..1" />
+          <End Role="MovementGoodsReports" Type="Self.MovementGoodsReports" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Stores">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MovementGoodsReports">
+              <PropertyRef Name="IdDisposalStore" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__MovementG__IdMov__74AE54BC">
+          <End Role="MovementGoodsReports" Type="Self.MovementGoodsReports" Multiplicity="0..1" />
+          <End Role="MovementGoodsReports1" Type="Self.MovementGoodsReports" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MovementGoodsReports">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MovementGoodsReports1">
+              <PropertyRef Name="IdMovementGoodsReport" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SerialNum__IdPur__7E37BEF6">
+          <End Role="MovementGoodsReports" Type="Self.MovementGoodsReports" Multiplicity="1" />
+          <End Role="SerialNumbers" Type="Self.SerialNumbers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MovementGoodsReports">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SerialNumbers">
+              <PropertyRef Name="IdPurchaseReport" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SerialNum__IdSal__7F2BE32F">
+          <End Role="MovementGoodsReports" Type="Self.MovementGoodsReports" Multiplicity="0..1" />
+          <End Role="SerialNumbers" Type="Self.SerialNumbers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MovementGoodsReports">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SerialNumbers">
+              <PropertyRef Name="IdSaleReport" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Products__IdPric__59063A47">
+          <End Role="PriceGroups" Type="Self.PriceGroups" Multiplicity="1" />
+          <End Role="Products" Type="Self.Products" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PriceGroups">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Products">
+              <PropertyRef Name="IdPriceGroup" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PriceProd__IdPro__09A971A2">
+          <End Role="Products" Type="Self.Products" Multiplicity="1" />
+          <End Role="PriceProducts" Type="Self.PriceProducts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Products">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PriceProducts">
+              <PropertyRef Name="IdProduct" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PriceProd__IdRev__0A9D95DB">
+          <End Role="RevaluationProductsReports" Type="Self.RevaluationProductsReports" Multiplicity="1" />
+          <End Role="PriceProducts" Type="Self.PriceProducts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RevaluationProductsReports">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PriceProducts">
+              <PropertyRef Name="IdRevaluationProductsReports" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Products__IdUnit__5629CD9C">
+          <End Role="UnitStorages" Type="Self.UnitStorages" Multiplicity="1" />
+          <End Role="Products" Type="Self.Products" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UnitStorages">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Products">
+              <PropertyRef Name="IdUnitStorage" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Products__IdWarr__571DF1D5">
+          <End Role="WarrantyPeriods" Type="Self.WarrantyPeriods" Multiplicity="1" />
+          <End Role="Products" Type="Self.Products" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WarrantyPeriods">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Products">
+              <PropertyRef Name="IdWarrantyPeriod" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PropertyP__IdPro__66603565">
+          <End Role="Products" Type="Self.Products" Multiplicity="1" />
+          <End Role="PropertyProducts" Type="Self.PropertyProducts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Products">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PropertyProducts">
+              <PropertyRef Name="IdProduct" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SerialNum__IdPro__00200768">
+          <End Role="Products" Type="Self.Products" Multiplicity="1" />
+          <End Role="SerialNumbers" Type="Self.SerialNumbers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Products">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SerialNumbers">
+              <PropertyRef Name="IdProduct" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PropertyP__IdPro__6754599E">
+          <End Role="PropertyNames" Type="Self.PropertyNames" Multiplicity="1" />
+          <End Role="PropertyProducts" Type="Self.PropertyProducts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PropertyNames">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PropertyProducts">
+              <PropertyRef Name="IdPropertyName" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PropertyV__IdPro__619B8048">
+          <End Role="PropertyNames" Type="Self.PropertyNames" Multiplicity="1" />
+          <End Role="PropertyValues" Type="Self.PropertyValues" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PropertyNames">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PropertyValues">
+              <PropertyRef Name="IdPropertyName" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PropertyP__IdPro__68487DD7">
+          <End Role="PropertyValues" Type="Self.PropertyValues" Multiplicity="0..1" />
+          <End Role="PropertyProducts" Type="Self.PropertyProducts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PropertyValues">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PropertyProducts">
+              <PropertyRef Name="IdPropertyValue" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Warrantie__IdSer__03F0984C">
+          <End Role="SerialNumbers" Type="Self.SerialNumbers" Multiplicity="1" />
+          <End Role="Warranties" Type="Self.Warranties" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SerialNumbers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Warranties">
+              <PropertyRef Name="IdSerialNumber" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="AutomationAccountingGoodsEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Counterparties" EntityType="Self.Counterparties" />
+          <EntitySet Name="CountProducts" EntityType="Self.CountProducts" />
+          <EntitySet Name="ExchangeRates" EntityType="Self.ExchangeRates" />
+          <EntitySet Name="Groups" EntityType="Self.Groups" />
+          <EntitySet Name="InvoiceInfos" EntityType="Self.InvoiceInfos" />
+          <EntitySet Name="InvoiceReport" EntityType="Self.InvoiceReport" />
+          <EntitySet Name="MoneyTransfers" EntityType="Self.MoneyTransfers" />
+          <EntitySet Name="MovementGoodsInfos" EntityType="Self.MovementGoodsInfos" />
+          <EntitySet Name="MovementGoodsReports" EntityType="Self.MovementGoodsReports" />
+          <EntitySet Name="PriceGroups" EntityType="Self.PriceGroups" />
+          <EntitySet Name="PriceProducts" EntityType="Self.PriceProducts" />
+          <EntitySet Name="Products" EntityType="Self.Products" />
+          <EntitySet Name="PropertyNames" EntityType="Self.PropertyNames" />
+          <EntitySet Name="PropertyProducts" EntityType="Self.PropertyProducts" />
+          <EntitySet Name="PropertyValues" EntityType="Self.PropertyValues" />
+          <EntitySet Name="RevaluationProductsReports" EntityType="Self.RevaluationProductsReports" />
+          <EntitySet Name="SerialNumbers" EntityType="Self.SerialNumbers" />
+          <EntitySet Name="Stores" EntityType="Self.Stores" />
+          <EntitySet Name="UnitStorages" EntityType="Self.UnitStorages" />
+          <EntitySet Name="Warranties" EntityType="Self.Warranties" />
+          <EntitySet Name="WarrantyPeriods" EntityType="Self.WarrantyPeriods" />
+          <AssociationSet Name="FK__MoneyTran__IdCou__19DFD96B" Association="Self.FK__MoneyTran__IdCou__19DFD96B">
+            <End Role="Counterparties" EntitySet="Counterparties" />
+            <End Role="MoneyTransfers" EntitySet="MoneyTransfers" />
+          </AssociationSet>
+          <AssociationSet Name="FK__MovementG__IdCou__72C60C4A" Association="Self.FK__MovementG__IdCou__72C60C4A">
+            <End Role="Counterparties" EntitySet="Counterparties" />
+            <End Role="MovementGoodsReports" EntitySet="MovementGoodsReports" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CountProd__IdPro__151B244E" Association="Self.FK__CountProd__IdPro__151B244E">
+            <End Role="Products" EntitySet="Products" />
+            <End Role="CountProducts" EntitySet="CountProducts" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CountProd__IdSto__160F4887" Association="Self.FK__CountProd__IdSto__160F4887">
+            <End Role="Stores" EntitySet="Stores" />
+            <End Role="CountProducts" EntitySet="CountProducts" />
+          </AssociationSet>
+          <AssociationSet Name="FK__MovementG__IdExc__73BA3083" Association="Self.FK__MovementG__IdExc__73BA3083">
+            <End Role="ExchangeRates" EntitySet="ExchangeRates" />
+            <End Role="MovementGoodsReports" EntitySet="MovementGoodsReports" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Groups__IdParent__4BAC3F29" Association="Self.FK__Groups__IdParent__4BAC3F29">
+            <End Role="Groups" EntitySet="Groups" />
+            <End Role="Groups1" EntitySet="Groups" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Products__IdGrou__5812160E" Association="Self.FK__Products__IdGrou__5812160E">
+            <End Role="Groups" EntitySet="Groups" />
+            <End Role="Products" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PropertyN__IdGro__5DCAEF64" Association="Self.FK__PropertyN__IdGro__5DCAEF64">
+            <End Role="Groups" EntitySet="Groups" />
+            <End Role="PropertyNames" EntitySet="PropertyNames" />
+          </AssociationSet>
+          <AssociationSet Name="FK__InvoiceIn__IdInv__114A936A" Association="Self.FK__InvoiceIn__IdInv__114A936A">
+            <End Role="InvoiceReport" EntitySet="InvoiceReport" />
+            <End Role="InvoiceInfos" EntitySet="InvoiceInfos" />
+          </AssociationSet>
+          <AssociationSet Name="FK__InvoiceIn__IdPro__10566F31" Association="Self.FK__InvoiceIn__IdPro__10566F31">
+            <End Role="Products" EntitySet="Products" />
+            <End Role="InvoiceInfos" EntitySet="InvoiceInfos" />
+          </AssociationSet>
+          <AssociationSet Name="FK__MovementG__IdPro__7A672E12" Association="Self.FK__MovementG__IdPro__7A672E12">
+            <End Role="Products" EntitySet="Products" />
+            <End Role="MovementGoodsInfos" EntitySet="MovementGoodsInfos" />
+          </AssociationSet>
+          <AssociationSet Name="FK__MovementG__IdRep__797309D9" Association="Self.FK__MovementG__IdRep__797309D9">
+            <End Role="MovementGoodsReports" EntitySet="MovementGoodsReports" />
+            <End Role="MovementGoodsInfos" EntitySet="MovementGoodsInfos" />
+          </AssociationSet>
+          <AssociationSet Name="FK__MovementG__IdArr__70DDC3D8" Association="Self.FK__MovementG__IdArr__70DDC3D8">
+            <End Role="Stores" EntitySet="Stores" />
+            <End Role="MovementGoodsReports" EntitySet="MovementGoodsReports" />
+          </AssociationSet>
+          <AssociationSet Name="FK__MovementG__IdDis__71D1E811" Association="Self.FK__MovementG__IdDis__71D1E811">
+            <End Role="Stores" EntitySet="Stores" />
+            <End Role="MovementGoodsReports" EntitySet="MovementGoodsReports" />
+          </AssociationSet>
+          <AssociationSet Name="FK__MovementG__IdMov__74AE54BC" Association="Self.FK__MovementG__IdMov__74AE54BC">
+            <End Role="MovementGoodsReports" EntitySet="MovementGoodsReports" />
+            <End Role="MovementGoodsReports1" EntitySet="MovementGoodsReports" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SerialNum__IdPur__7E37BEF6" Association="Self.FK__SerialNum__IdPur__7E37BEF6">
+            <End Role="MovementGoodsReports" EntitySet="MovementGoodsReports" />
+            <End Role="SerialNumbers" EntitySet="SerialNumbers" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SerialNum__IdSal__7F2BE32F" Association="Self.FK__SerialNum__IdSal__7F2BE32F">
+            <End Role="MovementGoodsReports" EntitySet="MovementGoodsReports" />
+            <End Role="SerialNumbers" EntitySet="SerialNumbers" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Products__IdPric__59063A47" Association="Self.FK__Products__IdPric__59063A47">
+            <End Role="PriceGroups" EntitySet="PriceGroups" />
+            <End Role="Products" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PriceProd__IdPro__09A971A2" Association="Self.FK__PriceProd__IdPro__09A971A2">
+            <End Role="Products" EntitySet="Products" />
+            <End Role="PriceProducts" EntitySet="PriceProducts" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PriceProd__IdRev__0A9D95DB" Association="Self.FK__PriceProd__IdRev__0A9D95DB">
+            <End Role="RevaluationProductsReports" EntitySet="RevaluationProductsReports" />
+            <End Role="PriceProducts" EntitySet="PriceProducts" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Products__IdUnit__5629CD9C" Association="Self.FK__Products__IdUnit__5629CD9C">
+            <End Role="UnitStorages" EntitySet="UnitStorages" />
+            <End Role="Products" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Products__IdWarr__571DF1D5" Association="Self.FK__Products__IdWarr__571DF1D5">
+            <End Role="WarrantyPeriods" EntitySet="WarrantyPeriods" />
+            <End Role="Products" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PropertyP__IdPro__66603565" Association="Self.FK__PropertyP__IdPro__66603565">
+            <End Role="Products" EntitySet="Products" />
+            <End Role="PropertyProducts" EntitySet="PropertyProducts" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SerialNum__IdPro__00200768" Association="Self.FK__SerialNum__IdPro__00200768">
+            <End Role="Products" EntitySet="Products" />
+            <End Role="SerialNumbers" EntitySet="SerialNumbers" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PropertyP__IdPro__6754599E" Association="Self.FK__PropertyP__IdPro__6754599E">
+            <End Role="PropertyNames" EntitySet="PropertyNames" />
+            <End Role="PropertyProducts" EntitySet="PropertyProducts" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PropertyV__IdPro__619B8048" Association="Self.FK__PropertyV__IdPro__619B8048">
+            <End Role="PropertyNames" EntitySet="PropertyNames" />
+            <End Role="PropertyValues" EntitySet="PropertyValues" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PropertyP__IdPro__68487DD7" Association="Self.FK__PropertyP__IdPro__68487DD7">
+            <End Role="PropertyValues" EntitySet="PropertyValues" />
+            <End Role="PropertyProducts" EntitySet="PropertyProducts" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Warrantie__IdSer__03F0984C" Association="Self.FK__Warrantie__IdSer__03F0984C">
+            <End Role="SerialNumbers" EntitySet="SerialNumbers" />
+            <End Role="Warranties" EntitySet="Warranties" />
+          </AssociationSet>
+          <FunctionImport Name="GoodsIssued">
+            <Parameter Name="id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="GoodsShipped">
+            <Parameter Name="id" Mode="In" Type="Int32" />
+          </FunctionImport>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Хранилище AutomationAccountingGoodsModelContainer" CdmEntityContainer="AutomationAccountingGoodsEntities">
+          <EntitySetMapping Name="Counterparties">
+            <EntityTypeMapping TypeName="AutomationAccountingGoodsModel.Counterparties">
+              <MappingFragment StoreEntitySet="Counterparties">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="ContactPerson" ColumnName="ContactPerson" />
+                <ScalarProperty Name="ContactPhone" ColumnName="ContactPhone" />
+                <ScalarProperty Name="Props" ColumnName="Props" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="WhoIsIt" ColumnName="WhoIsIt" />
+                <ScalarProperty Name="Debt" ColumnName="Debt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CountProducts">
+            <EntityTypeMapping TypeName="AutomationAccountingGoodsModel.CountProducts">
+              <MappingFragment StoreEntitySet="CountProducts">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="IdProduct" ColumnName="IdProduct" />
+                <ScalarProperty Name="IdStore" ColumnName="IdStore" />
+                <ScalarProperty Name="Count" ColumnName="Count" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ExchangeRates">
+            <EntityTypeMapping TypeName="AutomationAccountingGoodsModel.ExchangeRates">
+              <MappingFragment StoreEntitySet="ExchangeRates">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Course" ColumnName="Course" />
+                <ScalarProperty Name="IsDefault" ColumnName="IsDefault" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Groups">
+            <EntityTypeMapping TypeName="AutomationAccountingGoodsModel.Groups">
+              <MappingFragment StoreEntitySet="Groups">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="IdParentGroup" ColumnName="IdParentGroup" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InvoiceInfos">
+            <EntityTypeMapping TypeName="AutomationAccountingGoodsModel.InvoiceInfos">
+              <MappingFragment StoreEntitySet="InvoiceInfos">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="IdProduct" ColumnName="IdProduct" />
+                <ScalarProperty Name="Count" ColumnName="Count" />
+                <ScalarProperty Name="IdInvoiceReport" ColumnName="IdInvoiceReport" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InvoiceReport">
+            <EntityTypeMapping TypeName="AutomationAccountingGoodsModel.InvoiceReport">
+              <MappingFragment StoreEntitySet="InvoiceReport">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MoneyTransfers">
+            <EntityTypeMapping TypeName="AutomationAccountingGoodsModel.MoneyTransfers">
+              <MappingFragment StoreEntitySet="MoneyTransfers">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="IdCounterparty" ColumnName="IdCounterparty" />
+                <ScalarProperty Name="MoneyAmount" ColumnName="MoneyAmount" />
+                <ScalarProperty Name="TypeTransfer" ColumnName="TypeTransfer" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MovementGoodsInfos">
+            <EntityTypeMapping TypeName="AutomationAccountingGoodsModel.MovementGoodsInfos">
+              <MappingFragment StoreEntitySet="MovementGoodsInfos">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Count" ColumnName="Count" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="IdReport" ColumnName="IdReport" />
+                <ScalarProperty Name="IdProduct" ColumnName="IdProduct" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MovementGoodsReports">
+            <EntityTypeMapping TypeName="AutomationAccountingGoodsModel.MovementGoodsReports">
+              <MappingFragment StoreEntitySet="MovementGoodsReports">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Course" ColumnName="Course" />
+                <ScalarProperty Name="TextInfo" ColumnName="TextInfo" />
+                <ScalarProperty Name="IdArrivalStore" ColumnName="IdArrivalStore" />
+                <ScalarProperty Name="IdDisposalStore" ColumnName="IdDisposalStore" />
+                <ScalarProperty Name="IdCounterparty" ColumnName="IdCounterparty" />
+                <ScalarProperty Name="IdExchangeRate" ColumnName="IdExchangeRate" />
+                <ScalarProperty Name="TypeAction" ColumnName="TypeAction" />
+                <ScalarProperty Name="IdMovementGoodsReport" ColumnName="IdMovementGoodsReport" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PriceGroups">
+            <EntityTypeMapping TypeName="AutomationAccountingGoodsModel.PriceGroups">
+              <MappingFragment StoreEntitySet="PriceGroups">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Markup" ColumnName="Markup" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PriceProducts">
+            <EntityTypeMapping TypeName="AutomationAccountingGoodsModel.PriceProducts">
+              <MappingFragment StoreEntitySet="PriceProducts">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="IdProduct" ColumnName="IdProduct" />
+                <ScalarProperty Name="IdRevaluationProductsReports" ColumnName="IdRevaluationProductsReports" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Products">
+            <EntityTypeMapping TypeName="AutomationAccountingGoodsModel.Products">
+              <MappingFragment StoreEntitySet="Products">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="VendorCode" ColumnName="VendorCode" />
+                <ScalarProperty Name="Barcode" ColumnName="Barcode" />
+                <ScalarProperty Name="IdWarrantyPeriod" ColumnName="IdWarrantyPeriod" />
+                <ScalarProperty Name="IdGroup" ColumnName="IdGroup" />
+                <ScalarProperty Name="IdPriceGroup" ColumnName="IdPriceGroup" />
+                <ScalarProperty Name="IdUnitStorage" ColumnName="IdUnitStorage" />
+                <ScalarProperty Name="KeepTrackSerialNumbers" ColumnName="KeepTrackSerialNumbers" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PropertyNames">
+            <EntityTypeMapping TypeName="AutomationAccountingGoodsModel.PropertyNames">
+              <MappingFragment StoreEntitySet="PropertyNames">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="IdGroup" ColumnName="IdGroup" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PropertyProducts">
+            <EntityTypeMapping TypeName="AutomationAccountingGoodsModel.PropertyProducts">
+              <MappingFragment StoreEntitySet="PropertyProducts">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="IdProduct" ColumnName="IdProduct" />
+                <ScalarProperty Name="IdPropertyName" ColumnName="IdPropertyName" />
+                <ScalarProperty Name="IdPropertyValue" ColumnName="IdPropertyValue" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PropertyValues">
+            <EntityTypeMapping TypeName="AutomationAccountingGoodsModel.PropertyValues">
+              <MappingFragment StoreEntitySet="PropertyValues">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="IdPropertyName" ColumnName="IdPropertyName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RevaluationProductsReports">
+            <EntityTypeMapping TypeName="AutomationAccountingGoodsModel.RevaluationProductsReports">
+              <MappingFragment StoreEntitySet="RevaluationProductsReports">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="DateRevaluation" ColumnName="DateRevaluation" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SerialNumbers">
+            <EntityTypeMapping TypeName="AutomationAccountingGoodsModel.SerialNumbers">
+              <MappingFragment StoreEntitySet="SerialNumbers">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="IdProduct" ColumnName="IdProduct" />
+                <ScalarProperty Name="IdPurchaseReport" ColumnName="IdPurchaseReport" />
+                <ScalarProperty Name="IdSaleReport" ColumnName="IdSaleReport" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Stores">
+            <EntityTypeMapping TypeName="AutomationAccountingGoodsModel.Stores">
+              <MappingFragment StoreEntitySet="Stores">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UnitStorages">
+            <EntityTypeMapping TypeName="AutomationAccountingGoodsModel.UnitStorages">
+              <MappingFragment StoreEntitySet="UnitStorages">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="IsWeightGoods" ColumnName="IsWeightGoods" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Warranties">
+            <EntityTypeMapping TypeName="AutomationAccountingGoodsModel.Warranties">
+              <MappingFragment StoreEntitySet="Warranties">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Malfunction" ColumnName="Malfunction" />
+                <ScalarProperty Name="DateReceipt" ColumnName="DateReceipt" />
+                <ScalarProperty Name="DateDeparture" ColumnName="DateDeparture" />
+                <ScalarProperty Name="DateIssue" ColumnName="DateIssue" />
+                <ScalarProperty Name="Info" ColumnName="Info" />
+                <ScalarProperty Name="IdSerialNumber" ColumnName="IdSerialNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WarrantyPeriods">
+            <EntityTypeMapping TypeName="AutomationAccountingGoodsModel.WarrantyPeriods">
+              <MappingFragment StoreEntitySet="WarrantyPeriods">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Period" ColumnName="Period" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="GoodsIssued" FunctionName="Хранилище AutomationAccountingGoodsModel.GoodsIssued" />
+          <FunctionImportMapping FunctionImportName="GoodsShipped" FunctionName="Хранилище AutomationAccountingGoodsModel.GoodsShipped" />
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Нет" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

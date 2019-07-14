@@ -12,13 +12,12 @@ namespace ModelModul
     using System;
     using System.Collections.Generic;
     
-    public partial class RevaluationProductsInfos
+    public partial class PriceProducts
     {
         public int Id { get; set; }
         public int IdProduct { get; set; }
         public int IdRevaluationProductsReports { get; set; }
-        public decimal OldSalesPrice { get; set; }
-        //public decimal NewSalesPrice { get; set; }
+        public decimal Price { get; set; }
     
         public virtual Products Products { get; set; }
         public virtual RevaluationProductsReports RevaluationProductsReports { get; set; }

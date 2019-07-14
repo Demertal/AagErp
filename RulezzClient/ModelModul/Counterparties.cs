@@ -17,9 +17,8 @@ namespace ModelModul
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Counterparties()
         {
-            this.PurchaseReports = new HashSet<PurchaseReports>();
-            this.SalesReports = new HashSet<SalesReports>();
-            this.SerialNumbers = new HashSet<SerialNumbers>();
+            this.MoneyTransfers = new HashSet<MoneyTransfers>();
+            this.MovementGoodsReports = new HashSet<MovementGoodsReports>();
         }
     
         public int Id { get; set; }
@@ -28,13 +27,12 @@ namespace ModelModul
         public string ContactPhone { get; set; }
         public string Props { get; set; }
         public string Address { get; set; }
-        public bool WhoIsIt { get; set; }
+        public int WhoIsIt { get; set; }
+        public decimal Debt { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PurchaseReports> PurchaseReports { get; set; }
+        public virtual ICollection<MoneyTransfers> MoneyTransfers { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<SalesReports> SalesReports { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<SerialNumbers> SerialNumbers { get; set; }
+        public virtual ICollection<MovementGoodsReports> MovementGoodsReports { get; set; }
     }
 }

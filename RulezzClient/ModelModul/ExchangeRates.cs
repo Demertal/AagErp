@@ -17,14 +17,15 @@ namespace ModelModul
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public ExchangeRates()
         {
-            this.PurchaseInfos = new HashSet<PurchaseInfos>();
+            this.MovementGoodsReports = new HashSet<MovementGoodsReports>();
         }
     
         public int Id { get; set; }
         public string Title { get; set; }
         public decimal Course { get; set; }
+        public bool IsDefault { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PurchaseInfos> PurchaseInfos { get; set; }
+        public virtual ICollection<MovementGoodsReports> MovementGoodsReports { get; set; }
     }
 }

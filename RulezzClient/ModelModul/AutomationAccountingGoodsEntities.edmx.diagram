@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="f54963ddb07b40caaee832286b7b7c71" Name="Diagram1">
+        <EntityTypeShape EntityType="AutomationAccountingGoodsModel.Counterparties" Width="1.5" PointX="0.75" PointY="19.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="AutomationAccountingGoodsModel.CountProducts" Width="1.5" PointX="5.25" PointY="10.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="AutomationAccountingGoodsModel.ExchangeRates" Width="1.5" PointX="0.75" PointY="23.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="AutomationAccountingGoodsModel.Groups" Width="1.5" PointX="0.75" PointY="6.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="AutomationAccountingGoodsModel.InvoiceInfos" Width="1.5" PointX="5.25" PointY="7.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="AutomationAccountingGoodsModel.InvoiceReport" Width="1.5" PointX="3" PointY="6.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="AutomationAccountingGoodsModel.MoneyTransfers" Width="1.5" PointX="3" PointY="25.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="AutomationAccountingGoodsModel.MovementGoodsInfos" Width="1.5" PointX="5.25" PointY="13.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="AutomationAccountingGoodsModel.MovementGoodsReports" Width="1.5" PointX="3" PointY="20" IsExpanded="true" />
+        <EntityTypeShape EntityType="AutomationAccountingGoodsModel.PriceGroups" Width="1.5" PointX="0.75" PointY="10.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="AutomationAccountingGoodsModel.PriceProducts" Width="1.5" PointX="8.25" PointY="10.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="AutomationAccountingGoodsModel.Products" Width="1.5" PointX="3" PointY="9" IsExpanded="true" />
+        <EntityTypeShape EntityType="AutomationAccountingGoodsModel.PropertyNames" Width="1.5" PointX="6" PointY="3.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="AutomationAccountingGoodsModel.PropertyProducts" Width="1.5" PointX="8.25" PointY="7.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="AutomationAccountingGoodsModel.PropertyValues" Width="1.5" PointX="6" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="AutomationAccountingGoodsModel.RevaluationProductsReports" Width="1.5" PointX="6" PointY="16.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="AutomationAccountingGoodsModel.SerialNumbers" Width="1.5" PointX="8.25" PointY="13.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="AutomationAccountingGoodsModel.Stores" Width="1.5" PointX="3" PointY="15.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="AutomationAccountingGoodsModel.UnitStorages" Width="1.5" PointX="0.75" PointY="13.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="AutomationAccountingGoodsModel.Warranties" Width="1.5" PointX="10.5" PointY="14" IsExpanded="true" />
+        <EntityTypeShape EntityType="AutomationAccountingGoodsModel.WarrantyPeriods" Width="1.5" PointX="0.75" PointY="16.25" IsExpanded="true" />
+        <AssociationConnector Association="AutomationAccountingGoodsModel.FK__MoneyTran__IdCou__19DFD96B" ManuallyRouted="false" />
+        <AssociationConnector Association="AutomationAccountingGoodsModel.FK__MovementG__IdCou__72C60C4A" ManuallyRouted="false" />
+        <AssociationConnector Association="AutomationAccountingGoodsModel.FK__CountProd__IdPro__151B244E" ManuallyRouted="false" />
+        <AssociationConnector Association="AutomationAccountingGoodsModel.FK__CountProd__IdSto__160F4887" ManuallyRouted="false" />
+        <AssociationConnector Association="AutomationAccountingGoodsModel.FK__MovementG__IdExc__73BA3083" ManuallyRouted="false" />
+        <AssociationConnector Association="AutomationAccountingGoodsModel.FK__Groups__IdParent__4BAC3F29" ManuallyRouted="false" />
+        <AssociationConnector Association="AutomationAccountingGoodsModel.FK__Products__IdGrou__5812160E" ManuallyRouted="false" />
+        <AssociationConnector Association="AutomationAccountingGoodsModel.FK__PropertyN__IdGro__5DCAEF64" ManuallyRouted="false" />
+        <AssociationConnector Association="AutomationAccountingGoodsModel.FK__InvoiceIn__IdInv__114A936A" ManuallyRouted="false" />
+        <AssociationConnector Association="AutomationAccountingGoodsModel.FK__InvoiceIn__IdPro__10566F31" ManuallyRouted="false" />
+        <AssociationConnector Association="AutomationAccountingGoodsModel.FK__MovementG__IdPro__7A672E12" ManuallyRouted="false" />
+        <AssociationConnector Association="AutomationAccountingGoodsModel.FK__MovementG__IdRep__797309D9" ManuallyRouted="false" />
+        <AssociationConnector Association="AutomationAccountingGoodsModel.FK__MovementG__IdArr__70DDC3D8" ManuallyRouted="false" />
+        <AssociationConnector Association="AutomationAccountingGoodsModel.FK__MovementG__IdDis__71D1E811" ManuallyRouted="false" />
+        <AssociationConnector Association="AutomationAccountingGoodsModel.FK__MovementG__IdMov__74AE54BC" ManuallyRouted="false" />
+        <AssociationConnector Association="AutomationAccountingGoodsModel.FK__SerialNum__IdPur__7E37BEF6" ManuallyRouted="false" />
+        <AssociationConnector Association="AutomationAccountingGoodsModel.FK__SerialNum__IdSal__7F2BE32F" ManuallyRouted="false" />
+        <AssociationConnector Association="AutomationAccountingGoodsModel.FK__Products__IdPric__59063A47" ManuallyRouted="false" />
+        <AssociationConnector Association="AutomationAccountingGoodsModel.FK__PriceProd__IdPro__09A971A2" ManuallyRouted="false" />
+        <AssociationConnector Association="AutomationAccountingGoodsModel.FK__PriceProd__IdRev__0A9D95DB" ManuallyRouted="false" />
+        <AssociationConnector Association="AutomationAccountingGoodsModel.FK__Products__IdUnit__5629CD9C" ManuallyRouted="false" />
+        <AssociationConnector Association="AutomationAccountingGoodsModel.FK__Products__IdWarr__571DF1D5" ManuallyRouted="false" />
+        <AssociationConnector Association="AutomationAccountingGoodsModel.FK__PropertyP__IdPro__66603565" ManuallyRouted="false" />
+        <AssociationConnector Association="AutomationAccountingGoodsModel.FK__SerialNum__IdPro__00200768" ManuallyRouted="false" />
+        <AssociationConnector Association="AutomationAccountingGoodsModel.FK__PropertyP__IdPro__6754599E" ManuallyRouted="false" />
+        <AssociationConnector Association="AutomationAccountingGoodsModel.FK__PropertyV__IdPro__619B8048" ManuallyRouted="false" />
+        <AssociationConnector Association="AutomationAccountingGoodsModel.FK__PropertyP__IdPro__68487DD7" ManuallyRouted="false" />
+        <AssociationConnector Association="AutomationAccountingGoodsModel.FK__Warrantie__IdSer__03F0984C" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

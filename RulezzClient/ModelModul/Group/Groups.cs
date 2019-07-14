@@ -14,13 +14,13 @@ namespace ModelModul
             };
         }
 
-        public override bool Equals(Object obj)
-        {
-            if (obj == null || !GetType().Equals(obj.GetType()))
-            {
-                return false;
-            }
-            return Id == ((Groups)obj).Id && Title == ((Groups)obj).Title && IdParentGroup == ((Groups)obj).IdParentGroup;
-        }
+        //public override bool Equals(Object obj)
+        //{
+        //    if (obj == null || !GetType().Equals(obj.GetType()))
+        //    {
+        //        return false;
+        //    }
+        //    return Id == ((Groups)obj).Id && Title == ((Groups)obj).Title && IdParentGroup == ((Groups)obj).IdParentGroup;
+        //}
     }
 }

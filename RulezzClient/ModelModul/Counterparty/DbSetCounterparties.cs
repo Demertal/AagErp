@@ -9,7 +9,7 @@ namespace ModelModul.Counterparty
     {
         public ObservableCollection<Counterparties> Load()
         {
-            using (AutomationAccountingGoodsEntities db = new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            using (var db = new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
                 return new ObservableCollection<Counterparties>(db.Counterparties.ToList());
             }
@@ -17,19 +17,16 @@ namespace ModelModul.Counterparty
 
         public ObservableCollection<Counterparties> Load(TypeCounterparties whoIsIt)
         {
-            bool temp = whoIsIt == TypeCounterparties.Buyers;
-            using (AutomationAccountingGoodsEntities db =
-                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            using (var db = new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
-                return new ObservableCollection<Counterparties>(db.Counterparties.Where(obj => obj.WhoIsIt == temp)
+                return new ObservableCollection<Counterparties>(db.Counterparties.Where(obj => obj.WhoIsIt == (int)whoIsIt)
                     .ToList());
             }
         }
 
         public void Add(Counterparties obj)
         {
-            using (AutomationAccountingGoodsEntities db =
-                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            using (var db = new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
                 using (var transaction = db.Database.BeginTransaction())
                 {
@@ -50,25 +47,21 @@ namespace ModelModul.Counterparty
 
         public void Update(Counterparties obj)
         {
-            using (AutomationAccountingGoodsEntities db =
-                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            using (var db = new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
                 using (var transaction = db.Database.BeginTransaction())
                 {
                     try
                     {
                         var counterparty = db.Counterparties.Find(obj.Id);
-                        if (counterparty != null)
-                        {
-                            counterparty.Title = obj.Title;
-                            counterparty.Address = obj.Address;
-                            counterparty.ContactPerson = obj.ContactPerson;
-                            counterparty.ContactPhone = obj.ContactPhone;
-                            counterparty.Props = obj.Props;
-                            db.Entry(counterparty).State = EntityState.Modified;
-                        }
-                        else throw new Exception("Изменение не удалось");
-
+                        if (counterparty == null) throw new Exception("Изменение не удалось");
+                        counterparty.Title = obj.Title;
+                        counterparty.Address = obj.Address;
+                        counterparty.ContactPerson = obj.ContactPerson;
+                        counterparty.ContactPhone = obj.ContactPhone;
+                        counterparty.Props = obj.Props;
+                        counterparty.Debt = obj.Debt;
+                        db.Entry(counterparty).State = EntityState.Modified;
                         db.SaveChanges();
                         transaction.Commit();
                     }
@@ -83,8 +76,7 @@ namespace ModelModul.Counterparty
 
         public void Delete(int objId)
         {
-            using (AutomationAccountingGoodsEntities db =
-                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            using (var db = new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
                 using (var transaction = db.Database.BeginTransaction())
                 {
@@ -92,8 +84,6 @@ namespace ModelModul.Counterparty
                     {
                         var counterparties = db.Counterparties.Find(objId);
                         if (counterparties == null) throw new Exception("Контрагент не найден");
-                        if (counterparties.Title == "Покупатель")
-                            throw new Exception("Нельзя удалить контрагента \"Покупатель\"");
                         db.Entry(counterparties).State = EntityState.Deleted;
                         db.SaveChanges();
                         transaction.Commit();

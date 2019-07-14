@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace ModelModul
 {
@@ -18,14 +17,16 @@ namespace ModelModul
                 Title = Title,
                 VendorCode = VendorCode,
                 Barcode = Barcode,
-                SalesPrice = SalesPrice,
                 IdGroup = IdGroup,
                 IdWarrantyPeriod = IdWarrantyPeriod,
                 IdUnitStorage = IdUnitStorage,
+                IdPriceGroup = IdPriceGroup,
+                KeepTrackSerialNumbers = KeepTrackSerialNumbers,
                 Id = Id,
                 UnitStorages = (UnitStorages)UnitStorages?.Clone(),
                 WarrantyPeriods = (WarrantyPeriods) WarrantyPeriods?.Clone(),
                 Groups = (Groups) Groups?.Clone(),
+                PriceGroups = PriceGroups
             };
         }
     }

@@ -18,8 +18,8 @@ namespace ModelModul
         public Stores()
         {
             this.CountProducts = new HashSet<CountProducts>();
-            this.PurchaseReports = new HashSet<PurchaseReports>();
-            this.SalesReports = new HashSet<SalesReports>();
+            this.MovementGoodsReports = new HashSet<MovementGoodsReports>();
+            this.MovementGoodsReports1 = new HashSet<MovementGoodsReports>();
         }
     
         public int Id { get; set; }
@@ -28,8 +28,8 @@ namespace ModelModul
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CountProducts> CountProducts { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PurchaseReports> PurchaseReports { get; set; }
+        public virtual ICollection<MovementGoodsReports> MovementGoodsReports { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<SalesReports> SalesReports { get; set; }
+        public virtual ICollection<MovementGoodsReports> MovementGoodsReports1 { get; set; }
     }
 }

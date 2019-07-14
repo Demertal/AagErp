@@ -9,14 +9,13 @@ namespace ModelModul.Group
     {
         public ObservableCollection<Groups> Load(Groups parentGroup = null)
         {
-            using (AutomationAccountingGoodsEntities db =
-                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            using (var db = new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
                 bool Pre(Groups obj)
                 {
-                    return (obj.IdParentGroup == null && parentGroup == null) ||
-                           (obj.IdParentGroup != null && parentGroup != null &&
-                            obj.IdParentGroup.Value == parentGroup.Id);
+                    return obj.IdParentGroup == null && parentGroup == null ||
+                           obj.IdParentGroup != null && parentGroup != null &&
+                           obj.IdParentGroup.Value == parentGroup.Id;
                 }
 
                 return new ObservableCollection<Groups>(db.Groups.Include("Groups1").Where(Pre));
@@ -25,8 +24,7 @@ namespace ModelModul.Group
 
         public void Add(Groups obj)
         {
-            using (AutomationAccountingGoodsEntities db =
-                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            using (var db = new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
                 using (var transaction = db.Database.BeginTransaction())
                 {
@@ -56,8 +54,7 @@ namespace ModelModul.Group
 
         public void Delete(int objId)
         {
-            using (AutomationAccountingGoodsEntities db =
-                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            using (var db = new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
                 using (var transaction = db.Database.BeginTransaction())
                 {
@@ -79,21 +76,16 @@ namespace ModelModul.Group
 
         public void Update(Groups obj)
         {
-            using (AutomationAccountingGoodsEntities db =
-                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
+            using (var db = new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
             {
                 using (var transaction = db.Database.BeginTransaction())
                 {
                     try
                     {
                         var modifi = db.Groups.Find(obj.Id);
-                        if (modifi != null)
-                        {
-                            modifi.Title = obj.Title;
-                            db.Entry(modifi).State = EntityState.Modified;
-                        }
-                        else throw new Exception("Изменение не удалось");
-
+                        if (modifi == null) throw new Exception("Изменение не удалось");
+                        modifi.Title = obj.Title;
+                        db.Entry(modifi).State = EntityState.Modified;
                         db.SaveChanges();
                         transaction.Commit();
                     }

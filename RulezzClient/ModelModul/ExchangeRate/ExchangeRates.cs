@@ -10,7 +10,8 @@ namespace ModelModul
             {
                 Id = Id,
                 Title = Title,
-                Course = Course
+                Course = Course,
+                IsDefault =  IsDefault
             };
         }
     }

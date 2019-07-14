@@ -12,18 +12,14 @@ namespace ModelModul
     using System;
     using System.Collections.Generic;
     
-    public partial class RevaluationProductsReports
+    public partial class InvoiceInfos
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public RevaluationProductsReports()
-        {
-            this.PriceProducts = new HashSet<PriceProducts>();
-        }
-    
         public int Id { get; set; }
-        public Nullable<System.DateTime> DateRevaluation { get; set; }
+        public int IdProduct { get; set; }
+        public double Count { get; set; }
+        public int IdInvoiceReport { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PriceProducts> PriceProducts { get; set; }
+        public virtual InvoiceReport InvoiceReport { get; set; }
+        public virtual Products Products { get; set; }
     }
 }

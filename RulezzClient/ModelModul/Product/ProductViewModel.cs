@@ -23,19 +23,20 @@ namespace ModelModul.Product
                 RaisePropertyChanged("Title");
                 RaisePropertyChanged("VendorCode");
                 RaisePropertyChanged("Barcode");
-                RaisePropertyChanged("SalesPrice");
+                RaisePropertyChanged("IdPriceGroup");
                 RaisePropertyChanged("IdWarrantyPeriod");
                 RaisePropertyChanged("IdGroup");
                 RaisePropertyChanged("IdUnitStorage");
                 RaisePropertyChanged("Group");
+                RaisePropertyChanged("PriceGroup");
                 RaisePropertyChanged("CountProducts");
                 RaisePropertyChanged("UnitStorage");
                 RaisePropertyChanged("WarrantyPeriod");
                 RaisePropertyChanged("PropertyProducts");
-                RaisePropertyChanged("PurchaseInfos");
-                RaisePropertyChanged("RevaluationProductsInfos");
-                RaisePropertyChanged("SalesInfos");
+                RaisePropertyChanged("MovementGoodsInfos");
+                RaisePropertyChanged("PriceProduct");
                 RaisePropertyChanged("SerialNumbers");
+                RaisePropertyChanged("KeepTrackSerialNumbers");
                 RaisePropertyChanged("Count");
             }
         }
@@ -79,21 +80,24 @@ namespace ModelModul.Product
                 RaisePropertyChanged("IsValidate");
             }
         }
-        public decimal SalesPrice
-        {
-            get => Product.SalesPrice;
-            set
-            {
-                Product.SalesPrice = value;
-                RaisePropertyChanged();
-            }
-        }
+
         public int IdWarrantyPeriod
         {
             get => Product.IdWarrantyPeriod;
             set
             {
                 Product.IdWarrantyPeriod = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged("IsValidate");
+            }
+        }
+
+        public int IdPriceGroup
+        {
+            get => Product.IdPriceGroup;
+            set
+            {
+                Product.IdPriceGroup = value;
                 RaisePropertyChanged();
                 RaisePropertyChanged("IsValidate");
             }
@@ -118,12 +122,33 @@ namespace ModelModul.Product
             }
         }
 
+        public bool KeepTrackSerialNumbers
+        {
+            get => Product.KeepTrackSerialNumbers;
+            set
+            {
+                Product.KeepTrackSerialNumbers = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged("IsValidate");
+            }
+        }
+
         public Groups Group
         {
             get => Product.Groups;
             set
             {
                 Product.Groups = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public PriceGroups PriceGroup
+        {
+            get => Product.PriceGroups;
+            set
+            {
+                Product.PriceGroups = value;
                 RaisePropertyChanged();
             }
         }
@@ -163,34 +188,26 @@ namespace ModelModul.Product
                 RaisePropertyChanged();
             }
         }
-        public ICollection<PurchaseInfos> PurchaseInfos
+        public ICollection<MovementGoodsInfos> MovementGoodsInfos
         {
-            get => Product.PurchaseInfos;
+            get => Product.MovementGoodsInfos;
             set
             {
-                Product.PurchaseInfos = value;
+                Product.MovementGoodsInfos = value;
                 RaisePropertyChanged();
             }
         }
 
-        public ICollection<RevaluationProductsInfos> RevaluationProductsInfos
+        public ICollection<PriceProducts> PriceProduct
         {
-            get => Product.RevaluationProductsInfos;
+            get => Product.PriceProducts;
             set
             {
-                Product.RevaluationProductsInfos = value;
+                Product.PriceProducts = value;
                 RaisePropertyChanged();
             }
         }
-        public ICollection<SalesInfos> SalesInfos
-        {
-            get => Product.SalesInfos;
-            set
-            {
-                Product.SalesInfos = value;
-                RaisePropertyChanged();
-            }
-        }
+
         public virtual ObservableCollection<SerialNumbers> SerialNumbers
         {
             get => Product.SerialNumbers as ObservableCollection<SerialNumbers>;

@@ -20,6 +20,7 @@ namespace ModelModul
                 ContactPhone = ContactPhone,
                 Props = Props,
                 Title = Title,
+                Debt = Debt,
                 WhoIsIt = WhoIsIt
             };
         }

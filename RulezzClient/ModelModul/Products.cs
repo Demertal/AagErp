@@ -18,10 +18,10 @@ namespace ModelModul
         public Products()
         {
             this.CountProducts = new HashSet<CountProducts>();
+            this.InvoiceInfos = new HashSet<InvoiceInfos>();
+            this.MovementGoodsInfos = new HashSet<MovementGoodsInfos>();
+            this.PriceProducts = new HashSet<PriceProducts>();
             this.PropertyProducts = new HashSet<PropertyProducts>();
-            this.PurchaseInfos = new HashSet<PurchaseInfos>();
-            this.RevaluationProductsInfos = new HashSet<RevaluationProductsInfos>();
-            this.SalesInfos = new HashSet<SalesInfos>();
             this.SerialNumbers = new HashSet<SerialNumbers>();
         }
     
@@ -29,24 +29,26 @@ namespace ModelModul
         public string Title { get; set; }
         public string VendorCode { get; set; }
         public string Barcode { get; set; }
-        public decimal SalesPrice { get; set; }
         public int IdWarrantyPeriod { get; set; }
         public int IdGroup { get; set; }
+        public int IdPriceGroup { get; set; }
         public int IdUnitStorage { get; set; }
+        public bool KeepTrackSerialNumbers { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CountProducts> CountProducts { get; set; }
         public virtual Groups Groups { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<InvoiceInfos> InvoiceInfos { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<MovementGoodsInfos> MovementGoodsInfos { get; set; }
+        public virtual PriceGroups PriceGroups { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PriceProducts> PriceProducts { get; set; }
         public virtual UnitStorages UnitStorages { get; set; }
         public virtual WarrantyPeriods WarrantyPeriods { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PropertyProducts> PropertyProducts { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PurchaseInfos> PurchaseInfos { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<RevaluationProductsInfos> RevaluationProductsInfos { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<SalesInfos> SalesInfos { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SerialNumbers> SerialNumbers { get; set; }
     }

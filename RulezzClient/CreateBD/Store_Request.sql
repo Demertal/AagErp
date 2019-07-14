@@ -49,23 +49,6 @@ BEGIN
 END
 GO
 
-CREATE TRIGGER Groups_INSERT ON Groups
-AFTER INSERT
-AS
-BEGIN
-	INSERT INTO Stores(Title) SELECT Title FROM INSERTED WHERE IdParentGroup IS NULL
-END
-GO
-
-CREATE TRIGGER Groups_UPDATE ON Groups
-AFTER UPDATE
-AS
-BEGIN
-	UPDATE Stores Set Title = INSERTED.Title FROM INSERTED INNER JOIN DELETED ON INSERTED.Id = DELETED.Id INNER JOIN Stores ON Stores.Title = deleted.Title WHERE INSERTED.IdParentGroup IS NULL AND DELETED.IdParentGroup IS NULL;
-	INSERT INTO Stores(Title) SELECT INSERTED.Title FROM INSERTED INNER JOIN DELETED ON INSERTED.Id = DELETED.Id WHERE INSERTED.IdParentGroup IS NULL AND DELETED.IdParentGroup IS NOT NULL
-END
-GO
-
 CREATE TRIGGER Groups_INSTEAD_DELETE ON Groups
 INSTEAD OF DELETE
 AS
@@ -75,133 +58,82 @@ BEGIN
 END
 GO  
 
-CREATE TRIGGER Groups_DELETE ON Groups
-AFTER DELETE
-AS
-BEGIN
-	DELETE Stores FROM Stores INNER JOIN DELETED ON  DELETED.Title = Stores.Title
-END
-GO 
-
-CREATE TRIGGER WarrantyPeriods_UPDATE ON WarrantyPeriods
-AFTER UPDATE
-AS
-BEGIN
-	IF EXISTS(SELECT * FROM DELETED WHERE Period = 'Нет') BEGIN
-		RAISERROR('Нельзя изменять гарантийный период: "Нет"', 16, 1)
-		ROLLBACK TRAN
-	END
-END
-GO 
-
-CREATE TRIGGER WarrantyPeriods_DELETE ON WarrantyPeriods
-AFTER DELETE
-AS
-BEGIN
-	IF EXISTS(SELECT * FROM DELETED WHERE Period = 'Нет') BEGIN
-		RAISERROR('Нельзя удалять гарантийный период: "Нет"', 16, 1)
-		ROLLBACK TRAN
-	END
-END
-GO
-
-CREATE TRIGGER ExchangeRates_UPDATE ON ExchangeRates
-AFTER UPDATE
-AS
-BEGIN
-	IF NOT EXISTS(SELECT * FROM inserted WHERE Title = 'ГРН' or Title = 'USD') BEGIN
-		RAISERROR('Нельзя изменять валюты: "ГРН" и "USD"', 16, 1)
-		ROLLBACK TRAN
-	END
-END
-GO 
-
-CREATE TRIGGER ExchangeRates_DELETE ON ExchangeRates
-AFTER DELETE
-AS
-BEGIN
-	IF EXISTS(SELECT * FROM DELETED WHERE Title = 'ГРН' or Title = 'USD') BEGIN
-		RAISERROR('Нельзя удалять валюты: "ГРН" и "USD"', 16, 1)
-		ROLLBACK TRAN
-	END
-END
-GO
-
-CREATE TRIGGER PurchaseReports_INSERT ON PurchaseReports
+CREATE TRIGGER MovementGoodsReports_INSERT ON MovementGoodsReports
 AFTER INSERT
 AS
 BEGIN
-	UPDATE PurchaseReports SET  DataOrder=GETDATE() FROM INSERTED INNER JOIN PurchaseReports ON INSERTED.Id = PurchaseReports.Id
+	UPDATE MovementGoodsReports SET  Date = GETDATE() FROM INSERTED INNER JOIN MovementGoodsReports ON INSERTED.Id = MovementGoodsReports.Id
 END
 GO
 
-CREATE TRIGGER PurchaseInfos_INSERT ON PurchaseInfos
+CREATE TRIGGER MovementGoodsInfos_INSERT ON MovementGoodsInfos
 AFTER INSERT
 AS
 BEGIN
-	DECLARE @insertCountFirst TABLE (Count INT, IdProduct INT, IdStore INT)
 	DECLARE @insertCount TABLE (Count INT, IdProduct INT, IdStore INT)
-	INSERT INTO @insertCountFirst(Count, IdProduct, IdStore) SELECT ins.COUNT, ins.IdProduct, 
-		CAST((SELECT IdStore FROM PurchaseReports INNER JOIN INSERTED on PurchaseReports.Id = INSERTED.IdPurchaseReport) AS INT) as idstore FROM INSERTED as ins
-	INSERT INTO @insertCount(Count, IdProduct, IdStore) SELECT SUM(i.COUNT), i.IdProduct, i.IdStore FROM @insertCountFirst as i GROUP BY i.IdProduct, i.IdStore
-	UPDATE CountProducts SET CountProducts.Count = CountProducts.Count + ic.Count FROM @insertCount as ic
-		WHERE CountProducts.IdProduct = ic.IdProduct and CountProducts.IdStore = ic.IdStore
-END
-GO
-
-CREATE TRIGGER SerialNumbers_INSERT ON SerialNumbers
-AFTER INSERT
-AS
-BEGIN
-	UPDATE SerialNumbers SET PurchaseDate = GETDATE() FROM SerialNumbers INNER JOIN INSERTED  on SerialNumbers.ID = INSERTED.Id
-END 
-GO
-
-CREATE TRIGGER SalesReports_INSERT ON SalesReports
-AFTER INSERT
-AS
-BEGIN
-	UPDATE SalesReports SET DataSales = GETDATE() FROM SalesReports INNER JOIN INSERTED  on SalesReports.ID = INSERTED.Id
-END
-GO
-
-CREATE TRIGGER SalesInfos_INSERT ON SalesInfos
-AFTER INSERT
-AS
-BEGIN
-	DECLARE @insertFirst TABLE (Count INT, IdProduct INT, IdStore INT)
-	DECLARE @insert TABLE (Count INT, IdProduct INT, IdStore INT)
-	INSERT INTO @insertFirst(Count, IdProduct, IdStore) SELECT ins.Count, ins.IdProduct, 
-		(SELECT IdStore FROM SalesReports WHERE SalesReports.Id = ins.IdSalesReport) FROM INSERTED as ins;
-	INSERT INTO @insert(Count, IdProduct, IdStore) SELECT SUM(insf.Count), insf.IdProduct, insf.IdStore FROM @insertFirst as insf GROUP BY insf.IdProduct, insf.IdStore;
-	IF EXISTS(SELECT * FROM @insert as inse INNER JOIN CountProducts as ct ON inse.IdProduct = ct.IdProduct and inse.IdStore = ct.IdStore
-			 WHERE inse.COUNT > ct.COUNT) BEGIN
-		RAISERROR('Кол-во товара в некоторых продажах превышает имеющееся кол-во на складе', 16, 1);
+	DECLARE @insertCountArrival TABLE (Count INT, IdProduct INT, IdStore INT)
+	DECLARE @insertCountDisposal TABLE (Count INT, IdProduct INT, IdStore INT)
+	DECLARE @insertCountResult TABLE (Count INT, IdProduct INT, IdStore INT)
+	INSERT INTO @insertCount(Count, IdProduct, IdStore) SELECT ins.Count, ins.IdProduct, 
+		CAST((SELECT IdArrivalStore FROM MovementGoodsReports INNER JOIN INSERTED on MovementGoodsReports.Id = INSERTED.IdReport WHERE MovementGoodsReports.TypeAction = 0) AS INT) as idstore FROM INSERTED as ins
+	INSERT INTO @insertCountArrival(Count, IdProduct, IdStore) SELECT SUM(ic.Count), ic.IdProduct, ic.IdStore FROM @insertCount as ic GROUP BY ic.IdProduct, ic.IdStore
+	DELETE FROM @insertCount
+	INSERT INTO @insertCount(Count, IdProduct, IdStore) SELECT ins.Count, ins.IdProduct, 
+		CAST((SELECT IdDisposalStore FROM MovementGoodsReports INNER JOIN INSERTED on MovementGoodsReports.Id = INSERTED.IdReport WHERE MovementGoodsReports.TypeAction = 1) AS INT) as idstore FROM INSERTED as ins
+	INSERT INTO @insertCountDisposal(Count, IdProduct, IdStore) SELECT SUM(ic.Count), ic.IdProduct, ic.IdStore FROM @insertCount as ic GROUP BY ic.IdProduct, ic.IdStore
+	INSERT INTO @insertCountResult(Count, IdProduct, IdStore) SELECT CAST(
+             CASE
+                  WHEN ica.Count IS NULL and icd.Count IS NULL
+                     THEN 0
+				  WHEN ica.Count IS NULL
+                     THEN -icd.Count
+				  WHEN icd.Count IS NULL
+                     THEN ica.Count
+                  ELSE ica.Count - icd.Count
+             END AS INT),
+			 CAST(
+             CASE
+                  WHEN ica.IdProduct IS NULL
+                     THEN icd.IdProduct
+				  ELSE ica.IdProduct
+             END AS INT),
+			 CAST(
+             CASE
+                  WHEN ica.IdStore IS NULL
+                     THEN icd.IdStore
+				  ELSE ica.IdStore
+             END AS INT) FROM @insertCountArrival as ica FULL OUTER JOIN @insertCountDisposal as icd ON ica.IdProduct = icd.IdProduct and ica.IdStore = icd.IdStore
+	IF EXISTS(SELECT * FROM @insertCountResult as icr INNER JOIN CountProducts as ct ON icr.IdProduct = ct.IdProduct and icr.IdStore = ct.IdStore
+			 WHERE icr.Count + ct.Count < 0) BEGIN
+		RAISERROR('Для выполнения операции не хватает кол-ва товара на складе', 16, 1);
 		ROLLBACK TRAN;
 	END
 	ELSE BEGIN
-		UPDATE CountProducts SET CountProducts.Count = CountProducts.Count - inse.Count FROM @insert as inse 
-			WHERE CountProducts.IdProduct = inse.IdProduct and CountProducts.IdStore = inse.IdStore;
-		UPDATE SerialNumbers SET SerialNumbers.SelleDate = GETDATE() FROM INSERTED WHERE SerialNumbers.Id = INSERTED.IdSerialNumber;
+		DECLARE @insertPrice TABLE (Amount INT, IdCounterparty INT)
+		DECLARE @insertPriceResult TABLE (Amount INT, IdCounterparty INT)
+		INSERT INTO @insertPrice(Amount, IdCounterparty) SELECT ins.Count*ins.Price,
+		CAST((SELECT IdCounterparty FROM MovementGoodsReports INNER JOIN INSERTED on MovementGoodsReports.Id = INSERTED.IdReport WHERE MovementGoodsReports.TypeAction = 0 or MovementGoodsReports.TypeAction = 1) AS INT) as idCounterparty FROM INSERTED as ins
+		INSERT INTO @insertPriceResult(Amount, IdCounterparty) SELECT SUM(Amount), IdCounterparty FROM @insertPrice as inp GROUP BY IdCounterparty
+		UPDATE Counterparties SET Counterparties.Debt = Counterparties.Debt + inpr.Amount FROM @insertPriceResult as inpr WHERE Counterparties.Id = inpr.IdCounterparty
+		UPDATE CountProducts SET CountProducts.Count = CountProducts.Count + icr.Count FROM @insertCountResult as icr
+			WHERE CountProducts.IdProduct = icr.IdProduct and CountProducts.IdStore = icr.IdStore
 	END
 END
-GO   
+GO
 
 CREATE TRIGGER RevaluationProductsReports_INSERT ON RevaluationProductsReports
 AFTER INSERT
 AS
 BEGIN
-	UPDATE RevaluationProductsReports SET DataRevaluation = GETDATE() FROM RevaluationProductsReports INNER JOIN INSERTED  on RevaluationProductsReports.ID = INSERTED.Id
+	UPDATE RevaluationProductsReports SET DateRevaluation = GETDATE() FROM RevaluationProductsReports INNER JOIN INSERTED  on RevaluationProductsReports.ID = INSERTED.Id
 END
 GO
 
-CREATE TRIGGER RevaluationProductsInfos_INSERT ON RevaluationProductsInfos
+CREATE TRIGGER MoneyTransfers_INSERT ON MoneyTransfers
 AFTER INSERT
 AS
-BEGIN	
-	DECLARE @insert TABLE (SalesPrice MONEY, IdProduct INT)
-	INSERT INTO @insert(SalesPrice, IdProduct) SELECT MAX(NewSalesPrice), IdProduct FROM INSERTED GROUP BY INSERTED.IdProduct;	
-	UPDATE Products SET Products.SalesPrice = i.SalesPrice FROM @insert as i WHERE Products.Id = i.IdProduct
+BEGIN
+	UPDATE MoneyTransfers SET Date = GETDATE() FROM MoneyTransfers INNER JOIN INSERTED  on MoneyTransfers.ID = INSERTED.Id
 END
 GO
 

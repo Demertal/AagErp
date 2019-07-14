@@ -17,6 +17,7 @@ namespace ModelModul.Counterparty
                 RaisePropertyChanged("ContactPerson");
                 RaisePropertyChanged("ContactPhone");
                 RaisePropertyChanged("Props");
+                RaisePropertyChanged("Debt");
                 RaisePropertyChanged("IsValidate");
             }
         }
@@ -31,7 +32,7 @@ namespace ModelModul.Counterparty
             }
         }
 
-        public bool WhoIsIt
+        public int WhoIsIt
         {
             get => _counterparty.WhoIsIt;
             set
@@ -43,10 +44,10 @@ namespace ModelModul.Counterparty
 
         public TypeCounterparties TypeCounterparty
         {
-            get => _counterparty.WhoIsIt ? TypeCounterparties.Buyers : TypeCounterparties.Suppliers;
+            get => (TypeCounterparties)_counterparty.WhoIsIt;
             set
             {
-                _counterparty.WhoIsIt = value.HasFlag(TypeCounterparties.Buyers);
+                _counterparty.WhoIsIt = (int)value;
                 RaisePropertyChanged();
             }
         }
@@ -98,6 +99,16 @@ namespace ModelModul.Counterparty
             set
             {
                 _counterparty.Props = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public decimal Debt
+        {
+            get => _counterparty.Debt;
+            set
+            {
+                _counterparty.Debt = value;
                 RaisePropertyChanged();
             }
         }
