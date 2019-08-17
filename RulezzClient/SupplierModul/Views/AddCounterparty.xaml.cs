@@ -3,7 +3,7 @@
 namespace CounterpartyModul.Views
 {
     /// <summary>
-    /// Логика взаимодействия для AddCounterparty.xaml
+    /// Логика взаимодействия для AddCounterpartyAsync.xaml
     /// </summary>
     public partial class AddCounterparty : UserControl
     {

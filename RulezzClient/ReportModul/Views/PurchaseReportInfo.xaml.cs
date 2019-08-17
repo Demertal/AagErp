@@ -1,9 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows.Controls;
-using ModelModul;
 using Prism.Common;
 using Prism.Regions;
-using ReportModul.ViewModels;
 
 namespace ReportModul.Views
 {
@@ -21,8 +19,8 @@ namespace ReportModul.Views
         private void PurchaseReportInfo_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             var context = (ObservableObject<object>)sender;
-            var purchaseReports = (PurchaseReports)context.Value;
-            (DataContext as PurchaseReportInfoViewModel).Report = purchaseReports ?? new PurchaseReports();
+            //var purchaseReports = (PurchaseReports)context.Value;
+            //(DataContext as PurchaseReportInfoViewModel).Report = purchaseReports ?? new PurchaseReports();
         }
     }
 }

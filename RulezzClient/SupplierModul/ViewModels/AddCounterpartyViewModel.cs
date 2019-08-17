@@ -2,7 +2,8 @@
 using System.ComponentModel;
 using System.Windows;
 using ModelModul;
-using ModelModul.Counterparty;
+using ModelModul.Models;
+using ModelModul.Repositories;
 using Prism.Commands;
 using Prism.Interactivity.InteractionRequest;
 using Prism.Regions;
@@ -25,13 +26,13 @@ namespace CounterpartyModul.ViewModels
             }
         }
 
-        private CounterpartyViewModel _counterparty = new CounterpartyViewModel();
+        //private CounterpartyViewModel _counterparty = new CounterpartyViewModel();
 
-        public CounterpartyViewModel Counterparty
-        {
-            get => _counterparty;
-            set => SetProperty(ref _counterparty, value);
-        }
+        //public CounterpartyViewModel Counterparty
+        //{
+        //    get => _counterparty;
+        //    set => SetProperty(ref _counterparty, value);
+        //}
 
         public string WhoShowText => Type == TypeCounterparties.Suppliers ? "Поставщик" : "Покупатель";
 
@@ -43,7 +44,7 @@ namespace CounterpartyModul.ViewModels
             {
                 SetProperty(ref _notification, value as Confirmation);
                 Type = (TypeCounterparties)_notification.Content;
-                Counterparty.Counterparty = new Counterparties();
+                //Counterparty.Counterparty = new Counterparty();
             }
         }
         public Action FinishInteraction { get; set; }
@@ -54,21 +55,21 @@ namespace CounterpartyModul.ViewModels
 
         public AddCounterpartyViewModel()
         {
-            AddCounterpartyCommand = new DelegateCommand(AddCounterparty).ObservesCanExecute(() => Counterparty.IsValidate);
-            Counterparty.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args) {RaisePropertyChanged(args.PropertyName); };
+            //AddCounterpartyCommand = new DelegateCommand(AddCounterpartyAsync).ObservesCanExecute(() => Counterparty.IsValidate);
+            //Counterparty.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args) {RaisePropertyChanged(args.PropertyName); };
         }
 
-        public void AddCounterparty()
+        public async void AddCounterpartyAsync()
         {
             try
             {
-                Counterparty.TypeCounterparty = Type;
-                DbSetCounterparties dbSetCounterparties = new DbSetCounterparties();
-                dbSetCounterparties.Add(Counterparty.Counterparty);
-                MessageBox.Show("Контрагент добавлен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                if (_notification != null)
-                    _notification.Confirmed = true;
-                FinishInteraction?.Invoke();
+                //Counterparty.TypeCounterparty = Type;
+                //SqlCounterpartyRepository sqlCounterpartyRepository = new SqlCounterpartyRepository();
+                //await sqlCounterpartyRepository.CreateAsync(Counterparty.Counterparty);
+                //MessageBox.Show("Контрагент добавлен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                //if (_notification != null)
+                //    _notification.Confirmed = true;
+                //FinishInteraction?.Invoke();
             }
             catch (Exception ex)
             {

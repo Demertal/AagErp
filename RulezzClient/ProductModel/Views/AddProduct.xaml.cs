@@ -3,7 +3,7 @@
 namespace ProductModul.Views
 {
     /// <summary>
-    /// Логика взаимодействия для AddProduct.xaml
+    /// Логика взаимодействия для AddProductAsync.xaml
     /// </summary>
     public partial class AddProduct : UserControl
     {

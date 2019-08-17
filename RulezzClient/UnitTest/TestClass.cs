@@ -1,22 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Data.Entity.Core.EntityClient;
-using System.Data.SqlClient;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Transactions;
 using ModelModul;
-using ModelModul.Counterparty;
-using ModelModul.ExchangeRate;
-using ModelModul.Group;
-using ModelModul.Product;
-using ModelModul.PurchaseGoods;
-using ModelModul.Report;
-using ModelModul.RevaluationProduct;
-using ModelModul.SalesGoods;
-using ModelModul.SerialNumber;
-using ModelModul.UnitStorage;
-using ModelModul.WarrantyPeriod;
+using ModelModul.Models;
+using ModelModul.Repositories;
+using ModelModul.Specifications;
 using NUnit.Framework;
 
 namespace UnitTest
@@ -29,21 +18,7 @@ namespace UnitTest
         [SetUp]
         public void Setup()
         {
-            SqlConnectionStringBuilder sqlConnection = new SqlConnectionStringBuilder
-            {
-                DataSource = "(localdb)\\MSSQLLocalDB",
-                InitialCatalog = "AutomationAccountingGoods",
-                ApplicationName = "EntityFramework",
-                IntegratedSecurity = true
-            };
-            EntityConnectionStringBuilder connectionString = new EntityConnectionStringBuilder
-            {
-                Metadata =
-                    "res://*/AutomationAccountingGoodsModel.csdl|res://*/AutomationAccountingGoodsModel.ssdl|res://*/AutomationAccountingGoodsModel.msl",
-                Provider = "System.Data.SqlClient",
-                ProviderConnectionString = sqlConnection.ConnectionString
-            };
-            AutomationAccountingGoodsEntities.ConnectionString = connectionString.ConnectionString;
+            ConnectionTools.BuildConnectionString(configConnectionStringName: "AutomationAccountingGoodsContext");
             _transactionScope = new TransactionScope(TransactionScopeOption.Required);
         }
 
@@ -51,307 +26,359 @@ namespace UnitTest
         public void TearDown()
         {
             _transactionScope.Dispose();
-            using (AutomationAccountingGoodsEntities db =
-                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
-            {
-                db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (UnitStorages, RESEED, 0)");
-                db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (Groups, RESEED, 0)");
-                db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (WarrantyPeriods, RESEED, 0)");
-                db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (Products, RESEED, 0)");
-                db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (ExchangeRates, RESEED, 0)");
-                db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (Counterparties, RESEED, 0)");
-                db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (PurchaseReports, RESEED, 0)");
-                db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (PurchaseInfos, RESEED, 0)");
-                db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (SalesReports, RESEED, 0)");
-                db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (SalesInfos, RESEED, 0)");
-                db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (Stores, RESEED, 0)");
-                db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (CountProducts, RESEED, 0)");
-                db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (SerialNumbers, RESEED, 0)");
-                db.SaveChanges();
-                db.Database.Connection.Close();
-            }
+            //using (AutomationAccountingGoodsContext db = new AutomationAccountingGoodsContext(ConnectionTools.ConnectionString))
+            //{
+            //    db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (MovementGoodsInfos, RESEED, 0)");
+            //    db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (PriceProducts, RESEED, 0)");
+            //    db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (InvoiceInfos, RESEED, 0)");
+            //    db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (MoneyTransfers, RESEED, 0)");
+            //    db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (RevaluationProducts, RESEED, 0)");
+            //    db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (Warranties, RESEED, 0)");
+            //    db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (MovementGoods, RESEED, 0)");
+            //    db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (SerialNumbers, RESEED, 0)");
+            //    db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (WarrantyPeriods, RESEED, 0)");
+            //    db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (UnitStorages, RESEED, 0)");
+            //    db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (PriceGroups, RESEED, 0)");
+            //    db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (CountProducts, RESEED, 0)");
+            //    db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (PropertyProducts, RESEED, 0)");
+            //    db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (PropertyValues, RESEED, 0)");
+            //    db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (PropertyNames, RESEED, 0)");
+            //    db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (Products, RESEED, 0)");
+            //    db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (Invoices, RESEED, 0)");
+            //    db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (Currencies, RESEED, 0)");
+            //    db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (Stores, RESEED, 0)");
+            //    db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (Counterparties, RESEED, 0)");
+            //    db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (Categories, RESEED, 0)");
+            //    db.SaveChanges();
+            //}
+        }
+
+        //[Test]
+        //public void TestAddPurchaseGoods()
+        //{
+        //    InitAsync();
+
+        //    SqlMovementGoodsReportRepository dbSetMovementGoodsReports = new SqlMovementGoodsReportRepository();
+
+        //    PurchaseInfos purchaseInfo = new PurchaseInfos
+        //    {
+        //        Count = 1,
+        //        IdCurrency = 1,
+        //        IdProduct = 2,
+        //        PurchasePrice = 500,
+        //        SerialNumber =
+        //            new List<SerialNumber> { new SerialNumber { IdCounterparty = 1, IdProduct = 2, Value = "123" } }
+        //    };
+        //    dbSetMovementGoodsReports.AddAsync(new PurchaseReports
+        //    {
+        //        IdCounterparty = 1,
+        //        IdStore = 1,
+        //        Cost = 1,
+        //        PurchaseInfos = new List<PurchaseInfos> { purchaseInfo }
+        //    });
+
+        //    purchaseInfo =
+        //        new PurchaseInfos
+        //        {
+        //            Count = 1,
+        //            IdCurrency = 1,
+        //            IdProduct = 2,
+        //            PurchasePrice = 1000,
+        //            SerialNumber =
+        //                new List<SerialNumber> { new SerialNumber { IdCounterparty = 1, IdProduct = 2, Value = "123" } }
+        //        };
+        //    dbSetMovementGoodsReports.AddAsync(new PurchaseReports
+        //    {
+        //        IdCounterparty = 1,
+        //        IdStore = 1,
+        //        Cost = 20,
+        //        PurchaseInfos = new List<PurchaseInfos> { purchaseInfo }
+        //    });
+
+        //    using (AutomationAccountingGoodsContext db =
+        //        new AutomationAccountingGoodsContext(AutomationAccountingGoodsContext.ConnectionString))
+        //    {
+        //        int result = db.SerialNumber.Count();
+        //        Assert.AreEqual(result, 2, "Кол-во не равно");
+        //        Assert.AreNotEqual(db.SerialNumber.Find(2), null, "Не добавлено");
+        //    }
+        //}
+
+        //[Test]
+        //public void TestAddSalesGoods()
+        //{
+        //    InitAsync();
+
+        //    SqlMovementGoodsReportRepository dbSetMovementGoodsReports = new SqlMovementGoodsReportRepository();
+        //    PurchaseInfos purchaseInfo;
+
+        //    purchaseInfo =
+        //        new PurchaseInfos
+        //        {
+        //            Count = 1,
+        //            IdCurrency = 1,
+        //            IdProduct = 2,
+        //            PurchasePrice = 500,
+        //            SerialNumber =
+        //                new List<SerialNumber> { new SerialNumber { IdCounterparty = 1, IdProduct = 2, Value = "123" } }
+        //        };
+        //    dbSetMovementGoodsReports.AddAsync(new PurchaseReports
+        //    {
+        //        IdCounterparty = 1,
+        //        IdStore = 1,
+        //        Cost = 1,
+        //        PurchaseInfos = new List<PurchaseInfos> { purchaseInfo }
+        //    });
+
+        //    purchaseInfo =
+        //        new PurchaseInfos
+        //        {
+        //            Count = 1,
+        //            IdCurrency = 1,
+        //            IdProduct = 2,
+        //            PurchasePrice = 1000,
+        //            SerialNumber =
+        //                new List<SerialNumber> { new SerialNumber { IdCounterparty = 1, IdProduct = 2, Value = "123" } }
+        //        };
+        //    dbSetMovementGoodsReports.AddAsync(new PurchaseReports
+        //    {
+        //        IdCounterparty = 1,
+        //        IdStore = 1,
+        //        Cost = 20,
+        //        PurchaseInfos = new List<PurchaseInfos> { purchaseInfo }
+        //    });
+
+        //    purchaseInfo =
+        //        new PurchaseInfos { Count = 5, IdCurrency = 2, IdProduct = 1, PurchasePrice = 5 };
+        //    dbSetMovementGoodsReports.AddAsync(new PurchaseReports
+        //    {
+        //        IdCounterparty = 1,
+        //        IdStore = 1,
+        //        Cost = 20,
+        //        PurchaseInfos = new List<PurchaseInfos> { purchaseInfo }
+        //    });
+
+        //    DbSetSalesGoods dbSetSalesGoods = new DbSetSalesGoods();
+        //    SalesInfos salesInfo = new SalesInfos { Count = 1, IdProduct = 2, SellingPrice = 2500, SerialNumber = new SerialNumber { Id = 2 } };
+        //    dbSetSalesGoods.AddAsync(new SalesReports
+        //    {
+        //        IdCounterparty = 2,
+        //        IdStore = 1,
+        //        SalesInfos = new List<SalesInfos> { salesInfo }
+        //    });
+        //    salesInfo = new SalesInfos { Count = 2, IdProduct = 1, SellingPrice = 150 };
+        //    dbSetSalesGoods.AddAsync(new SalesReports
+        //    {
+        //        IdCounterparty = 2,
+        //        IdStore = 1,
+        //        SalesInfos = new List<SalesInfos> { salesInfo }
+        //    });
+
+        //    using (AutomationAccountingGoodsContext db =
+        //        new AutomationAccountingGoodsContext(AutomationAccountingGoodsContext.ConnectionString))
+        //    {
+        //        Assert.AreEqual(db.SalesReports.Count(), 2, "Кол-во отчетов не равно");
+        //        Assert.AreEqual(db.SalesInfos.Count(), 2, "Кол-во инфо не равно");
+        //    }
+        //}
+
+        //[Test]
+        //public void TestAddRevaluationProducts()
+        //{
+        //    InitAsync();
+
+        //    SqlRevaluationProductsReportRepository dbSetRevaluationProducts = new SqlRevaluationProductsReportRepository();
+        //    RevaluationProductsInfos revaluationProducts;
+
+        //    revaluationProducts =
+        //        new RevaluationProductsInfos
+        //        {
+        //            IdProduct = 2,
+        //            NewSalesPrice = 150
+        //        };
+        //    dbSetRevaluationProducts.AddAsync(new RevaluationProducts
+        //    {
+        //        RevaluationProductsInfos = new List<RevaluationProductsInfos> { revaluationProducts }
+        //    });
+
+        //    using (AutomationAccountingGoodsContext db =
+        //        new AutomationAccountingGoodsContext(AutomationAccountingGoodsContext.ConnectionString))
+        //    {
+        //        Assert.AreEqual(db.RevaluationProducts.Count(), 1, "Кол-во отчетов не равно");
+        //        Assert.AreEqual(db.RevaluationProductsInfos.Count(), 1, "Кол-во инфо не равно");
+        //    }
+        //}
+
+        //[Test]
+        //public void TestReport()
+        //{
+        //    InitAsync();
+
+        //    SqlMovementGoodsReportRepository dbSetMovementGoodsReports = new SqlMovementGoodsReportRepository();
+        //    PurchaseInfos purchaseInfo;
+
+        //    purchaseInfo = new PurchaseInfos { Count = 1, IdCurrency = 1, IdProduct = 1, PurchasePrice = 50 };
+        //    dbSetMovementGoodsReports.AddAsync(new PurchaseReports
+        //    {
+        //        IdCounterparty = 1,
+        //        IdStore = 1,
+        //        Cost = 1,
+        //        PurchaseInfos = new List<PurchaseInfos> { purchaseInfo }
+        //    });
+
+        //    purchaseInfo =
+        //        new PurchaseInfos { Count = 5, IdCurrency = 2, IdProduct = 1, PurchasePrice = 5 };
+        //    dbSetMovementGoodsReports.AddAsync(new PurchaseReports
+        //    {
+        //        IdCounterparty = 1,
+        //        IdStore = 1,
+        //        Cost = 20,
+        //        PurchaseInfos = new List<PurchaseInfos> { purchaseInfo }
+        //    });
+
+        //    purchaseInfo =
+        //        new PurchaseInfos
+        //        {
+        //            Count = 1,
+        //            IdCurrency = 1,
+        //            IdProduct = 2,
+        //            PurchasePrice = 500,
+        //            SerialNumber =
+        //                new List<SerialNumber> { new SerialNumber { IdCounterparty = 1, IdProduct = 2, Value = "123" } }
+        //        };
+        //    dbSetMovementGoodsReports.AddAsync(new PurchaseReports
+        //    {
+        //        IdCounterparty = 1,
+        //        IdStore = 1,
+        //        Cost = 20,
+        //        PurchaseInfos = new List<PurchaseInfos> { purchaseInfo }
+        //    });
+
+        //    purchaseInfo =
+        //        new PurchaseInfos
+        //        {
+        //            Count = 1,
+        //            IdCurrency = 1,
+        //            IdProduct = 2,
+        //            PurchasePrice = 1000,
+        //            SerialNumber =
+        //                new List<SerialNumber> { new SerialNumber { IdCounterparty = 1, IdProduct = 2, Value = "123" } }
+        //        };
+        //    dbSetMovementGoodsReports.AddAsync(new PurchaseReports
+        //    {
+        //        IdCounterparty = 1,
+        //        IdStore = 1,
+        //        Cost = 20,
+        //        PurchaseInfos = new List<PurchaseInfos> { purchaseInfo }
+        //    });
+
+        //    DbSetSalesGoods dbSetSalesGoods = new DbSetSalesGoods();
+        //    SalesInfos salesInfo = new SalesInfos { Count = 1, IdProduct = 2, SellingPrice = 2500, SerialNumber = new SerialNumber { Id = 2 } };
+        //    dbSetSalesGoods.AddAsync(new SalesReports
+        //    {
+        //        IdCounterparty = 2,
+        //        IdStore = 1,
+        //        SalesInfos = new List<SalesInfos> { salesInfo }
+        //    });
+        //    salesInfo = new SalesInfos { Count = 2, IdProduct = 1, SellingPrice = 150 };
+        //    dbSetSalesGoods.AddAsync(new SalesReports
+        //    {
+        //        IdCounterparty = 2,
+        //        IdStore = 1,
+        //        SalesInfos = new List<SalesInfos> { salesInfo }
+        //    });
+        //    ;
+        //    DbSetReports dbSetReports = new DbSetReports();
+        //    var result = dbSetReports.GetFinalReport(DateTime.Today, DateTime.Today);
+
+        //    Assert.AreEqual(result.Count, 2, "Кол-во не равно");
+        //    Assert.AreEqual(result[1].FinalSum, 150, "Сумма не равна");
+        //    Assert.AreEqual(result[0].FinalSum, 1500, "Сумма не равна");
+        //}
+
+        [Test]
+        public async Task TestLoadGroups()
+        {
+            await InitAsync();
+            IRepository<Category> groupRepository = new SqlCategoryRepository();
+            IEnumerable<Category> result = await groupRepository.GetListAsync();
+            Assert.AreEqual(result.Count(), 2, "Кол-во не равно");
         }
 
         [Test]
-        public void TestAddPurchaseGoods()
+        public async Task TestDeleatGroups()
         {
-            Init();
-
-            DbSetPurchaseGoods dbSetPurchaseGoods = new DbSetPurchaseGoods();
-
-            PurchaseInfos purchaseInfo = new PurchaseInfos
-            {
-                Count = 1,
-                IdExchangeRate = 1,
-                IdProduct = 2,
-                PurchasePrice = 500,
-                SerialNumbers =
-                    new List<SerialNumbers> { new SerialNumbers { IdCounterparty = 1, IdProduct = 2, Value = "123" } }
-            };
-            dbSetPurchaseGoods.Add(new PurchaseReports
-            {
-                IdCounterparty = 1,
-                IdStore = 1,
-                Course = 1,
-                PurchaseInfos = new List<PurchaseInfos> { purchaseInfo }
-            });
-
-            purchaseInfo =
-                new PurchaseInfos
-                {
-                    Count = 1,
-                    IdExchangeRate = 1,
-                    IdProduct = 2,
-                    PurchasePrice = 1000,
-                    SerialNumbers =
-                        new List<SerialNumbers> { new SerialNumbers { IdCounterparty = 1, IdProduct = 2, Value = "123" } }
-                };
-            dbSetPurchaseGoods.Add(new PurchaseReports
-            {
-                IdCounterparty = 1,
-                IdStore = 1,
-                Course = 20,
-                PurchaseInfos = new List<PurchaseInfos> { purchaseInfo }
-            });
-
-            using (AutomationAccountingGoodsEntities db =
-                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
-            {
-                int result = db.SerialNumbers.Count();
-                Assert.AreEqual(result, 2, "Кол-во не равно");
-                Assert.AreNotEqual(db.SerialNumbers.Find(2), null, "Не добавлено");
-            }
+            await InitAsync();
+            IRepository<Category> groupRepository = new SqlCategoryRepository();
+            await groupRepository.DeleteAsync(await groupRepository.GetItemAsync(1));
+            IEnumerable<Category> result = await groupRepository.GetListAsync();
+            Assert.AreEqual(result.Count(), 1, "Кол-во не равно");
         }
 
         [Test]
-        public void TestAddSalesGoods()
+        public async Task TestLoadGroupsWhisSpecification()
         {
-            Init();
-
-            DbSetPurchaseGoods dbSetPurchaseGoods = new DbSetPurchaseGoods();
-            PurchaseInfos purchaseInfo;
-
-            purchaseInfo =
-                new PurchaseInfos
-                {
-                    Count = 1,
-                    IdExchangeRate = 1,
-                    IdProduct = 2,
-                    PurchasePrice = 500,
-                    SerialNumbers =
-                        new List<SerialNumbers> { new SerialNumbers { IdCounterparty = 1, IdProduct = 2, Value = "123" } }
-                };
-            dbSetPurchaseGoods.Add(new PurchaseReports
-            {
-                IdCounterparty = 1,
-                IdStore = 1,
-                Course = 1,
-                PurchaseInfos = new List<PurchaseInfos> { purchaseInfo }
-            });
-
-            purchaseInfo =
-                new PurchaseInfos
-                {
-                    Count = 1,
-                    IdExchangeRate = 1,
-                    IdProduct = 2,
-                    PurchasePrice = 1000,
-                    SerialNumbers =
-                        new List<SerialNumbers> { new SerialNumbers { IdCounterparty = 1, IdProduct = 2, Value = "123" } }
-                };
-            dbSetPurchaseGoods.Add(new PurchaseReports
-            {
-                IdCounterparty = 1,
-                IdStore = 1,
-                Course = 20,
-                PurchaseInfos = new List<PurchaseInfos> { purchaseInfo }
-            });
-
-            purchaseInfo =
-                new PurchaseInfos { Count = 5, IdExchangeRate = 2, IdProduct = 1, PurchasePrice = 5 };
-            dbSetPurchaseGoods.Add(new PurchaseReports
-            {
-                IdCounterparty = 1,
-                IdStore = 1,
-                Course = 20,
-                PurchaseInfos = new List<PurchaseInfos> { purchaseInfo }
-            });
-
-            DbSetSalesGoods dbSetSalesGoods = new DbSetSalesGoods();
-            SalesInfos salesInfo = new SalesInfos { Count = 1, IdProduct = 2, SellingPrice = 2500, SerialNumbers = new SerialNumbers{Id = 2} };
-            dbSetSalesGoods.Add(new SalesReports
-            {
-                IdCounterparty = 2,
-                IdStore = 1,
-                SalesInfos = new List<SalesInfos> { salesInfo }
-            });
-            salesInfo = new SalesInfos { Count = 2, IdProduct = 1, SellingPrice = 150 };
-            dbSetSalesGoods.Add(new SalesReports
-            {
-                IdCounterparty = 2,
-                IdStore = 1,
-                SalesInfos = new List<SalesInfos> { salesInfo }
-            });
-
-            using (AutomationAccountingGoodsEntities db =
-                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
-            {
-                Assert.AreEqual(db.SalesReports.Count(), 2, "Кол-во отчетов не равно");
-                Assert.AreEqual(db.SalesInfos.Count(), 2, "Кол-во инфо не равно");
-            }
+            await InitAsync();
+            IRepository<Category> groupRepository = new SqlCategoryRepository();
+            List<Category> result = new List<Category>(await groupRepository.GetListAsync(CategorySpecification.GetCategoriesByIdParent(null), new Dictionary<string, SortingTypes>{{"Id", SortingTypes.ASC}}, take:1));
+            Assert.AreEqual(result.Count, 1, "Кол-во не равно");
+            Assert.IsTrue(result.Any(obj => obj.Title == "Rulezz"), "Нет группы");
         }
 
+        [TestCase("Товар2")]
+        [TestCase("ven2")]
+        [TestCase("8051412688784")]
         [Test]
-        public void TestAddRevaluationProducts()
+        public async Task TestLoadProductWhisSpecification(string findString)
         {
-            Init();
-
-            DbSetRevaluationProducts dbSetRevaluationProducts = new DbSetRevaluationProducts();
-            RevaluationProductsInfos revaluationProducts;
-
-            revaluationProducts =
-                new RevaluationProductsInfos
-                {
-                    IdProduct = 2,
-                    NewSalesPrice = 150
-                };
-            dbSetRevaluationProducts.Add(new RevaluationProductsReports
-            {
-                RevaluationProductsInfos = new List<RevaluationProductsInfos> {revaluationProducts}
-            });
-
-            using (AutomationAccountingGoodsEntities db =
-                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
-            {
-                Assert.AreEqual(db.RevaluationProductsReports.Count(), 1, "Кол-во отчетов не равно");
-                Assert.AreEqual(db.RevaluationProductsInfos.Count(), 1, "Кол-во инфо не равно");
-            }
+            await InitAsync();
+            IRepository<Product> productRepository = new SqlProductRepository();
+            List<Product> result = new List<Product>(await productRepository.GetListAsync(ProductSpecification.GetProductsByFindString(findString)));
+            Assert.AreEqual(result.Count, 1, "Кол-во не равно");
+            Assert.IsTrue(result.Any(obj => obj.Title == "Товар2"), "Нет товара");
         }
 
-        [Test]
-        public void TestReport()
+        private async Task InitAsync()
         {
-            Init();
+            IRepository<Category> repositoryGroup = new SqlCategoryRepository();
+            await repositoryGroup.CreateAsync(new Category { Title = "Rulezz" });
+            await repositoryGroup.CreateAsync(new Category { Title = "Craft" });
 
-            DbSetPurchaseGoods dbSetPurchaseGoods = new DbSetPurchaseGoods();
-            PurchaseInfos purchaseInfo;
+            IRepository<UnitStorage> repositoryUnitStorage = new SqlUnitStorageRepository();
+            await repositoryUnitStorage.CreateAsync(new UnitStorage { Title = "шт" });
 
-            purchaseInfo = new PurchaseInfos { Count = 1, IdExchangeRate = 1, IdProduct = 1, PurchasePrice = 50 };
-            dbSetPurchaseGoods.Add(new PurchaseReports
-            {
-                IdCounterparty = 1,
-                IdStore = 1,
-                Course = 1,
-                PurchaseInfos = new List<PurchaseInfos> { purchaseInfo }
-            });
+            IRepository<WarrantyPeriod> repositoryWarrantyPeriod = new SqlWarrantyPeriodRepository();
+            await repositoryWarrantyPeriod.CreateAsync(new WarrantyPeriod { Period = "Нет" });
+            await repositoryWarrantyPeriod.CreateAsync(new WarrantyPeriod { Period = "14 дней" });
 
-            purchaseInfo =
-                new PurchaseInfos { Count = 5, IdExchangeRate = 2, IdProduct = 1, PurchasePrice = 5 };
-            dbSetPurchaseGoods.Add(new PurchaseReports
-            {
-                IdCounterparty = 1,
-                IdStore = 1,
-                Course = 20,
-                PurchaseInfos = new List<PurchaseInfos> { purchaseInfo }
-            });
+            IRepository<Currency> dbSetExchangeRates = new SqlExchangeRateRepository();
+            await dbSetExchangeRates.CreateAsync(new Currency { Title = "ГРН", Cost = 1, IsDefault = true});
+            await dbSetExchangeRates.CreateAsync(new Currency { Title = "USD", Cost = 20 });
 
-            purchaseInfo =
-                new PurchaseInfos
-                {
-                    Count = 1,
-                    IdExchangeRate = 1,
-                    IdProduct = 2,
-                    PurchasePrice = 500,
-                    SerialNumbers =
-                        new List<SerialNumbers> { new SerialNumbers { IdCounterparty = 1, IdProduct = 2, Value = "123" } }
-                };
-            dbSetPurchaseGoods.Add(new PurchaseReports
-            {
-                IdCounterparty = 1,
-                IdStore = 1,
-                Course = 20,
-                PurchaseInfos = new List<PurchaseInfos> { purchaseInfo }
-            });
+            IRepository<Counterparty> dbSetCounterparties = new SqlCounterpartyRepository();
+            await dbSetCounterparties.CreateAsync(new Counterparty { Title = "Поставщик1", WhoIsIt = TypeCounterparties.Suppliers });
+            await dbSetCounterparties.CreateAsync(new Counterparty { Title = "Покупатель1", WhoIsIt = TypeCounterparties.Buyers });
 
-            purchaseInfo =
-                new PurchaseInfos
-                {
-                    Count = 1,
-                    IdExchangeRate = 1,
-                    IdProduct = 2,
-                    PurchasePrice = 1000,
-                    SerialNumbers =
-                        new List<SerialNumbers> {new SerialNumbers {IdCounterparty = 1, IdProduct = 2, Value = "123"}}
-                };
-            dbSetPurchaseGoods.Add(new PurchaseReports
-            {
-                IdCounterparty = 1,
-                IdStore = 1,
-                Course = 20,
-                PurchaseInfos = new List<PurchaseInfos> { purchaseInfo }
-            });
+            //IRepository<PriceGroup> repositoryPriceGroup = new Sql
 
-            DbSetSalesGoods dbSetSalesGoods = new DbSetSalesGoods();
-            SalesInfos salesInfo = new SalesInfos { Count = 1, IdProduct = 2, SellingPrice = 2500, SerialNumbers = new SerialNumbers{Id = 2}};
-            dbSetSalesGoods.Add(new SalesReports
-            {
-                IdCounterparty = 2,
-                IdStore = 1,
-                SalesInfos = new List<SalesInfos> { salesInfo }
-            });
-            salesInfo = new SalesInfos { Count = 2, IdProduct = 1, SellingPrice = 150 };
-            dbSetSalesGoods.Add(new SalesReports
-            {
-                IdCounterparty = 2,
-                IdStore = 1,
-                SalesInfos = new List<SalesInfos> { salesInfo }
-            });
-            ;
-            DbSetReports dbSetReports = new DbSetReports();
-            var result = dbSetReports.GetFinalReport(DateTime.Today, DateTime.Today);
-
-            Assert.AreEqual(result.Count, 2, "Кол-во не равно");
-            Assert.AreEqual(result[1].FinalSum, 150, "Сумма не равна");
-            Assert.AreEqual(result[0].FinalSum, 1500, "Сумма не равна");
-        }
-
-        private void Init()
-        {
-            DbSetGroups dbSetGroups = new DbSetGroups();
-            dbSetGroups.Add(new Groups { Title = "Группа1" });
-
-            DbSetUnitStorages dbSetUnitStorages = new DbSetUnitStorages();
-            dbSetUnitStorages.Add(new UnitStorages { Title = "шт" });
-
-            DbSetWarrantyPeriods dbSetWarrantyPeriods = new DbSetWarrantyPeriods();
-            dbSetWarrantyPeriods.Add(new WarrantyPeriods { Period = "Нет" });
-            dbSetWarrantyPeriods.Add(new WarrantyPeriods { Period = "14 дней" });
-
-            DbSetProducts dbSetProducts = new DbSetProducts();
-            dbSetProducts.Add(new Products
-            {
-                Title = "Товар1",
-                Barcode = "1",
-                IdGroup = 1,
-                IdUnitStorage = 1,
-                IdWarrantyPeriod = 1
-            });
-            dbSetProducts.Add(new Products
-            {
-                Title = "Товар2",
-                Barcode = "2",
-                IdGroup = 1,
-                IdUnitStorage = 1,
-                IdWarrantyPeriod = 2
-            });
-
-            DbSetExchangeRates dbSetExchangeRates = new DbSetExchangeRates();
-            dbSetExchangeRates.Add(new ExchangeRates { Title = "ГРН", Course = 1 });
-            dbSetExchangeRates.Add(new ExchangeRates { Title = "USD", Course = 20 });
-
-            DbSetCounterparties dbSetCounterparties = new DbSetCounterparties();
-            dbSetCounterparties.Add(new Counterparties { Title = "Поставщик1", WhoIsIt = false });
-            dbSetCounterparties.Add(new Counterparties { Title = "Покупатель1", WhoIsIt = true });
+            //IRepository<Product> dbSetProducts = new SqlProductRepository();
+            //await dbSetProducts.CreateAsync(new Product
+            //{
+            //    Title = "Товар1",
+            //    Barcode = "1",
+            //    IdCategory = 1,
+            //    IdUnitStorage = 1,
+            //    IdWarrantyPeriod = 1
+            //});
+            //await dbSetProducts.CreateAsync(new Product
+            //{
+            //    Title = "Товар2",
+            //    VendorCode = "ven2",
+            //    Barcode = "8051412688784",
+            //    IdCategory = 1,
+            //    IdUnitStorage = 1,
+            //    IdWarrantyPeriod = 2
+            //});
         }
     }
 }

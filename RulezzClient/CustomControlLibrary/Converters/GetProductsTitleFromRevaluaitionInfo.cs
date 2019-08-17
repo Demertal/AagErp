@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
-using ModelModul;
+using ModelModul.Models;
 
 namespace CustomControlLibrary.Converters
 {
@@ -11,17 +11,17 @@ namespace CustomControlLibrary.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(value is ICollection<RevaluationProductsInfos> revaluationProductsInfos)) return "";
+            if (!(value is ICollection<PriceProduct> priceProducts)) return "";
             string result = "";
             int count = 0;
-            while (count < revaluationProductsInfos.Count && count < 10)
+            while (count < priceProducts.Count && count < 10)
             {
-                result += revaluationProductsInfos.ElementAt(count).Products.Title;
-                if (count + 1 < revaluationProductsInfos.Count && count + 1 < 10)
+                result += priceProducts.ElementAt(count).Product.Title;
+                if (count + 1 < priceProducts.Count && count + 1 < 10)
                 {
                     result += " , ";
                 }
-                else if (count + 1 < revaluationProductsInfos.Count &&  count + 1 == 10)
+                else if (count + 1 < priceProducts.Count &&  count + 1 == 10)
                 {
                     result += "...";
                 }

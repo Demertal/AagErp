@@ -8,7 +8,7 @@
              VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Padding="5">
 
     <UserControl.Resources>
-        <converters:GetProductsTitleFromPurchaseInfo x:Key="GetProductsTitleFromPurchaseInfo"/>
+        <converters:GetProductsTitleFromMovementGoodsInfo x:Key="GetProductsTitleFromPurchaseInfo"/>
     </UserControl.Resources>
 
     <StackPanel Orientation="Horizontal">
@@ -43,7 +43,7 @@
         </StackPanel>
 
         <Border Margin="25,0,0,0" BorderBrush="Black" BorderThickness="2" CornerRadius="4">
-            <ContentControl interactivity:RegionManager.RegionName="PurchaseReportInfo" interactivity:RegionManager.RegionContext="{Binding Path=SelectedItem, ElementName=PurchaseReportsDataGrid}" FontSize="14"/>
+            <ContentControl interactivity:RegionManager.RegionName="PurchaseInfo" interactivity:RegionManager.RegionContext="{Binding Path=SelectedItem, ElementName=PurchaseReportsDataGrid}" FontSize="14"/>
         </Border>
     </StackPanel>
 </UserControl>

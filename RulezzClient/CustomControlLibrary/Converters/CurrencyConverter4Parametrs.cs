@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
-using ModelModul;
+using ModelModul.Models;
 
 namespace CustomControlLibrary.Converters
 {
@@ -9,7 +9,7 @@ namespace CustomControlLibrary.Converters
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(values[0] is decimal val) || !(values[1] is ExchangeRates exchange)) return 0.ToString("C", CultureInfo.CreateSpecificCulture("ua-UA"));
+            if (!(values[0] is decimal val) || !(values[1] is Currency exchange)) return 0.ToString("C", CultureInfo.CreateSpecificCulture("ua-UA"));
             if (exchange.Title == "ГРН")
             {
                 return val.ToString("C", CultureInfo.CreateSpecificCulture("ua-UA"));

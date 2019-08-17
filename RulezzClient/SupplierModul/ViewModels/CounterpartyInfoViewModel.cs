@@ -2,7 +2,8 @@
 using System.ComponentModel;
 using System.Windows;
 using ModelModul;
-using ModelModul.Counterparty;
+using ModelModul.Models;
+using ModelModul.Repositories;
 using Prism.Commands;
 using Prism.Regions;
 
@@ -20,19 +21,19 @@ namespace CounterpartyModul.ViewModels
             set => SetProperty(ref _isUpdate, value);
         }
 
-        private Counterparties _oldCounterparty = new Counterparties();
+        private Counterparty _oldCounterparty = new Counterparty();
 
-        private CounterpartyViewModel _selectedCounterparty = new CounterpartyViewModel();
-        public CounterpartyViewModel SelectedCounterparty
-        {
-            get => _selectedCounterparty;
-            set
-            {
-                _selectedCounterparty = value;
-                IsUpdate = false;
-                RaisePropertyChanged();
-            }
-        }
+        //private CounterpartyViewModel _selectedCounterparty = new CounterpartyViewModel();
+        //public CounterpartyViewModel SelectedCounterparty
+        //{
+        //    get => _selectedCounterparty;
+        //    set
+        //    {
+        //        _selectedCounterparty = value;
+        //        IsUpdate = false;
+        //        RaisePropertyChanged();
+        //    }
+        //}
 
         public DelegateCommand UpdateCommand { get; }
         public DelegateCommand ResetCommand { get; }
@@ -42,21 +43,21 @@ namespace CounterpartyModul.ViewModels
 
         public CounterpartyInfoViewModel()
         {
-            SelectedCounterparty.PropertyChanged += delegate (object sender, PropertyChangedEventArgs args)
-            {
-                RaisePropertyChanged(args.PropertyName);
-            };
-            UpdateCommand = new DelegateCommand(Update).ObservesCanExecute(() => SelectedCounterparty.IsValidate);
-            ResetCommand = new DelegateCommand(Reset);
-            OkCommand = new DelegateCommand(Accept).ObservesCanExecute(() => SelectedCounterparty.IsValidate);
+            //SelectedCounterparty.PropertyChanged += delegate (object sender, PropertyChangedEventArgs args)
+            //{
+            //    RaisePropertyChanged(args.PropertyName);
+            //};
+            //UpdateCommand = new DelegateCommand(Update).ObservesCanExecute(() => SelectedCounterparty.IsValidate);
+            //ResetCommand = new DelegateCommand(Reset);
+            //OkCommand = new DelegateCommand(Accept).ObservesCanExecute(() => SelectedCounterparty.IsValidate);
         }
 
         private void Accept()
         {
             try
             {
-                DbSetCounterparties dbSet = new DbSetCounterparties();
-                dbSet.Update(SelectedCounterparty.Counterparty);
+                SqlCounterpartyRepository dbSet = new SqlCounterpartyRepository();
+                //dbSet.UpdateAsync(SelectedCounterparty.Counterparty);
                 MessageBox.Show("Контрагент изменен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
                 IsUpdate = false;
             }
@@ -68,17 +69,17 @@ namespace CounterpartyModul.ViewModels
 
         private void Reset()
         {
-            SelectedCounterparty.Counterparty.Title = _oldCounterparty.Title;
-            SelectedCounterparty.Counterparty.Address = _oldCounterparty.Address;
-            SelectedCounterparty.Counterparty.ContactPerson = _oldCounterparty.ContactPerson;
-            SelectedCounterparty.Counterparty.ContactPhone = _oldCounterparty.ContactPhone;
-            SelectedCounterparty.Counterparty.Props = _oldCounterparty.Props;
+            //SelectedCounterparty.Counterparty.Title = _oldCounterparty.Title;
+            //SelectedCounterparty.Counterparty.Address = _oldCounterparty.Address;
+            //SelectedCounterparty.Counterparty.ContactPerson = _oldCounterparty.ContactPerson;
+            //SelectedCounterparty.Counterparty.ContactPhone = _oldCounterparty.ContactPhone;
+            //SelectedCounterparty.Counterparty.Props = _oldCounterparty.Props;
             IsUpdate = false;
         }
 
         private void Update()
         {
-            _oldCounterparty = (Counterparties)SelectedCounterparty.Counterparty.Clone();
+            //_oldCounterparty = (Counterparty)SelectedCounterparty.Counterparty.Clone();
             IsUpdate = true;
         }
 

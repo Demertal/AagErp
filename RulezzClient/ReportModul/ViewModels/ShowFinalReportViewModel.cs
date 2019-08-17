@@ -13,12 +13,12 @@ namespace ReportModul.ViewModels
     {
         #region Property
 
-        private ObservableCollection<FinalReportProductViewModel> _reportList = new ObservableCollection<FinalReportProductViewModel>();
-        public ObservableCollection<FinalReportProductViewModel> ReportList
-        {
-            get => _reportList;
-            set => SetProperty(ref _reportList, value);
-        }
+        //private ObservableCollection<FinalReportProductViewModel> _reportList = new ObservableCollection<FinalReportProductViewModel>();
+        //public ObservableCollection<FinalReportProductViewModel> ReportList
+        //{
+        //    get => _reportList;
+        //    set => SetProperty(ref _reportList, value);
+        //}
 
         private DateTime _startDate;
         public DateTime StartDate
@@ -42,10 +42,10 @@ namespace ReportModul.ViewModels
             }
         }
 
-        public string FinalSum
-        {
-            get { return "Итого прибыль: " + ReportList.Sum(obj => obj.FinalSum).ToString("C", new CultureInfo("UA-ua")); }
-        }
+        //public string FinalSum
+        //{
+        //    get { return "Итого прибыль: " + ReportList.Sum(obj => obj.FinalSum).ToString("C", new CultureInfo("UA-ua")); }
+        //}
 
         #endregion
 
@@ -61,7 +61,7 @@ namespace ReportModul.ViewModels
             try
             {
                 DbSetReports dbSet = new DbSetReports();
-                ReportList = dbSet.GetFinalReport(StartDate, EndDate);
+                //ReportList = dbSet.GetFinalReport(StartDate, EndDate);
             }
             catch (Exception e)
             {

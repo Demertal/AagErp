@@ -3,7 +3,8 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using ModelModul;
-using ModelModul.WarrantyPeriod;
+using ModelModul.Models;
+using ModelModul.Repositories;
 using Prism.Commands;
 using Prism.Regions;
 
@@ -13,14 +14,14 @@ namespace WarrantyPeriodsModul.ViewModels
     {
         #region Properties
 
-        public ObservableCollection<WarrantyPeriods> _warrantyPeriodsList = new ObservableCollection<WarrantyPeriods>();
-        public ObservableCollection<WarrantyPeriods> WarrantyPeriodsList
+        public ObservableCollection<WarrantyPeriod> _warrantyPeriodsList = new ObservableCollection<WarrantyPeriod>();
+        public ObservableCollection<WarrantyPeriod> WarrantyPeriodsList
         {
             get => _warrantyPeriodsList;
             set => SetProperty(ref _warrantyPeriodsList, value);
         }
 
-        public DelegateCommand<WarrantyPeriods> DeleteWarrantyPeriodsCommand { get; }
+        public DelegateCommand<WarrantyPeriod> DeleteWarrantyPeriodsCommand { get; }
         public DelegateCommand<DataGridCellEditEndingEventArgs> ChangeWarrantyPeriodsCommand { get; }
 
         #endregion
@@ -28,13 +29,13 @@ namespace WarrantyPeriodsModul.ViewModels
         public ShowWarrantyPeriodsViewModel()
         {
             ChangeWarrantyPeriodsCommand = new DelegateCommand<DataGridCellEditEndingEventArgs>(ChangeWarrantyPeriods);
-            DeleteWarrantyPeriodsCommand = new DelegateCommand<WarrantyPeriods>(DeleteWarrantyPeriods);
+            DeleteWarrantyPeriodsCommand = new DelegateCommand<WarrantyPeriod>(DeleteWarrantyPeriodsAsync);
         }
 
         private void ChangeWarrantyPeriods(DataGridCellEditEndingEventArgs obj)
         {
             if (obj == null) return;
-            if (string.IsNullOrEmpty(((WarrantyPeriods)obj.Row.DataContext).Period))
+            if (string.IsNullOrEmpty(((WarrantyPeriod)obj.Row.DataContext).Period))
             {
                 obj.Cancel = true;
             }
@@ -42,71 +43,66 @@ namespace WarrantyPeriodsModul.ViewModels
             {
                 if (obj.Row.IsNewItem)
                 {
-                    AddWarrantyPeriods((WarrantyPeriods)obj.Row.Item);
+                    AddWarrantyPeriodsAsync((WarrantyPeriod)obj.Row.Item);
                 }
                 else
                 {
-                    UpdateWarrantyPeriods((WarrantyPeriods)obj.Row.Item);
+                    UpdateWarrantyPeriodsAsync((WarrantyPeriod)obj.Row.Item);
                 }
             }
         }
 
-        private void AddWarrantyPeriods(WarrantyPeriods obj)
+        private async void AddWarrantyPeriodsAsync(WarrantyPeriod obj)
         {
             try
             {
-                DbSetWarrantyPeriods dbSet = new DbSetWarrantyPeriods();
-                dbSet.Add(obj);
+                SqlWarrantyPeriodRepository sql = new SqlWarrantyPeriodRepository();
+                await sql.CreateAsync(obj);
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            Load();
+            LoadAsync();
         }
 
-        private void UpdateWarrantyPeriods(WarrantyPeriods obj)
+        private async void UpdateWarrantyPeriodsAsync(WarrantyPeriod obj)
         {
             try
             {
-                DbSetWarrantyPeriods dbSet = new DbSetWarrantyPeriods();
-                dbSet.Update(obj);
+                SqlWarrantyPeriodRepository sql = new SqlWarrantyPeriodRepository();
+                await sql.UpdateAsync(obj);
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            Load();
+            LoadAsync();
         }
 
-        private void DeleteWarrantyPeriods(WarrantyPeriods obj)
+        private async void DeleteWarrantyPeriodsAsync(WarrantyPeriod obj)
         {
             if (obj == null) return;
-            if (obj.Period == "Нет")
-            {
-                MessageBox.Show("Нельзя удалять гарантийный период: \"Нет\"", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
             if (MessageBox.Show("Удалить гарантийный период?", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
                 MessageBoxResult.Yes) return;
             try
             {
-                DbSetWarrantyPeriods dbSet = new DbSetWarrantyPeriods();
-                dbSet.Delete(obj.Id);
+                SqlWarrantyPeriodRepository sql = new SqlWarrantyPeriodRepository();
+                await sql.DeleteAsync(obj);
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            Load();
+            LoadAsync();
         }
 
-        private void Load()
+        private async void LoadAsync()
         {
             try
             {
-                DbSetWarrantyPeriods dbSet = new DbSetWarrantyPeriods();
-                WarrantyPeriodsList = new ObservableCollection<WarrantyPeriods>(dbSet.Load());
+                SqlWarrantyPeriodRepository sql = new SqlWarrantyPeriodRepository();
+                //WarrantyPeriodsList = new ObservableCollection<WarrantyPeriod>(await sql.GetListAsync());
                 RaisePropertyChanged("WarrantyPeriodsList");
             }
             catch (Exception e)
@@ -119,7 +115,7 @@ namespace WarrantyPeriodsModul.ViewModels
 
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
-            Load();
+            LoadAsync();
         }
 
         public override bool IsNavigationTarget(NavigationContext navigationContext)

@@ -3,7 +3,7 @@
 namespace GroupModul.Views
 {
     /// <summary>
-    /// Логика взаимодействия для AddGroup.xaml
+    /// Логика взаимодействия для AddGroupAsync.xaml
     /// </summary>
     public partial class AddGroup : UserControl
     {

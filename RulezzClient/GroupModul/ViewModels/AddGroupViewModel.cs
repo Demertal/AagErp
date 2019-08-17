@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Windows;
 using ModelModul;
-using ModelModul.Group;
+using ModelModul.Models;
+using ModelModul.Repositories;
 using Prism.Commands;
 using Prism.Interactivity.InteractionRequest;
 using Prism.Regions;
@@ -12,13 +13,13 @@ namespace GroupModul.ViewModels
     {
         #region Properties
 
-        private readonly Groups _groupModel = new Groups();
+        private readonly Category _category = new Category();
         public string Title
         {
-            get => _groupModel.Title;
+            get => _category.Title;
             set
             {
-                _groupModel.Title = value;
+                _category.Title = value;
                 RaisePropertyChanged();
                 RaisePropertyChanged("IsValidate");
             }
@@ -34,9 +35,9 @@ namespace GroupModul.ViewModels
             {
                 SetProperty(ref _notification, value as Confirmation);
                 if(_notification.Content != null)
-                    _groupModel.IdParentGroup = (int?)_notification.Content;
+                    _category.IdParent = (int?)_notification.Content;
                 else
-                    _groupModel.IdParentGroup = null;
+                    _category.IdParent = null;
                 Title = "";
             }
         }
@@ -49,16 +50,16 @@ namespace GroupModul.ViewModels
 
         public AddGroupViewModel()
         {
-            AddGroupCommand = new DelegateCommand(AddGroup).ObservesCanExecute(() => IsEnabled);
+            AddGroupCommand = new DelegateCommand(AddGroupAsync).ObservesCanExecute(() => IsEnabled);
         }
 
-        public void AddGroup()
+        public async void AddGroupAsync()
         {
             try
             {
-                DbSetGroups dbSetGroups = new DbSetGroups();
-                dbSetGroups.Add(_groupModel);
-                MessageBox.Show(_groupModel.IdParentGroup == null ? "Магазин добавлен" : "Группа добавлена", "Успех",
+                SqlCategoryRepository sqlCategoryRepository = new SqlCategoryRepository();
+                await sqlCategoryRepository.CreateAsync(_category);
+                MessageBox.Show(_category.IdParent == null ? "Магазин добавлен" : "Группа добавлена", "Успех",
                     MessageBoxButton.OK, MessageBoxImage.Information);
 
                 if (_notification != null)

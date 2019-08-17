@@ -1,7 +1,7 @@
-﻿using System;
+﻿using ModelModul.Models;
+using System;
 using System.Globalization;
 using System.Windows.Data;
-using ModelModul;
 
 namespace CustomControlLibrary.Converters
 {
@@ -18,7 +18,7 @@ namespace CustomControlLibrary.Converters
                 return sum.ToString("C", CultureInfo.CreateSpecificCulture("ua-UA"));
             }
 
-            if (values[2] is ExchangeRates exchange && values[3] is bool && values[4] is decimal)
+            if (values[2] is Currency exchange && values[3] is bool && values[4] is decimal)
             {
                 if (exchange.Title == "ГРН")
                 {

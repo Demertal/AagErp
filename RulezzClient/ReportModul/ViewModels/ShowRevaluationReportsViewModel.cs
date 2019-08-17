@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Windows;
-using ModelModul;
-using ModelModul.RevaluationProduct;
+using ModelModul.Models;
+using ModelModul.Repositories;
 using Prism.Regions;
 
 namespace ReportModul.ViewModels
 {
-    class ShowRevaluationReportsViewModel: BufferRead<RevaluationProductsReports>
+    class ShowRevaluationReportsViewModel: BufferRead<RevaluationProducts>
     {
         #region Properties
 
@@ -24,9 +24,9 @@ namespace ReportModul.ViewModels
         {
             try
             {
-                DbSetRevaluationProducts dbSet = new DbSetRevaluationProducts();
-                Count = dbSet.GetCount();
-                ReportsList = dbSet.Load(Left, Step);
+                SqlRevaluationProductsReportRepository sql = new SqlRevaluationProductsReportRepository();
+                //Count = sql.GetCount();
+                //ReportsList = sql.Load(Left, Step);
                 RaisePropertyChanged("IsEnabledRightCommand");
             }
             catch (Exception e)

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Windows.Controls;
-using ModelModul;
+using ModelModul.Models;
 using Prism.Common;
 using Prism.Regions;
 using ReportModul.ViewModels;
@@ -21,8 +21,8 @@ namespace ReportModul.Views
         private void RevaluationReportInfo_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             var context = (ObservableObject<object>)sender;
-            var revaluationProductsReport = (RevaluationProductsReports)context.Value;
-            (DataContext as RevaluationReportInfoViewModel).Report = revaluationProductsReport ?? new RevaluationProductsReports();
+            var revaluationProductsReport = (RevaluationProducts)context.Value;
+            (DataContext as RevaluationReportInfoViewModel).Report = revaluationProductsReport ?? new RevaluationProducts();
         }
     }
 }

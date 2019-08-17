@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Windows;
 using ModelModul;
-using ModelModul.ExchangeRate;
+using ModelModul.Models;
+using ModelModul.Repositories;
 using Prism.Commands;
 using Prism.Interactivity.InteractionRequest;
 using Prism.Regions;
@@ -12,7 +13,7 @@ namespace RulezzClient.ViewModels
     {
         #region Properties
 
-        private ExchangeRates _exchangeRates = new ExchangeRates();
+        private Currency _currency = new Currency();
 
         private Confirmation _notification;
         public INotification Notification
@@ -27,10 +28,10 @@ namespace RulezzClient.ViewModels
 
         public decimal Course
         {
-            get => _exchangeRates.Course;
+            get => _currency.Cost;
             set
             {
-                _exchangeRates.Course = value;
+                _currency.Cost = value;
                 RaisePropertyChanged();
                 RaisePropertyChanged("IsEnabled");
             }
@@ -53,8 +54,8 @@ namespace RulezzClient.ViewModels
         {
             try
             {
-                DbSetExchangeRates dbSetExchange = new DbSetExchangeRates();
-                dbSetExchange.Update(_exchangeRates);
+                SqlExchangeRateRepository sqlExchange = new SqlExchangeRateRepository();
+                sqlExchange.UpdateAsync(_currency);
                 MessageBox.Show("Курс изменен.", "Успех",
                     MessageBoxButton.OK, MessageBoxImage.Information);
 
@@ -72,9 +73,9 @@ namespace RulezzClient.ViewModels
         {
             try
             {
-                DbSetExchangeRates dbSetExchange = new DbSetExchangeRates();
-                _exchangeRates = dbSetExchange.Load("USD");
-                RaisePropertyChanged("Course");
+                SqlExchangeRateRepository sqlExchange = new SqlExchangeRateRepository();
+                //_currency = sqlExchange.Load("USD");
+                RaisePropertyChanged("Cost");
                 RaisePropertyChanged("IsEnabled");
             }
             catch (Exception ex)

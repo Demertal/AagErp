@@ -2,7 +2,6 @@
 using System.Windows.Controls;
 using CounterpartyModul.ViewModels;
 using ModelModul;
-using ModelModul.Counterparty;
 using Prism.Common;
 using Prism.Regions;
 
@@ -22,8 +21,8 @@ namespace CounterpartyModul.Views
         private void CounterpartyInfo_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             var context = (ObservableObject<object>)sender;
-            var selectedCounterparty = (CounterpartyViewModel)context.Value;
-            (DataContext as CounterpartyInfoViewModel).SelectedCounterparty = selectedCounterparty ?? new CounterpartyViewModel();
+            //var selectedCounterparty = (CounterpartyViewModel)context.Value;
+            //(DataContext as CounterpartyInfoViewModel).SelectedCounterparty = selectedCounterparty ?? new CounterpartyViewModel();
         }
     }
 }

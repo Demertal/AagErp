@@ -3,7 +3,7 @@
 namespace WarrantyModul.Views
 {
     /// <summary>
-    /// Логика взаимодействия для AddWarranty.xaml
+    /// Логика взаимодействия для AddWarrantyAsync.xaml
     /// </summary>
     public partial class AddWarranty : UserControl
     {

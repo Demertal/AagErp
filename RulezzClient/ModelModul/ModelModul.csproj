@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.EntityFrameworkCore.Design.2.2.6\build\net461\Microsoft.EntityFrameworkCore.Design.props" Condition="Exists('..\packages\Microsoft.EntityFrameworkCore.Design.2.2.6\build\net461\Microsoft.EntityFrameworkCore.Design.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ModelModul</RootNamespace>
     <AssemblyName>ModelModul</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
@@ -37,14 +38,53 @@
     <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.2.0.4\lib\net45\CommonServiceLocator.dll</HintPath>
     </Reference>
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    <Reference Include="Microsoft.EntityFrameworkCore, Version=2.2.6.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.EntityFrameworkCore.2.2.6\lib\netstandard2.0\Microsoft.EntityFrameworkCore.dll</HintPath>
     </Reference>
-    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    <Reference Include="Microsoft.EntityFrameworkCore.Abstractions, Version=2.2.6.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.EntityFrameworkCore.Abstractions.2.2.6\lib\netstandard2.0\Microsoft.EntityFrameworkCore.Abstractions.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.EntityFrameworkCore">
-      <HintPath>..\packages\Microsoft.EntityFrameworkCore.1.1.0\lib\net451\Microsoft.EntityFrameworkCore.dll</HintPath>
+    <Reference Include="Microsoft.EntityFrameworkCore.Design, Version=2.2.6.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.EntityFrameworkCore.Design.2.2.6\lib\net461\Microsoft.EntityFrameworkCore.Design.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.EntityFrameworkCore.Relational, Version=2.2.6.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.EntityFrameworkCore.Relational.2.2.6\lib\netstandard2.0\Microsoft.EntityFrameworkCore.Relational.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.EntityFrameworkCore.SqlServer, Version=2.2.6.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.EntityFrameworkCore.SqlServer.2.2.6\lib\netstandard2.0\Microsoft.EntityFrameworkCore.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Caching.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Caching.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Caching.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Caching.Memory, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Caching.Memory.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Caching.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Configuration, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Configuration.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Configuration.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Configuration.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Configuration.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Configuration.Binder, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Configuration.Binder.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Configuration.Binder.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.2.2.0\lib\net461\Microsoft.Extensions.DependencyInjection.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Logging.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Options, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Options.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Options.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Primitives, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Primitives.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Primitives.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework" />
     <Reference Include="Prism, Version=7.1.0.431, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
@@ -53,14 +93,44 @@
     <Reference Include="Prism.Wpf, Version=7.1.0.431, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Wpf.7.1.0.431\lib\net45\Prism.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="Remotion.Linq, Version=2.2.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
+      <HintPath>..\packages\Remotion.Linq.2.2.0\lib\net45\Remotion.Linq.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.4.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ComponentModel.Annotations.4.5.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
+    </Reference>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Data.SqlClient, Version=4.5.0.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SqlClient.4.6.1\lib\net461\System.Data.SqlClient.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.5.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Interactive.Async, Version=3.2.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Interactive.Async.3.2.0\lib\net46\System.Interactive.Async.dll</HintPath>
+    </Reference>
     <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Memory, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.1\lib\netstandard2.0\System.Memory.dll</HintPath>
+    </Reference>
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.4.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.1\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -73,141 +143,111 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AutomationAccountingGoodsEntities.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>AutomationAccountingGoodsEntities.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="AutomationAccountingGoodsEntities.cs" />
-    <Compile Include="AutomationAccountingGoodsEntities.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>AutomationAccountingGoodsEntities.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="AutomationAccountingGoodsEntities1.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Counterparties.cs">
-      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Counterparty\Counterparties.cs" />
-    <Compile Include="Counterparty\CounterpartyViewModel.cs" />
-    <Compile Include="CountProducts.cs">
-      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ExchangeRates.cs">
-      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ExchangeRate\DbSetExchangeRates.cs" />
-    <Compile Include="ExchangeRate\ExchangeRates.cs" />
-    <Compile Include="Groups.cs">
-      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Group\DbSetGroups.cs" />
-    <Compile Include="DbSetModel.cs" />
-    <Compile Include="Group\Groups.cs" />
-    <Compile Include="InvoiceInfos.cs">
-      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="InvoiceReport.cs">
-      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="MoneyTransfers.cs">
-      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="MovementGoodsInfos.cs">
-      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="MovementGoodsReports.cs">
-      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="PriceGroups.cs">
-      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="PriceProducts.cs">
-      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Products.cs">
-      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Product\DbSetProducts.cs" />
+    <Compile Include="AutomationAccountingGoodsContext.cs" />
+    <Compile Include="Configurations\CategoryConfiguration.cs" />
+    <Compile Include="Configurations\PropertyProductConfiguration.cs" />
+    <Compile Include="Configurations\InvoiceInfoConfiguration.cs" />
+    <Compile Include="Configurations\SerialNumberLogConfiguration.cs" />
+    <Compile Include="Configurations\WarrantyConfiguration.cs" />
+    <Compile Include="Configurations\WarrantyPeriodConfiguration.cs" />
+    <Compile Include="Configurations\UnitStorageConfiguration.cs" />
+    <Compile Include="Configurations\StoreConfiguration.cs" />
+    <Compile Include="Configurations\SerialNumberConfiguration.cs" />
+    <Compile Include="Configurations\RevaluationProductConfiguration.cs" />
+    <Compile Include="Configurations\PropertyValueConfiguration.cs" />
+    <Compile Include="Configurations\PropertyNameConfiguration.cs" />
+    <Compile Include="Configurations\ProductConfiguration.cs" />
+    <Compile Include="Configurations\PriceProductConfiguration.cs" />
+    <Compile Include="Configurations\PriceGroupConfiguration.cs" />
+    <Compile Include="Configurations\PaymentTypeConfiguration.cs" />
+    <Compile Include="Configurations\MovmentGoodTypeConfiguration.cs" />
+    <Compile Include="Configurations\MovementGoodsInfoConfiguration.cs" />
+    <Compile Include="Configurations\MovementGoodsConfiguration.cs" />
+    <Compile Include="Configurations\MoneyTransferTypeConfiguration.cs" />
+    <Compile Include="Configurations\MoneyTransferConfiguration.cs" />
+    <Compile Include="Configurations\InvoiceConfiguration.cs" />
+    <Compile Include="Configurations\CurrencyConfiguration.cs" />
+    <Compile Include="Configurations\CounterpartyConfiguration.cs" />
+    <Compile Include="ConnectionTools.cs" />
+    <Compile Include="Models\Counterparty.cs" />
+    <Compile Include="CounterpartyViewModel.cs" />
+    <Compile Include="Models\MoneyTransferType.cs" />
+    <Compile Include="Models\MovmentGoodType.cs" />
+    <Compile Include="Models\PaymentType.cs" />
+    <Compile Include="Models\SerialNumberLog.cs" />
+    <Compile Include="Repositories\SqlExchangeRateRepository.cs" />
+    <Compile Include="Repositories\SqlCategoryRepository.cs" />
+    <Compile Include="Repositories\IRepository.cs" />
+    <Compile Include="Repositories\SqlProductRepository.cs" />
+    <Compile Include="Models\Enumerations.cs" />
+    <Compile Include="Models\Currency.cs" />
+    <Compile Include="Models\Category.cs" />
+    <Compile Include="Models\InvoiceInfo.cs" />
+    <Compile Include="Models\Invoice.cs" />
+    <Compile Include="Models\ModelBase.cs" />
+    <Compile Include="Models\MoneyTransfer.cs" />
+    <Compile Include="Models\MovementGoodsInfo.cs" />
+    <Compile Include="Models\MovementGoods.cs" />
+    <Compile Include="Models\PriceGroup.cs" />
+    <Compile Include="Models\PriceProduct.cs" />
+    <Compile Include="Models\Product.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="PropertyNames.cs">
-      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="PropertyProducts.cs">
-      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="PropertyValues.cs">
-      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
-    </Compile>
+    <Compile Include="Models\PropertyName.cs" />
+    <Compile Include="Models\PropertyProduct.cs" />
+    <Compile Include="Models\PropertyValue.cs" />
     <Compile Include="Report\DbSetReports.cs" />
     <Compile Include="Report\FinalReportProductViewModel.cs" />
-    <Compile Include="Product\Products.cs" />
-    <Compile Include="Product\ProductViewModel.cs" />
-    <Compile Include="PropertyProduct\DbSetPropertyProducts.cs" />
-    <Compile Include="PropertyValue\DbSetPropertyValue.cs" />
+    <Compile Include="ProductViewModel.cs" />
+    <Compile Include="Repositories\SqlPropertyProductRepository.cs" />
+    <Compile Include="Repositories\SqlPropertyValueRepository.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PropertyName\DbSetPropertyNames.cs" />
-    <Compile Include="PropertyName\PropertyNames.cs" />
-    <Compile Include="PurchaseGoods\DbSetPurchaseGoods.cs" />
-    <Compile Include="PurchaseGoods\PurchaseInfos.cs" />
-    <Compile Include="PurchaseGoods\PurchaseInfosViewModel.cs" />
-    <Compile Include="PurchaseGoods\PurchaseReports.cs" />
-    <Compile Include="RevaluationProductsReports.cs">
-      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="RevaluationProduct\DbSetRevaluationProducts.cs" />
-    <Compile Include="RevaluationProduct\RevaluationProductsInfos.cs" />
-    <Compile Include="RevaluationProduct\RevaluationProductsReports.cs" />
-    <Compile Include="SalesGoods\DbSetSalesGoods.cs" />
-    <Compile Include="SalesGoods\SalesInfos.cs" />
-    <Compile Include="SalesGoods\SalesInfosViewModel.cs" />
-    <Compile Include="SalesGoods\SalesReports.cs" />
-    <Compile Include="SerialNumbers.cs">
-      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="SerialNumber\DbSetSerialNumbers.cs" />
-    <Compile Include="SerialNumber\SerialNumbers.cs" />
-    <Compile Include="Stores.cs">
-      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Store\DbSetStores.cs" />
-    <Compile Include="Store\Stores.cs" />
-    <Compile Include="Counterparty\DbSetCounterparties.cs" />
-    <Compile Include="UnitStorages.cs">
-      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="UnitStorage\DbSetUnitStorages.cs" />
-    <Compile Include="UnitStorage\UnitStorages.cs" />
+    <Compile Include="Repositories\SqlPropertyNameRepository.cs" />
+    <Compile Include="Repositories\SqlMovementGoodsReportRepository.cs" />
+    <Compile Include="MovementGoodsInfosViewModel.cs" />
+    <Compile Include="Repositories\SqlRepositoryUtility.cs" />
+    <Compile Include="Repositories\SqlRevaluationProductsReportRepository.cs" />
+    <Compile Include="Repositories\SqlSerialNumberRepository.cs" />
+    <Compile Include="Models\RevaluationProducts.cs" />
+    <Compile Include="Models\SerialNumber.cs" />
+    <Compile Include="Repositories\SqlRepository.cs" />
+    <Compile Include="SerialNumberViewModel.cs" />
+    <Compile Include="Repositories\SqlStoreRepository.cs" />
+    <Compile Include="Repositories\SqlCounterpartyRepository.cs" />
+    <Compile Include="Repositories\SqlUnitStorageRepository.cs" />
+    <Compile Include="Models\Store.cs" />
+    <Compile Include="Models\UnitStorage.cs" />
+    <Compile Include="Specifications\BasisSpecifications\AndSpecification.cs" />
+    <Compile Include="Specifications\BasisSpecifications\CompositeSpecification.cs" />
+    <Compile Include="Specifications\BasisSpecifications\Utilities\ParameterRebinder.cs" />
+    <Compile Include="Specifications\BasisSpecifications\Utilities\SpecificationUtility.cs" />
+    <Compile Include="Specifications\CounterpartySpecification.cs" />
+    <Compile Include="Specifications\BasisSpecifications\ExpressionSpecification.cs" />
+    <Compile Include="Specifications\CategorySpecification.cs" />
+    <Compile Include="Specifications\CurrencySpecification.cs" />
+    <Compile Include="Specifications\SerialNumberSpecification.cs" />
+    <Compile Include="Specifications\PropertyValueSpecification.cs" />
+    <Compile Include="Specifications\PropertyProductSpecification.cs" />
+    <Compile Include="Specifications\PropertyNameSpecification.cs" />
+    <Compile Include="Specifications\MovementGoodsReportSpecification.cs" />
+    <Compile Include="Specifications\BasisSpecifications\ISpecification.cs" />
+    <Compile Include="Specifications\BasisSpecifications\NotSpecification.cs" />
+    <Compile Include="Specifications\BasisSpecifications\OrSpecification.cs" />
+    <Compile Include="Specifications\ProductSpecification.cs" />
+    <Compile Include="Specifications\WarrantySpecification.cs" />
     <Compile Include="ViewModelBase.cs" />
-    <Compile Include="Warranties.cs">
-      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="WarrantyPeriods.cs">
-      <DependentUpon>AutomationAccountingGoodsEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="WarrantyPeriod\WarrantyPeriods.cs" />
-    <Compile Include="WarrantyPeriod\DbSetWarrantyPeriods.cs" />
-    <Compile Include="Warranty\DbSetWarranties.cs" />
-    <Compile Include="Warranty\WarrantyViewModel.cs" />
+    <Compile Include="Repositories\SqlWarrantyPeriodRepository.cs" />
+    <Compile Include="Repositories\SqlWarrantyRepository.cs" />
+    <Compile Include="Models\Warranty.cs" />
+    <Compile Include="Models\WarrantyPeriod.cs" />
+    <Compile Include="WarrantyViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <EntityDeploy Include="AutomationAccountingGoodsEntities.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>AutomationAccountingGoodsEntities.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <None Include="AutomationAccountingGoodsEntities.edmx.diagram">
-      <DependentUpon>AutomationAccountingGoodsEntities.edmx</DependentUpon>
-    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -218,21 +258,15 @@
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="AutomationAccountingGoodsEntities.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>AutomationAccountingGoodsEntities.edmx</DependentUpon>
-      <LastGenOutput>AutomationAccountingGoodsEntities.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="AutomationAccountingGoodsEntities.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>AutomationAccountingGoodsEntities.edmx</DependentUpon>
-      <LastGenOutput>AutomationAccountingGoodsEntities1.cs</LastGenOutput>
-    </Content>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Данный проект ссылается на пакеты NuGet, отсутствующие на этом компьютере. Используйте восстановление пакетов NuGet, чтобы скачать их.  Дополнительную информацию см. по адресу: http://go.microsoft.com/fwlink/?LinkID=322105. Отсутствует следующий файл: {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.EntityFrameworkCore.Design.2.2.6\build\net461\Microsoft.EntityFrameworkCore.Design.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.EntityFrameworkCore.Design.2.2.6\build\net461\Microsoft.EntityFrameworkCore.Design.props'))" />
+  </Target>
 </Project>

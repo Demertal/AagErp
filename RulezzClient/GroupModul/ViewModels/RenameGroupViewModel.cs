@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Windows;
 using ModelModul;
-using ModelModul.Group;
+using ModelModul.Models;
+using ModelModul.Repositories;
 using Prism.Commands;
 using Prism.Interactivity.InteractionRequest;
 using Prism.Regions;
@@ -12,7 +13,7 @@ namespace GroupModul.ViewModels
     {
         #region Properties
 
-        private Groups _oldGroupModel;
+        private Category _category;
 
         private string _title = "";
         public string Title
@@ -35,8 +36,8 @@ namespace GroupModul.ViewModels
             set
             {
                 SetProperty(ref _notification, value as Confirmation);
-                _oldGroupModel = (Groups)_notification.Content;
-                Title = _oldGroupModel.Title;
+                _category = (Category)_notification.Content;
+                Title = _category.Title;
             }
         }
 
@@ -53,14 +54,14 @@ namespace GroupModul.ViewModels
 
         public void UpdateStore()
         {
-            string temp = _oldGroupModel.Title;
+            string temp = _category.Title;
             try
             {
-                if (_oldGroupModel.Title != Title)
+                if (_category.Title != Title)
                 {
-                    DbSetGroups dbSetGroups = new DbSetGroups();
-                    _oldGroupModel.Title = Title;
-                    dbSetGroups.Update(_oldGroupModel);
+                    SqlCategoryRepository sqlCategoryRepository = new SqlCategoryRepository();
+                    _category.Title = Title;
+                    sqlCategoryRepository.UpdateAsync(_category);
                     MessageBox.Show("Группа изменена", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
 
                     if (_notification != null)
@@ -70,7 +71,7 @@ namespace GroupModul.ViewModels
             }
             catch (Exception ex)
             {
-                _oldGroupModel.Title = temp;
+                _category.Title = temp;
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }

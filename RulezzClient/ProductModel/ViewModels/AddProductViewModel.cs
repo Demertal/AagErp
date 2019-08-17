@@ -2,11 +2,9 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
-using GenerationBarcodeLibrary;
 using ModelModul;
-using ModelModul.Product;
-using ModelModul.UnitStorage;
-using ModelModul.WarrantyPeriod;
+using ModelModul.Models;
+using ModelModul.Repositories;
 using Prism.Commands;
 using Prism.Interactivity.InteractionRequest;
 using Prism.Regions;
@@ -17,32 +15,32 @@ namespace ProductModul.ViewModels
     {
         #region ProductProperties
 
-        private ObservableCollection<WarrantyPeriods> _warrantyPeriods = new ObservableCollection<WarrantyPeriods>();
-        public ObservableCollection<WarrantyPeriods> WarrantyPeriods
+        private ObservableCollection<WarrantyPeriod> _warrantyPeriods = new ObservableCollection<WarrantyPeriod>();
+        public ObservableCollection<WarrantyPeriod> WarrantyPeriods
         {
             get => _warrantyPeriods;
             set => SetProperty(ref _warrantyPeriods, value);
         }
 
-        private ObservableCollection<UnitStorages> _unitStorages = new ObservableCollection<UnitStorages>();
-        public ObservableCollection<UnitStorages> UnitStorages
+        private ObservableCollection<UnitStorage> _unitStorages = new ObservableCollection<UnitStorage>();
+        public ObservableCollection<UnitStorage> UnitStorages
         {
             get => _unitStorages;
             set => SetProperty(ref _unitStorages, value);
         }
 
-        private ProductViewModel _product = new ProductViewModel();
-        public ProductViewModel Product
-        {
-            get => _product;
-            set
-            {
-                _product = value;
-                RaisePropertyChanged();
-            }
-        }
+        //private ProductViewModel _product = new ProductViewModel();
+        //public ProductViewModel Product
+        //{
+        //    get => _product;
+        //    set
+        //    {
+        //        _product = value;
+        //        RaisePropertyChanged();
+        //    }
+        //}
 
-        public string Group => Product?.Group == null ? "Группа:" : "Группа: " + Product.Group.Title;
+        //public string Group => Product?.Category == null ? "Группа:" : "Группа: " + Product.Category.Title;
 
         private Confirmation _notification;
         public INotification Notification
@@ -50,14 +48,14 @@ namespace ProductModul.ViewModels
             get => _notification;
             set
             {
-                SetProperty(ref _notification, value as Confirmation);
-                Product = new ProductViewModel {Group = (Groups) _notification.Content};
-                Product.IdGroup = Product.Group.Id;
-                UnitStorages tempUnit = UnitStorages.FirstOrDefault(obj => obj.Title == "шт");
-                Product.IdUnitStorage = tempUnit?.Id ?? 0;
-                WarrantyPeriods tempPeriods = WarrantyPeriods.FirstOrDefault(obj => obj.Period == "Нет");
-                Product.IdWarrantyPeriod = tempPeriods?.Id ?? 0;
-                RaisePropertyChanged("Group");
+                //SetProperty(ref _notification, value as Confirmation);
+                //Product = new ProductViewModel {Category = (Category) _notification.Content};
+                //Product.IdGroup = Product.Category.Id;
+                //UnitStorage tempUnit = UnitStorages.FirstOrDefault(obj => obj.Title == "шт");
+                //Product.IdUnitStorage = tempUnit?.Id ?? 0;
+                //WarrantyPeriod tempPeriod = WarrantyPeriods.FirstOrDefault(obj => obj.Period == "Нет");
+                //Product.IdWarrantyPeriod = tempPeriod?.Id ?? 0;
+                //RaisePropertyChanged("Parent");
             }
         }
 
@@ -70,20 +68,20 @@ namespace ProductModul.ViewModels
 
         public AddProductViewModel()
         {
-            Load();
-            Product.PropertyChanged += (o, e) => RaisePropertyChanged(e.PropertyName);
-            AddProductCommand = new DelegateCommand(AddProduct).ObservesCanExecute(() => Product.IsValidate);
+            LoadAsync();
+            //Product.PropertyChanged += (o, e) => RaisePropertyChanged(e.PropertyName);
+            //AddProductCommand = new DelegateCommand(AddProductAsync).ObservesCanExecute(() => Product.IsValidate);
             GenerateBarcodeCommand = new DelegateCommand(GenerateBarcode);
         }
 
-        private void Load()
+        private async void LoadAsync()
         {
             try
             {
-                DbSetUnitStorages dbSetUnitStorages = new DbSetUnitStorages();
-                UnitStorages = dbSetUnitStorages.Load();
-                DbSetWarrantyPeriods dbSetWarrantyPeriods = new DbSetWarrantyPeriods();
-                WarrantyPeriods = dbSetWarrantyPeriods.Load();
+                SqlUnitStorageRepository sqlUnitStorageRepository = new SqlUnitStorageRepository();
+                //UnitStorages = new ObservableCollection<UnitStorage>(await sqlUnitStorageRepository.GetListAsync());
+                SqlWarrantyPeriodRepository sqlWarrantyPeriodRepository = new SqlWarrantyPeriodRepository();
+                //WarrantyPeriods = new ObservableCollection<WarrantyPeriod>(await sqlWarrantyPeriodRepository.GetListAsync());
             }
             catch (Exception ex)
             {
@@ -91,42 +89,42 @@ namespace ProductModul.ViewModels
             }
         }
 
-        public void AddProduct()
+        public async void AddProductAsync()
         {
-            Groups temp = _product.Group;
-            try
-            {
-                _product.Group = null;
-                _product.CountProducts = null;
-                _product.PropertyProducts = null;
-                _product.UnitStorage = null;
-                _product.WarrantyPeriod = null;
-                DbSetProducts dbSetProducts = new DbSetProducts();
-                dbSetProducts.Add((Products)_product.Product.Clone());
-                MessageBox.Show("Товар добавлен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                if (_notification != null)
-                    _notification.Confirmed = true;
-                FinishInteraction?.Invoke();
-            }
-            catch (Exception ex)
-            {
-                _product.Group = temp;
-                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            //Category temp = _product.Category;
+            //try
+            //{
+            //    _product.Category = null;
+            //    _product.CountProducts = null;
+            //    _product.PropertyProducts = null;
+            //    _product.UnitStorage = null;
+            //    _product.WarrantyPeriod = null;
+            //    SqlProductRepository sqlProductRepository = new SqlProductRepository();
+            //    await sqlProductRepository.CreateAsync((Product)_product.Product.Clone());
+            //    MessageBox.Show("Товар добавлен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+            //    if (_notification != null)
+            //        _notification.Confirmed = true;
+            //    FinishInteraction?.Invoke();
+            //}
+            //catch (Exception ex)
+            //{
+            //    _product.Category = temp;
+            //    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            //}
         }
 
         private void GenerateBarcode()
         {
             try
             {
-                DbSetProducts dbSetProducts = new DbSetProducts();
+                SqlProductRepository sqlProductRepository = new SqlProductRepository();
                 string temp;
-                do
-                {
-                    temp = GenerationBarcode.GenerateBarcode();
-                } while (dbSetProducts.CheckBarcode(temp));
+                //do
+                //{
+                //    temp = GenerationBarcode.GenerateBarcode();
+                //} while (sqlProductRepository.CheckBarcode(temp));
 
-                Product.Barcode = temp;
+                //Product.Barcode = temp;
             }
             catch (Exception ex)
             {

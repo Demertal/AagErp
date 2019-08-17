@@ -1,42 +1,41 @@
-﻿using System;
-using System.Windows;
-using ModelModul;
-using ModelModul.SalesGoods;
-using Prism.Regions;
+﻿//using System;
+//using System.Windows;
+//using ModelModul;
+//using Prism.Regions;
 
-namespace ReportModul.ViewModels
-{
-    class ShowSalesReportsViewModel : BufferRead<SalesReports>
-    {
-        #region Properties
+//namespace ReportModul.ViewModels
+//{
+//    class ShowSalesReportsViewModel : BufferRead<Purchase>
+//    {
+//        #region Properties
 
-        private readonly IRegionManager _regionManager;
+//        private readonly IRegionManager _regionManager;
 
-        #endregion
+//        #endregion
 
-        public ShowSalesReportsViewModel(IRegionManager regionManager)
-        {
-            _regionManager = regionManager;
-        }
+//        public ShowSalesReportsViewModel(IRegionManager regionManager)
+//        {
+//            _regionManager = regionManager;
+//        }
 
-        protected sealed override void Load()
-        {
-            try
-            {
-                DbSetSalesGoods dbSet = new DbSetSalesGoods();
-                Count = dbSet.GetCount();
-                ReportsList = dbSet.Load(Left, Step);
-                RaisePropertyChanged("IsEnabledRightCommand");
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
+//        protected sealed override void Load()
+//        {
+//            try
+//            {
+//                DbSetSalesGoods dbSet = new DbSetSalesGoods();
+//                Count = dbSet.GetCount();
+//                ReportsList = dbSet.Load(Left, Step);
+//                RaisePropertyChanged("IsEnabledRightCommand");
+//            }
+//            catch (Exception e)
+//            {
+//                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+//            }
+//        }
 
-        public override void OnNavigatedFrom(NavigationContext navigationContext)
-        {
-            _regionManager.Regions.Remove("SalesReportInfo");
-        }
-    }
-}
+//        public override void OnNavigatedFrom(NavigationContext navigationContext)
+//        {
+//            _regionManager.Regions.Remove("SalesReportInfo");
+//        }
+//    }
+//}

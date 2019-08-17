@@ -11,6 +11,7 @@
              xmlns:views1="clr-namespace:PropertiesModul.Views;assembly=PropertiesModul"
              xmlns:views2="clr-namespace:ProductModul.Views"
              xmlns:converters="clr-namespace:CustomControlLibrary.Converters;assembly=CustomControlLibrary"
+             xmlns:models="clr-namespace:ModelModul.Models;assembly=ModelModul"
              interactivity:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Padding="10,5,5,10">
@@ -83,7 +84,7 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <customcontrollibrary:ExtendedTreeView ItemsSource="{Binding GroupsList, UpdateSourceTrigger=PropertyChanged}" MinWidth="100" ContextMenu="{StaticResource TreeViewContex}" FontSize="14">
+            <customcontrollibrary:ExtendedTreeView ItemsSource="{Binding CategoriesList, UpdateSourceTrigger=PropertyChanged}" MinWidth="100" ContextMenu="{StaticResource TreeViewContex}" FontSize="14">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SelectedItemChanged">
                         <i:InvokeCommandAction Command="{Binding Path=SelectedGroupCommand}"
@@ -131,7 +132,7 @@
                     </ContextMenu>
                 </customcontrollibrary:ExtendedTreeView.Resources>
                 <customcontrollibrary:ExtendedTreeView.ItemTemplate>
-                    <HierarchicalDataTemplate ItemsSource="{Binding Path=Groups1}" DataType="{x:Type modelModul:Groups}" >
+                    <HierarchicalDataTemplate ItemsSource="{Binding Path=ChildCategories}" DataType="{x:Type models:Category}" >
                         <TextBlock Text="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}" ContextMenu="{StaticResource TreeViewContextNode}"/>
                     </HierarchicalDataTemplate>
                 </customcontrollibrary:ExtendedTreeView.ItemTemplate>

@@ -8,7 +8,7 @@ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Padding="5">
 
     <UserControl.Resources>
-        <converters:GetProductsTitleFromSalesInfo x:Key="GetProductsTitleFromSalesInfo"/>
+        <converters:GetProductsTitleFromMovementGoodsInfo x:Key="GetProductsTitleFromSalesInfo"/>
     </UserControl.Resources>
 
     <StackPanel Orientation="Horizontal">
@@ -43,7 +43,7 @@ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         </StackPanel>
 
         <Border Margin="25,0,0,0" BorderBrush="Black" BorderThickness="2" CornerRadius="4">
-            <ContentControl interactivity:RegionManager.RegionName="SalesReportInfo" interactivity:RegionManager.RegionContext="{Binding Path=SelectedItem, ElementName=SalesReportsDataGrid}" FontSize="14"/>
+            <ContentControl interactivity:RegionManager.RegionName="SalesInfo" interactivity:RegionManager.RegionContext="{Binding Path=SelectedItem, ElementName=SalesReportsDataGrid}" FontSize="14"/>
         </Border>
     </StackPanel>
 </UserControl>

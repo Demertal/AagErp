@@ -2,7 +2,8 @@
 using System.ComponentModel;
 using System.Windows;
 using ModelModul;
-using ModelModul.Warranty;
+using ModelModul.Models;
+using ModelModul.Repositories;
 using Prism.Commands;
 using Prism.Regions;
 
@@ -20,19 +21,19 @@ namespace WarrantyModul.ViewModels
             set => SetProperty(ref _isUpdate, value);
         }
 
-        private readonly Warranties _oldWarranty = new Warranties();
+        private readonly Warranty _oldWarranty = new Warranty();
 
-        private WarrantyViewModel _selectedWarranty = new WarrantyViewModel();
-        public WarrantyViewModel SelectedWarranty
-        {
-            get => _selectedWarranty;
-            set
-            {
-                _selectedWarranty = value;
-                IsUpdate = false;
-                RaisePropertyChanged();
-            }
-        }
+        //private WarrantyViewModel _selectedWarranty = new WarrantyViewModel();
+        //public WarrantyViewModel SelectedWarranty
+        //{
+        //    get => _selectedWarranty;
+        //    set
+        //    {
+        //        _selectedWarranty = value;
+        //        IsUpdate = false;
+        //        RaisePropertyChanged();
+        //    }
+        //}
 
         public DelegateCommand UpdateCommand { get; }
         public DelegateCommand ResetCommand { get; }
@@ -44,20 +45,20 @@ namespace WarrantyModul.ViewModels
 
         public WarrantyInfoViewModel()
         {
-            SelectedWarranty.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args) {RaisePropertyChanged(args.PropertyName); };
+            //SelectedWarranty.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args) {RaisePropertyChanged(args.PropertyName); };
             GoodsDepartureCommand = new DelegateCommand(GoodsDeparture);
             GoodsIssueCommand = new DelegateCommand(GoodsIssue);
-            UpdateCommand = new DelegateCommand(Update).ObservesCanExecute(() => SelectedWarranty.IsValidate);
+            //UpdateCommand = new DelegateCommand(Update).ObservesCanExecute(() => SelectedWarranty.IsValidate);
             ResetCommand = new DelegateCommand(Reset);
-            OkCommand = new DelegateCommand(Accept).ObservesCanExecute(() => SelectedWarranty.IsValidate);
+            //OkCommand = new DelegateCommand(Accept).ObservesCanExecute(() => SelectedWarranty.IsValidate);
         }
         
         private void Accept()
         {
             try
             {
-                DbSetWarranties dbSet = new DbSetWarranties();
-                dbSet.Update(SelectedWarranty.Warranty);
+                SqlWarrantyRepository dbSet = new SqlWarrantyRepository();
+                //dbSet.UpdateAsync(SelectedWarranty.Warranty);
                 MessageBox.Show("Информация о гарантии изменена", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
                 IsUpdate = false;
             }
@@ -69,21 +70,21 @@ namespace WarrantyModul.ViewModels
 
         private void Reset()
         {
-            SelectedWarranty.Malfunction = _oldWarranty.Malfunction;
-            SelectedWarranty.Info = _oldWarranty.Info;
-            SelectedWarranty.DateIssue = _oldWarranty.DateIssue;
-            SelectedWarranty.DateDeparture = _oldWarranty.DateDeparture;
-            SelectedWarranty.DateReceipt = _oldWarranty.DateReceipt;
+            //SelectedWarranty.Malfunction = _oldWarranty.Malfunction;
+            //SelectedWarranty.Info = _oldWarranty.Info;
+            //SelectedWarranty.DateIssue = _oldWarranty.DateIssue;
+            //SelectedWarranty.DateDeparture = _oldWarranty.DateDeparture;
+            //SelectedWarranty.DateReceipt = _oldWarranty.DateReceipt;
             IsUpdate = false;
         }
 
         private void Update()
         {
-            _oldWarranty.Malfunction = SelectedWarranty.Malfunction;
-            _oldWarranty.Info = SelectedWarranty.Info;
-            _oldWarranty.DateIssue = SelectedWarranty.DateIssue;
-            _oldWarranty.DateDeparture = SelectedWarranty.DateDeparture;
-            _oldWarranty.DateReceipt = SelectedWarranty.DateReceipt;
+            //_oldWarranty.Malfunction = SelectedWarranty.Malfunction;
+            //_oldWarranty.Info = SelectedWarranty.Info;
+            //_oldWarranty.DateIssue = SelectedWarranty.DateIssue;
+            //_oldWarranty.DateDeparture = SelectedWarranty.DateDeparture;
+            //_oldWarranty.DateReceipt = SelectedWarranty.DateReceipt;
             IsUpdate = true;
         }
 
@@ -91,10 +92,10 @@ namespace WarrantyModul.ViewModels
         {
             try
             {
-                DbSetWarranties dbSet = new DbSetWarranties();
-                AutomationAccountingGoodsEntities db = new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString);
-                db.GoodsIssued(SelectedWarranty.Warranty.Id);
-                SelectedWarranty.Warranty = dbSet.Find(SelectedWarranty.Warranty.Id);
+                SqlWarrantyRepository dbSet = new SqlWarrantyRepository();
+                //AutomationAccountingGoodsContext db = new AutomationAccountingGoodsContext(AutomationAccountingGoodsContext.ConnectionString);
+                //db.GoodsIssued(SelectedWarranty.Warranty.Id);
+                //SelectedWarranty.Warranty = dbSet.Find(SelectedWarranty.Warranty.Id);
             }
             catch (Exception ex)
             {
@@ -106,10 +107,10 @@ namespace WarrantyModul.ViewModels
         {
             try
             {
-                DbSetWarranties dbSet = new DbSetWarranties();
-                AutomationAccountingGoodsEntities db = new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString);
-                db.GoodsShipped(SelectedWarranty.Warranty.Id);
-                SelectedWarranty.Warranty = dbSet.Find(SelectedWarranty.Warranty.Id);
+                SqlWarrantyRepository dbSet = new SqlWarrantyRepository();
+                //AutomationAccountingGoodsContext db = new AutomationAccountingGoodsContext(AutomationAccountingGoodsContext.ConnectionString);
+                //db.GoodsShipped(SelectedWarranty.Warranty.Id);
+                //SelectedWarranty.Warranty = dbSet.Find(SelectedWarranty.Warranty.Id);
             }
             catch (Exception ex)
             {

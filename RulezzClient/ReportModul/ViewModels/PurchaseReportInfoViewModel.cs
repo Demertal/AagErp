@@ -1,8 +1,8 @@
-﻿using ModelModul;
+﻿using ModelModul.Models;
 
 namespace ReportModul.ViewModels
 {
-    class PurchaseReportInfoViewModel : InfoReport<PurchaseReports>
+    class PurchaseReportInfoViewModel : InfoReport<MovementGoods>
     {
         #region Properties
 

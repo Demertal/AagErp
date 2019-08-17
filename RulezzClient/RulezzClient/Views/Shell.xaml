@@ -39,10 +39,10 @@
                     <MenuItem Header="Покупатели" Command="{Binding NavigateCommand}" CommandParameter="ShowCustomers"/>
                 </MenuItem>
                 <MenuItem Header="Ед. хранения" Command="{Binding NavigateCommand}" CommandParameter="ShowUnitStorage"/>
-                <MenuItem Header="Гарантийный период" Command="{Binding NavigateCommand}" CommandParameter="ShowWarrantyPeriods"/>
+                <MenuItem Header="Гарантийный период" Command="{Binding NavigateCommand}" CommandParameter="ShowWarrantyPeriod"/>
                 <MenuItem Header="Переоценки" Command="{Binding NavigateCommand}" CommandParameter="ShowRevaluationReports"/>
-                <MenuItem Header="Закупки" Command="{Binding NavigateCommand}" CommandParameter="ShowPurchaseReports"/>
-                <MenuItem Header="Продажи" Command="{Binding NavigateCommand}" CommandParameter="ShowSalesReports"/>
+                <MenuItem Header="Закупки" Command="{Binding NavigateCommand}" CommandParameter="ShowPurchases"/>
+                <MenuItem Header="Продажи" Command="{Binding NavigateCommand}" CommandParameter="ShowSaless"/>
                 <MenuItem Header="Изменить курс USD" Command="{Binding СhangeСourseCommand}">
                     <i:Interaction.Triggers>
                         <mvvm:InteractionRequestTrigger SourceObject="{Binding Path=СhangeСoursePopupRequest}">

@@ -1,0 +1,662 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="AutomationAccountingGoods" id="Project_3bf9e6c" template="Default" database="SqlServer" >
+	<schema name="dbo" catalogname="AutomationAccountingGoods" schemaname="dbo" >
+		<table name="categories" generator_rows="500" >
+			<column name="id" type="int" length="10" decimal="0" jt="4" mandatory="y" autoincrement="y" />
+			<column name="title" type="nvarchar" length="50" decimal="0" jt="12" mandatory="y" regexp="Группа ?(1|2|3|4|5|6|7|8|9|1-500)" />
+			<column name="idParent" type="int" length="10" decimal="0" jt="4" regexp="load_values_from_pk" />
+			<index name="PK_categories" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="UQ_categories_title_idParent" unique="UNIQUE" >
+				<column name="title" />
+				<column name="idParent" />
+			</index>
+			<index name="ind_categories_idParent" unique="NORMAL" >
+				<column name="idParent" />
+			</index>
+			<constraint name="CK_categories_title" >
+				<string>[title]&lt;&gt;&#039;&#039;</string>
+			</constraint>
+			<fk name="FK_categories_idParent_categories" to_schema="dbo" to_table="categories" >
+				<fk_column name="idParent" pk="id" />
+			</fk>
+		</table>
+		<table name="counterparties" >
+			<column name="id" type="int" length="10" decimal="0" jt="4" mandatory="y" autoincrement="y" />
+			<column name="title" type="nvarchar" length="40" decimal="0" jt="12" mandatory="y" />
+			<column name="contactPerson" type="nvarchar" length="40" decimal="0" jt="12" />
+			<column name="contactPhone" type="nvarchar" length="50" decimal="0" jt="12" />
+			<column name="props" type="nvarchar" length="40" decimal="0" jt="12" />
+			<column name="address" type="nvarchar" length="40" decimal="0" jt="12" />
+			<column name="whoIsIt" type="int" length="10" decimal="0" jt="4" mandatory="y" />
+			<column name="idPaymentType" type="int" length="10" decimal="0" jt="4" />
+			<index name="PK_counterparties" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="UQ_counterparties_title_whoIsIt" unique="UNIQUE" >
+				<column name="title" />
+				<column name="whoIsIt" />
+			</index>
+			<index name="ind_counterparties_idPaymentType" unique="NORMAL" >
+				<column name="idPaymentType" />
+			</index>
+			<fk name="FK_counterparties_idPaymentType_paymentTypes" to_schema="dbo" to_table="paymentTypes" >
+				<fk_column name="idPaymentType" pk="id" />
+			</fk>
+		</table>
+		<table name="currencies" >
+			<column name="id" type="int" length="10" decimal="0" jt="4" mandatory="y" autoincrement="y" />
+			<column name="title" type="nvarchar" length="10" decimal="0" jt="12" mandatory="y" />
+			<column name="cost" type="money" length="19" decimal="4" jt="3" mandatory="y" />
+			<column name="isDefault" type="bit" length="1" decimal="0" jt="-7" mandatory="y" >
+				<defo>0</defo>
+			</column>
+			<index name="PK_currencies" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="UQ_currencies_title" unique="UNIQUE" >
+				<column name="title" />
+			</index>
+			<constraint name="CK_currencies_title" >
+				<string>[title]&lt;&gt;&#039;&#039;</string>
+			</constraint>
+			<constraint name="CK_currencies_cost" >
+				<string>[cost]&gt;(0)</string>
+			</constraint>
+		</table>
+		<table name="invoiceInfos" >
+			<column name="id" type="int" length="10" decimal="0" jt="4" mandatory="y" autoincrement="y" />
+			<column name="idProduct" type="bigint" jt="-5" mandatory="y" />
+			<column name="count" type="float" length="53" decimal="0" jt="8" mandatory="y" />
+			<column name="idInvoice" type="int" length="10" decimal="0" jt="4" mandatory="y" />
+			<index name="PK_invoiceInfos" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="ind_invoiceInfos_idProduct" unique="NORMAL" >
+				<column name="idProduct" />
+			</index>
+			<index name="ind_invoiceInfos_idInvoice" unique="NORMAL" >
+				<column name="idInvoice" />
+			</index>
+			<constraint name="CK_invoiceInfos_count" >
+				<string>[count]&gt;(0)</string>
+			</constraint>
+			<fk name="FK_invoiceInfos_idInvoice_invoices" to_schema="dbo" to_table="invoices" >
+				<fk_column name="idInvoice" pk="id" />
+			</fk>
+			<fk name="FK_invoiceInfos_idProduct_products" to_schema="dbo" to_table="products" >
+				<fk_column name="idProduct" pk="id" />
+			</fk>
+		</table>
+		<table name="invoices" >
+			<column name="id" type="int" length="10" decimal="0" jt="4" mandatory="y" autoincrement="y" />
+			<index name="PK_invoices" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+		</table>
+		<table name="moneyTransferTypes" >
+			<column name="id" type="int" length="10" decimal="0" jt="4" mandatory="y" autoincrement="y" />
+			<column name="code" type="nvarchar" length="20" decimal="0" jt="12" mandatory="y" />
+			<column name="description" type="nvarchar" length="50" decimal="0" jt="12" mandatory="y" />
+			<index name="PK_moneyTransferTypes" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="UQ_moneyTransferTypes_code" unique="UNIQUE" >
+				<column name="code" />
+			</index>
+			<constraint name="CK_moneyTransferTypes_code" >
+				<string>len([code])&lt;&gt;(0)</string>
+			</constraint>
+		</table>
+		<table name="moneyTransfers" >
+			<column name="id" type="bigint" jt="-5" mandatory="y" autoincrement="y" />
+			<column name="date" type="datetime" jt="93" mandatory="y" >
+				<defo>getdate()</defo>
+			</column>
+			<column name="idCounterparty" type="int" length="10" decimal="0" jt="4" mandatory="y" />
+			<column name="moneyAmount" type="money" length="19" decimal="4" jt="3" mandatory="y" />
+			<column name="idType" type="int" length="10" decimal="0" jt="4" mandatory="y" />
+			<column name="idMovementGoods" type="uniqueidentifier" jt="1" mandatory="y" />
+			<index name="PK_moneyTransfers" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="ind_moneyTransfers_idCounterparty" unique="NORMAL" >
+				<column name="idCounterparty" />
+			</index>
+			<index name="ind_moneyTransfers_idType" unique="NORMAL" >
+				<column name="idType" />
+			</index>
+			<constraint name="CK_moneyTransfers_moneyAmount" >
+				<string>[moneyAmount]&gt;(0)</string>
+			</constraint>
+			<fk name="FK_moneyTransfers_idCounterpaty_counterparties" to_schema="dbo" to_table="counterparties" >
+				<fk_column name="idCounterparty" pk="id" />
+			</fk>
+			<fk name="FK_MoneyTransfers_idType_moneyTransferTypes" to_schema="dbo" to_table="moneyTransferTypes" >
+				<fk_column name="idType" pk="id" />
+			</fk>
+			<fk name="FK_moneyTransfers_idMovementGoods_movementGoods" to_schema="dbo" to_table="movementGoods" >
+				<fk_column name="idMovementGoods" pk="id" />
+			</fk>
+		</table>
+		<table name="movementGoods" >
+			<column name="id" type="uniqueidentifier" jt="1" mandatory="y" />
+			<column name="dateCreate" type="datetime" jt="93" mandatory="y" >
+				<defo>getdate()</defo>
+			</column>
+			<column name="rate" type="money" length="19" decimal="4" jt="3" >
+				<defo>1</defo>
+			</column>
+			<column name="textInfo" type="nvarchar" length="50" decimal="0" jt="12" />
+			<column name="idArrivalStore" type="int" length="10" decimal="0" jt="4" />
+			<column name="idDisposalStore" type="int" length="10" decimal="0" jt="4" />
+			<column name="idCounterparty" type="int" length="10" decimal="0" jt="4" />
+			<column name="idCurrency" type="int" length="10" decimal="0" jt="4" />
+			<column name="idType" type="int" jt="4" mandatory="y" />
+			<column name="dateClose" type="datetime" jt="93" />
+			<column name="isGoodsIssued" type="bit" jt="-7" mandatory="y" >
+				<defo>0</defo>
+			</column>
+			<index name="PK_movementGoods" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="ind_movementGoods_idArrivalStore" unique="NORMAL" >
+				<column name="idArrivalStore" />
+			</index>
+			<index name="ind_movementGoods_idDisposalStore" unique="NORMAL" >
+				<column name="idDisposalStore" />
+			</index>
+			<index name="ind_movementGoods_idCounterparty" unique="NORMAL" >
+				<column name="idCounterparty" />
+			</index>
+			<index name="ind_movementGoods_idCurrency" unique="NORMAL" >
+				<column name="idCurrency" />
+			</index>
+			<index name="ind_movementGoods_idType" unique="NORMAL" >
+				<column name="idType" />
+			</index>
+			<constraint name="CK_movementGoods_rate" >
+				<string>[rate]&gt;(0)</string>
+			</constraint>
+			<fk name="FK_movementGoods_idCounterparty_counterparties" to_schema="dbo" to_table="counterparties" >
+				<fk_column name="idCounterparty" pk="id" />
+			</fk>
+			<fk name="FK_movementGoods_idCurrency_currencies" to_schema="dbo" to_table="currencies" >
+				<fk_column name="idCurrency" pk="id" />
+			</fk>
+			<fk name="FK_movementGoods_idArrivalStore_stores" to_schema="dbo" to_table="stores" >
+				<fk_column name="idArrivalStore" pk="id" />
+			</fk>
+			<fk name="FK_movementGoods_idDisposalStore_stores" to_schema="dbo" to_table="stores" >
+				<fk_column name="idDisposalStore" pk="id" />
+			</fk>
+			<fk name="FK_movementGoods_idType_movementGoodTypes" to_schema="dbo" to_table="movmentGoodTypes" >
+				<fk_column name="idType" pk="id" />
+			</fk>
+		</table>
+		<table name="movementGoodsInfos" >
+			<column name="id" type="bigint" jt="-5" mandatory="y" autoincrement="y" />
+			<column name="count" type="float" length="53" decimal="0" jt="8" mandatory="y" />
+			<column name="price" type="money" length="19" decimal="4" jt="3" />
+			<column name="idReport" type="uniqueidentifier" jt="1" mandatory="y" />
+			<column name="idProduct" type="bigint" jt="-5" mandatory="y" />
+			<index name="PK_movementGoodsInfos" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="ind_movementGoodsInfos_idReport" unique="NORMAL" >
+				<column name="idReport" />
+			</index>
+			<index name="ind_movementGoodsInfos_idProduct" unique="NORMAL" >
+				<column name="idProduct" />
+			</index>
+			<constraint name="CK_movementGoodsInfos_count" >
+				<string>[count]&gt;(0)</string>
+			</constraint>
+			<constraint name="CK_movementGoodsInfos_price" >
+				<string>[Price]&gt;(0)</string>
+			</constraint>
+			<fk name="FK_movementGoodsInfos_idReport_movementGoods" to_schema="dbo" to_table="movementGoods" >
+				<fk_column name="idReport" pk="id" />
+			</fk>
+			<fk name="FK_movementGoodsInfos_idProduct_products" to_schema="dbo" to_table="products" >
+				<fk_column name="idProduct" pk="id" />
+			</fk>
+		</table>
+		<table name="movmentGoodTypes" >
+			<column name="id" type="int" jt="4" mandatory="y" autoincrement="y" />
+			<column name="code" type="nvarchar" length="20" jt="12" mandatory="y" />
+			<column name="description" type="nvarchar" length="50" jt="12" mandatory="y" />
+			<index name="Pk_movmentGoodTypes_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="UQ_movmentGoodTypes_code" unique="UNIQUE" >
+				<column name="code" />
+			</index>
+		</table>
+		<table name="paymentTypes" >
+			<column name="id" type="int" length="10" decimal="0" jt="4" mandatory="y" autoincrement="y" />
+			<column name="description" type="nvarchar" length="50" decimal="0" jt="12" mandatory="y" />
+			<column name="code" type="nvarchar" length="20" jt="12" mandatory="y" />
+			<index name="PK_paymentTypes" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="UQ_paymentTypes_code" unique="UNIQUE" >
+				<column name="code" />
+			</index>
+			<constraint name="CK_paymentTypes_code" >
+				<string>len([code])&lt;&gt;(0)</string>
+			</constraint>
+		</table>
+		<table name="priceGroups" >
+			<column name="id" type="int" length="10" decimal="0" jt="4" mandatory="y" autoincrement="y" />
+			<column name="markup" type="float" length="53" decimal="0" jt="8" mandatory="y" />
+			<index name="PK_priceGroups" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="UQ_priceGroups_markup" unique="UNIQUE" >
+				<column name="markup" />
+			</index>
+			<constraint name="CK_priceGroups_markup" >
+				<string>[markup]&gt;(0)</string>
+			</constraint>
+		</table>
+		<table name="priceProducts" >
+			<column name="id" type="bigint" jt="-5" mandatory="y" autoincrement="y" />
+			<column name="idProduct" type="bigint" jt="-5" mandatory="y" />
+			<column name="idRevaluation" type="bigint" jt="-5" mandatory="y" />
+			<column name="price" type="money" length="19" decimal="4" jt="3" mandatory="y" />
+			<index name="PK_priceProducts" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="ind_priceProducts_idProduct" unique="NORMAL" >
+				<column name="idProduct" />
+			</index>
+			<index name="ind_priceProducts_idRevaluation" unique="NORMAL" >
+				<column name="idRevaluation" />
+			</index>
+			<constraint name="CK_priceProd_price" >
+				<string>[price]&gt;(0)</string>
+			</constraint>
+			<fk name="FK_priceProducts_idProduct_products" to_schema="dbo" to_table="products" >
+				<fk_column name="idProduct" pk="id" />
+			</fk>
+			<fk name="FK_priceProducts_idRevaluation_revaluationProducts" to_schema="dbo" to_table="revaluationProducts" >
+				<fk_column name="idRevaluation" pk="id" />
+			</fk>
+		</table>
+		<table name="products" >
+			<column name="id" type="bigint" jt="-5" mandatory="y" autoincrement="y" />
+			<column name="title" type="nvarchar" length="120" decimal="0" jt="12" mandatory="y" />
+			<column name="vendorCode" type="nvarchar" length="20" decimal="0" jt="12" />
+			<column name="barcode" type="nvarchar" length="13" decimal="0" jt="12" />
+			<column name="idWarrantyPeriod" type="int" length="10" decimal="0" jt="4" mandatory="y" />
+			<column name="idCategory" type="int" length="10" decimal="0" jt="4" mandatory="y" />
+			<column name="idPriceGroup" type="int" jt="4" />
+			<column name="idUnitStorage" type="int" length="10" decimal="0" jt="4" mandatory="y" />
+			<column name="keepTrackSerialNumbers" type="bit" length="1" decimal="0" jt="-7" mandatory="y" >
+				<defo>0</defo>
+			</column>
+			<index name="UQ_products_barcode" unique="UNIQUE" >
+				<column name="barcode" />
+			</index>
+			<index name="UQ_products_title" unique="UNIQUE" >
+				<column name="title" />
+			</index>
+			<index name="ind_products_idWarrantyPeriod" unique="NORMAL" >
+				<column name="idWarrantyPeriod" />
+			</index>
+			<index name="ind_products_idCategory" unique="NORMAL" >
+				<column name="idCategory" />
+			</index>
+			<index name="ind_products_idPriceGroup" unique="NORMAL" >
+				<column name="idPriceGroup" />
+			</index>
+			<index name="ind_products_idUnitStorage" unique="NORMAL" >
+				<column name="idUnitStorage" />
+			</index>
+			<index name="PK_products" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<constraint name="CK_products_title" >
+				<string>[title]&lt;&gt;&#039;&#039;</string>
+			</constraint>
+			<fk name="FK_products_idCategory_categories" to_schema="dbo" to_table="categories" delete_action="cascade" >
+				<fk_column name="idCategory" pk="id" />
+			</fk>
+			<fk name="FK_products_idPriceGroups_priceGroups" to_schema="dbo" to_table="priceGroups" >
+				<fk_column name="idPriceGroup" pk="id" />
+			</fk>
+			<fk name="FK_products_idUnitStorages_unitStorages" to_schema="dbo" to_table="unitStorages" >
+				<fk_column name="idUnitStorage" pk="id" />
+			</fk>
+			<fk name="FK_products_idWarrantyPeriod_warrantyPeriods" to_schema="dbo" to_table="warrantyPeriods" >
+				<fk_column name="idWarrantyPeriod" pk="id" />
+			</fk>
+		</table>
+		<table name="propertyNames" >
+			<column name="id" type="int" length="10" decimal="0" jt="4" mandatory="y" autoincrement="y" />
+			<column name="title" type="nvarchar" length="20" decimal="0" jt="12" mandatory="y" />
+			<column name="idCategory" type="int" length="10" decimal="0" jt="4" />
+			<index name="PK_propertyNames" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="UQ_propertyNames_title_idCategory" unique="UNIQUE" >
+				<column name="title" />
+				<column name="idCategory" />
+			</index>
+			<index name="ind_propertyNames_idCategory" unique="NORMAL" >
+				<column name="idCategory" />
+			</index>
+			<constraint name="CK_propertyNames_title" >
+				<string>[title]&lt;&gt;&#039;&#039;</string>
+			</constraint>
+			<fk name="FK_propertyNames_idCategory_categories" to_schema="dbo" to_table="categories" >
+				<fk_column name="idCategory" pk="id" />
+			</fk>
+		</table>
+		<table name="propertyProducts" >
+			<column name="id" type="bigint" jt="-5" mandatory="y" autoincrement="y" />
+			<column name="idProduct" type="bigint" jt="-5" mandatory="y" />
+			<column name="idPropertyName" type="int" jt="4" />
+			<column name="idPropertyValue" type="int" length="10" decimal="0" jt="4" />
+			<index name="PK_propertyProducts" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="UQ_propertyProducts_idProduct_idPropertyName" unique="UNIQUE" >
+				<column name="idProduct" />
+				<column name="idPropertyName" />
+			</index>
+			<index name="ind_propertyProducts_idPropertyName" unique="NORMAL" >
+				<column name="idPropertyName" />
+			</index>
+			<index name="ind_propertyProducts_idProduct" unique="NORMAL" >
+				<column name="idProduct" />
+			</index>
+			<index name="ind_propertyProducts_idPropertyValue" unique="NORMAL" >
+				<column name="idPropertyValue" />
+			</index>
+			<fk name="FK_propertyProducts_idProduct_products" to_schema="dbo" to_table="products" delete_action="cascade" >
+				<fk_column name="idProduct" pk="id" />
+			</fk>
+			<fk name="FK_propertyProducts_idPropertyValue_propertyValues" to_schema="dbo" to_table="propertyValues" delete_action="cascade" >
+				<fk_column name="idPropertyValue" pk="id" />
+			</fk>
+			<fk name="FK_propertyProducts_idPropertyName_propertyNames" to_schema="dbo" to_table="propertyNames" >
+				<fk_column name="idPropertyName" pk="id" />
+			</fk>
+		</table>
+		<table name="propertyValues" >
+			<column name="id" type="int" length="10" decimal="0" jt="4" mandatory="y" autoincrement="y" />
+			<column name="value" type="nvarchar" length="50" decimal="0" jt="12" mandatory="y" />
+			<column name="idPropertyName" type="int" length="10" decimal="0" jt="4" mandatory="y" />
+			<index name="PK_propertyValues" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="UQ_propertyValues_value_idPropertyName" unique="UNIQUE" >
+				<column name="value" />
+				<column name="idPropertyName" />
+			</index>
+			<index name="ind_propertyValues_idPropertyName" unique="NORMAL" >
+				<column name="idPropertyName" />
+			</index>
+			<fk name="FK_propertyValues_idPropertyName_propertyNames" to_schema="dbo" to_table="propertyNames" delete_action="cascade" >
+				<fk_column name="idPropertyName" pk="id" />
+			</fk>
+		</table>
+		<table name="revaluationProducts" >
+			<column name="id" type="bigint" jt="-5" mandatory="y" autoincrement="y" />
+			<column name="dateRevaluation" type="datetime" jt="93" mandatory="y" >
+				<defo>getdate()</defo>
+			</column>
+			<index name="PK_revaluationProducts" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+		</table>
+		<table name="serialNumberLogs" >
+			<column name="id" type="bigint" jt="-5" mandatory="y" autoincrement="y" />
+			<column name="idSerialNumber" type="bigint" jt="-5" mandatory="y" />
+			<column name="idMovmentGood" type="uniqueidentifier" jt="1" mandatory="y" />
+			<index name="Pk_serialNumberLogs_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="ind_serialNumberLogs_idSerialNumber" unique="NORMAL" >
+				<column name="idSerialNumber" />
+			</index>
+			<index name="ind_serialNumberLogs_idMovmentGood" unique="NORMAL" >
+				<column name="idMovmentGood" />
+			</index>
+			<fk name="FK_serialNumberLogs_idSerialNumber_serialNumbers" to_schema="dbo" to_table="serialNumbers" >
+				<fk_column name="idSerialNumber" pk="id" />
+			</fk>
+			<fk name="Fk_serialNumberLogs_idMovmentGood_movmentGoods" to_schema="dbo" to_table="movementGoods" >
+				<fk_column name="idMovmentGood" pk="id" />
+			</fk>
+		</table>
+		<table name="serialNumbers" >
+			<column name="id" type="bigint" jt="-5" mandatory="y" autoincrement="y" />
+			<column name="value" type="varchar" length="20" decimal="0" jt="12" mandatory="y" />
+			<column name="idProduct" type="bigint" jt="-5" mandatory="y" />
+			<column name="dateCreated" type="datetime" jt="93" mandatory="y" >
+				<defo>getdate()</defo>
+			</column>
+			<index name="PK_serialNumbers" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="ind_serialNumbers_idProduct" unique="NORMAL" >
+				<column name="idProduct" />
+			</index>
+			<constraint name="CK_serialNumbers_value" >
+				<string>[value]&lt;&gt;&#039;&#039;</string>
+			</constraint>
+			<fk name="FK_serialNumbers_idProduct_products" to_schema="dbo" to_table="products" >
+				<fk_column name="idProduct" pk="id" />
+			</fk>
+		</table>
+		<table name="stores" >
+			<column name="id" type="int" length="10" decimal="0" jt="4" mandatory="y" autoincrement="y" />
+			<column name="title" type="nvarchar" length="50" decimal="0" jt="12" mandatory="y" />
+			<index name="PK_stores" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="UQ_stores_title" unique="UNIQUE" >
+				<column name="title" />
+			</index>
+			<constraint name="CK_stores_title" >
+				<string>[title]&lt;&gt;&#039;&#039;</string>
+			</constraint>
+		</table>
+		<table name="unitStorages" >
+			<column name="id" type="int" length="10" decimal="0" jt="4" mandatory="y" autoincrement="y" />
+			<column name="title" type="nvarchar" length="20" decimal="0" jt="12" mandatory="y" />
+			<column name="isWeightGoods" type="bit" length="1" decimal="0" jt="-7" mandatory="y" >
+				<defo>0</defo>
+			</column>
+			<index name="PK_unitStorages" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="UQ_unitStorages_title" unique="UNIQUE" >
+				<column name="title" />
+			</index>
+			<constraint name="CK_unitStorages_title" >
+				<string>[title]&lt;&gt;&#039;&#039;</string>
+			</constraint>
+		</table>
+		<table name="warranties" >
+			<column name="id" type="int" length="10" decimal="0" jt="4" mandatory="y" autoincrement="y" />
+			<column name="malfunction" type="nvarchar" length="256" decimal="0" jt="12" mandatory="y" />
+			<column name="dateReceipt" type="date" jt="91" mandatory="y" >
+				<defo>getdate()</defo>
+				<comment><![CDATA[Дата получения]]></comment>
+			</column>
+			<column name="dateDeparture" type="date" length="10" decimal="0" jt="91" >
+				<comment><![CDATA[дата отправки]]></comment>
+			</column>
+			<column name="dateIssue" type="date" length="10" decimal="0" jt="91" >
+				<comment><![CDATA[дата выдачи]]></comment>
+			</column>
+			<column name="info" type="nvarchar" length="256" decimal="0" jt="12" />
+			<column name="idSerialNumber" type="bigint" jt="-5" mandatory="y" />
+			<column name="idSerialNumberСhange" type="bigint" jt="-5" />
+			<index name="PK_warranties" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<constraint name="CK_warranties_malfunction" >
+				<string>[malfunction]&lt;&gt;&#039;&#039;</string>
+			</constraint>
+			<fk name="FK_warranties_idSerialNumber_serialNumbers" to_schema="dbo" to_table="serialNumbers" >
+				<fk_column name="idSerialNumber" pk="id" />
+			</fk>
+			<fk name="FK_warranties_idSerialNumberСhange_serialNumbers" to_schema="dbo" to_table="serialNumbers" >
+				<fk_column name="idSerialNumberСhange" pk="id" />
+			</fk>
+		</table>
+		<table name="warrantyPeriods" >
+			<column name="id" type="int" length="10" decimal="0" jt="4" mandatory="y" autoincrement="y" />
+			<column name="period" type="nvarchar" length="20" decimal="0" jt="12" mandatory="y" />
+			<index name="PK_warrantyPeriods" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="UQ_warrantyPeriods_period" unique="UNIQUE" >
+				<column name="period" />
+			</index>
+			<constraint name="CK_warrantyPeriods_period" >
+				<string>[period]&lt;&gt;&#039;&#039;</string>
+			</constraint>
+		</table>
+		<procedure name="goods_issued" id="Procedure_49492f8" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE PROCEDURE goods_issued
+    @id INT
+AS 
+UPDATE warranties SET dateIssue = GETDATE() WHERE id = @id]]></string>
+		</procedure>
+		<procedure name="goods_shipped" id="Procedure_1779cb2" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE PROCEDURE goods_shipped
+    @id INT
+AS 
+UPDATE warranties SET dateDeparture = GETDATE() WHERE id = @id]]></string>
+		</procedure>
+		<procedure name="set_product_property" id="Procedure_c3e294" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE PROCEDURE dbo.set_product_property
+    @propertyID INT,
+	@productID INT,
+	@valueID INT
+AS
+BEGIN
+	declare @nameID INT
+	SELECT @nameID = idPropertyName FROM dbo.propertyValues WHERE id = @valueID
+	IF ( ( @propertyID IS NULL AND ( @valueID IS NULL OR @nameID IS NULL ) ) OR
+		 ( @propertyID IS NOT NULL AND @valueID IS NOT NULL AND @nameID != (SELECT idPropertyName FROM dbo.propertyProducts WHERE id = @propertyID) ) ) BEGIN
+		RAISERROR('Не верно указанные данные', 16, 1)
+		RETURN
+	END ELSE IF (@propertyID IS NULL)
+		INSERT INTO dbo.propertyProducts(idProduct, idPropertyName, idPropertyValue) VALUES (@productID, @nameID, @valueID)
+	ELSE IF ( @valueID IS NULL )
+		DELETE FROM dbo.propertyProducts WHERE id = @propertyID
+	ELSE
+		UPDATE dbo.propertyProducts SET idPropertyValue = @valueID WHERE id = @propertyID
+ 
+END]]></string>
+		</procedure>
+		<trigger name="categories_delete" table="categories" id="Trigger_40b9548" isSystem="false" >
+			<string><![CDATA[CREATE TRIGGER categories_delete ON categories
+INSTEAD OF DELETE
+AS
+BEGIN
+	DELETE FROM propertyNames WHERE idCategory in (SELECT d.id FROM deleted d)
+	DELETE FROM categories WHERE idParent in (SELECT d.id FROM deleted d)
+	DELETE FROM categories WHERE id in (SELECT d.id FROM deleted d)	
+END
+]]></string>
+		</trigger>
+		<trigger name="propertyNames_delete" table="propertyNames" id="Trigger_29b9e93" isSystem="false" >
+			<string><![CDATA[CREATE TRIGGER propertyNames_delete ON propertyNames
+INSTEAD OF DELETE
+AS
+BEGIN
+	DELETE FROM propertyValues WHERE idPropertyName in (SELECT d.id FROM deleted d)
+	DELETE FROM propertyNames WHERE id in (SELECT d.id FROM deleted d)
+END
+]]></string>
+		</trigger>
+		<function name="getCountProduct" id="Function_47579f0" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE FUNCTION getCountProduct(@idProduct INT)
+RETURNS FLOAT
+AS BEGIN
+	RETURN (SELECT
+		isnull(sum(CASE 
+			WHEN mgt.code = 'purchase' OR mgt.code = 'returnFromBuyer' then mgi.count
+			WHEN mgt.code = 'sale' OR mgt.code = 'returnToSupplier' OR mgt.code = 'change' then -mgi.count
+		END), 0.0) [count]
+	FROM dbo.movementGoodsInfos mgi
+		INNER JOIN dbo.movementGoods mg ON ( mgi.idReport = mg.id )
+			INNER JOIN dbo.movmentGoodTypes mgt ON ( mg.idType = mgt.id )
+	WHERE mgi.idProduct = @idProduct)
+END]]></string>
+		</function>
+	</schema>
+	<connector name="SqlServer" database="SqlServer" driver_class="com.microsoft.sqlserver.jdbc.SQLServerDriver" driver_jar="mssql-jdbc-7.0.0.jre10.jar" driver_desc="Native Driver - Windows Authentication, Current User" host="DESKTOP-KC53E2S" port="1433" instance="AutomationAccountingGoods" user="ws" passwd="c2xvdzIzc3dpbTQ1QA==" />
+	<layout name="aag" id="Layout_9f7fe7" show_relation="columns" >
+		<entity schema="dbo" name="currencies" color="BED3F4" x="80" y="336" />
+		<entity schema="dbo" name="invoices" color="F4DDBE" x="1440" y="368" />
+		<entity schema="dbo" name="priceGroups" color="F4DDBE" x="1040" y="368" />
+		<entity schema="dbo" name="stores" color="BED3F4" x="432" y="512" />
+		<entity schema="dbo" name="counterparties" color="C7F4BE" x="848" y="752" />
+		<entity schema="dbo" name="movmentGoodTypes" color="C1D8EE" x="48" y="112" />
+		<entity schema="dbo" name="movementGoodsInfos" color="BED3F4" x="224" y="512" />
+		<entity schema="dbo" name="propertyValues" color="BEBEF4" x="1872" y="288" />
+		<entity schema="dbo" name="propertyNames" color="BEBEF4" x="1856" y="80" />
+		<entity schema="dbo" name="serialNumbers" color="BED3F4" x="400" y="240" />
+		<entity schema="dbo" name="revaluationProducts" color="F4DDBE" x="1488" y="112" />
+		<entity schema="dbo" name="warranties" color="BED3F4" x="592" y="416" />
+		<entity schema="dbo" name="serialNumberLogs" color="BED3F4" x="608" y="240" />
+		<entity schema="dbo" name="movementGoods" color="BED3F4" x="240" y="256" />
+		<entity schema="dbo" name="moneyTransfers" color="C7F4BE" x="1040" y="752" />
+		<entity schema="dbo" name="paymentTypes" color="C7F4BE" x="1040" y="992" />
+		<entity schema="dbo" name="moneyTransferTypes" color="C7F4BE" x="1216" y="768" />
+		<entity schema="dbo" name="invoiceInfos" color="F4DDBE" x="1280" y="368" />
+		<entity schema="dbo" name="propertyProducts" color="BEBEF4" x="2064" y="112" />
+		<entity schema="dbo" name="priceProducts" color="F4DDBE" x="1280" y="112" />
+		<entity schema="dbo" name="categories" color="BEBEF4" x="1712" y="112" />
+		<entity schema="dbo" name="unitStorages" color="F4DDBE" x="848" y="368" />
+		<entity schema="dbo" name="warrantyPeriods" color="F4DDBE" x="864" y="224" />
+		<entity schema="dbo" name="products" color="F4DDBE" x="1040" y="112" />
+		<group name="counterparties" color="EEF7EC" >
+			<entity schema="dbo" name="counterparties" />
+			<entity schema="dbo" name="moneyTransfers" />
+			<entity schema="dbo" name="paymentTypes" />
+			<entity schema="dbo" name="moneyTransferTypes" />
+		</group>
+		<group name="categories" color="ECECF7" >
+			<entity schema="dbo" name="categories" />
+			<entity schema="dbo" name="propertyNames" />
+			<entity schema="dbo" name="propertyProducts" />
+			<entity schema="dbo" name="propertyValues" />
+		</group>
+		<group name="products" color="F7F2EC" >
+			<entity schema="dbo" name="products" />
+			<entity schema="dbo" name="priceProducts" />
+			<entity schema="dbo" name="invoiceInfos" />
+			<entity schema="dbo" name="priceGroups" />
+			<entity schema="dbo" name="unitStorages" />
+			<entity schema="dbo" name="warrantyPeriods" />
+			<entity schema="dbo" name="revaluationProducts" />
+			<entity schema="dbo" name="invoices" />
+		</group>
+		<group name="movementGoods" color="ECF0F7" >
+			<entity schema="dbo" name="movementGoods" />
+			<entity schema="dbo" name="serialNumbers" />
+			<entity schema="dbo" name="stores" />
+			<entity schema="dbo" name="movementGoodsInfos" />
+			<entity schema="dbo" name="serialNumberLogs" />
+			<entity schema="dbo" name="warranties" />
+			<entity schema="dbo" name="currencies" />
+			<entity schema="dbo" name="movmentGoodTypes" />
+		</group>
+		<script name="movmentGoodTypes" id="Editor_2fe115a" language="SQL" >
+			<string><![CDATA[SELECT * 
+FROM
+	dbo.movmentGoodTypes s;]]></string>
+		</script>
+	</layout>
+</project>

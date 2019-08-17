@@ -4,8 +4,9 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using ModelModul;
-using ModelModul.PropertyName;
-using ModelModul.PropertyValue;
+using ModelModul.Models;
+using ModelModul.Repositories;
+using ModelModul.Specifications;
 using Prism.Commands;
 using Prism.Interactivity.InteractionRequest;
 using Prism.Regions;
@@ -16,33 +17,33 @@ namespace PropertiesModul.ViewModels
     {
         #region Properties
 
-        private ObservableCollection<PropertyNames> _propertyNames = new ObservableCollection<PropertyNames>();
-        public ObservableCollection<PropertyNames> PropertyNamesList
+        private ObservableCollection<PropertyName> _propertyNames = new ObservableCollection<PropertyName>();
+        public ObservableCollection<PropertyName> PropertyNamesList
         {
             get => _propertyNames;
             set => SetProperty(ref _propertyNames, value);
         }
 
-        private ObservableCollection<PropertyValues> _propertyValues = new ObservableCollection<PropertyValues>();
-        public ObservableCollection<PropertyValues> PropertyValuesList
+        private ObservableCollection<PropertyValue> _propertyValues = new ObservableCollection<PropertyValue>();
+        public ObservableCollection<PropertyValue> PropertyValuesList
         {
             get => _propertyValues;
             set => SetProperty(ref _propertyValues, value);
         }
 
-        private Groups _group = new Groups();
-        public Groups Group
+        private Category _category = new Category();
+        public Category Category
         {
-            get => _group;
+            get => _category;
             set
             {
-                _group = value;
+                _category = value;
                 RaisePropertyChanged();
             }
         }
 
-        private PropertyNames _propertyName = new PropertyNames();
-        public PropertyNames PropertyName
+        private PropertyName _propertyName = new PropertyName();
+        public PropertyName PropertyName
         {
             get => _propertyName;
             set
@@ -50,7 +51,7 @@ namespace PropertiesModul.ViewModels
                 _propertyName = value;
                 RaisePropertyChanged();
                 RaisePropertyChanged("CanUserAddValues");
-                LoadValues();
+                LoadValuesAsync();
             }
         }
 
@@ -61,9 +62,9 @@ namespace PropertiesModul.ViewModels
             set
             {
                 SetProperty(ref _notification, value as Notification);
-                Group = (Groups)_notification.Content;
+                Category = (Category)_notification.Content;
                 PropertyName = _propertyName;
-                LoadNames();
+                LoadNamesAsync();
             }
         }
 
@@ -73,10 +74,10 @@ namespace PropertiesModul.ViewModels
 
         public DelegateCommand<SelectedCellsChangedEventArgs> SelectedPropertyNamesCommand { get; }
 
-        public DelegateCommand<PropertyNames> DeletePropertyNamesCommand { get; }
+        public DelegateCommand<PropertyName> DeletePropertyNamesCommand { get; }
         public DelegateCommand<DataGridCellEditEndingEventArgs> ChangePropertyNamesCommand { get; }
 
-        public DelegateCommand<PropertyValues> DeletePropertyValuesCommand { get; }
+        public DelegateCommand<PropertyValue> DeletePropertyValuesCommand { get; }
         public DelegateCommand<DataGridCellEditEndingEventArgs> ChangePropertyValuesCommand { get; }
 
         #endregion
@@ -85,22 +86,22 @@ namespace PropertiesModul.ViewModels
         {
             SelectedPropertyNamesCommand = new DelegateCommand<SelectedCellsChangedEventArgs>(SelectedPropertyNames);
             ChangePropertyNamesCommand = new DelegateCommand<DataGridCellEditEndingEventArgs>(ChangePropertyNames);
-            DeletePropertyNamesCommand = new DelegateCommand<PropertyNames>(DeletePropertyNames);
+            DeletePropertyNamesCommand = new DelegateCommand<PropertyName>(DeletePropertyNamesAsync);
             ChangePropertyValuesCommand = new DelegateCommand<DataGridCellEditEndingEventArgs>(ChangePropertyValues);
-            DeletePropertyValuesCommand = new DelegateCommand<PropertyValues>(DeletePropertyValues);
+            DeletePropertyValuesCommand = new DelegateCommand<PropertyValue>(DeletePropertyValuesAsync);
         }
 
         private void SelectedPropertyNames(SelectedCellsChangedEventArgs obj)
         {
-            PropertyName = obj.AddedCells.FirstOrDefault().Item as PropertyNames ?? null;
+            PropertyName = obj.AddedCells.FirstOrDefault().Item as PropertyName ?? null;
         }
 
-        #region PropertyNames
+        #region PropertyName
 
         private void ChangePropertyNames(DataGridCellEditEndingEventArgs obj)
         {
             if (obj == null) return;
-            if (string.IsNullOrEmpty(((PropertyNames)obj.Row.DataContext).Title))
+            if (string.IsNullOrEmpty(((PropertyName)obj.Row.DataContext).Title))
             {
                 obj.Cancel = true;
             }
@@ -108,67 +109,67 @@ namespace PropertiesModul.ViewModels
             {
                 if (obj.Row.IsNewItem)
                 {
-                    AddPropertyNames((PropertyNames)obj.Row.Item);
+                    AddPropertyNamesAsync((PropertyName)obj.Row.Item);
                 }
                 else
                 {
-                    UpdatePropertyNames((PropertyNames)obj.Row.Item);
+                    UpdatePropertyNamesAsync((PropertyName)obj.Row.Item);
                 }
             }
         }
 
-        private void AddPropertyNames(PropertyNames obj)
+        private async void AddPropertyNamesAsync(PropertyName obj)
         {
             try
             {
-                obj.IdGroup = Group.Id;
-                DbSetPropertyNames dbSet = new DbSetPropertyNames();
-                dbSet.Add(obj);
+                obj.IdCategory = Category.Id;
+                SqlPropertyNameRepository sql = new SqlPropertyNameRepository();
+                await sql.CreateAsync(obj);
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            LoadNames();
+            LoadNamesAsync();
         }
 
-        private void UpdatePropertyNames(PropertyNames obj)
+        private async void UpdatePropertyNamesAsync(PropertyName obj)
         {
             try
             {
-                DbSetPropertyNames dbSet = new DbSetPropertyNames();
-                dbSet.Update(obj);
+                SqlPropertyNameRepository sql = new SqlPropertyNameRepository();
+                await sql.UpdateAsync(obj);
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            LoadNames();
+            LoadNamesAsync();
         }
 
-        private void DeletePropertyNames(PropertyNames obj)
+        private async void DeletePropertyNamesAsync(PropertyName obj)
         {
             if (obj == null) return;
             if (MessageBox.Show("Удалить параметр? Внимание, если у какого-то товара был установлен этот параметр он лишится его", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
                 MessageBoxResult.Yes) return;
             try
             {
-                DbSetPropertyNames dbSet = new DbSetPropertyNames();
-                dbSet.Delete(obj.Id);
+                SqlPropertyNameRepository sql = new SqlPropertyNameRepository();
+                await sql.DeleteAsync(obj);
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            LoadNames();
+            LoadNamesAsync();
         }
 
-        private void LoadNames()
+        private async void LoadNamesAsync()
         {
             try
             {
-                DbSetPropertyNames dbSet = new DbSetPropertyNames();
-                PropertyNamesList = new ObservableCollection<PropertyNames>(dbSet.Load(_group.Id));
+                SqlPropertyNameRepository sql = new SqlPropertyNameRepository();
+                //PropertyNamesList = new ObservableCollection<PropertyName>(await sql.GetListAsync(PropertyNameSpecification.GetPropertyNamesByIdGroup(_category.Id)));
                 if (PropertyName == null || PropertyName.Id == 0)
                 {
                     PropertyName = PropertyNamesList.FirstOrDefault();
@@ -189,12 +190,12 @@ namespace PropertiesModul.ViewModels
 
         #endregion
 
-        #region PropertyValues
+        #region PropertyValue
 
         private void ChangePropertyValues(DataGridCellEditEndingEventArgs obj)
         {
             if (obj == null) return;
-            if (string.IsNullOrEmpty(((PropertyValues)obj.Row.DataContext).Value))
+            if (string.IsNullOrEmpty(((PropertyValue)obj.Row.DataContext).Value))
             {
                 obj.Cancel = true;
             }
@@ -202,69 +203,69 @@ namespace PropertiesModul.ViewModels
             {
                 if (obj.Row.IsNewItem)
                 {
-                    AddPropertyValues((PropertyValues)obj.Row.Item);
+                    AddPropertyValuesAsync((PropertyValue)obj.Row.Item);
                 }
                 else
                 {
-                    UpdatePropertyValues((PropertyValues)obj.Row.Item);
+                    UpdatePropertyValues((PropertyValue)obj.Row.Item);
                 }
             }
         }
 
-        private void AddPropertyValues(PropertyValues obj)
+        private async void AddPropertyValuesAsync(PropertyValue obj)
         {
             try
             {
                 obj.IdPropertyName = PropertyName.Id;
-                DbSetPropertyValue dbSet = new DbSetPropertyValue();
-                dbSet.Add(obj);
+                SqlPropertyValueRepository sql = new SqlPropertyValueRepository();
+                await sql.CreateAsync(obj);
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            LoadValues();
+            LoadValuesAsync();
         }
 
-        private void UpdatePropertyValues(PropertyValues obj)
+        private void UpdatePropertyValues(PropertyValue obj)
         {
             try
             {
-                DbSetPropertyValue dbSet = new DbSetPropertyValue();
-                dbSet.Update(obj);
+                SqlPropertyValueRepository sql = new SqlPropertyValueRepository();
+                sql.UpdateAsync(obj);
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            LoadValues();
+            LoadValuesAsync();
         }
 
-        private void DeletePropertyValues(PropertyValues obj)
+        private async void DeletePropertyValuesAsync(PropertyValue obj)
         {
             if (obj == null) return;
             if (MessageBox.Show("Удалить значение параметра? Внимание, если у какого-то товара был установлено этот значение он лишится его", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
                 MessageBoxResult.Yes) return;
             try
             {
-                DbSetPropertyValue dbSet = new DbSetPropertyValue();
-                dbSet.Delete(obj.Id);
+                SqlPropertyValueRepository sql = new SqlPropertyValueRepository();
+                await sql.DeleteAsync(obj);
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            LoadValues();
+            LoadValuesAsync();
         }
 
-        private void LoadValues()
+        private async void LoadValuesAsync()
         {
             try
             {
-                DbSetPropertyValue dbSet = new DbSetPropertyValue();
-                PropertyValuesList = PropertyName != null
-                    ? new ObservableCollection<PropertyValues>(dbSet.Load(PropertyName.Id))
-                    : new ObservableCollection<PropertyValues>();
+                SqlPropertyValueRepository sql = new SqlPropertyValueRepository();
+                //PropertyValuesList = PropertyName != null
+                //    ? new ObservableCollection<PropertyValue>(await sql.GetListAsync(PropertyValueSpecification.GetPropertyValuesByIdPropertyName(PropertyName.Id)))
+                //    : new ObservableCollection<PropertyValue>();
             }
             catch (Exception e)
             {
@@ -278,7 +279,7 @@ namespace PropertiesModul.ViewModels
 
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
-            LoadNames();
+            LoadNamesAsync();
         }
 
         public override bool IsNavigationTarget(NavigationContext navigationContext)

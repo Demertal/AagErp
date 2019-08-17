@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Configuration;
-using System.Data.Entity.Core.EntityClient;
-using System.Data.SqlClient;
 using System.IO;
 using System.Windows.Forms;
 using ModelModul;
@@ -56,25 +53,9 @@ namespace RulezzClient.ViewModels
                     dataSource = сonnectionStrings["Server"].Value<string>();
                 }
 
-                SqlConnectionStringBuilder sqlConnection = new SqlConnectionStringBuilder
-                {
-                    DataSource = dataSource,
-                    InitialCatalog = "AutomationAccountingGoods",
-                    UserID = Login,
-                    Password = Password,
-                    ApplicationName = "EntityFramework"
-                };
-                EntityConnectionStringBuilder connectionString = new EntityConnectionStringBuilder
-                {
-                    Metadata =
-                        "res://*/AutomationAccountingGoodsModel.csdl|res://*/AutomationAccountingGoodsModel.ssdl|res://*/AutomationAccountingGoodsModel.msl",
-                    Provider = "System.Data.SqlClient",
-                    ProviderConnectionString = sqlConnection.ConnectionString
-                };
-
-                AutomationAccountingGoodsEntities.ConnectionString = connectionString.ConnectionString;
-                AutomationAccountingGoodsEntities au = new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString);
-                await au.Database.Connection.OpenAsync();
+                ConnectionTools.BuildConnectionString("AutomationAccountingGoodsContext");
+                AutomationAccountingGoodsContext au = new AutomationAccountingGoodsContext(ConnectionTools.ConnectionString);
+                //await au.Database.Connection.OpenAsync();
                 LoginCompleted?.Invoke(true);
             }
             catch (Exception e)

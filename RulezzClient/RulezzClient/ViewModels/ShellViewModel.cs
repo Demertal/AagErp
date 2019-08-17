@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using ModelModul;
+﻿using ModelModul;
+using ModelModul.Models;
 using Prism.Commands;
 using Prism.Interactivity.InteractionRequest;
 using Prism.Regions;
@@ -33,22 +33,23 @@ namespace RulezzClient.ViewModels
         {
             _regionManager = regionManager;
             СhangeСoursePopupRequest = new InteractionRequest<INotification>();
-            using (AutomationAccountingGoodsEntities db =
-                new AutomationAccountingGoodsEntities(AutomationAccountingGoodsEntities.ConnectionString))
-            {
-                var result = db.Database.SqlQuery<int?>("SELECT is_member ('Seller')").ToList();
-                if (result[0] == 1) Role = Roles.Seller;
-                else
-                {
-                    result = db.Database.SqlQuery<int?>("SELECT is_member ('OldestSalesman')").ToList();
-                    if (result[0] == 1) Role = Roles.OldestSalesman;
-                    else
-                    {
-                        result =db.Database.SqlQuery<int?>("SELECT is_member ('Admin')").ToList();
-                        if (result[0] == 1) Role = Roles.Admin;
-                    }
-                }
-            }
+            Role = Roles.Admin;
+            //using (AutomationAccountingGoodsContext db =
+            //    new AutomationAccountingGoodsContext(AutomationAccountingGoodsContext.ConnectionString))
+            //{
+            //    var result = db.Database.SqlQuery<int?>("SELECT is_member ('Seller')").ToList();
+            //    if (result[0] == 1) Role = Roles.Seller;
+            //    else
+            //    {
+            //        result = db.Database.SqlQuery<int?>("SELECT is_member ('OldestSalesman')").ToList();
+            //        if (result[0] == 1) Role = Roles.OldestSalesman;
+            //        else
+            //        {
+            //            result =db.Database.SqlQuery<int?>("SELECT is_member ('Admin')").ToList();
+            //            if (result[0] == 1) Role = Roles.Admin;
+            //        }
+            //    }
+            //}
 
             LoadedCommand = new DelegateCommand(Loaded);
             СhangeСourseCommand = new DelegateCommand(СhangeСourse);

@@ -1,8 +1,8 @@
-﻿using ModelModul;
+﻿using ModelModul.Models;
 
 namespace ReportModul.ViewModels
 {
-    class SalesReportInfoViewModel : InfoReport<SalesReports>
+    class SalesReportInfoViewModel : InfoReport<MovementGoods>
     {
     }
 }
