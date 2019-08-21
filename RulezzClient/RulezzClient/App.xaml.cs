@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using System.Windows.Navigation;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Unity;
@@ -38,7 +37,7 @@ namespace RulezzClient
             //moduleCatalog.AddModule<CounterpartiesModul>();
             //moduleCatalog.AddModule<RevaluationProductsModul.RevaluationProductsModul>();
             //moduleCatalog.AddModule<UnitStoragesModul>();
-            //moduleCatalog.AddModule<WarrantyPeriodsModul.WarrantyPeriodsModul>();
+            moduleCatalog.AddModule<WarrantyPeriodsModul.WarrantyPeriodsModul>();
             //moduleCatalog.AddModule<CashierWorkplaceModul.CashierWorkplaceModul>();
             //moduleCatalog.AddModule<WarrantyModul.WarrantyModul>();
             //moduleCatalog.AddModule<ReportModul.ReportModul>();

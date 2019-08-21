@@ -242,6 +242,10 @@
       <Project>{a2c817e8-9af6-4724-a7cf-3f6f2f8eb427}</Project>
       <Name>ProductModul</Name>
     </ProjectReference>
+    <ProjectReference Include="..\WarrantyPeriodsModul\WarrantyPeriodsModul.csproj">
+      <Project>{E7D86849-91E5-4509-963E-B29A546D0893}</Project>
+      <Name>WarrantyPeriodsModul</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">

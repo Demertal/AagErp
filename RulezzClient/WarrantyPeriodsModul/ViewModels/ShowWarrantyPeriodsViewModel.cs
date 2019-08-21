@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using ModelModul;
+using CustomControlLibrary.MVVM;
 using ModelModul.Models;
 using ModelModul.Repositories;
 using Prism.Commands;
@@ -101,8 +101,8 @@ namespace WarrantyPeriodsModul.ViewModels
         {
             try
             {
-                SqlWarrantyPeriodRepository sql = new SqlWarrantyPeriodRepository();
-                //WarrantyPeriodsList = new ObservableCollection<WarrantyPeriod>(await sql.GetListAsync());
+                IRepository<WarrantyPeriod> sqlWarrantyPeriodRepository = new SqlWarrantyPeriodRepository();
+                WarrantyPeriodsList = new ObservableCollection<WarrantyPeriod>(await sqlWarrantyPeriodRepository.GetListAsync());
                 RaisePropertyChanged("WarrantyPeriodsList");
             }
             catch (Exception e)
