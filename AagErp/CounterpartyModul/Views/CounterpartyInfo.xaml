@@ -60,7 +60,7 @@
         <TextBlock Text="Тип оплаты" Grid.Row="5" Grid.Column="0"/>
         <ComboBox ItemsSource="{Binding PaymentTypesList, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Id"
                   SelectedValue="{Binding SelectedCounterparty.IdPaymentType, UpdateSourceTrigger=PropertyChanged}"
-                  DisplayMemberPath="Description" Grid.Column="1" Grid.Row="5" IsSynchronizedWithCurrentItem="True">
+                  DisplayMemberPath="Description" Grid.Column="1" Grid.Row="5">
             <ComboBox.IsEnabled>
                 <Binding Converter="{StaticResource IsEnabledConverterForBool}" UpdateSourceTrigger="PropertyChanged" Path="IsUpdate"/>
             </ComboBox.IsEnabled>

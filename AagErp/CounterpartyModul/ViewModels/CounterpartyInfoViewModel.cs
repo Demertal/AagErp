@@ -31,7 +31,6 @@ namespace CounterpartyModul.ViewModels
             get => _selectedCounterparty;
             set
             {
-                LoadAsync();
                 IsUpdate = false;
                 SetProperty(ref _selectedCounterparty, value);
                 _selectedCounterparty.PropertyChanged += (o, e) => RaisePropertyChanged(e.PropertyName);
@@ -56,6 +55,7 @@ namespace CounterpartyModul.ViewModels
 
         public CounterpartyInfoViewModel()
         {
+            LoadAsync();
             UpdateCommand = new DelegateCommand(Update).ObservesCanExecute(() => SelectedCounterparty.IsValidate);
             ResetCommand = new DelegateCommand(Reset);
             OkCommand = new DelegateCommand(Accept).ObservesCanExecute(() => SelectedCounterparty.IsValidate);

@@ -21,7 +21,7 @@
         <DataGrid   ItemsSource="{Binding Path=PriceGroupsList, UpdateSourceTrigger=PropertyChanged}" MaxWidth="400"
                     IsSynchronizedWithCurrentItem="True" CanUserResizeRows="False" CanUserDeleteRows="False"
                     CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center"
-                    MinHeight="200" MaxHeight="500" HorizontalAlignment="Center" RowStyle="{StaticResource DefaultRowStyle}" SelectionMode="Single" FontSize="14">
+                    MinHeight="200" MaxHeight="500" RowStyle="{StaticResource DefaultRowStyle}" SelectionMode="Single" FontSize="14" HorizontalAlignment="Center">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="RowEditEnding">
                     <mvvm:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Path=DataContext.ChangePriceGroupsCommand}"/>
@@ -34,7 +34,7 @@
                 </Style>
             </DataGrid.CellStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Наценка" Binding="{Binding Path=Markup, UpdateSourceTrigger=PropertyChanged, StringFormat=P1}"/>
+                <DataGridTextColumn Header="Ценовая&#10;группа" Binding="{Binding Path=Markup, UpdateSourceTrigger=PropertyChanged, StringFormat=P1}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
