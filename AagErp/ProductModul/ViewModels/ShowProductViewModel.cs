@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using CustomControlLibrary.MVVM;
-using ModelModul;
 using ModelModul.Models;
 using ModelModul.Repositories;
 using ModelModul.Specifications;
@@ -16,7 +15,7 @@ using Prism.Services.Dialogs;
 
 namespace ProductModul.ViewModels
 {
-    class ShowProductViewModel : ViewModelBase
+    public class ShowProductViewModel : ViewModelBase
     {
         private readonly IRegionManager _regionManager;
 
@@ -124,6 +123,11 @@ namespace ProductModul.ViewModels
 
         public bool IsEnabledAddProduct => SelectedCategory != null;
         #endregion
+
+        public ShowProductViewModel()
+        {
+
+        }
 
         public ShowProductViewModel(IRegionManager regionManager, IEventAggregator ea, IDialogService dialogService)
         {

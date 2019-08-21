@@ -96,7 +96,7 @@
                 </TextBox.IsReadOnly>
             </TextBox>
             <TextBlock Text="Гарантия" Grid.Row="4" Grid.Column="1"/>
-            <ComboBox ItemsSource="{Binding WarrantyPeriodsList, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True" SelectedValuePath="Id"
+            <ComboBox ItemsSource="{Binding WarrantyPeriodsList, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Id"
                       SelectedValue="{Binding SelectedProduct.IdWarrantyPeriod, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Period" Grid.Column="3" 
                       Grid.Row="4">
                 <ComboBox.IsEnabled>
@@ -106,7 +106,7 @@
             <TextBlock Text="Ед. хр." Grid.Row="5" Grid.Column="1"/>
             <ComboBox ItemsSource="{Binding UnitStoragesList, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Id"
                       SelectedValue="{Binding SelectedProduct.IdUnitStorage, UpdateSourceTrigger=PropertyChanged}"
-                      DisplayMemberPath="Title" Grid.Column="3" Grid.Row="5" IsSynchronizedWithCurrentItem="True">
+                      DisplayMemberPath="Title" Grid.Column="3" Grid.Row="5">
                 <ComboBox.IsEnabled>
                     <Binding Converter="{StaticResource IsEnabledConverterForBool}" UpdateSourceTrigger="PropertyChanged" Path="IsUpdate"/>
                 </ComboBox.IsEnabled>
