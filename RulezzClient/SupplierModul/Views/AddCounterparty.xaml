@@ -16,33 +16,27 @@
             <RowDefinition/>
             <RowDefinition/>
             <RowDefinition/>
+            <RowDefinition/>
         </Grid.RowDefinitions> 
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <TextBlock Text="{Binding Path=WhoShowText}" FontSize="14" Margin="5" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-        <TextBlock Text="Наименование" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" FontSize="14"/>
-        <TextBox Text="{Binding Counterparty.Title,  UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Left" Height="23"
-                 TextWrapping="Wrap" VerticalAlignment="Center" HorizontalContentAlignment="Center" MinWidth="100"
-                 VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="1" Margin="5" FontSize="14"/>
-        <TextBlock Text="Контактное лицо" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" FontSize="14"/>
-        <TextBox Text="{Binding Counterparty.ContactPerson,  UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Left" Height="23"
-                 TextWrapping="Wrap" VerticalAlignment="Center" HorizontalContentAlignment="Center" MinWidth="100"
-                 VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="1" Margin="5" FontSize="14"/>
-        <TextBlock Text="Контактный телефон" HorizontalAlignment="Left" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" FontSize="14"/>
-        <TextBox Text="{Binding Counterparty.ContactPhone,  UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Left" Height="23"
-                 TextWrapping="Wrap" VerticalAlignment="Center" HorizontalContentAlignment="Center" MinWidth="100"
-                 VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="1" Margin="5" FontSize="14"/>
-        <TextBlock Text="Реквизит" HorizontalAlignment="Left" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" FontSize="14"/>
-        <TextBox Text="{Binding Counterparty.Props,  UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Left" Height="23"
-                 TextWrapping="Wrap" VerticalAlignment="Center" HorizontalContentAlignment="Center" MinWidth="100"
-                 VerticalContentAlignment="Center" Grid.Row="4" Grid.Column="1" Margin="5" FontSize="14"/>
-        <TextBlock Text="Адрес" HorizontalAlignment="Left" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" FontSize="14"/>
-        <TextBox Text="{Binding Counterparty.Address,  UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Left" Height="23"
-                 TextWrapping="Wrap" VerticalAlignment="Center" HorizontalContentAlignment="Center" MinWidth="100"
-                 VerticalContentAlignment="Center" Grid.Row="5" Grid.Column="1" Margin="5" FontSize="14"/>
-        <Button Content="Добавить" HorizontalAlignment="Center" VerticalAlignment="Center" Width="75" Command="{Binding AddCounterpartyCommand}"
-                Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="2" FontSize="14"/>
+        <TextBlock Text="{Binding Path=WhoShowText}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center"/>
+        <TextBlock Text="Наименование" Grid.Row="1" Grid.Column="0"/>
+        <TextBox Text="{Binding Counterparty.Title,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1"/>
+        <TextBlock Text="Контактное лицо" Grid.Row="2" Grid.Column="0"/>
+        <TextBox Text="{Binding Counterparty.ContactPerson,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="1"/>
+        <TextBlock Text="Контактный телефон" Grid.Row="3" Grid.Column="0"/>
+        <TextBox Text="{Binding Counterparty.ContactPhone,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Grid.Column="1"/>
+        <TextBlock Text="Реквизит" Grid.Row="4" Grid.Column="0"/>
+        <TextBox Text="{Binding Counterparty.Props,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="4" Grid.Column="1"/>
+        <TextBlock Text="Адрес" Grid.Row="5" Grid.Column="0"/>
+        <TextBox Text="{Binding Counterparty.Address,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="5" Grid.Column="1"/>
+        <TextBlock Text="Тип оплаты" Grid.Row="6" Grid.Column="0"/>
+        <ComboBox ItemsSource="{Binding PaymentTypesList, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True" SelectedValuePath="Id"
+                  SelectedValue="{Binding Counterparty.IdPaymentType, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Description" Grid.Column="1" 
+                  Grid.Row="6"/>
+        <Button Content="Добавить" Width="100" Command="{Binding AddCounterpartyCommand}" Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="2"/>
     </Grid>
 </UserControl>

@@ -170,7 +170,6 @@
     <Compile Include="Configurations\CounterpartyConfiguration.cs" />
     <Compile Include="ConnectionTools.cs" />
     <Compile Include="Models\Counterparty.cs" />
-    <Compile Include="CounterpartyViewModel.cs" />
     <Compile Include="Models\CountsProduct.cs" />
     <Compile Include="Models\MoneyTransferType.cs" />
     <Compile Include="Models\MovmentGoodType.cs" />
@@ -180,6 +179,7 @@
     <Compile Include="Repositories\SqlExchangeRateRepository.cs" />
     <Compile Include="Repositories\SqlCategoryRepository.cs" />
     <Compile Include="Repositories\IRepository.cs" />
+    <Compile Include="Repositories\SqlPaymentTypeRepository.cs" />
     <Compile Include="Repositories\SqlPriceGroupRepository.cs" />
     <Compile Include="Repositories\SqlProductRepository.cs" />
     <Compile Include="Models\Enumerations.cs" />

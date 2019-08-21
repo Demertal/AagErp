@@ -10,35 +10,14 @@
 
     <UserControl.Resources>
         <ContextMenu x:Key="DataGridMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-            <MenuItem Header="Добавить"
-                      Command="{Binding Path=AddCounterpartyCommand}">
-                <i:Interaction.Triggers>
-                    <interactivity:InteractionRequestTrigger SourceObject="{Binding Path=AddCounterpartyPopupRequest}">
-                        <interactivity:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True" WindowStyle="{DynamicResource MyWindowStyle}">
-                            <interactivity:PopupWindowAction.WindowContent>
-                                <views:AddCounterparty/>
-                            </interactivity:PopupWindowAction.WindowContent>
-                        </interactivity:PopupWindowAction>
-                    </interactivity:InteractionRequestTrigger>
-                </i:Interaction.Triggers>
-            </MenuItem>
+            <MenuItem Header="Добавить" Command="{Binding Path=AddCounterpartyCommand}"/>
         </ContextMenu>
 
         <ContextMenu  x:Key="RowMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
             <MenuItem Header="Удалить" CommandParameter="{Binding}"
                       Command="{Binding DataContext.DeleteCounterpartyCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>
             <MenuItem Header="Добавить"
-                      Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.AddCounterpartyCommand}">
-                <i:Interaction.Triggers>
-                    <interactivity:InteractionRequestTrigger SourceObject="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.AddCounterpartyPopupRequest}">
-                        <interactivity:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True" WindowStyle="{DynamicResource MyWindowStyle}">
-                            <interactivity:PopupWindowAction.WindowContent>
-                                <views:AddCounterparty/>
-                            </interactivity:PopupWindowAction.WindowContent>
-                        </interactivity:PopupWindowAction>
-                    </interactivity:InteractionRequestTrigger>
-                </i:Interaction.Triggers>
-            </MenuItem>
+                      Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.AddCounterpartyCommand}"/>
         </ContextMenu>
         <Style x:Key="DefaultRowStyle" TargetType="{x:Type DataGridRow}">
             <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
@@ -46,7 +25,7 @@
     </UserControl.Resources>
 
     <StackPanel>
-        <TextBlock Text="{Binding Path=WhoShowText}" FontSize="14" Margin="5"/>
+        <TextBlock Text="{Binding Path=WhoShowText}"/>
         <Border Padding="5" BorderThickness="2" BorderBrush="Black" CornerRadius="5">
             <StackPanel Orientation="Horizontal">
                 <customControlLibrary:ExtendedDataGrid x:Name="CounterpartiesDataGrid" ItemsSource="{Binding Path=CounterpartiesList, UpdateSourceTrigger=PropertyChanged}" MaxWidth="400"

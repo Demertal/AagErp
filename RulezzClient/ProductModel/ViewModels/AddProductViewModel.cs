@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
-using CustomControlLibrary;
 using CustomControlLibrary.MVVM;
 using GenerationBarcodeLibrary;
 using ModelModul.Models;

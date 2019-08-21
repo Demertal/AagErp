@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using CurrencyModul;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Unity;
@@ -38,9 +37,9 @@ namespace RulezzClient
             moduleCatalog.AddModule<PriceGroupModul.PriceGroupModul>();
             moduleCatalog.AddModule<StoreModul.StoreModul>();
             moduleCatalog.AddModule<CurrencyModul.CurrencyModul>();
+            moduleCatalog.AddModule<CounterpartyModul.CounterpartyModul>();
             //moduleCatalog.AddModule<PurchaseGoodsModul.PurchaseGoodsModul>();
             //moduleCatalog.AddModule<PropertiesModul.PropertiesModul>();
-            //moduleCatalog.AddModule<CounterpartiesModul>();
             //moduleCatalog.AddModule<RevaluationProductsModul.RevaluationProductsModul>();
             //moduleCatalog.AddModule<CashierWorkplaceModul.CashierWorkplaceModul>();
             //moduleCatalog.AddModule<WarrantyModul.WarrantyModul>();

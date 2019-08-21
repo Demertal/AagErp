@@ -1,9 +1,9 @@
+using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace ModelModul.Models
 {
-    public class Counterparty : ModelBase
+    public class Counterparty : ModelBase, ICloneable
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Counterparty()
@@ -24,8 +24,6 @@ namespace ModelModul.Models
         }
 
         private string _title;
-        [Required]
-        [StringLength(40)]
         public string Title
         {
             get => _title;
@@ -33,11 +31,11 @@ namespace ModelModul.Models
             {
                 _title = value;
                 OnPropertyChanged("Title");
+                OnPropertyChanged("IsValidate");
             }
         }
 
         private string _contactPerson;
-        [StringLength(40)]
         public string ContactPerson
         {
             get => _contactPerson;
@@ -49,7 +47,6 @@ namespace ModelModul.Models
         }
 
         private string _contactPhone;
-        [StringLength(50)]
         public string ContactPhone
         {
             get => _contactPhone;
@@ -61,7 +58,6 @@ namespace ModelModul.Models
         }
 
         private string _props;
-        [StringLength(40)]
         public string Props
         {
             get => _props;
@@ -73,7 +69,6 @@ namespace ModelModul.Models
         }
 
         private string _address;
-        [StringLength(40)]
         public string Address
         {
             get => _address;
@@ -95,14 +90,15 @@ namespace ModelModul.Models
             }
         }
 
-        private int? _idPaymentType;
-        public int? IdPaymentType
+        private int _idPaymentType;
+        public int IdPaymentType
         {
             get => _idPaymentType;
             set
             {
                 _idPaymentType = value;
                 OnPropertyChanged("IdPaymentType");
+                OnPropertyChanged("IsValidate");
             }
         }
 
@@ -116,6 +112,8 @@ namespace ModelModul.Models
                 OnPropertyChanged("PaymentType");
             }
         }
+
+        public bool IsValidate => !string.IsNullOrEmpty(Title) && IdPaymentType != 0;
 
         private ICollection<MoneyTransfer> _moneyTransfers;
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -139,6 +137,21 @@ namespace ModelModul.Models
                 _movementGoods = value;
                 OnPropertyChanged("MovementGoods");
             }
+        }
+
+        public object Clone()
+        {
+            return new Counterparty
+            {
+                Id = Id,
+                Address = Address,
+                ContactPerson = ContactPerson,
+                ContactPhone = ContactPhone,
+                IdPaymentType = IdPaymentType,
+                Props = Props,
+                Title = Title,
+                WhoIsIt = WhoIsIt
+            };
         }
     }
 }

@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Linq;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Windows;
-using ModelModul;
+using CustomControlLibrary.MVVM;
 using ModelModul.Models;
 using ModelModul.Repositories;
 using ModelModul.Specifications;
 using Prism.Commands;
 using Prism.Interactivity.InteractionRequest;
 using Prism.Regions;
+using Prism.Services.Dialogs;
 
 namespace CounterpartyModul.ViewModels
 {
@@ -17,6 +19,8 @@ namespace CounterpartyModul.ViewModels
         #region Properties
 
         private readonly IRegionManager _regionManager;
+
+        private readonly IDialogService _dialogService;
 
         private TypeCounterparties _type;
 
@@ -31,65 +35,98 @@ namespace CounterpartyModul.ViewModels
             }
         }
 
-        //private ObservableCollection<CounterpartyViewModel> _counterpartiesList = new ObservableCollection<CounterpartyViewModel>();
-        //public ObservableCollection<CounterpartyViewModel> CounterpartiesList
-        //{
-        //    get => _counterpartiesList;
-        //    set => SetProperty(ref _counterpartiesList, value);
-        //}
+        private ObservableCollection<Counterparty> _counterpartiesList = new ObservableCollection<Counterparty>();
+        public ObservableCollection<Counterparty> CounterpartiesList
+        {
+            get => _counterpartiesList;
+            set
+            {
+                if (_counterpartiesList != null)
+                    _counterpartiesList.CollectionChanged -= CounterpartiesListOnCollectionChanged;
+                SetProperty(ref _counterpartiesList, value);
+                if (_counterpartiesList != null)
+                    _counterpartiesList.CollectionChanged += CounterpartiesListOnCollectionChanged;
+            }
+        }
+
+
+        #region CollectionChanged
+
+        private void CounterpartiesListOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (Counterparty item in e.OldItems)
+                    {
+                        //Removed items
+                        item.PropertyChanged -= CountsProductItemChanged;
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Add:
+                    foreach (Counterparty item in e.NewItems)
+                    {
+                        //Added items
+                        item.PropertyChanged += CountsProductItemChanged;
+                    }
+
+                    break;
+            }
+
+            RaisePropertyChanged("CounterpartiesList");
+        }
+
+        private void CountsProductItemChanged(object sender, PropertyChangedEventArgs e)
+        {
+            RaisePropertyChanged("CounterpartiesList");
+        }
+
+        #endregion
 
         public string WhoShowText => Type == TypeCounterparties.Suppliers ? "Поставщики" : "Покупатели";
 
-        public InteractionRequest<INotification> AddCounterpartyPopupRequest { get; set; }
-
-        //public DelegateCommand<CounterpartyViewModel> DeleteCounterpartyCommand { get; }
+        public DelegateCommand<Counterparty> DeleteCounterpartyCommand { get; }
         public DelegateCommand AddCounterpartyCommand { get; }
         #endregion
 
-        public ShowCounterpartiesViewModel(IRegionManager regionManager)
+        public ShowCounterpartiesViewModel(IRegionManager regionManager, IDialogService dialogService)
         {
             _regionManager = regionManager;
-            AddCounterpartyPopupRequest = new InteractionRequest<INotification>();
-            //DeleteCounterpartyCommand = new DelegateCommand<CounterpartyViewModel>(DeleteSuppliersAsync);
+            _dialogService = dialogService;
+            DeleteCounterpartyCommand = new DelegateCommand<Counterparty>(DeletCounterpartyAsync);
             AddCounterpartyCommand = new DelegateCommand(AddCounterparty);
         }
 
         private void AddCounterparty()
         {
-            AddCounterpartyPopupRequest.Raise(new Confirmation { Title = "Добавить контрагента", Content = Type }, Callback);
+            _dialogService.ShowDialog("AddCounterparty", new DialogParameters { { "type", Type } }, result => LoadAsync());
         }
 
-        private void Callback(INotification obj)
+        private async void DeletCounterpartyAsync(Counterparty obj)
         {
-            if (!((Confirmation)obj).Confirmed) return;
-            LoadAsync();
+            if (obj == null) return;
+            if (MessageBox.Show("Удалить контрагента?", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
+                MessageBoxResult.Yes) return;
+            try
+            {
+                IRepository<Counterparty> counterpartyRepository = new SqlCounterpartyRepository();
+                await counterpartyRepository.DeleteAsync(obj);
+                LoadAsync();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
-
-        //private async void DeleteSuppliersAsync(CounterpartyViewModel obj)
-        //{
-        //    if (obj == null) return;
-        //    if (MessageBox.Show("Удалить контрагента?", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
-        //        MessageBoxResult.Yes) return;
-        //    try
-        //    {
-        //        SqlCounterpartyRepository dbSet = new SqlCounterpartyRepository();
-        //        await dbSet.DeleteAsync(obj.Counterparty);
-        //        LoadAsync();
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-        //    }
-        //}
 
         private async void LoadAsync()
         {
             try
             {
-                SqlCounterpartyRepository dbSet = new SqlCounterpartyRepository();
-                //CounterpartiesList = new ObservableCollection<CounterpartyViewModel>((await dbSet.GetListAsync(CounterpartySpecification.GetCounterpartiesByType(_type)))
-                //    .Select(obj => new CounterpartyViewModel {Counterparty = obj}));
-                RaisePropertyChanged("CounterpartiesList");
+                IRepository<Counterparty> counterpartyRepository = new SqlCounterpartyRepository();
+                CounterpartiesList = new ObservableCollection<Counterparty>(
+                    await counterpartyRepository.GetListAsync(
+                        CounterpartySpecification.GetCounterpartiesByType(_type)));
             }
             catch (Exception e)
             {

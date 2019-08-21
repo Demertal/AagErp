@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
+using CustomControlLibrary.MVVM;
 using ModelModul;
 using ModelModul.Models;
 using ModelModul.Repositories;
@@ -23,17 +25,28 @@ namespace CounterpartyModul.ViewModels
 
         private Counterparty _oldCounterparty = new Counterparty();
 
-        //private CounterpartyViewModel _selectedCounterparty = new CounterpartyViewModel();
-        //public CounterpartyViewModel SelectedCounterparty
-        //{
-        //    get => _selectedCounterparty;
-        //    set
-        //    {
-        //        _selectedCounterparty = value;
-        //        IsUpdate = false;
-        //        RaisePropertyChanged();
-        //    }
-        //}
+        private Counterparty _selectedCounterparty = new Counterparty();
+        public Counterparty SelectedCounterparty
+        {
+            get => _selectedCounterparty;
+            set
+            {
+                LoadAsync();
+                IsUpdate = false;
+                SetProperty(ref _selectedCounterparty, value);
+                _selectedCounterparty.PropertyChanged += (o, e) => RaisePropertyChanged(e.PropertyName);
+                RaisePropertyChanged("CanUpdate");
+            }
+        }
+
+        private ObservableCollection<PaymentType> _paymentTypesList = new ObservableCollection<PaymentType>();
+        public ObservableCollection<PaymentType> PaymentTypesList
+        {
+            get => _paymentTypesList;
+            set => SetProperty(ref _paymentTypesList, value);
+        }
+
+        public bool CanUpdate => SelectedCounterparty != null && SelectedCounterparty.Id != 0;
 
         public DelegateCommand UpdateCommand { get; }
         public DelegateCommand ResetCommand { get; }
@@ -43,21 +56,17 @@ namespace CounterpartyModul.ViewModels
 
         public CounterpartyInfoViewModel()
         {
-            //SelectedCounterparty.PropertyChanged += delegate (object sender, PropertyChangedEventArgs args)
-            //{
-            //    RaisePropertyChanged(args.PropertyName);
-            //};
-            //UpdateCommand = new DelegateCommand(Update).ObservesCanExecute(() => SelectedCounterparty.IsValidate);
-            //ResetCommand = new DelegateCommand(Reset);
-            //OkCommand = new DelegateCommand(Accept).ObservesCanExecute(() => SelectedCounterparty.IsValidate);
+            UpdateCommand = new DelegateCommand(Update).ObservesCanExecute(() => SelectedCounterparty.IsValidate);
+            ResetCommand = new DelegateCommand(Reset);
+            OkCommand = new DelegateCommand(Accept).ObservesCanExecute(() => SelectedCounterparty.IsValidate);
         }
 
         private void Accept()
         {
             try
             {
-                SqlCounterpartyRepository dbSet = new SqlCounterpartyRepository();
-                //dbSet.UpdateAsync(SelectedCounterparty.Counterparty);
+                IRepository<Counterparty> counterpartyRepository = new SqlCounterpartyRepository();
+                counterpartyRepository.UpdateAsync(SelectedCounterparty);
                 MessageBox.Show("Контрагент изменен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
                 IsUpdate = false;
             }
@@ -69,18 +78,25 @@ namespace CounterpartyModul.ViewModels
 
         private void Reset()
         {
-            //SelectedCounterparty.Counterparty.Title = _oldCounterparty.Title;
-            //SelectedCounterparty.Counterparty.Address = _oldCounterparty.Address;
-            //SelectedCounterparty.Counterparty.ContactPerson = _oldCounterparty.ContactPerson;
-            //SelectedCounterparty.Counterparty.ContactPhone = _oldCounterparty.ContactPhone;
-            //SelectedCounterparty.Counterparty.Props = _oldCounterparty.Props;
+            SelectedCounterparty.Title = _oldCounterparty.Title;
+            SelectedCounterparty.Address = _oldCounterparty.Address;
+            SelectedCounterparty.ContactPerson = _oldCounterparty.ContactPerson;
+            SelectedCounterparty.ContactPhone = _oldCounterparty.ContactPhone;
+            SelectedCounterparty.Props = _oldCounterparty.Props;
+            SelectedCounterparty.IdPaymentType = _oldCounterparty.IdPaymentType;
             IsUpdate = false;
         }
 
         private void Update()
         {
-            //_oldCounterparty = (Counterparty)SelectedCounterparty.Counterparty.Clone();
+            _oldCounterparty = (Counterparty)SelectedCounterparty.Clone();
             IsUpdate = true;
+        }
+
+        public async void LoadAsync()
+        {
+            IRepository<PaymentType> paymentTypeRepository = new SqlPaymentTypeRepository();
+            PaymentTypesList = new ObservableCollection<PaymentType>(await paymentTypeRepository.GetListAsync());
         }
 
         #region INavigationAware

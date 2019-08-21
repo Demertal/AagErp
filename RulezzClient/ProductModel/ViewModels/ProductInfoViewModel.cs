@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using CustomControlLibrary.MVVM;
 using GenerationBarcodeLibrary;
-using ModelModul;
 using ModelModul.Models;
 using ModelModul.Repositories;
 using ModelModul.Specifications;
@@ -67,13 +66,12 @@ namespace ProductModul.ViewModels
             {
                 LoadAsync();
                 IsUpdate = false;
-                _selectedProduct = value;
+                SetProperty(ref _selectedProduct, value);
                 _selectedProduct.PropertyChanged += delegate (object sender, PropertyChangedEventArgs args)
                 {
                     RaisePropertyChanged(args.PropertyName);
                 };
                 GetCountProduct();
-                RaisePropertyChanged();
                 RaisePropertyChanged("CanUpdate");
             }
         }

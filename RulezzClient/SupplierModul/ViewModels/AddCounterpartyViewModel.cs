@@ -1,52 +1,31 @@
 ﻿using System;
-using System.ComponentModel;
+using System.Collections.ObjectModel;
 using System.Windows;
-using ModelModul;
+using CustomControlLibrary.MVVM;
 using ModelModul.Models;
 using ModelModul.Repositories;
 using Prism.Commands;
-using Prism.Interactivity.InteractionRequest;
-using Prism.Regions;
+using Prism.Services.Dialogs;
 
 namespace CounterpartyModul.ViewModels
 {
-    class AddCounterpartyViewModel: ViewModelBase, IInteractionRequestAware
+    public class AddCounterpartyViewModel: DialogViewModelBase
     {
         #region Parametrs
 
-        private TypeCounterparties _type;
-
-        private TypeCounterparties Type
+        private ObservableCollection<PaymentType> _paymentTypesList = new ObservableCollection<PaymentType>();
+        public ObservableCollection<PaymentType> PaymentTypesList
         {
-            get => _type;
-            set
-            {
-                SetProperty(ref _type, value);
-                RaisePropertyChanged("WhoShowText");
-            }
+            get => _paymentTypesList;
+            set => SetProperty(ref _paymentTypesList, value);
         }
 
-        //private CounterpartyViewModel _counterparty = new CounterpartyViewModel();
+        private Counterparty _counterparty = new Counterparty();
 
-        //public CounterpartyViewModel Counterparty
-        //{
-        //    get => _counterparty;
-        //    set => SetProperty(ref _counterparty, value);
-        //}
+        public Counterparty Counterparty => _counterparty;
 
-        public string WhoShowText => Type == TypeCounterparties.Suppliers ? "Поставщик" : "Покупатель";
+        public string WhoShowText => Counterparty?.WhoIsIt == TypeCounterparties.Suppliers ? "Поставщик" : "Покупатель";
 
-        private Confirmation _notification;
-        public INotification Notification
-        {
-            get => _notification;
-            set
-            {
-                SetProperty(ref _notification, value as Confirmation);
-                Type = (TypeCounterparties)_notification.Content;
-                //Counterparty.Counterparty = new Counterparty();
-            }
-        }
         public Action FinishInteraction { get; set; }
 
         public DelegateCommand AddCounterpartyCommand { get; }
@@ -55,21 +34,18 @@ namespace CounterpartyModul.ViewModels
 
         public AddCounterpartyViewModel()
         {
-            //AddCounterpartyCommand = new DelegateCommand(AddCounterpartyAsync).ObservesCanExecute(() => Counterparty.IsValidate);
-            //Counterparty.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args) {RaisePropertyChanged(args.PropertyName); };
+            Counterparty.PropertyChanged += (o, e) => RaisePropertyChanged("Counterparty");
+            AddCounterpartyCommand = new DelegateCommand(AddCounterpartyAsync).ObservesCanExecute(() => Counterparty.IsValidate);
         }
 
         public async void AddCounterpartyAsync()
         {
             try
             {
-                //Counterparty.TypeCounterparty = Type;
-                //SqlCounterpartyRepository sqlCounterpartyRepository = new SqlCounterpartyRepository();
-                //await sqlCounterpartyRepository.CreateAsync(Counterparty.Counterparty);
-                //MessageBox.Show("Контрагент добавлен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                //if (_notification != null)
-                //    _notification.Confirmed = true;
-                //FinishInteraction?.Invoke();
+                IRepository<Counterparty> counterpartyRepository = new SqlCounterpartyRepository();
+                await counterpartyRepository.CreateAsync(Counterparty);
+                MessageBox.Show("Контрагент добавлен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                RaiseRequestClose(new DialogResult(ButtonResult.OK));
             }
             catch (Exception ex)
             {
@@ -77,21 +53,25 @@ namespace CounterpartyModul.ViewModels
             }
         }
 
-        #region INavigationAware
-
-        public override void OnNavigatedTo(NavigationContext navigationContext)
+        public async void LoadAsync()
         {
+            IRepository<PaymentType> paymentTypeRepository = new SqlPaymentTypeRepository();
+            PaymentTypesList = new ObservableCollection<PaymentType>(await paymentTypeRepository.GetListAsync());
         }
 
-        public override bool IsNavigationTarget(NavigationContext navigationContext)
+        public override void OnDialogOpened(IDialogParameters parameters)
         {
-            return false;
+            try
+            {
+                LoadAsync();
+                Counterparty.WhoIsIt = parameters.GetValue<TypeCounterparties>("type");
+                RaisePropertyChanged("WhoShowText");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                RaiseRequestClose(new DialogResult(ButtonResult.Abort));
+            }
         }
-
-        public override void OnNavigatedFrom(NavigationContext navigationContext)
-        {
-        }
-
-        #endregion
     }
 }

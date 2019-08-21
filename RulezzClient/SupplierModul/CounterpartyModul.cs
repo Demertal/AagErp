@@ -1,11 +1,13 @@
-﻿using CounterpartyModul.Views;
+﻿using CounterpartyModul.ViewModels;
+using CounterpartyModul.Views;
+using CustomControlLibrary.MVVM;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Regions;
 
 namespace CounterpartyModul
 {
-    public class CounterpartiesModul : IModule
+    public class CounterpartyModul : IModule
     {
         public void OnInitialized(IContainerProvider containerProvider)
         {
@@ -16,6 +18,8 @@ namespace CounterpartyModul
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterForNavigation<ShowCounterparties>();
+            containerRegistry.RegisterDialogWindow<DialogWindow>();
+            containerRegistry.RegisterDialog<AddCounterparty, AddCounterpartyViewModel>();
         }
     }
 }
