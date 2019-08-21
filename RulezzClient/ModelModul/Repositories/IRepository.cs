@@ -57,6 +57,20 @@ namespace ModelModul.Repositories
         Task<TEntity> GetItemAsync(int id);
 
         /// <summary>
+        /// Получает объект по id
+        /// </summary>
+        /// <param name="id">Id объекта</param>
+        /// <returns>Полученный объект</returns>
+        Task<TEntity> GetItemAsync(long id);
+
+        /// <summary>
+        /// Получает объект по id
+        /// </summary>
+        /// <param name="id">Id объекта</param>
+        /// <returns>Полученный объект</returns>
+        Task<TEntity> GetItemAsync(Guid id);
+
+        /// <summary>
         /// Создает объект
         /// </summary>
         /// <param name="item">Объект для создания</param>

@@ -7,6 +7,7 @@
              xmlns:customControlLibrary="clr-namespace:CustomControlLibrary;assembly=CustomControlLibrary"
              xmlns:converters="clr-namespace:CustomControlLibrary.Converters;assembly=CustomControlLibrary"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:models="clr-namespace:ModelModul.Models;assembly=ModelModul"
              interactivity:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Padding="10,5,5,10">
@@ -70,72 +71,75 @@
                     </DataGridTemplateColumn>
                 </customControlLibrary:ExtendedDataGrid.Columns>
             </customControlLibrary:ExtendedDataGrid>
-            <Label Content="{Binding Path=Group}" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Left" FontSize="14" />
-            <Label Content="Наименование товара" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" FontSize="14" />
-            <TextBox Text="{Binding SelectedProduct.Title,  UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Left"
-                     MinHeight="23" VerticalAlignment="Center" Grid.Row="1" Grid.Column="3" HorizontalContentAlignment="Center"
-                     MinWidth="100" VerticalContentAlignment="Center" FontSize="14" TextWrapping="Wrap" MaxWidth="200">
+            <Label Content="{Binding Path=Category}" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"/>
+            <Label Content="Наименование товара" Grid.Row="1" Grid.Column="1"/>
+            <TextBox Text="{Binding SelectedProduct.Title,  UpdateSourceTrigger=PropertyChanged}"
+                     Grid.Row="1" Grid.Column="3" HorizontalContentAlignment="Center">
                 <TextBox.IsReadOnly>
                     <Binding Converter="{StaticResource IsReadOnlyConverterForBool}" UpdateSourceTrigger="PropertyChanged" Path="IsUpdate"/>
                 </TextBox.IsReadOnly>
             </TextBox>
-            <Label Content="Артикул товара" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" FontSize="14" />
-            <TextBox Text="{Binding SelectedProduct.VendorCode,  UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" MinHeight="23"
-                     VerticalAlignment="Center" Grid.Row="2" Grid.Column="3" HorizontalContentAlignment="Center" MinWidth="100" VerticalContentAlignment="Center" FontSize="14"
-                     TextWrapping="Wrap" MaxWidth="200">
+            <Label Content="Артикул товара" Grid.Row="2" Grid.Column="1"/>
+            <TextBox Text="{Binding SelectedProduct.VendorCode,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="3">
                 <TextBox.IsReadOnly>
                     <Binding Converter="{StaticResource IsReadOnlyConverterForBool}" UpdateSourceTrigger="PropertyChanged" Path="IsUpdate"/>
                 </TextBox.IsReadOnly>
             </TextBox>
-            <Label Content="Штрих код" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" FontSize="14" />
-            <Button Background="White" BorderThickness="0" Grid.Row="3" Grid.Column="2" Command="{Binding GenerateBarcodeCommand}" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Button.Content>
-                    <Image Width="25" Height="25" Source="/Resources/ReloadImage.png"/>
-                </Button.Content>
+            <Label Content="Штрих код" Grid.Row="3" Grid.Column="1"/>
+            <Button Style="{DynamicResource ReloadImageButton}" Grid.Row="3" Grid.Column="2" Command="{Binding GenerateBarcodeCommand}">
                 <Button.Visibility>
                     <Binding Converter="{StaticResource VisibilityConverterForBool}" ConverterParameter="False" Path="IsUpdate"/>
                 </Button.Visibility>
             </Button>
-            <TextBox Text="{Binding SelectedProduct.Barcode,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Grid.Column="3" HorizontalAlignment="Left" MinHeight="25"
-                     VerticalAlignment="Center" HorizontalContentAlignment="Center" MinWidth="100" VerticalContentAlignment="Center" FontSize="14"
-                     TextWrapping="Wrap" MaxWidth="200">
+            <TextBox Text="{Binding SelectedProduct.Barcode,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Grid.Column="3">
                 <TextBox.IsReadOnly>
                     <Binding Converter="{StaticResource IsReadOnlyConverterForBool}" UpdateSourceTrigger="PropertyChanged" Path="IsUpdate"/>
                 </TextBox.IsReadOnly>
             </TextBox>
-            <Label Content="Гарантия" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left" FontSize="14" />
-            <ComboBox ItemsSource="{Binding WarrantyPeriods, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True" SelectedValuePath="Id"
-                      SelectedValue="{Binding IdWarrantyPeriod, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Period" Grid.Column="3" 
-                      HorizontalAlignment="Left" Grid.Row="4" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" MinWidth="50" FontSize="14">
+            <Label Content="Гарантия" Grid.Row="4" Grid.Column="1"/>
+            <ComboBox ItemsSource="{Binding WarrantyPeriodsList, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True" SelectedValuePath="Id"
+                      SelectedValue="{Binding SelectedProduct.IdWarrantyPeriod, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Period" Grid.Column="3" 
+                      Grid.Row="4">
                 <ComboBox.IsEnabled>
                     <Binding Converter="{StaticResource IsEnabledConverterForBool}" UpdateSourceTrigger="PropertyChanged" Path="IsUpdate"/>
                 </ComboBox.IsEnabled>
             </ComboBox>
-            <Label Content="Ед. хр." Grid.Row="5" Grid.Column="1" HorizontalAlignment="Left" FontSize="14" />
-            <ComboBox ItemsSource="{Binding UnitStorages, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Id"
-                      SelectedValue="{Binding IdUnitStorage, UpdateSourceTrigger=PropertyChanged}"
-                      DisplayMemberPath="Title" Grid.Column="3" HorizontalAlignment="Left" Grid.Row="5" VerticalAlignment="Center"
-                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center" MinWidth="50" IsSynchronizedWithCurrentItem="True" FontSize="14">
+            <Label Content="Ед. хр." Grid.Row="5" Grid.Column="1"/>
+            <ComboBox ItemsSource="{Binding UnitStoragesList, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Id"
+                      SelectedValue="{Binding SelectedProduct.IdUnitStorage, UpdateSourceTrigger=PropertyChanged}"
+                      DisplayMemberPath="Title" Grid.Column="3" Grid.Row="5" IsSynchronizedWithCurrentItem="True">
                 <ComboBox.IsEnabled>
                     <Binding Converter="{StaticResource IsEnabledConverterForBool}" UpdateSourceTrigger="PropertyChanged" Path="IsUpdate"/>
                 </ComboBox.IsEnabled>
             </ComboBox>
-            <Label Content="Цена" Grid.Row="6" Grid.Column="1" HorizontalAlignment="Left" FontSize="14" />
-            <TextBox Text="{Binding Path=SelectedProduct.SalesPrice, UpdateSourceTrigger=PropertyChanged, StringFormat=C, ConverterCulture='ua-UA'}" HorizontalAlignment="Left" Height="23"
-                     TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="6" Grid.Column="3" HorizontalContentAlignment="Center" MinWidth="100" VerticalContentAlignment="Center" IsReadOnly="True" FontSize="14"/>
-            <Label Content="Остаток" Grid.Row="7" Grid.Column="1" HorizontalAlignment="Left" FontSize="14" VerticalAlignment="Center" />
-            <ListBox ItemsSource="{Binding Path=CountProducts}" Grid.Row="7" Grid.Column="3" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="14" MinWidth="100" MinHeight="50"/>
-            <Button Grid.Column="1" Content="Ок" HorizontalAlignment="Center" Grid.Row="8" VerticalAlignment="Center" Width="75" Command="{Binding OkCommand}" Margin="5" FontSize="14">
+            <Label Content="Цена" Grid.Row="6" Grid.Column="1"/>
+            <TextBlock Text="{Binding Path=SelectedProduct.Price, UpdateSourceTrigger=PropertyChanged, StringFormat=C, ConverterCulture='ua-UA'}" Grid.Row="6" Grid.Column="3"/>
+            <Label Content="Остаток" Grid.Row="7" Grid.Column="1"/>
+            <ListBox ItemsSource="{Binding Path=SelectedProduct.CountsProduct}" Grid.Row="7" Grid.Column="3" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="14" MinWidth="100" MinHeight="50" ItemStringFormat="">
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="models:CountsProduct">
+                        <TextBlock>
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}{0}: {1}" >
+                                    <Binding Path="Store.Title"></Binding>
+                                    <Binding Path="Count"></Binding>
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <Button Grid.Column="1" Content="Ок" Grid.Row="8" Width="75" Command="{Binding OkCommand}" Margin="5">
                 <Button.Visibility>
                     <Binding Converter="{StaticResource VisibilityConverterForBool}" ConverterParameter="False" Path="IsUpdate"/>
                 </Button.Visibility>
             </Button>
-            <Button Grid.Column="3" Content="Отмена" HorizontalAlignment="Center" Grid.Row="8" VerticalAlignment="Center" Width="75" Command="{Binding ResetCommand}" Margin="5">
+            <Button Grid.Column="3" Content="Отмена" Grid.Row="8" Width="75" Command="{Binding ResetCommand}" Margin="5">
                 <Button.Visibility>
                     <Binding Converter="{StaticResource VisibilityConverterForBool}" ConverterParameter="False" Path="IsUpdate"/>
                 </Button.Visibility>
             </Button>
-            <Button Grid.Column="3" Content="Редактировать" HorizontalAlignment="Center" Grid.Row="8" VerticalAlignment="Center" Command="{Binding UpdateProductCommand}" Margin="5" FontSize="14">
+            <Button Grid.Column="3" Content="Редактировать" Grid.Row="8" Command="{Binding UpdateProductCommand}" Margin="5">
                 <Button.Visibility>
                     <MultiBinding Converter="{StaticResource VisibilityConverterFor2Bool}">
                         <Binding Path="IsAddPurchase"/>

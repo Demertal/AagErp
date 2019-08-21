@@ -14,7 +14,7 @@
                                  TextWrapping="{TemplateBinding TextWrapping}"
                                  VerticalAlignment="{TemplateBinding VerticalAlignment}"
                                  MinWidth="{TemplateBinding MinWidth}"
-                                 VerticalContentAlignment="Center"/>
+                                 VerticalContentAlignment="Center" FontSize="18"/>
                         <TextBlock x:Name="PART_WatermarkTextBlock"
                                    HorizontalAlignment="Left"
                                    TextWrapping="Wrap"
@@ -24,7 +24,7 @@
                                    Margin="5,0,0,0"
                                    IsHitTestVisible="False"
                                    Visibility="Hidden"
-                                   Text="{TemplateBinding WatermarkText}"/>
+                                   Text="{TemplateBinding WatermarkText}" FontSize="18"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <MultiTrigger>

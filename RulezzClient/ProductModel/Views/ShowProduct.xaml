@@ -5,14 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:customcontrollibrary="clr-namespace:CustomControlLibrary;assembly=CustomControlLibrary"
-             xmlns:interactivity="http://prismlibrary.com/"
-             xmlns:modelModul="clr-namespace:ModelModul;assembly=ModelModul"
-             xmlns:views="clr-namespace:GroupModul.Views;assembly=GroupModul"
-             xmlns:views1="clr-namespace:PropertiesModul.Views;assembly=PropertiesModul"
-             xmlns:views2="clr-namespace:ProductModul.Views"
+             xmlns:prism="http://prismlibrary.com/"
              xmlns:converters="clr-namespace:CustomControlLibrary.Converters;assembly=CustomControlLibrary"
              xmlns:models="clr-namespace:ModelModul.Models;assembly=ModelModul"
-             interactivity:ViewModelLocator.AutoWireViewModel="True"
+              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Padding="10,5,5,10">
 
@@ -21,51 +17,18 @@
 
         <ContextMenu x:Key="DataGridMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}"
                      Visibility="{Binding Converter={StaticResource VisibilityConverterForBool}, Path=IsAddPurchase, ConverterParameter=True}">
-            <MenuItem Header="Добавить товар"
-                      Command="{Binding Path=AddProductCommand}">
-                <i:Interaction.Triggers>
-                    <interactivity:InteractionRequestTrigger SourceObject="{Binding Path=AddProductPopupRequest}">
-                        <interactivity:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True" WindowStyle="{DynamicResource MyWindowStyle}">
-                            <interactivity:PopupWindowAction.WindowContent>
-                                <views2:AddProduct/>
-                            </interactivity:PopupWindowAction.WindowContent>
-                        </interactivity:PopupWindowAction>
-                    </interactivity:InteractionRequestTrigger>
-                </i:Interaction.Triggers>
-            </MenuItem>
+            <MenuItem Header="Добавить товар" Command="{Binding Path=AddProductCommand}"/>
         </ContextMenu>
 
         <ContextMenu  x:Key="RowMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}"
                       Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}, Converter={StaticResource VisibilityConverterForBool}, ConverterParameter=True, Path=DataContext.IsAddPurchase}">
-            <MenuItem Header="Удалить" CommandParameter="{Binding}"
-                      Command="{Binding DataContext.DeleteProductCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>
-            <MenuItem Header="Добавить товар"
-                      Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.AddProductCommand}">
-                <i:Interaction.Triggers>
-                    <interactivity:InteractionRequestTrigger SourceObject="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.AddProductPopupRequest}">
-                        <interactivity:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True" WindowStyle="{DynamicResource MyWindowStyle}">
-                            <interactivity:PopupWindowAction.WindowContent>
-                                <views2:AddProduct/>
-                            </interactivity:PopupWindowAction.WindowContent>
-                        </interactivity:PopupWindowAction>
-                    </interactivity:InteractionRequestTrigger>
-                </i:Interaction.Triggers>
-            </MenuItem>
+            <MenuItem Header="Удалить" CommandParameter="{Binding}" Command="{Binding DataContext.DeleteProductCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>
+            <MenuItem Header="Добавить товар" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.AddProductCommand}"/>
         </ContextMenu>
 
         <ContextMenu x:Key="TreeViewContex" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}"
                      Visibility="{Binding Converter={StaticResource VisibilityConverterForBool}, ConverterParameter=True, Path=IsAddPurchase}">
-            <MenuItem Header="Добавить магазин" Command="{Binding Path=AddStoreCommand}">
-                <i:Interaction.Triggers>
-                    <interactivity:InteractionRequestTrigger SourceObject="{Binding Path=AddStorePopupRequest}">
-                        <interactivity:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True" WindowStyle="{DynamicResource MyWindowStyle}">
-                            <interactivity:PopupWindowAction.WindowContent>
-                                <views:AddGroup/>
-                            </interactivity:PopupWindowAction.WindowContent>
-                        </interactivity:PopupWindowAction>
-                    </interactivity:InteractionRequestTrigger>
-                </i:Interaction.Triggers>
-            </MenuItem>
+            <MenuItem Header="Добавить категорию" Command="{Binding Path=AddCategoryCommand}"/>
         </ContextMenu>
 
         <Style x:Key="DefaultRowStyle" TargetType="{x:Type DataGridRow}">
@@ -75,7 +38,7 @@
 
     <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
         <customcontrollibrary:WatermarkTextBox WatermarkText="Поиск..." Text="{Binding FindString,  UpdateSourceTrigger=PropertyChanged}" Margin ="5" Padding="0,0,5,0" HorizontalAlignment="Left"
-                                               Height="23" TextWrapping="Wrap" VerticalAlignment="Center" MinWidth="200" VerticalContentAlignment="Center" FontSize="14"/>
+                                               Height="30" TextWrapping="Wrap" VerticalAlignment="Center" MinWidth="200" VerticalContentAlignment="Center"/>
         <Grid Margin="0,5,0,0" MaxWidth="2000">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -84,56 +47,26 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <customcontrollibrary:ExtendedTreeView ItemsSource="{Binding CategoriesList, UpdateSourceTrigger=PropertyChanged}" MinWidth="100" ContextMenu="{StaticResource TreeViewContex}" FontSize="14">
+            <customcontrollibrary:ExtendedTreeView ItemsSource="{Binding CategoriesList, UpdateSourceTrigger=PropertyChanged}" MinWidth="100" FontSize="14" ContextMenu="{StaticResource TreeViewContex}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SelectedItemChanged">
-                        <i:InvokeCommandAction Command="{Binding Path=SelectedGroupCommand}"
+                        <i:InvokeCommandAction Command="{Binding Path=SelectedCategoryCommand}"
                                                CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource FindAncestor, AncestorType=customcontrollibrary:ExtendedTreeView}}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
                 <customcontrollibrary:ExtendedTreeView.Resources>
-                    <customcontrollibrary:BindingProxy x:Key="GroupCommandProxy" Data="{Binding}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=customcontrollibrary:ExtendedTreeView}, Path=SelectedItem}" />
-                    <ContextMenu DataContext="{Binding Source={StaticResource GroupCommandProxy}, Path = Data}" x:Key="TreeViewContextNode"
+                    <customcontrollibrary:BindingProxy x:Key="CategoryCommandProxy" Data="{Binding}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=customcontrollibrary:ExtendedTreeView}, Path=SelectedItem}" />
+                    <ContextMenu DataContext="{Binding Source={StaticResource CategoryCommandProxy}, Path = Data}" x:Key="TreeViewContextNode"
                                  Visibility="{Binding Converter={StaticResource VisibilityConverterForBool}, ConverterParameter=True, Path=IsAddPurchase}">
-                        <MenuItem Header="Переименовать группу" Command="{Binding Path=RenameGroupCommand}" CommandParameter="{Binding Source={StaticResource GroupCommandProxy}, Path=CommandParameter}">
-                            <i:Interaction.Triggers>
-                                <interactivity:InteractionRequestTrigger SourceObject="{Binding Path=RenameGroupPopupRequest}">
-                                    <interactivity:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True" WindowStyle="{DynamicResource MyWindowStyle}">
-                                        <interactivity:PopupWindowAction.WindowContent>
-                                            <views:RenameGroup/>
-                                        </interactivity:PopupWindowAction.WindowContent>
-                                    </interactivity:PopupWindowAction>
-                                </interactivity:InteractionRequestTrigger>
-                            </i:Interaction.Triggers>
-                        </MenuItem>
-                        <MenuItem Header="Добавить группу" Command="{Binding Path=AddGroupCommand}" CommandParameter="{Binding Source={StaticResource GroupCommandProxy}, Path=CommandParameter}">
-                            <i:Interaction.Triggers>
-                                <interactivity:InteractionRequestTrigger SourceObject="{Binding Path=AddGroupPopupRequest}">
-                                    <interactivity:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True" WindowStyle="{DynamicResource MyWindowStyle}">
-                                        <interactivity:PopupWindowAction.WindowContent>
-                                            <views:AddGroup/>
-                                        </interactivity:PopupWindowAction.WindowContent>
-                                    </interactivity:PopupWindowAction>
-                                </interactivity:InteractionRequestTrigger>
-                            </i:Interaction.Triggers>
-                        </MenuItem>
-                        <MenuItem Header="Просмотреть свойства" Command="{Binding Path=ShowPropertiesCommand}" CommandParameter="{Binding Source={StaticResource GroupCommandProxy}, Path=CommandParameter}">
-                            <i:Interaction.Triggers>
-                                <interactivity:InteractionRequestTrigger SourceObject="{Binding Path=ShowPropertiesPopupRequest}">
-                                    <interactivity:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True" WindowStyle="{DynamicResource MyWindowStyle}">
-                                        <interactivity:PopupWindowAction.WindowContent>
-                                            <views1:ShowProperties/>
-                                        </interactivity:PopupWindowAction.WindowContent>
-                                    </interactivity:PopupWindowAction>
-                                </interactivity:InteractionRequestTrigger>
-                            </i:Interaction.Triggers>
-                        </MenuItem>
-                        <MenuItem Header="Удалить" Command="{Binding Path=DeleteGroupCommand}" CommandParameter="{Binding Source={StaticResource GroupCommandProxy}, Path=CommandParameter}"/>
+                        <MenuItem Header="Просмотреть свойства" Command="{Binding Path=ShowPropertiesCommand}" CommandParameter="{Binding Source={StaticResource CategoryCommandProxy}, Path=CommandParameter}"/>
+                        <MenuItem Header="Переименовать" Command="{Binding Path=RenameCategoryCommand}" CommandParameter="{Binding Source={StaticResource CategoryCommandProxy}, Path=CommandParameter}"/>
+                        <MenuItem Header="Удалить" Command="{Binding Path=DeleteCategoryCommand}" CommandParameter="{Binding Source={StaticResource CategoryCommandProxy}, Path=CommandParameter}"/>
+                        <MenuItem Header="Добавить категорию" Command="{Binding Path=AddCategoryCommand}" CommandParameter="{Binding Source={StaticResource CategoryCommandProxy}, Path=CommandParameter}"/>
                     </ContextMenu>
                 </customcontrollibrary:ExtendedTreeView.Resources>
                 <customcontrollibrary:ExtendedTreeView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding Path=ChildCategories}" DataType="{x:Type models:Category}" >
-                        <TextBlock Text="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}" ContextMenu="{StaticResource TreeViewContextNode}"/>
+                        <TextBlock Text="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}" ContextMenu="{StaticResource TreeViewContextNode}" AllowDrop="True"/>
                     </HierarchicalDataTemplate>
                 </customcontrollibrary:ExtendedTreeView.ItemTemplate>
             </customcontrollibrary:ExtendedTreeView>
@@ -145,7 +78,7 @@
                     MinHeight="200" MaxHeight="500" RowStyle="{StaticResource DefaultRowStyle}" SelectionMode="Single" Background="White" ContextMenu="{StaticResource DataGridMenu}" FontSize="14">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDoubleClick">
-                            <interactivity:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.AddCommandPurchaseGoods}" CommandParameter="{Binding ElementName=ProductData, Path=SelectedItem}"/>
+                            <!--<prism:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.AddCommandPurchaseGoods}" CommandParameter="{Binding ElementName=ProductData, Path=SelectedItem}"/>-->
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                     <customcontrollibrary:ExtendedDataGrid.CellStyle>
@@ -182,14 +115,14 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="Цена"             Binding="{Binding Path=SalesPrice, UpdateSourceTrigger=PropertyChanged, StringFormat=C, ConverterCulture='ua-UA'}"  IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Цена"             Binding="{Binding Path=Price, UpdateSourceTrigger=PropertyChanged, StringFormat=C, ConverterCulture='ua-UA'}"  IsReadOnly="True"/>
                         <DataGridTextColumn Header="Остаток"     Binding="{Binding Path=Count, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" CanUserResize="False"/>
                     </customcontrollibrary:ExtendedDataGrid.Columns>
                 </customcontrollibrary:ExtendedDataGrid>
             </ScrollViewer>
             <GridSplitter Grid.Column="3" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="Black" />
             <ScrollViewer Grid.Column="4" HorizontalContentAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" MinHeight="200" MaxHeight="500">
-                <ContentControl interactivity:RegionManager.RegionName="ProductInfo" interactivity:RegionManager.RegionContext="{Binding SelectedItem, ElementName=ProductData}"/>
+                <ContentControl prism:RegionManager.RegionName="ProductInfo" prism:RegionManager.RegionContext="{Binding SelectedItem, ElementName=ProductData}"/>
             </ScrollViewer>
         </Grid>
     </StackPanel>

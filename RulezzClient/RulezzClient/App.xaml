@@ -1,8 +1,15 @@
 ﻿<prism:PrismApplication x:Class="RulezzClient.App"
                         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                        xmlns:prism="http://prismlibrary.com/">
+                        xmlns:prism="http://prismlibrary.com/"
+                        xmlns:views="clr-namespace:RulezzClient.Views"
+                        xmlns:views1="clr-namespace:GroupModul.Views;assembly=CategoryModul">
     <Application.Resources>
-        <ResourceDictionary Source="/CustomControlLibrary;component/Themes/Resourse.xaml"></ResourceDictionary>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/CustomControlLibrary;component/Themes/Resourse.xaml"></ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="{x:Type views:Shell}" BasedOn="{StaticResource CustomWindow}"/>
+        </ResourceDictionary>
     </Application.Resources>
 </prism:PrismApplication>

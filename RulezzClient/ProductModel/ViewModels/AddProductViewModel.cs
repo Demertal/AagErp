@@ -1,61 +1,66 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
-using ModelModul;
+using CustomControlLibrary;
+using CustomControlLibrary.MVVM;
+using GenerationBarcodeLibrary;
 using ModelModul.Models;
 using ModelModul.Repositories;
+using ModelModul.Specifications;
 using Prism.Commands;
-using Prism.Interactivity.InteractionRequest;
-using Prism.Regions;
+using Prism.Services.Dialogs;
 
 namespace ProductModul.ViewModels
 {
-    class AddProductViewModel : ViewModelBase, IInteractionRequestAware
+    public class AddProductViewModel : DialogViewModelBase
     {
         #region ProductProperties
 
-        private ObservableCollection<WarrantyPeriod> _warrantyPeriods = new ObservableCollection<WarrantyPeriod>();
-        public ObservableCollection<WarrantyPeriod> WarrantyPeriods
+        private ObservableCollection<WarrantyPeriod> _warrantyPeriodsListList = new ObservableCollection<WarrantyPeriod>();
+        public ObservableCollection<WarrantyPeriod> WarrantyPeriodsList
         {
-            get => _warrantyPeriods;
-            set => SetProperty(ref _warrantyPeriods, value);
+            get => _warrantyPeriodsListList;
+            set => SetProperty(ref _warrantyPeriodsListList, value);
         }
 
-        private ObservableCollection<UnitStorage> _unitStorages = new ObservableCollection<UnitStorage>();
-        public ObservableCollection<UnitStorage> UnitStorages
+        private ObservableCollection<UnitStorage> _unitStoragesListList = new ObservableCollection<UnitStorage>();
+        public ObservableCollection<UnitStorage> UnitStoragesList
         {
-            get => _unitStorages;
-            set => SetProperty(ref _unitStorages, value);
+            get => _unitStoragesListList;
+            set => SetProperty(ref _unitStoragesListList, value);
         }
 
-        //private ProductViewModel _product = new ProductViewModel();
-        //public ProductViewModel Product
+        private ObservableCollection<PriceGroup> _priceGroupsListList = new ObservableCollection<PriceGroup>();
+        public ObservableCollection<PriceGroup> PriceGroupsList
+        {
+            get => _priceGroupsListList;
+            set => SetProperty(ref _priceGroupsListList, value);
+        }
+
+        private readonly Product _product = new Product();
+        public Product Product => _product;
+
+        //private Product _product = new Product();
+        //public Product Product
         //{
         //    get => _product;
         //    set
         //    {
-        //        _product = value;
-        //        RaisePropertyChanged();
+        //        SetProperty(ref _product, value);
+        //        Product.PropertyChanged += (o, e) => RaisePropertyChanged("Product");
         //    }
         //}
 
-        //public string Group => Product?.Category == null ? "Группа:" : "Группа: " + Product.Category.Title;
+        private string _category;
 
-        private Confirmation _notification;
-        public INotification Notification
+        public string Category
         {
-            get => _notification;
+            get => "Категория:" + _category;
             set
             {
-                //SetProperty(ref _notification, value as Confirmation);
-                //Product = new ProductViewModel {Category = (Category) _notification.Content};
-                //Product.IdGroup = Product.Category.Id;
-                //UnitStorage tempUnit = UnitStorages.FirstOrDefault(obj => obj.Title == "шт");
-                //Product.IdUnitStorage = tempUnit?.Id ?? 0;
-                //WarrantyPeriod tempPeriod = WarrantyPeriods.FirstOrDefault(obj => obj.Period == "Нет");
-                //Product.IdWarrantyPeriod = tempPeriod?.Id ?? 0;
-                //RaisePropertyChanged("Parent");
+                _category = value;
+                RaisePropertyChanged("Category");
             }
         }
 
@@ -69,19 +74,28 @@ namespace ProductModul.ViewModels
         public AddProductViewModel()
         {
             LoadAsync();
-            //Product.PropertyChanged += (o, e) => RaisePropertyChanged(e.PropertyName);
-            //AddProductCommand = new DelegateCommand(AddProductAsync).ObservesCanExecute(() => Product.IsValidate);
+            Product.PropertyChanged += (o, e) => RaisePropertyChanged(e.PropertyName);
+            AddProductCommand = new DelegateCommand(AddProductAsync).ObservesCanExecute(() => Product.IsValidate);
             GenerateBarcodeCommand = new DelegateCommand(GenerateBarcode);
         }
 
-        private async void LoadAsync()
+        private void LoadAsync()
         {
             try
             {
-                SqlUnitStorageRepository sqlUnitStorageRepository = new SqlUnitStorageRepository();
-                //UnitStorages = new ObservableCollection<UnitStorage>(await sqlUnitStorageRepository.GetListAsync());
-                SqlWarrantyPeriodRepository sqlWarrantyPeriodRepository = new SqlWarrantyPeriodRepository();
-                //WarrantyPeriods = new ObservableCollection<WarrantyPeriod>(await sqlWarrantyPeriodRepository.GetListAsync());
+                IRepository<UnitStorage> sqlUnitStorageRepository = new SqlUnitStorageRepository();
+                IRepository<WarrantyPeriod> sqlWarrantyPeriodRepository = new SqlWarrantyPeriodRepository();
+                IRepository<PriceGroup> sqlPriceGroupRepository = new SqlPriceGroupRepository();
+
+                var unitStoragesLoad = Task.Run(() => sqlUnitStorageRepository.GetListAsync());
+                var warrantyPeriodsLoad = Task.Run(() => sqlWarrantyPeriodRepository.GetListAsync());
+                var priceGroupsLoad = Task.Run(() => sqlPriceGroupRepository.GetListAsync());
+
+                Task.WaitAll(unitStoragesLoad, warrantyPeriodsLoad, priceGroupsLoad);
+
+                UnitStoragesList = new ObservableCollection<UnitStorage>(unitStoragesLoad.Result);
+                WarrantyPeriodsList = new ObservableCollection<WarrantyPeriod>(warrantyPeriodsLoad.Result);
+                PriceGroupsList = new ObservableCollection<PriceGroup>(priceGroupsLoad.Result);
             }
             catch (Exception ex)
             {
@@ -91,40 +105,12 @@ namespace ProductModul.ViewModels
 
         public async void AddProductAsync()
         {
-            //Category temp = _product.Category;
-            //try
-            //{
-            //    _product.Category = null;
-            //    _product.CountProducts = null;
-            //    _product.PropertyProducts = null;
-            //    _product.UnitStorage = null;
-            //    _product.WarrantyPeriod = null;
-            //    SqlProductRepository sqlProductRepository = new SqlProductRepository();
-            //    await sqlProductRepository.CreateAsync((Product)_product.Product.Clone());
-            //    MessageBox.Show("Товар добавлен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-            //    if (_notification != null)
-            //        _notification.Confirmed = true;
-            //    FinishInteraction?.Invoke();
-            //}
-            //catch (Exception ex)
-            //{
-            //    _product.Category = temp;
-            //    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-            //}
-        }
-
-        private void GenerateBarcode()
-        {
             try
             {
                 SqlProductRepository sqlProductRepository = new SqlProductRepository();
-                string temp;
-                //do
-                //{
-                //    temp = GenerationBarcode.GenerateBarcode();
-                //} while (sqlProductRepository.CheckBarcode(temp));
-
-                //Product.Barcode = temp;
+                await sqlProductRepository.CreateAsync(_product);
+                MessageBox.Show("Товар добавлен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                RaiseRequestClose(new DialogResult(ButtonResult.OK));
             }
             catch (Exception ex)
             {
@@ -132,21 +118,39 @@ namespace ProductModul.ViewModels
             }
         }
 
-        #region INavigationAware
-
-        public override void OnNavigatedTo(NavigationContext navigationContext)
+        private async void GenerateBarcode()
         {
+            try
+            {
+                IRepository<Product> sqlProductRepository = new SqlProductRepository();
+                string temp;
+                do
+                {
+                    temp = GenerationBarcode.GenerateBarcode();
+                } while (await sqlProductRepository.AnyAsync(ProductSpecification.GetProductsByBarcode(temp)));
+
+                Product.Barcode = temp;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
-        public override bool IsNavigationTarget(NavigationContext navigationContext)
+        public override void OnDialogOpened(IDialogParameters parameters)
         {
-            return false;
+            try
+            {
+                Category temp = parameters.GetValue<Category>("category");
+                Category = temp.Title;
+                Product.IdCategory = temp.Id;
+                LoadAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                RaiseRequestClose(new DialogResult(ButtonResult.Abort));
+            }
         }
-
-        public override void OnNavigatedFrom(NavigationContext navigationContext)
-        {
-        }
-
-        #endregion
     }
 }

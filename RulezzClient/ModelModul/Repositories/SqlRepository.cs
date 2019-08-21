@@ -14,7 +14,7 @@ namespace ModelModul.Repositories
     {
         protected readonly AutomationAccountingGoodsContext Db;
 
-        public SqlRepository()
+        protected SqlRepository()
         {
             Db = new AutomationAccountingGoodsContext(ConnectionTools.ConnectionString);
         }
@@ -39,7 +39,7 @@ namespace ModelModul.Repositories
             return await query.AnyAsync();
         }
 
-        public async Task<IEnumerable<TEntity>> GetListAsync(ISpecification<TEntity> where = null, Dictionary<string, SortingTypes> order = null, int skip = 0, int take = -1, params Expression<Func<TEntity, Object>>[] include)
+        public virtual async Task<IEnumerable<TEntity>> GetListAsync(ISpecification<TEntity> where = null, Dictionary<string, SortingTypes> order = null, int skip = 0, int take = -1, params Expression<Func<TEntity, Object>>[] include)
         {
             var query = Db.Set<TEntity>().AsQueryable();
             if (where != null) query = query.Where(where.IsSatisfiedBy());
@@ -47,7 +47,7 @@ namespace ModelModul.Repositories
             if (skip != 0) query = query.Skip(skip);
             if (take != -1) query = query.Take(take);
             if (include != null) query = query.ToLoad(include);
-            return await query.ToListAsync();
+            return await query.AsNoTracking().ToListAsync();
         }
 
         public async Task<TEntity> GetItemAsync(ISpecification<TEntity> where = null, Dictionary<string, SortingTypes> order = null, int skip = 0)
@@ -56,10 +56,20 @@ namespace ModelModul.Repositories
             if (where != null) query = query.Where(where.IsSatisfiedBy());
             if (order != null) query = query.OrderUsingSortExpression(order);
             if (skip != 0) query = query.Skip(skip);
-            return await query.FirstOrDefaultAsync();
+            return await query.AsNoTracking().FirstOrDefaultAsync();
         }
 
         public async Task<TEntity> GetItemAsync(int id)
+        {
+            return await Db.Set<TEntity>().FindAsync(id);
+        }
+
+        public virtual async Task<TEntity> GetItemAsync(long id)
+        {
+            return await Db.Set<TEntity>().FindAsync(id);
+        }
+
+        public virtual async Task<TEntity> GetItemAsync(Guid id)
         {
             return await Db.Set<TEntity>().FindAsync(id);
         }
@@ -82,7 +92,23 @@ namespace ModelModul.Repositories
             }
         }
 
-        public abstract Task UpdateAsync(TEntity item);
+        public virtual async Task UpdateAsync(TEntity item)
+        {
+            using (var transaction = Db.Database.BeginTransaction())
+            {
+                try
+                {
+                    Db.Set<TEntity>().Update(item);
+                    await Db.SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            }
+        }
 
         public async Task DeleteAsync(TEntity item)
         {

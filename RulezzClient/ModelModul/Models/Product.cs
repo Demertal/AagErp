@@ -1,9 +1,13 @@
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace ModelModul.Models
 {
-    public class Product : ModelBase
+    public class Product : ModelBase, ICloneable
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Product()
@@ -27,8 +31,6 @@ namespace ModelModul.Models
         }
 
         private string _title;
-        [Required]
-        [StringLength(120)]
         public string Title
         {
             get => _title;
@@ -36,11 +38,11 @@ namespace ModelModul.Models
             {
                 _title = value;
                 OnPropertyChanged("Title");
+                OnPropertyChanged("IsValidate");
             }
         }
 
         private string _vendorCode;
-        [StringLength(20)]
         public string VendorCode
         {
             get => _vendorCode;
@@ -52,7 +54,6 @@ namespace ModelModul.Models
         }
 
         private string _barcode;
-        [StringLength(13)]
         public string Barcode
         {
             get => _barcode;
@@ -60,6 +61,7 @@ namespace ModelModul.Models
             {
                 _barcode = value;
                 OnPropertyChanged("Barcode");
+                OnPropertyChanged("IsValidate");
             }
         }
 
@@ -71,6 +73,7 @@ namespace ModelModul.Models
             {
                 _idWarrantyPeriod = value;
                 OnPropertyChanged("IdWarrantyPeriod");
+                OnPropertyChanged("IsValidate");
             }
         }
 
@@ -82,6 +85,7 @@ namespace ModelModul.Models
             {
                 _idCategory = value;
                 OnPropertyChanged("IdCategory");
+                OnPropertyChanged("IsValidate");
             }
         }
 
@@ -104,6 +108,7 @@ namespace ModelModul.Models
             {
                 _idUnitStorage = value;
                 OnPropertyChanged("IdUnitStorage");
+                OnPropertyChanged("IsValidate");
             }
         }
 
@@ -115,6 +120,43 @@ namespace ModelModul.Models
             {
                 _keepTrackSerialNumbers = value;
                 OnPropertyChanged("KeepTrackSerialNumbers");
+            }
+        }
+
+        private double _count;
+        public double Count
+        {
+            get => _count;
+            set
+            {
+                _count = value;
+                OnPropertyChanged("Count");
+            }
+        }
+
+        private double _price;
+        public double Price
+        {
+            get => _price;
+            set
+            {
+                _price = value;
+                OnPropertyChanged("Price");
+            }
+        }
+
+        private ObservableCollection<CountsProduct> _countsProduct;
+        public ObservableCollection<CountsProduct> CountsProduct
+        {
+            get => _countsProduct;
+            set
+            {
+                if(CountsProduct != null)
+                    CountsProduct.CollectionChanged -= CountsProductCollectionChanged;
+                _countsProduct = value;
+                if (CountsProduct != null)
+                    CountsProduct.CollectionChanged += CountsProductCollectionChanged;
+                OnPropertyChanged("CountsProduct");
             }
         }
 
@@ -220,6 +262,63 @@ namespace ModelModul.Models
                 _serialNumbers = value;
                 OnPropertyChanged("SerialNumbers");
             }
+        }
+
+        public bool IsValidate => !string.IsNullOrEmpty(Title) &&
+                                  !string.IsNullOrEmpty(Barcode) &&
+                                  IdUnitStorage != 0 && IdWarrantyPeriod != 0 && IdCategory != 0;
+
+        #region CollectionChanged
+
+        private void CountsProductCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (SerialNumber item in e.OldItems)
+                    {
+                        //Removed items
+                        item.PropertyChanged -= CountsProductItemChanged;
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Add:
+                    foreach (SerialNumber item in e.NewItems)
+                    {
+                        //Added items
+                        item.PropertyChanged += CountsProductItemChanged;
+                    }
+
+                    break;
+            }
+
+            OnPropertyChanged("CountsProduct");
+        }
+
+        private void CountsProductItemChanged(object sender, PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged("CountsProduct");
+        }
+
+        #endregion
+
+        public object Clone()
+        {
+            return new Product
+            {
+                Barcode = Barcode,
+                VendorCode = VendorCode,
+                Title = Title,
+                Count = Count,
+                Id = Id,
+                IdCategory = IdCategory,
+                IdPriceGroup = IdPriceGroup,
+                IdUnitStorage = IdUnitStorage,
+                IdWarrantyPeriod = IdWarrantyPeriod,
+                KeepTrackSerialNumbers = KeepTrackSerialNumbers,
+                Category = (Category) Category?.Clone(),
+                UnitStorage = (UnitStorage) UnitStorage?.Clone(),
+                WarrantyPeriod = (WarrantyPeriod) WarrantyPeriod?.Clone()
+            };
         }
     }
 }

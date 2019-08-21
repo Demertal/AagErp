@@ -1,9 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace ModelModul.Models
 {
-    public class Category : ModelBase
+    public class Category : ModelBase, ICloneable
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Category()
@@ -25,8 +26,6 @@ namespace ModelModul.Models
         }
 
         private string _title;
-        [Required]
-        [StringLength(50)]
         public string Title
         {
             get => _title;
@@ -34,6 +33,7 @@ namespace ModelModul.Models
             {
                 _title = value;
                 OnPropertyChanged("Title");
+                OnPropertyChanged("IsValidate");
             }
         }
 
@@ -93,6 +93,13 @@ namespace ModelModul.Models
                 _propertyNames = value;
                 OnPropertyChanged("PropertyNames");
             }
+        }
+
+        public bool IsValidate => !string.IsNullOrEmpty(Title);
+
+        public object Clone()
+        {
+            return new Category {Id = Id, Title = Title, IdParent = IdParent, Parent = (Category) Parent?.Clone()};
         }
     }
 }

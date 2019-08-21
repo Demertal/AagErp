@@ -1,7 +1,7 @@
 ﻿using Prism.Mvvm;
 using Prism.Regions;
 
-namespace ModelModul
+namespace CustomControlLibrary.MVVM
 {
     public abstract class ViewModelBase: BindableBase, INavigationAware
     {

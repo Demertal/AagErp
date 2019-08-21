@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ModelModul.Models;
+using ModelModul.Specifications.BasisSpecifications;
 
 namespace ModelModul.Repositories
 {
@@ -22,29 +26,32 @@ namespace ModelModul.Repositories
         //    }
         //}
 
+        public override async Task<IEnumerable<Product>> GetListAsync(ISpecification<Product> where = null, Dictionary<string, SortingTypes> order = null, int skip = 0, int take = -1, params Expression<Func<Product, Object>>[] include)
+        {
+            var query = Db.Products.FromSql("select * from productsWithCountAndPrice").AsQueryable();
+            if (where != null) query = query.Where(where.IsSatisfiedBy());
+            if (order != null) query = query.OrderUsingSortExpression(order);
+            if (skip != 0) query = query.Skip(skip);
+            if (take != -1) query = query.Take(take);
+            if (include != null) query = query.ToLoad(include);
+            return await query.AsNoTracking().ToListAsync();
+        }
+
+        public async Task<List<CountsProduct>> GetCountsProduct(long itemId)
+        {
+            return await Db.CountsProducts
+                .FromSql("select * from dbo.getCountProduct ({0})", itemId).Include(c => c.Store).AsNoTracking().ToListAsync();
+        }
+
         public override async Task UpdateAsync(Product item)
         {
             using (var transaction = Db.Database.BeginTransaction())
             {
                 try
                 {
-                    Product product = await GetItemAsync((int)item.Id);
-                    if (product == null) throw new Exception("Товар не найден");
-                    product.IdCategory = item.Category?.Id ?? item.IdCategory;
-                    product.IdWarrantyPeriod = item.WarrantyPeriod?.Id ?? item.IdWarrantyPeriod;
-                    product.IdUnitStorage = item.UnitStorage?.Id ?? item.IdUnitStorage;
-                    product.IdPriceGroup = item.PriceGroup?.Id ?? item.IdPriceGroup;
-                    product.Category = null;
-                    product.WarrantyPeriod = null;
-                    product.UnitStorage = null;
-                    product.Barcode = item.Barcode;
-                    product.Title = item.Title;
-                    product.VendorCode = item.VendorCode;
-                    product.PropertyProducts = null;
-                    product.InvoiceInfos = null;
-                    product.PriceProducts = null;
-                    product.PriceGroup = null;
-                    Db.Entry(product).State = EntityState.Modified;
+                    Db.Products.Update(item);
+                    Db.Entry(item).Property(p => p.Count).IsModified = false;
+                    Db.Entry(item).Property(p => p.Price).IsModified = false;
                     await Db.SaveChangesAsync();
                     transaction.Commit();
                 }
@@ -55,25 +62,5 @@ namespace ModelModul.Repositories
                 }
             }
         }
-
-        //public override async Task DeleteAsync(Product item)
-        //{
-        //    using (var transaction = Db.Database.BeginTransaction())
-        //    {
-        //        try
-        //        {
-        //            var product = await GetItemAsync(item.Id);
-        //            if (product == null) throw new Exception("Товар не найден");
-        //            Db.Entry(product).State = EntityState.Deleted;
-        //            await Db.SaveChangesAsync();
-        //            transaction.Commit();
-        //        }
-        //        catch (Exception)
-        //        {
-        //            transaction.Rollback();
-        //            throw;
-        //        }
-        //    }
-        //}
     }
 }

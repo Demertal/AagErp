@@ -1,9 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace ModelModul.Models
 {
-    public class UnitStorage : ModelBase
+    public class UnitStorage : ModelBase, ICloneable
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public UnitStorage()
@@ -56,6 +57,11 @@ namespace ModelModul.Models
                 _products = value;
                 OnPropertyChanged("Products");
             }
+        }
+
+        public object Clone()
+        {
+            return new UnitStorage {Id = Id, Title = Title, IsWeightGoods = IsWeightGoods};
         }
     }
 }

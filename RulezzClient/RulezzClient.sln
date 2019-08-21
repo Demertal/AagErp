@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelModul", "ModelModul\Mo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Moduls", "Moduls", "{1959A74B-683C-4F60-B692-40068E978177}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GroupModul", "GroupModul\GroupModul.csproj", "{06EB7CE3-8C9C-4BD6-BF72-4CAAB19B22F0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CategoryModul", "CategoryModul\CategoryModul.csproj", "{06EB7CE3-8C9C-4BD6-BF72-4CAAB19B22F0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Library", "Library", "{03B06937-A9C7-41CB-938F-01059B7FE969}"
 EndProject
@@ -130,7 +130,7 @@ Global
 		{1D29DBCB-3D13-4717-A02A-6329107A8031} = {1959A74B-683C-4F60-B692-40068E978177}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {19416D65-422B-45AC-9508-FC45CBA4B529}
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35
+		SolutionGuid = {19416D65-422B-45AC-9508-FC45CBA4B529}
 	EndGlobalSection
 EndGlobal

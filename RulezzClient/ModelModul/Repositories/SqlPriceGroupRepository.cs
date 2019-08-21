@@ -2,7 +2,7 @@
 
 namespace ModelModul.Repositories
 {
-    public class SqlCategoryRepository : SqlRepository<Category>
+    public class SqlPriceGroupRepository : SqlRepository<PriceGroup>
     {
     }
 }

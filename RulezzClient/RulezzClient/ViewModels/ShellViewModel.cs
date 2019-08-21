@@ -1,7 +1,6 @@
-﻿using ModelModul;
+﻿using CustomControlLibrary.MVVM;
 using ModelModul.Models;
 using Prism.Commands;
-using Prism.Interactivity.InteractionRequest;
 using Prism.Regions;
 
 namespace RulezzClient.ViewModels
@@ -22,17 +21,13 @@ namespace RulezzClient.ViewModels
             set => SetProperty(ref _role, value);
         }
 
-        public InteractionRequest<INotification> СhangeСoursePopupRequest { get; set; }
-
         public DelegateCommand LoadedCommand { get; }
         public DelegateCommand<string> NavigateCommand { get; }
-        public DelegateCommand СhangeСourseCommand { get; }
         #endregion
 
         public ShellViewModel(IRegionManager regionManager)
         {
             _regionManager = regionManager;
-            СhangeСoursePopupRequest = new InteractionRequest<INotification>();
             Role = Roles.Admin;
             //using (AutomationAccountingGoodsContext db =
             //    new AutomationAccountingGoodsContext(AutomationAccountingGoodsContext.ConnectionString))
@@ -52,7 +47,6 @@ namespace RulezzClient.ViewModels
             //}
 
             LoadedCommand = new DelegateCommand(Loaded);
-            СhangeСourseCommand = new DelegateCommand(СhangeСourse);
             NavigateCommand = new DelegateCommand<string>(Navigate);
         }
 
@@ -62,11 +56,6 @@ namespace RulezzClient.ViewModels
             {
                 Navigate("CashierWorkplace");
             }
-        }
-
-        private void СhangeСourse()
-        {
-            СhangeСoursePopupRequest.Raise(new Confirmation { Title = "Изменить курс"});
         }
 
         private void Navigate(string navigatePath)

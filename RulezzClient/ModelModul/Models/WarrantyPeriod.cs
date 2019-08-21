@@ -1,9 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace ModelModul.Models
 {
-    public class WarrantyPeriod : ModelBase
+    public class WarrantyPeriod : ModelBase, ICloneable
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public WarrantyPeriod()
@@ -45,6 +46,11 @@ namespace ModelModul.Models
                 _products = value;
                 OnPropertyChanged("Products");
             }
+        }
+
+        public object Clone()
+        {
+            return new WarrantyPeriod {Id = Id, Period = Period};
         }
     }
 }

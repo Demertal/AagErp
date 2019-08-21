@@ -38,27 +38,27 @@ namespace ModelModul.Repositories
         //    }
         //}
 
-        public override async Task UpdateAsync(PropertyProduct item)
-        {
-            using (var transaction = Db.Database.BeginTransaction())
-            {
-                try
-                {
-                    var propertyProduct = await GetItemAsync((int)item.Id);
-                    if (propertyProduct == null) throw new Exception("Знвчение свойсва товара не найдено");
+        //public override async Task UpdateAsync(PropertyProduct item)
+        //{
+        //    using (var transaction = Db.Database.BeginTransaction())
+        //    {
+        //        try
+        //        {
+        //            var propertyProduct = await GetItemAsync((int)item.Id);
+        //            if (propertyProduct == null) throw new Exception("Знвчение свойсва товара не найдено");
 
-                    propertyProduct.IdPropertyValue = item.IdPropertyValue;
-                    Db.Entry(propertyProduct).State = EntityState.Modified;
-                    await Db.SaveChangesAsync();
-                    transaction.Commit();
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
-        }
+        //            propertyProduct.IdPropertyValue = item.IdPropertyValue;
+        //            Db.Entry(propertyProduct).State = EntityState.Modified;
+        //            await Db.SaveChangesAsync();
+        //            transaction.Commit();
+        //        }
+        //        catch (Exception)
+        //        {
+        //            transaction.Rollback();
+        //            throw;
+        //        }
+        //    }
+        //}
 
         //public override Task DeleteAsync(PropertyProduct item)
         //{

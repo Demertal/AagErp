@@ -171,6 +171,7 @@
     <Compile Include="ConnectionTools.cs" />
     <Compile Include="Models\Counterparty.cs" />
     <Compile Include="CounterpartyViewModel.cs" />
+    <Compile Include="Models\CountsProduct.cs" />
     <Compile Include="Models\MoneyTransferType.cs" />
     <Compile Include="Models\MovmentGoodType.cs" />
     <Compile Include="Models\PaymentType.cs" />
@@ -178,6 +179,7 @@
     <Compile Include="Repositories\SqlExchangeRateRepository.cs" />
     <Compile Include="Repositories\SqlCategoryRepository.cs" />
     <Compile Include="Repositories\IRepository.cs" />
+    <Compile Include="Repositories\SqlPriceGroupRepository.cs" />
     <Compile Include="Repositories\SqlProductRepository.cs" />
     <Compile Include="Models\Enumerations.cs" />
     <Compile Include="Models\Currency.cs" />
@@ -239,7 +241,6 @@
     <Compile Include="Specifications\BasisSpecifications\OrSpecification.cs" />
     <Compile Include="Specifications\ProductSpecification.cs" />
     <Compile Include="Specifications\WarrantySpecification.cs" />
-    <Compile Include="ViewModelBase.cs" />
     <Compile Include="Repositories\SqlWarrantyPeriodRepository.cs" />
     <Compile Include="Repositories\SqlWarrantyRepository.cs" />
     <Compile Include="Models\Warranty.cs" />

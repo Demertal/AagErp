@@ -4,18 +4,10 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mvvm="http://prismlibrary.com/"
-    xmlns:rulezzClient="clr-namespace:RulezzClient"
     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-    xmlns:views1="clr-namespace:RulezzClient.Views"
     mvvm:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d"
-    Title="Главное окно" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" HorizontalAlignment="Center"
-    HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center" MinHeight="400" MinWidth="400"
-    SizeToContent="WidthAndHeight" Padding="0,0,10,0">
-
-    <Window.Resources>
-        <rulezzClient:VisibilityFromRole x:Key="VisibilityFromRole"/>
-    </Window.Resources>
+    Title="Главное окно" Padding="0,0,10,0" WindowStartupLocation="CenterScreen" WindowState="Maximized">
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
@@ -23,17 +15,15 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
-    <Grid>
-        <Menu Height="23" VerticalContentAlignment="Center" VerticalAlignment="Top" HorizontalContentAlignment="Center" Visibility="{Binding Converter={StaticResource VisibilityFromRole}, Path=Role}" FontSize="14">
-            <MenuItem Height="20"  Header="Рабочее место кассира" Command="{Binding NavigateCommand}" CommandParameter="CashierWorkplace"
-                      Visibility="{Binding Converter={StaticResource VisibilityFromRole}, Path=Role, ConverterParameter=CashierWorkplace}"/>
-            <MenuItem Height="20"  Header="Номенклатура" Command="{Binding NavigateCommand}" CommandParameter="ShowProduct"
-                      Visibility="{Binding Converter={StaticResource VisibilityFromRole}, Path=Role, ConverterParameter=ShowProduct}"/>
-            <MenuItem Header="Действия с товаром"  Visibility="{Binding Converter={StaticResource VisibilityFromRole}, Path=Role, ConverterParameter=WorkProduct}">
+    <StackPanel>
+        <Menu>
+            <MenuItem Header="Рабочее место кассира" Command="{Binding NavigateCommand}" CommandParameter="CashierWorkplace"/>
+            <MenuItem Header="Номенклатура" Command="{Binding NavigateCommand}" CommandParameter="ShowProduct"/>
+            <MenuItem Header="Действия с товаром">
                 <MenuItem Header="Переоценка товара" Command="{Binding NavigateCommand}" CommandParameter="RevaluationProductsView"/>
                 <MenuItem Header="Приход товара" Command="{Binding NavigateCommand}" CommandParameter="PurchaseGoods"/>
             </MenuItem>
-            <MenuItem Header="Справочники"  Visibility="{Binding Converter={StaticResource VisibilityFromRole}, Path=Role, ConverterParameter=Directories}">
+            <MenuItem Header="Справочники">
                 <MenuItem Header="Контрагенты">
                     <MenuItem Header="Поставщики" Command="{Binding NavigateCommand}" CommandParameter="ShowSuppliers"/>
                     <MenuItem Header="Покупатели" Command="{Binding NavigateCommand}" CommandParameter="ShowCustomers"/>
@@ -43,26 +33,15 @@
                 <MenuItem Header="Переоценки" Command="{Binding NavigateCommand}" CommandParameter="ShowRevaluationReports"/>
                 <MenuItem Header="Закупки" Command="{Binding NavigateCommand}" CommandParameter="ShowPurchases"/>
                 <MenuItem Header="Продажи" Command="{Binding NavigateCommand}" CommandParameter="ShowSaless"/>
-                <MenuItem Header="Изменить курс USD" Command="{Binding СhangeСourseCommand}">
-                    <i:Interaction.Triggers>
-                        <mvvm:InteractionRequestTrigger SourceObject="{Binding Path=СhangeСoursePopupRequest}">
-                            <mvvm:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True" WindowStyle="{DynamicResource MyWindowStyle}">
-                                <mvvm:PopupWindowAction.WindowContent>
-                                    <views1:СhangeСourse/>
-                                </mvvm:PopupWindowAction.WindowContent>
-                            </mvvm:PopupWindowAction>
-                        </mvvm:InteractionRequestTrigger>
-                    </i:Interaction.Triggers>
-                </MenuItem>
             </MenuItem>
-            <MenuItem Height="20"  Header="Гарантия" Command="{Binding NavigateCommand}" CommandParameter="ShowWarranties"
-                      Visibility="{Binding Converter={StaticResource VisibilityFromRole}, Path=Role, ConverterParameter=ShowWarranties}"/>
-            <MenuItem Header="Отчет"  Visibility="{Binding Converter={StaticResource VisibilityFromRole}, Path=Role, ConverterParameter=Reports}">
+            <MenuItem Header="Гарантия" Command="{Binding NavigateCommand}" CommandParameter="ShowWarranties"/>
+            <MenuItem Header="Отчет">
                 <MenuItem Header="Отчет" Command="{Binding NavigateCommand}" CommandParameter="ShowFinalReport"/>
             </MenuItem>
         </Menu>
+        <Separator />
         <ContentControl x:Name="ContentRegionMain" mvvm:RegionManager.RegionName="ContentRegion" Margin="10, 28, 0, 0"/>
-    </Grid>
+    </StackPanel>
 </Window>
 
 

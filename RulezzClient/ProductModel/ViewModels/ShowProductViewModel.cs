@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using CustomControlLibrary.MVVM;
 using ModelModul;
 using ModelModul.Models;
 using ModelModul.Repositories;
@@ -10,14 +12,17 @@ using Prism.Commands;
 using Prism.Events;
 using Prism.Interactivity.InteractionRequest;
 using Prism.Regions;
+using Prism.Services.Dialogs;
 
 namespace ProductModul.ViewModels
 {
-    class ShowProductViewModel : ViewModelBase, IInteractionRequestAware
+    class ShowProductViewModel : ViewModelBase
     {
         private readonly IRegionManager _regionManager;
 
         private IEventAggregator _ea;
+
+        private readonly IDialogService _dialogService;
 
         #region Purchase
 
@@ -37,9 +42,9 @@ namespace ProductModul.ViewModels
                 SetProperty(ref _notification, value as Confirmation);
                 IsAddPurchase = true;
                 FindString = "";
-                Category = null;
+                SelectedCategory = null;
                 ProductsList = new ObservableCollection<Product>();
-                LoadGroupAsync();
+                LoadCategoryAsync();
             }
         }
 
@@ -49,7 +54,7 @@ namespace ProductModul.ViewModels
 
         #endregion
 
-        #region GroupProperties
+        #region CategoryProperties
 
         private ObservableCollection<Category> _categoriesList = new ObservableCollection<Category>();
 
@@ -59,16 +64,11 @@ namespace ProductModul.ViewModels
             set => SetProperty(ref _categoriesList, value);
         }
 
-        public DelegateCommand<Category> SelectedGroupCommand { get; }
+        public DelegateCommand<Category> SelectedCategoryCommand { get; }
 
-        public InteractionRequest<INotification> AddStorePopupRequest { get; set; }
-        public InteractionRequest<INotification> AddGroupPopupRequest { get; set; }
-        public InteractionRequest<INotification> RenameGroupPopupRequest { get; set; }
-        public InteractionRequest<INotification> ShowPropertiesPopupRequest { get; set; }
-        public DelegateCommand<Category> DeleteGroupCommand { get; }
-        public DelegateCommand AddStoreCommand { get; }
-        public DelegateCommand<Category> AddGroupCommand { get; }
-        public DelegateCommand<Category> RenameGroupCommand { get; }
+        public DelegateCommand<Category> DeleteCategoryCommand { get; }
+        public DelegateCommand<Category> AddCategoryCommand { get; }
+        public DelegateCommand<Category> RenameCategoryCommand { get; }
         public DelegateCommand<Category> ShowPropertiesCommand { get; }
 
         #endregion
@@ -89,13 +89,13 @@ namespace ProductModul.ViewModels
 
         #region ProductProperties
 
-        private Category _category;
-        public Category Category
+        private Category _selectedCategory;
+        public Category SelectedCategory
         {
-            get => _category;
+            get => _selectedCategory;
             set
             {
-                SetProperty(ref _category, value);
+                SetProperty(ref _selectedCategory, value);
                 LoadProductAsync();
                 RaisePropertyChanged("IsEnabledAddProduct");
             }
@@ -119,46 +119,50 @@ namespace ProductModul.ViewModels
             set => SetProperty(ref _productsList, value);
         }
 
-        public InteractionRequest<INotification> AddProductPopupRequest { get; set; }
-
         public DelegateCommand<Product> DeleteProductCommand { get; }
         public DelegateCommand AddProductCommand { get; }
 
-        public bool IsEnabledAddProduct => Category != null;
+        public bool IsEnabledAddProduct => SelectedCategory != null;
         #endregion
 
-        public ShowProductViewModel(IRegionManager regionManager, IEventAggregator ea)
+        public ShowProductViewModel(IRegionManager regionManager, IEventAggregator ea, IDialogService dialogService)
         {
             _ea = ea;
             _regionManager = regionManager;
+            _dialogService = dialogService;
             IsAddPurchase = false;
-            SelectedGroupCommand = new DelegateCommand<Category>(SelectedGroupChange);
-            AddStorePopupRequest = new InteractionRequest<INotification>();
-            AddGroupPopupRequest = new InteractionRequest<INotification>();
-            RenameGroupPopupRequest = new InteractionRequest<INotification>();
-            ShowPropertiesPopupRequest = new InteractionRequest<INotification>();
-            AddStoreCommand = new DelegateCommand(AddStore);
-            AddGroupCommand = new DelegateCommand<Category>(AddGroup);
-            RenameGroupCommand = new DelegateCommand<Category>(RenameGroup);
-            DeleteGroupCommand = new DelegateCommand<Category>(DeleteGroupAsync);
+            SelectedCategoryCommand = new DelegateCommand<Category>(SelectedGroupChange);
+            AddCategoryCommand = new DelegateCommand<Category>(AddCategory);
+            RenameCategoryCommand = new DelegateCommand<Category>(RenameCategory);
+            DeleteCategoryCommand = new DelegateCommand<Category>(DeleteCategoryAsync);
             ShowPropertiesCommand = new DelegateCommand<Category>(ShowProperties);
             _ea.GetEvent<IsReadySentEvent>().Subscribe(obj => _ea.GetEvent<BoolSentEvent>().Publish(IsAddPurchase));
 
-            AddProductPopupRequest = new InteractionRequest<INotification>();
             DeleteProductCommand = new DelegateCommand<Product>(DeleteProductAsync);
             AddProductCommand = new DelegateCommand(AddProduct).ObservesCanExecute(() => IsEnabledAddProduct);
 
             AddCommandPurchaseGoods = new DelegateCommand<Product>(AddPurchaseGoods);
         }
 
-        #region GroupCommands
+        #region CategoryCommands
 
-        private async void LoadGroupAsync()
+        private void LoadCategoryAsync()
         {
             try
             {
-                SqlCategoryRepository dbSet = new SqlCategoryRepository();
-                CategoriesList = new ObservableCollection<Category>(await dbSet.GetListAsync(CategorySpecification.GetCategoriesByIdParent(), include: c => c.ChildCategories));
+                SqlRepository<Category> saCategoryRepository = new SqlCategoryRepository();
+                SqlRepository<UnitStorage> sqlUnitStorageRepository = new SqlUnitStorageRepository();
+                SqlRepository<WarrantyPeriod> sqlWarrantyPeriodRepository = new SqlWarrantyPeriodRepository();
+
+                var loadUnitStorage = Task.Run(() => sqlUnitStorageRepository.GetListAsync());
+                var loadWarrantyPeriod = Task.Run(() => sqlWarrantyPeriodRepository.GetListAsync());
+                var loadCategory = Task.Run(() => saCategoryRepository.GetListAsync(include: c => c.ChildCategories));
+
+                Task.WaitAll(loadUnitStorage, loadWarrantyPeriod, loadCategory);
+
+                CategoriesList = new ObservableCollection<Category>(loadCategory.Result.Where(CategorySpecification.GetCategoriesByIdParent().IsSatisfiedBy().Compile()));
+                UnitStoragesList = new ObservableCollection<UnitStorage>(loadUnitStorage.Result);
+                WarrantyPeriodsList = new ObservableCollection<WarrantyPeriod>(loadWarrantyPeriod.Result);
             }
             catch (Exception e)
             {
@@ -168,51 +172,42 @@ namespace ProductModul.ViewModels
 
         private void SelectedGroupChange(Category obj)
         {
-            Category = obj;
+            SelectedCategory = obj;
         }
 
-        private void AddStore()
+        private void AddCategory(Category category)
         {
-            AddStorePopupRequest.Raise(new Confirmation { Title = "Добавить магазин", Content = null }, Callback);
+            _dialogService.ShowDialog("AddCategory",
+                new DialogParameters { { "id", category?.Id } },
+                Callback);
         }
 
-        private void AddGroup(Category category)
+        private void Callback(IDialogResult dialogResult)
         {
-            AddGroupPopupRequest.Raise(new Confirmation { Title = "Добавить группу", Content = category.Id }, Callback);
+            LoadCategoryAsync();
+            LoadProductAsync();
         }
 
-        private void RenameGroup(Category category)
+        private void RenameCategory(Category category)
         {
-            RenameGroupPopupRequest.Raise(new Confirmation { Title = "Переименовать группу", Content = category}, Callback);
+            _dialogService.ShowDialog("RenameCategory", new DialogParameters { { "category", category } }, Callback);
         }
 
         private void ShowProperties(Category category)
         {
-            ShowPropertiesPopupRequest.Raise(new Notification { Title = "Свойства", Content = category });
+            //ShowPropertiesPopupRequest.Raise(new Notification { Title = "Свойства", Content = category });
         }
 
-        private async void DeleteGroupAsync(Category category)
+        private async void DeleteCategoryAsync(Category category)
         {
             try
             {
-                if (category.IdParent == null)
-                {
-                    if (MessageBox.Show("Удалить магазин?", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
-                        MessageBoxResult.Yes) return;
-                    SqlCategoryRepository dbSet = new SqlCategoryRepository();
-                    await dbSet.DeleteAsync(category);
-                    MessageBox.Show("Магазин удален.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                    LoadGroupAsync();
-                }
-                else
-                {
-                    if (MessageBox.Show("Удалить группу?", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
-                        MessageBoxResult.Yes) return;
-                    SqlCategoryRepository dbSet = new SqlCategoryRepository();
-                    await dbSet.DeleteAsync(category);
-                    MessageBox.Show("Группа удалена.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                    LoadGroupAsync();
-                }
+                if (MessageBox.Show("Вы уверены что хотите удалить категорию? При удалении категории будут также удалены все дочерние категории, товар в них и свойства!", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
+                    MessageBoxResult.Yes) return;
+                SqlRepository<Category> sqlCategoryRepository = new SqlCategoryRepository();
+                await sqlCategoryRepository.DeleteAsync(category);
+                MessageBox.Show("Категория удалена.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                LoadCategoryAsync();
             }
             catch (Exception e)
             {
@@ -220,36 +215,19 @@ namespace ProductModul.ViewModels
             }
         }
 
-        private void Callback(INotification notification)
-        {
-            if (!((Confirmation) notification).Confirmed) return;
-            LoadGroupAsync();
-            LoadProductAsync();
-        }
-
         #endregion
 
         #region ProductCommands
 
-        private void LoadProductAsync()
+        private async void LoadProductAsync()
         {
             try
             {
-                SqlUnitStorageRepository sqlUnitStorageRepository = new SqlUnitStorageRepository();
-                SqlWarrantyPeriodRepository sqlWarrantyPeriodRepository = new SqlWarrantyPeriodRepository();
-                SqlProductRepository sqlProductRepository = new SqlProductRepository();
+               SqlProductRepository sqlProductRepository = new SqlProductRepository();
 
-                var loadUnitStorage = Task.Run(() => sqlUnitStorageRepository.GetListAsync());
-                var loadWarrantyPeriod = Task.Run(() => sqlWarrantyPeriodRepository.GetListAsync());
-                var loadProduct = Task.Run(() => sqlProductRepository.GetListAsync(Category == null
+                ProductsList = new ObservableCollection<Product>( await sqlProductRepository.GetListAsync(SelectedCategory == null
                     ? ProductSpecification.GetProductsByFindString(FindString)
-                    : ProductSpecification.GetProductsByIdGroup(Category.Id)));
-
-                Task.WaitAll(new Task[] { loadUnitStorage, loadWarrantyPeriod, loadProduct });
-
-                UnitStoragesList = new ObservableCollection<UnitStorage>(loadUnitStorage.Result);
-                WarrantyPeriodsList = new ObservableCollection<WarrantyPeriod>(loadWarrantyPeriod.Result);
-                ProductsList = new ObservableCollection<Product>(loadProduct.Result);
+                    : ProductSpecification.GetProductsByIdGroup(SelectedCategory.Id)));
             }
             catch (Exception e)
             {
@@ -259,7 +237,7 @@ namespace ProductModul.ViewModels
 
         private void AddProduct()
         {
-            AddProductPopupRequest.Raise(new Confirmation { Title = "Добавить товар", Content = Category}, Callback);
+            _dialogService.ShowDialog("AddProduct", new DialogParameters { { "category", SelectedCategory } }, Callback);
         }
 
         private async void DeleteProductAsync(Product obj)
@@ -286,7 +264,7 @@ namespace ProductModul.ViewModels
 
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
-            LoadGroupAsync();
+            LoadCategoryAsync();
         }
 
         public override bool IsNavigationTarget(NavigationContext navigationContext)

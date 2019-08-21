@@ -1,3 +1,8 @@
+using System;
+using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using ModelModul.Configurations;
 using ModelModul.Models;
@@ -47,6 +52,7 @@ namespace ModelModul
         public virtual DbSet<UnitStorage> UnitStorages { get; set; }
         public virtual DbSet<Warranty> Warranties { get; set; }
         public virtual DbSet<WarrantyPeriod> WarrantyPeriods { get; set; }
+        public virtual DbQuery<CountsProduct> CountsProducts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

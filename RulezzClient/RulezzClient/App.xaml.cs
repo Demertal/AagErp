@@ -1,11 +1,10 @@
 ﻿using System.Windows;
-using CounterpartyModul;
+using System.Windows.Navigation;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Unity;
 using RulezzClient.ViewModels;
 using RulezzClient.Views;
-using UnitStorageModul;
 
 namespace RulezzClient
 {
@@ -34,15 +33,15 @@ namespace RulezzClient
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
         {
             moduleCatalog.AddModule<ProductModul.ProductModul>();
-            moduleCatalog.AddModule<PurchaseGoodsModul.PurchaseGoodsModul>();
-            moduleCatalog.AddModule<PropertiesModul.PropertiesModul>();
-            moduleCatalog.AddModule<CounterpartiesModul>();
-            moduleCatalog.AddModule<RevaluationProductsModul.RevaluationProductsModul>();
-            moduleCatalog.AddModule<UnitStoragesModul>();
-            moduleCatalog.AddModule<WarrantyPeriodsModul.WarrantyPeriodsModul>();
-            moduleCatalog.AddModule<CashierWorkplaceModul.CashierWorkplaceModul>();
-            moduleCatalog.AddModule<WarrantyModul.WarrantyModul>();
-            moduleCatalog.AddModule<ReportModul.ReportModul>();
+            //moduleCatalog.AddModule<PurchaseGoodsModul.PurchaseGoodsModul>();
+            //moduleCatalog.AddModule<PropertiesModul.PropertiesModul>();
+            //moduleCatalog.AddModule<CounterpartiesModul>();
+            //moduleCatalog.AddModule<RevaluationProductsModul.RevaluationProductsModul>();
+            //moduleCatalog.AddModule<UnitStoragesModul>();
+            //moduleCatalog.AddModule<WarrantyPeriodsModul.WarrantyPeriodsModul>();
+            //moduleCatalog.AddModule<CashierWorkplaceModul.CashierWorkplaceModul>();
+            //moduleCatalog.AddModule<WarrantyModul.WarrantyModul>();
+            //moduleCatalog.AddModule<ReportModul.ReportModul>();
         }
     }
 }

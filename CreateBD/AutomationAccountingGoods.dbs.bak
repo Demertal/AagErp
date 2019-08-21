@@ -601,15 +601,11 @@ END]]></string>
 		<entity schema="dbo" name="invoices" color="F4DDBE" x="1440" y="368" />
 		<entity schema="dbo" name="priceGroups" color="F4DDBE" x="1040" y="368" />
 		<entity schema="dbo" name="stores" color="BED3F4" x="432" y="512" />
-		<entity schema="dbo" name="unitStorages" color="F4DDBE" x="848" y="368" />
-		<entity schema="dbo" name="warrantyPeriods" color="F4DDBE" x="864" y="224" />
 		<entity schema="dbo" name="counterparties" color="C7F4BE" x="848" y="752" />
 		<entity schema="dbo" name="movmentGoodTypes" color="C1D8EE" x="48" y="112" />
 		<entity schema="dbo" name="movementGoodsInfos" color="BED3F4" x="224" y="512" />
 		<entity schema="dbo" name="propertyValues" color="BEBEF4" x="1872" y="288" />
 		<entity schema="dbo" name="propertyNames" color="BEBEF4" x="1856" y="80" />
-		<entity schema="dbo" name="categories" color="BEBEF4" x="1712" y="112" />
-		<entity schema="dbo" name="products" color="F4DDBE" x="1040" y="112" />
 		<entity schema="dbo" name="serialNumbers" color="BED3F4" x="400" y="240" />
 		<entity schema="dbo" name="revaluationProducts" color="F4DDBE" x="1488" y="112" />
 		<entity schema="dbo" name="warranties" color="BED3F4" x="592" y="416" />
@@ -621,6 +617,10 @@ END]]></string>
 		<entity schema="dbo" name="invoiceInfos" color="F4DDBE" x="1280" y="368" />
 		<entity schema="dbo" name="propertyProducts" color="BEBEF4" x="2064" y="112" />
 		<entity schema="dbo" name="priceProducts" color="F4DDBE" x="1280" y="112" />
+		<entity schema="dbo" name="categories" color="BEBEF4" x="1712" y="112" />
+		<entity schema="dbo" name="unitStorages" color="F4DDBE" x="848" y="368" />
+		<entity schema="dbo" name="warrantyPeriods" color="F4DDBE" x="864" y="224" />
+		<entity schema="dbo" name="products" color="F4DDBE" x="1040" y="112" />
 		<group name="counterparties" color="EEF7EC" >
 			<entity schema="dbo" name="counterparties" />
 			<entity schema="dbo" name="moneyTransfers" />

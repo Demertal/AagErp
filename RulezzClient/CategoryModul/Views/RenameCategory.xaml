@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="GroupModul.Views.RenameGroup"
+﻿<UserControl x:Class="GroupModul.Views.RenameCategory"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -16,8 +16,8 @@
             <ColumnDefinition Width="Auto"></ColumnDefinition>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <Label Content="Группа" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" FontSize="14"/>
-        <TextBox Text="{Binding Title,  UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1" HorizontalContentAlignment="Center" MinWidth="100" VerticalContentAlignment="Center" FontSize="14"/>
-        <Button Grid.Column="1" Content="Изменить" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center" Width="75" Command="{Binding UpdateStoreCommand}" Margin="0,5,0,0" FontSize="14"/>
+        <Label Content="Категория" Grid.Row="0" Grid.Column="0"/>
+        <TextBox Text="{Binding Category.Title,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1"/>
+        <Button Grid.Column="1" Content="Изменить" Grid.Row="1" Width="90" Command="{Binding UpdateCategoryCommand}" Margin="0,5,0,0"/>
     </Grid>
 </UserControl>

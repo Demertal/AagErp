@@ -3,11 +3,11 @@
 namespace GroupModul.Views
 {
     /// <summary>
-    /// Логика взаимодействия для AddGroupAsync.xaml
+    /// Логика взаимодействия для RenameCategory.xaml
     /// </summary>
-    public partial class AddGroup : UserControl
+    public partial class RenameCategory : UserControl
     {
-        public AddGroup()
+        public RenameCategory()
         {
             InitializeComponent();
         }
