@@ -31,6 +31,7 @@
                 <MenuItem Header="Ед. хранения" Command="{Binding NavigateCommand}" CommandParameter="ShowUnitStorages"/>
                 <MenuItem Header="Гарантийный период" Command="{Binding NavigateCommand}" CommandParameter="ShowWarrantyPeriods"/>
                 <MenuItem Header="Наценка" Command="{Binding NavigateCommand}" CommandParameter="ShowPriceGroups"/>
+                <MenuItem Header="Склады" Command="{Binding NavigateCommand}" CommandParameter="ShowStores"/>
                 <MenuItem Header="Переоценки" Command="{Binding NavigateCommand}" CommandParameter="ShowRevaluationReports"/>
                 <MenuItem Header="Закупки" Command="{Binding NavigateCommand}" CommandParameter="ShowPurchases"/>
                 <MenuItem Header="Продажи" Command="{Binding NavigateCommand}" CommandParameter="ShowSaless"/>

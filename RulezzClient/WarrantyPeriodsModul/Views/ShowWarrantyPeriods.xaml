@@ -17,7 +17,7 @@
     </UserControl.Resources>
 
     <Grid>
-        <DataGrid x:Name="DataGridWarrantyPeriods" ItemsSource="{Binding Path=WarrantyPeriodsList, UpdateSourceTrigger=PropertyChanged}" MaxWidth="400"
+        <DataGrid ItemsSource="{Binding Path=WarrantyPeriodsList, UpdateSourceTrigger=PropertyChanged}" MaxWidth="400"
                     IsSynchronizedWithCurrentItem="True" CanUserResizeRows="False" CanUserDeleteRows="False"
                     CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center"
                     MinHeight="200" MaxHeight="500" RowStyle="{StaticResource DefaultRowStyle}" SelectionMode="Single" HorizontalAlignment="Center" FontSize="14">

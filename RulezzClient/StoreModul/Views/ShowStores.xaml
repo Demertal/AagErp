@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="UnitStorageModul.Views.ShowUnitStorages"
+﻿<UserControl x:Class="StoreModul.Views.ShowStores"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mvvm="http://prismlibrary.com/"
@@ -9,7 +9,7 @@
     <UserControl.Resources>
         <ContextMenu  x:Key="RowMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
             <MenuItem Header="Удалить" CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
-                      Command="{Binding DataContext.DeleteUnitStoragesCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>
+                      Command="{Binding DataContext.DeleteStoresCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>
         </ContextMenu>
         <Style x:Key="DefaultRowStyle" TargetType="{x:Type DataGridRow}">
             <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
@@ -17,13 +17,13 @@
     </UserControl.Resources>
 
     <Grid>
-        <DataGrid ItemsSource="{Binding Path=UnitStoragesList, UpdateSourceTrigger=PropertyChanged}" MaxWidth="400"
+        <DataGrid ItemsSource="{Binding Path=StoresList, UpdateSourceTrigger=PropertyChanged}" MaxWidth="400"
                     IsSynchronizedWithCurrentItem="True" CanUserResizeRows="False" CanUserDeleteRows="False"
                     CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center"
                     MinHeight="200" MaxHeight="500" HorizontalAlignment="Center" RowStyle="{StaticResource DefaultRowStyle}" SelectionMode="Single" FontSize="14">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="RowEditEnding">
-                    <mvvm:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Path=DataContext.ChangeUnitStoragesCommand}"/>
+                    <mvvm:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Path=DataContext.ChangeStoresCommand}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
             <DataGrid.CellStyle>
@@ -33,8 +33,7 @@
                 </Style>
             </DataGrid.CellStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Ед. хр." Binding="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridCheckBoxColumn Header="Вещественный тип?" Binding="{Binding Path=IsWeightGoods, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Склад" Binding="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

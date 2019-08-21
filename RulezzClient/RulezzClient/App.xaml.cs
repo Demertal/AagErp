@@ -39,6 +39,7 @@ namespace RulezzClient
             moduleCatalog.AddModule<UnitStorageModul.UnitStorageModul>();
             moduleCatalog.AddModule<WarrantyPeriodModul.WarrantyPeriodModul>();
             moduleCatalog.AddModule<PriceGroupModul.PriceGroupModul>();
+            moduleCatalog.AddModule<StoreModul.StoreModul>();
             //moduleCatalog.AddModule<CashierWorkplaceModul.CashierWorkplaceModul>();
             //moduleCatalog.AddModule<WarrantyModul.WarrantyModul>();
             //moduleCatalog.AddModule<ReportModul.ReportModul>();
