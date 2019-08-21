@@ -8,7 +8,7 @@ using ModelModul.Repositories;
 using Prism.Commands;
 using Prism.Regions;
 
-namespace WarrantyPeriodsModul.ViewModels
+namespace WarrantyPeriodModul.ViewModels
 {
     class ShowWarrantyPeriodsViewModel: ViewModelBase
     {
@@ -103,7 +103,6 @@ namespace WarrantyPeriodsModul.ViewModels
             {
                 IRepository<WarrantyPeriod> sqlWarrantyPeriodRepository = new SqlWarrantyPeriodRepository();
                 WarrantyPeriodsList = new ObservableCollection<WarrantyPeriod>(await sqlWarrantyPeriodRepository.GetListAsync());
-                RaisePropertyChanged("WarrantyPeriodsList");
             }
             catch (Exception e)
             {

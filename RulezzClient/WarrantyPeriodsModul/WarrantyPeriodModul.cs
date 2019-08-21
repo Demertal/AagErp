@@ -1,10 +1,10 @@
 ﻿using Prism.Ioc;
 using Prism.Modularity;
-using WarrantyPeriodsModul.Views;
+using ShowWarrantyPeriods = WarrantyPeriodModul.Views.ShowWarrantyPeriods;
 
-namespace WarrantyPeriodsModul
+namespace WarrantyPeriodModul
 {
-    public class WarrantyPeriodsModul : IModule
+    public class WarrantyPeriodModul : IModule
     {
         public void OnInitialized(IContainerProvider containerProvider)
         {

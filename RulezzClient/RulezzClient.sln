@@ -27,7 +27,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CounterpartyModul", "Suppli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RevaluationProductsModul", "RevaluationProductsModul\RevaluationProductsModul.csproj", "{0BFAA536-F50B-45D5-A01E-7F5B3F5A4BED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarrantyPeriodsModul", "WarrantyPeriodsModul\WarrantyPeriodsModul.csproj", "{E7D86849-91E5-4509-963E-B29A546D0893}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarrantyPeriodModul", "WarrantyPeriodsModul\WarrantyPeriodModul.csproj", "{E7D86849-91E5-4509-963E-B29A546D0893}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CashierWorkplaceModul", "CashierWorkplaceModul\CashierWorkplaceModul.csproj", "{8D451053-0BCE-4BF4-AE6D-99FA2C920946}"
 EndProject
@@ -130,7 +130,7 @@ Global
 		{1D29DBCB-3D13-4717-A02A-6329107A8031} = {1959A74B-683C-4F60-B692-40068E978177}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35
 		SolutionGuid = {19416D65-422B-45AC-9508-FC45CBA4B529}
+		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35
 	EndGlobalSection
 EndGlobal

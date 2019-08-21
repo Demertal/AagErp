@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using ModelModul;
+using CustomControlLibrary.MVVM;
 using ModelModul.Models;
 using ModelModul.Repositories;
 using Prism.Commands;
@@ -102,9 +102,8 @@ namespace UnitStorageModul.ViewModels
         {
             try
             {
-                SqlUnitStorageRepository sql = new SqlUnitStorageRepository();
-                //UnitStoragesList = new ObservableCollection<UnitStorage>(await sql.GetListAsync());
-                RaisePropertyChanged("UnitStoragesList");
+                IRepository<UnitStorage> sqlUnitStorageRepository = new SqlUnitStorageRepository();
+                UnitStoragesList = new ObservableCollection<UnitStorage>(await sqlUnitStorageRepository.GetListAsync());
             }
             catch (Exception e)
             {

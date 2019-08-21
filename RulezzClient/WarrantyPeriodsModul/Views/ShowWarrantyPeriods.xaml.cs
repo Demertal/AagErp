@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace WarrantyPeriodsModul.Views
+namespace WarrantyPeriodModul.Views
 {
     /// <summary>
     /// Логика взаимодействия для ShowWarrantyPeriods.xaml

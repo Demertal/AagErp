@@ -7,8 +7,8 @@
     <ProjectGuid>{E7D86849-91E5-4509-963E-B29A546D0893}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WarrantyPeriodsModul</RootNamespace>
-    <AssemblyName>WarrantyPeriodsModul</AssemblyName>
+    <RootNamespace>WarrantyPeriodModul</RootNamespace>
+    <AssemblyName>WarrantyPeriodModul</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -67,7 +67,7 @@
     <Compile Include="Views\ShowWarrantyPeriods.xaml.cs">
       <DependentUpon>ShowWarrantyPeriods.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WarrantyPeriodsModul.cs" />
+    <Compile Include="WarrantyPeriodModul.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

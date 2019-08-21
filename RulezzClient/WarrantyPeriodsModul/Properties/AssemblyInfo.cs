@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // Общие сведения об этой сборке предоставляются следующим набором
 // набора атрибутов. Измените значения этих атрибутов, чтобы изменить сведения,
 // связанные со сборкой.
-[assembly: AssemblyTitle("WarrantyPeriodsModul")]
+[assembly: AssemblyTitle("WarrantyPeriodModul")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("sibiryak-soft")]
-[assembly: AssemblyProduct("WarrantyPeriodsModul")]
+[assembly: AssemblyProduct("WarrantyPeriodModul")]
 [assembly: AssemblyCopyright("Copyright © sibiryak-soft 2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

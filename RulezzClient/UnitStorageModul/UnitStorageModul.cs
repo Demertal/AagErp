@@ -4,7 +4,7 @@ using UnitStorageModul.Views;
 
 namespace UnitStorageModul
 {
-    public class UnitStoragesModul : IModule
+    public class UnitStorageModul : IModule
     {
         public void OnInitialized(IContainerProvider containerProvider)
         {
