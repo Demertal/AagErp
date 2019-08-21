@@ -258,6 +258,10 @@
       <Project>{E7D86849-91E5-4509-963E-B29A546D0893}</Project>
       <Name>WarrantyPeriodModul</Name>
     </ProjectReference>
+    <ProjectReference Include="..\СurrencyModul\CurrencyModul.csproj">
+      <Project>{0518145E-E4E3-4448-8CF0-C7F76E0754F4}</Project>
+      <Name>CurrencyModul</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">

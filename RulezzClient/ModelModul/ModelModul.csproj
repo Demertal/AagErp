@@ -176,6 +176,7 @@
     <Compile Include="Models\MovmentGoodType.cs" />
     <Compile Include="Models\PaymentType.cs" />
     <Compile Include="Models\SerialNumberLog.cs" />
+    <Compile Include="Repositories\SqlCurrencyRepository.cs" />
     <Compile Include="Repositories\SqlExchangeRateRepository.cs" />
     <Compile Include="Repositories\SqlCategoryRepository.cs" />
     <Compile Include="Repositories\IRepository.cs" />
