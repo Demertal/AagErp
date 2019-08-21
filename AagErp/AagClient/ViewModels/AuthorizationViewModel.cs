@@ -54,10 +54,11 @@ namespace AagClient.ViewModels
                     dataSource = сonnectionStrings["Server"].Value<string>();
                 }
 
-                ConnectionTools.BuildConnectionString("AutomationAccountingGoodsContext");
+                ConnectionTools.BuildConnectionString("AutomationAccountingGoodsContext", dataSource: dataSource);
                 AutomationAccountingGoodsContext au = new AutomationAccountingGoodsContext(ConnectionTools.ConnectionString);
-                //await au.Database.Connection.OpenAsync();
-                LoginCompleted?.Invoke(true);
+                if (await au.Database.CanConnectAsync())
+                    LoginCompleted?.Invoke(true);
+                else throw new Exception("Ошибка соединения");
             }
             catch (Exception e)
             {
