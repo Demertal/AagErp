@@ -81,6 +81,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BindingProxy.cs" />
+    <Compile Include="Converters\ConvertDecimalToPercent.cs" />
     <Compile Include="Converters\ConverterSum.cs" />
     <Compile Include="Converters\CurrencyConverter2Parametrs.cs" />
     <Compile Include="Converters\CurrencyConverter4Parametrs.cs" />

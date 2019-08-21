@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using CustomControlLibrary.MVVM;
@@ -8,35 +12,35 @@ using ModelModul.Repositories;
 using Prism.Commands;
 using Prism.Regions;
 
-namespace UnitStorageModul.ViewModels
+namespace PriceGroupModul.ViewModels
 {
-    class ShowUnitStorageViewModel : ViewModelBase
+    class ShowPriceGroupsViewModel : ViewModelBase
     {
         #region Properties
 
-        public ObservableCollection<UnitStorage> _unitStoragesList = new ObservableCollection<UnitStorage>();
-        public ObservableCollection<UnitStorage> UnitStoragesList
+        public ObservableCollection<PriceGroup> _priceGroupsList = new ObservableCollection<PriceGroup>();
+        public ObservableCollection<PriceGroup> PriceGroupsList
         {
-            get => _unitStoragesList;
-            set => SetProperty(ref _unitStoragesList, value);
+            get => _priceGroupsList;
+            set => SetProperty(ref _priceGroupsList, value);
         }
 
 
-        public DelegateCommand<UnitStorage> DeleteUnitStoragesCommand { get; }
-        public DelegateCommand<DataGridRowEditEndingEventArgs> ChangeUnitStoragesCommand { get; }
+        public DelegateCommand<PriceGroup> DeletePriceGroupsCommand { get; }
+        public DelegateCommand<DataGridRowEditEndingEventArgs> ChangePriceGroupsCommand { get; }
 
         #endregion
 
-        public ShowUnitStorageViewModel()
+        public ShowPriceGroupsViewModel()
         {
-            ChangeUnitStoragesCommand = new DelegateCommand<DataGridRowEditEndingEventArgs>(ChangeUnitStorages);
-            DeleteUnitStoragesCommand = new DelegateCommand<UnitStorage>(DeleteUnitStoragesAsync);
+            ChangePriceGroupsCommand = new DelegateCommand<DataGridRowEditEndingEventArgs>(ChangePriceGroups);
+            DeletePriceGroupsCommand = new DelegateCommand<PriceGroup>(DeletePriceGroupsAsync);
         }
 
-        private void ChangeUnitStorages(DataGridRowEditEndingEventArgs obj)
+        private void ChangePriceGroups(DataGridRowEditEndingEventArgs obj)
         {
             if (obj == null) return;
-            if (string.IsNullOrEmpty(((UnitStorage)obj.Row.DataContext).Title))
+            if (((PriceGroup)obj.Row.DataContext).Markup <= 0)
             {
                 obj.Cancel = true;
             }
@@ -44,21 +48,21 @@ namespace UnitStorageModul.ViewModels
             {
                 if (obj.Row.IsNewItem)
                 {
-                    AddUnitStoragesAsync((UnitStorage)obj.Row.Item);
+                    AddPriceGroupsAsync((PriceGroup)obj.Row.Item);
                 }
                 else
                 {
-                    UpdateUnitStoragesAsync((UnitStorage)obj.Row.Item);
+                    UpdatePriceGroupsAsync((PriceGroup)obj.Row.Item);
                 }
             }
         }
 
-        private async void AddUnitStoragesAsync(UnitStorage obj)
+        private async void AddPriceGroupsAsync(PriceGroup obj)
         {
             try
             {
-                SqlUnitStorageRepository sql = new SqlUnitStorageRepository();
-                await sql.CreateAsync(obj);
+                IRepository<PriceGroup> priceGroupRepository = new SqlPriceGroupRepository();
+                await priceGroupRepository.CreateAsync(obj);
             }
             catch (Exception e)
             {
@@ -67,12 +71,12 @@ namespace UnitStorageModul.ViewModels
             LoadAsync();
         }
 
-        private async void UpdateUnitStoragesAsync(UnitStorage obj)
+        private async void UpdatePriceGroupsAsync(PriceGroup obj)
         {
             try
             {
-                SqlUnitStorageRepository sql = new SqlUnitStorageRepository();
-                await sql.UpdateAsync(obj);
+                IRepository<PriceGroup> priceGroupRepository = new SqlPriceGroupRepository();
+                await priceGroupRepository.UpdateAsync(obj);
             }
             catch (Exception e)
             {
@@ -81,15 +85,15 @@ namespace UnitStorageModul.ViewModels
             LoadAsync();
         }
 
-        private async void DeleteUnitStoragesAsync(UnitStorage obj)
+        private async void DeletePriceGroupsAsync(PriceGroup obj)
         {
             if (obj == null) return;
-            if (MessageBox.Show("Удалить ед. хр.?", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
+            if (MessageBox.Show("Удалить наценку?", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
                 MessageBoxResult.Yes) return;
             try
             {
-                SqlUnitStorageRepository sql = new SqlUnitStorageRepository();
-                await sql.DeleteAsync(obj);
+                IRepository<PriceGroup> priceGroupRepository = new SqlPriceGroupRepository();
+                await priceGroupRepository.DeleteAsync(obj);
             }
             catch (Exception e)
             {
@@ -102,8 +106,8 @@ namespace UnitStorageModul.ViewModels
         {
             try
             {
-                IRepository<UnitStorage> sqlUnitStorageRepository = new SqlUnitStorageRepository();
-                UnitStoragesList = new ObservableCollection<UnitStorage>(await sqlUnitStorageRepository.GetListAsync());
+                IRepository<PriceGroup> priceGroupRepository = new SqlPriceGroupRepository();
+                PriceGroupsList = new ObservableCollection<PriceGroup>(await priceGroupRepository.GetListAsync());
             }
             catch (Exception e)
             {

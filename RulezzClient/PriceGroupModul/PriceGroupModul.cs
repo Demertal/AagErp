@@ -1,10 +1,10 @@
-﻿using Prism.Ioc;
+﻿using PriceGroupModul.Views;
+using Prism.Ioc;
 using Prism.Modularity;
-using UnitStorageModul.Views;
 
-namespace UnitStorageModul
+namespace PriceGroupModul
 {
-    public class UnitStorageModul : IModule
+    public class PriceGroupModul : IModule
     {
         public void OnInitialized(IContainerProvider containerProvider)
         {
@@ -12,7 +12,7 @@ namespace UnitStorageModul
 
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterForNavigation<ShowUnitStorages>();
+            containerRegistry.RegisterForNavigation<ShowPriceGroups>();
         }
     }
 }

@@ -56,8 +56,8 @@ namespace WarrantyPeriodModul.ViewModels
         {
             try
             {
-                SqlWarrantyPeriodRepository sql = new SqlWarrantyPeriodRepository();
-                await sql.CreateAsync(obj);
+                IRepository<WarrantyPeriod> warrantyPeriodRepository = new SqlWarrantyPeriodRepository();
+                await warrantyPeriodRepository.CreateAsync(obj);
             }
             catch (Exception e)
             {
@@ -70,8 +70,8 @@ namespace WarrantyPeriodModul.ViewModels
         {
             try
             {
-                SqlWarrantyPeriodRepository sql = new SqlWarrantyPeriodRepository();
-                await sql.UpdateAsync(obj);
+                IRepository<WarrantyPeriod> warrantyPeriodRepository = new SqlWarrantyPeriodRepository();
+                await warrantyPeriodRepository.UpdateAsync(obj);
             }
             catch (Exception e)
             {
@@ -87,8 +87,8 @@ namespace WarrantyPeriodModul.ViewModels
                 MessageBoxResult.Yes) return;
             try
             {
-                SqlWarrantyPeriodRepository sql = new SqlWarrantyPeriodRepository();
-                await sql.DeleteAsync(obj);
+                IRepository<WarrantyPeriod> warrantyPeriodRepository = new SqlWarrantyPeriodRepository();
+                await warrantyPeriodRepository.DeleteAsync(obj);
             }
             catch (Exception e)
             {
@@ -101,8 +101,8 @@ namespace WarrantyPeriodModul.ViewModels
         {
             try
             {
-                IRepository<WarrantyPeriod> sqlWarrantyPeriodRepository = new SqlWarrantyPeriodRepository();
-                WarrantyPeriodsList = new ObservableCollection<WarrantyPeriod>(await sqlWarrantyPeriodRepository.GetListAsync());
+                IRepository<WarrantyPeriod> warrantyPeriodRepository = new SqlWarrantyPeriodRepository();
+                WarrantyPeriodsList = new ObservableCollection<WarrantyPeriod>(await warrantyPeriodRepository.GetListAsync());
             }
             catch (Exception e)
             {

@@ -3,11 +3,11 @@
 namespace UnitStorageModul.Views
 {
     /// <summary>
-    /// Логика взаимодействия для ShowUnitStorage.xaml
+    /// Логика взаимодействия для ShowUnitStorages.xaml
     /// </summary>
-    public partial class ShowUnitStorage : UserControl
+    public partial class ShowUnitStorages : UserControl
     {
-        public ShowUnitStorage()
+        public ShowUnitStorages()
         {
             InitializeComponent();
         }

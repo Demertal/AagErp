@@ -238,6 +238,10 @@
       <Project>{c1088933-3223-41a0-a687-8d34c8a1e104}</Project>
       <Name>ModelModul</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PriceGroupModul\PriceGroupModul.csproj">
+      <Project>{682263E8-CB76-41AA-A5BF-94A8C1741F0D}</Project>
+      <Name>PriceGroupModul</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ProductModel\ProductModul.csproj">
       <Project>{a2c817e8-9af6-4724-a7cf-3f6f2f8eb427}</Project>
       <Name>ProductModul</Name>

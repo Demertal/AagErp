@@ -21,8 +21,8 @@ namespace ModelModul.Models
             }
         }
 
-        private double _markup;
-        public double Markup
+        private decimal _markup;
+        public decimal Markup
         {
             get => _markup;
             set
