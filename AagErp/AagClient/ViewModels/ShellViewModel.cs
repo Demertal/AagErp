@@ -3,7 +3,7 @@ using ModelModul.Models;
 using Prism.Commands;
 using Prism.Regions;
 
-namespace RulezzClient.ViewModels
+namespace AagClient.ViewModels
 {
     enum Roles { Seller, OldestSalesman, Admin}
 

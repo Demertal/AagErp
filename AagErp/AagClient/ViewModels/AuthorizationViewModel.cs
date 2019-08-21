@@ -8,7 +8,7 @@ using Newtonsoft.Json.Linq;
 using Prism.Commands;
 using Prism.Regions;
 
-namespace RulezzClient.ViewModels
+namespace AagClient.ViewModels
 {
     class AuthorizationViewModel : ViewModelBase
     {

@@ -1,11 +1,12 @@
 ﻿using System.Windows;
+using AagClient.ViewModels;
+using AagClient.Views;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Unity;
-using RulezzClient.ViewModels;
-using RulezzClient.Views;
+using Shell = AagClient.Views.Shell;
 
-namespace RulezzClient
+namespace AagClient
 {
     public partial class App : PrismApplication
     {

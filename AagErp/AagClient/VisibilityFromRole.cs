@@ -2,9 +2,9 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
-using RulezzClient.ViewModels;
+using AagClient.ViewModels;
 
-namespace RulezzClient
+namespace AagClient
 {
     public class VisibilityFromRole: IValueConverter
     {

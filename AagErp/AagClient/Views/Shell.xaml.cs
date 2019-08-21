@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Interop;
 
-namespace RulezzClient.Views
+namespace AagClient.Views
 {
     /// <summary>
     /// Логика взаимодействия для Shell.xaml

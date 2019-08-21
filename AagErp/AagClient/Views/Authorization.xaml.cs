@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace RulezzClient.Views
+namespace AagClient.Views
 {
     /// <summary>
     /// Логика взаимодействия для Authorization.xaml
