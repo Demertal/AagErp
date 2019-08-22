@@ -45,7 +45,7 @@ namespace ModelModul
         public virtual DbSet<PropertyName> PropertyNames { get; set; }
         public virtual DbSet<PropertyProduct> PropertyProducts { get; set; }
         public virtual DbSet<PropertyValue> PropertyValues { get; set; }
-        public virtual DbSet<RevaluationProducts> RevaluationProducts { get; set; }
+        public virtual DbSet<RevaluationProduct> RevaluationProducts { get; set; }
         public virtual DbSet<SerialNumberLog> SerialNumberLogs { get; set; }
         public virtual DbSet<SerialNumber> SerialNumbers { get; set; }
         public virtual DbSet<Store> Stores { get; set; }

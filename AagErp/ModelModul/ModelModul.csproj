@@ -213,9 +213,9 @@
     <Compile Include="Repositories\SqlMovementGoodsReportRepository.cs" />
     <Compile Include="MovementGoodsInfosViewModel.cs" />
     <Compile Include="Repositories\SqlRepositoryUtility.cs" />
-    <Compile Include="Repositories\SqlRevaluationProductsReportRepository.cs" />
+    <Compile Include="Repositories\SqlRevaluationProductRepository.cs" />
     <Compile Include="Repositories\SqlSerialNumberRepository.cs" />
-    <Compile Include="Models\RevaluationProducts.cs" />
+    <Compile Include="Models\RevaluationProduct.cs" />
     <Compile Include="Models\SerialNumber.cs" />
     <Compile Include="Repositories\SqlRepository.cs" />
     <Compile Include="SerialNumberViewModel.cs" />

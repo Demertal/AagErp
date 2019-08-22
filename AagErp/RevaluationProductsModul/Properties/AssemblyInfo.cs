@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // Общие сведения об этой сборке предоставляются следующим набором
 // набора атрибутов. Измените значения этих атрибутов, чтобы изменить сведения,
 // связанные со сборкой.
-[assembly: AssemblyTitle("RevaluationProductsModul")]
+[assembly: AssemblyTitle("RevaluationProductModul")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("sibiryak-soft")]
-[assembly: AssemblyProduct("RevaluationProductsModul")]
+[assembly: AssemblyProduct("RevaluationProductModul")]
 [assembly: AssemblyCopyright("Copyright © sibiryak-soft 2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

@@ -60,14 +60,14 @@ namespace ModelModul.Models
             }
         }
 
-        private RevaluationProducts _revaluationProducts;
-        public virtual RevaluationProducts RevaluationProducts
+        private RevaluationProduct _revaluationProduct;
+        public virtual RevaluationProduct RevaluationProduct
         {
-            get => _revaluationProducts;
+            get => _revaluationProduct;
             set
             {
-                _revaluationProducts = value;
-                OnPropertyChanged("RevaluationProducts");
+                _revaluationProduct = value;
+                OnPropertyChanged("RevaluationProduct");
             }
         }
     }

@@ -1,14 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace ModelModul.Models
 {
-    public class RevaluationProducts : ModelBase
+    public class RevaluationProduct : ModelBase
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public RevaluationProducts()
+        public RevaluationProduct()
         {
-            PriceProducts = new List<PriceProduct>();
+            PriceProducts = new ObservableCollection<PriceProduct>();
         }
 
         private long _id;
@@ -43,15 +44,6 @@ namespace ModelModul.Models
                 _priceProducts = value;
                 OnPropertyChanged("PriceProducts");
             }
-        }
-
-        public object Clone()
-        {
-            return new RevaluationProducts
-            {
-                Id = Id,
-                DateRevaluation = DateRevaluation
-            };
         }
     }
 }

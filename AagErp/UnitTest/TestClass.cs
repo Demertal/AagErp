@@ -32,7 +32,7 @@ namespace UnitTest
             //    db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (PriceProducts, RESEED, 0)");
             //    db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (InvoiceInfos, RESEED, 0)");
             //    db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (MoneyTransfers, RESEED, 0)");
-            //    db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (RevaluationProducts, RESEED, 0)");
+            //    db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (RevaluationProduct, RESEED, 0)");
             //    db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (Warranties, RESEED, 0)");
             //    db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (MovementGoods, RESEED, 0)");
             //    db.Database.ExecuteSqlCommand("DBCC CHECKIDENT (SerialNumbers, RESEED, 0)");
@@ -187,7 +187,7 @@ namespace UnitTest
         //{
         //    InitAsync();
 
-        //    SqlRevaluationProductsReportRepository dbSetRevaluationProducts = new SqlRevaluationProductsReportRepository();
+        //    SqlRevaluationProductRepository dbSetRevaluationProducts = new SqlRevaluationProductRepository();
         //    RevaluationProductsInfos revaluationProducts;
 
         //    revaluationProducts =
@@ -196,7 +196,7 @@ namespace UnitTest
         //            IdProduct = 2,
         //            NewSalesPrice = 150
         //        };
-        //    dbSetRevaluationProducts.AddAsync(new RevaluationProducts
+        //    dbSetRevaluationProducts.AddAsync(new RevaluationProduct
         //    {
         //        RevaluationProductsInfos = new List<RevaluationProductsInfos> { revaluationProducts }
         //    });
@@ -204,7 +204,7 @@ namespace UnitTest
         //    using (AutomationAccountingGoodsContext db =
         //        new AutomationAccountingGoodsContext(AutomationAccountingGoodsContext.ConnectionString))
         //    {
-        //        Assert.AreEqual(db.RevaluationProducts.Count(), 1, "Кол-во отчетов не равно");
+        //        Assert.AreEqual(db.RevaluationProduct.Count(), 1, "Кол-во отчетов не равно");
         //        Assert.AreEqual(db.RevaluationProductsInfos.Count(), 1, "Кол-во инфо не равно");
         //    }
         //}
