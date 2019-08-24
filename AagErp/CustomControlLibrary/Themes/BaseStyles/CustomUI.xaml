@@ -1,0 +1,16 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/CustomControlLibrary;component/Themes/BaseStyles/ControlStyle.xaml"/>
+        <ResourceDictionary Source="/CustomControlLibrary;component/Themes/BaseStyles/TextBlockStyle.xaml"/>
+        <ResourceDictionary Source="/CustomControlLibrary;component/Themes/BaseStyles/ButtonStyle.xaml"/>
+        <ResourceDictionary Source="/CustomControlLibrary;component/Themes/BaseStyles/ComboBoxStyle.xaml"/>
+        <ResourceDictionary Source="/CustomControlLibrary;component/Themes/BaseStyles/TextBoxStyle.xaml"/>
+        <ResourceDictionary Source="/CustomControlLibrary;component/Themes/BaseStyles/DataGridStyle.xaml"/>
+        <ResourceDictionary Source="/CustomControlLibrary;component/Themes/BaseStyles/ListBoxStyle.xaml"/>
+        <ResourceDictionary Source="/CustomControlLibrary;component/Themes/BaseStyles/PasswordBoxStyle.xaml"/>
+        <ResourceDictionary Source="/CustomControlLibrary;component/Themes/BaseStyles/ContextMenuStyle.xaml"/>
+        <ResourceDictionary Source="/CustomControlLibrary;component/Themes/BaseStyles/MenuStyle.xaml"/>
+        <ResourceDictionary Source="/CustomControlLibrary;component/Themes/BaseStyles/TreeViewStyle.xaml"/>
+        <ResourceDictionary Source="/CustomControlLibrary;component/Themes/BaseStyles/WindowStyle.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>

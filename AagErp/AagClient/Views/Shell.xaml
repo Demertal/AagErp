@@ -16,6 +16,12 @@
     </i:Interaction.Triggers>
 
     <StackPanel>
+        <!--<StackPanel.Background>
+            <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                <GradientStop Color="#FFDCEAEC" Offset="0"/>
+                <GradientStop Color="#FFC3DFE8" Offset="1"/>
+            </LinearGradientBrush>
+        </StackPanel.Background>-->
         <Menu>
             <MenuItem Header="Рабочее место кассира" Command="{Binding NavigateCommand}" CommandParameter="CashierWorkplace"/>
             <MenuItem Header="Номенклатура" Command="{Binding NavigateCommand}" CommandParameter="ShowProduct"/>
@@ -42,7 +48,7 @@
                 <MenuItem Header="Отчет" Command="{Binding NavigateCommand}" CommandParameter="ShowFinalReport"/>
             </MenuItem>
         </Menu>
-        <Separator />
+        <!--<Separator />-->
         <ContentControl x:Name="ContentRegionMain" mvvm:RegionManager.RegionName="ContentRegion" Margin="10, 28, 0, 0"/>
     </StackPanel>
 </Window>

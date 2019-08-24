@@ -45,10 +45,6 @@
         <ContextMenu x:Key="TreeViewContex" Visibility="{Binding IsAddPurchase, ConverterParameter=True, Converter={StaticResource VisibilityConverterForBool}}">
             <MenuItem Header="Добавить категорию" Command="{Binding AddCategoryCommand}"/>
         </ContextMenu>
-
-        <Style x:Key="DefaultRowStyle" TargetType="{x:Type DataGridRow}">
-            <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
-        </Style>
     </UserControl.Resources>
 
     <d:DataContext>
@@ -58,16 +54,9 @@
     <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
         <customcontrollibrary:WatermarkTextBox WatermarkText="Поиск..." Text="{Binding FindString, UpdateSourceTrigger=PropertyChanged}" Margin ="5" Padding="0,0,5,0" HorizontalAlignment="Left"
                                                TextWrapping="Wrap" VerticalAlignment="Center" MinWidth="200" VerticalContentAlignment="Center"/>
-        <Grid Margin="0,5,0,0" MaxWidth="2000">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <customcontrollibrary:ExtendedTreeView ItemsSource="{Binding CategoriesList, UpdateSourceTrigger=PropertyChanged}" MinWidth="100" FontSize="14">
-                <customcontrollibrary:ExtendedTreeView.Resources>
+        <StackPanel Orientation="Horizontal">
+            <TreeView ItemsSource="{Binding CategoriesList, UpdateSourceTrigger=PropertyChanged}">
+                <TreeView.Resources>
                     <customcontrollibrary:BindingProxy x:Key="CategoryCommandProxy" Data="{Binding}" CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type customcontrollibrary:ExtendedTreeView}}}" />
                     <ContextMenu DataContext="{Binding Data, Source={StaticResource CategoryCommandProxy}}" x:Key="TreeViewContextNode"
                                  Visibility="{Binding IsAddPurchase, ConverterParameter=True, Converter={StaticResource VisibilityConverterForBool}}">
@@ -76,84 +65,80 @@
                         <MenuItem Header="Удалить" Command="{Binding DeleteCategoryCommand}" CommandParameter="{Binding CommandParameter, Source={StaticResource CategoryCommandProxy}}"/>
                         <MenuItem Header="Добавить категорию" Command="{Binding AddCategoryCommand}" CommandParameter="{Binding CommandParameter, Source={StaticResource CategoryCommandProxy}}"/>
                     </ContextMenu>
-                </customcontrollibrary:ExtendedTreeView.Resources>
-                <customcontrollibrary:ExtendedTreeView.ContextMenu>
+                </TreeView.Resources>
+                <TreeView.ContextMenu>
                     <StaticResource ResourceKey="TreeViewContex"/>
-                </customcontrollibrary:ExtendedTreeView.ContextMenu>
+                </TreeView.ContextMenu>
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SelectedItemChanged">
                         <i:InvokeCommandAction Command="{Binding SelectedCategoryCommand}"
                                                CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type customcontrollibrary:ExtendedTreeView}}}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
-                <customcontrollibrary:ExtendedTreeView.ItemTemplate>
+                <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding ChildCategories}" DataType="{x:Type models:Category}" >
                         <TextBlock Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" ContextMenu="{StaticResource TreeViewContextNode}" AllowDrop="True"/>
                     </HierarchicalDataTemplate>
-                </customcontrollibrary:ExtendedTreeView.ItemTemplate>
-            </customcontrollibrary:ExtendedTreeView>
-            <GridSplitter Grid.Column="1" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="Black" />
-            <ScrollViewer Grid.Column="2" HorizontalContentAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" MinHeight="200" MaxHeight="800">
-                <customcontrollibrary:ExtendedDataGrid x:Name="ProductData" ItemsSource="{Binding ProductsList, UpdateSourceTrigger=PropertyChanged}" MaxWidth="800"
-                    CanUserResizeRows="False" CanUserAddRows="False" CanUserDeleteRows="False"
-                    CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Center"
-                    MinHeight="200" MaxHeight="500" RowStyle="{StaticResource DefaultRowStyle}" SelectionMode="Single" Background="White" ContextMenu="{StaticResource DataGridMenu}" FontSize="14">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="MouseDoubleClick">
-                            <!--<prism:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.AddCommandPurchaseGoods}" CommandParameter="{Binding ElementName=ProductData, Path=SelectedItem}"/>-->
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                    <customcontrollibrary:ExtendedDataGrid.CellStyle>
-                        <Style TargetType="{x:Type DataGridCell}">
-                            <Setter Property="BorderThickness" Value="0"/>
-                            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                        </Style>
-                    </customcontrollibrary:ExtendedDataGrid.CellStyle>
-                    <customcontrollibrary:ExtendedDataGrid.Columns>
-                        <DataGridTemplateColumn Header="Наименование">
-                            <DataGridTemplateColumn.CellTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>
+            <DataGrid x:Name="ProductData" ContextMenu="{StaticResource DataGridMenu}" ItemsSource="{Binding ProductsList, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False"
+                          MaxWidth="800"
+                          CanUserResizeRows="False" CanUserAddRows="False" CanUserDeleteRows="False"
+                          CanUserReorderColumns="False" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Center"
+                          MinHeight="200" MaxHeight="500" SelectionMode="Single">
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+                        <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
+                    </Style>
+                </DataGrid.RowStyle>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseDoubleClick">
+                        <!--<prism:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.AddCommandPurchaseGoods}" CommandParameter="{Binding ElementName=ProductData, Path=SelectedItem}"/>-->
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Наименование" Binding="{Binding Title, UpdateSourceTrigger=PropertyChanged}">
+                        <!--<DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBox  Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" MaxWidth="200" TextWrapping="Wrap"  IsReadOnly="True"/>
+                                    -->
+                        <!--<TextBox  Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" MaxWidth="200" TextWrapping="Wrap"  IsReadOnly="True"/>-->
+                        <!--
                                 </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="Артикул" Binding="{Binding VendorCode, UpdateSourceTrigger=PropertyChanged}" MaxWidth="200"  IsReadOnly="True" Visibility="Collapsed"/>
-                        <DataGridTextColumn Header="Штрихкод" Binding="{Binding Barcode, UpdateSourceTrigger=PropertyChanged}" MaxWidth="200"  IsReadOnly="True" Visibility="Collapsed"/>
-                        <DataGridComboBoxColumn Header="Ед. хр." DisplayMemberPath="Title" CanUserResize="False" Visibility="Visible" SelectedValuePath="Id"
-                                                 SelectedValueBinding="{Binding IdUnitStorage, RelativeSource={RelativeSource PreviousData}}" IsReadOnly="True">
-                            <DataGridComboBoxColumn.ElementStyle>
-                                <Style TargetType="{x:Type ComboBox}">
-                                    <Setter Property="ItemsSource" Value="{Binding DataContext.UnitStoragesList, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowProduct}}}" />
-                                </Style>
-                            </DataGridComboBoxColumn.ElementStyle>
-                            <DataGridComboBoxColumn.EditingElementStyle>
-                                <Style TargetType="{x:Type ComboBox}">
-                                    <Setter Property="ItemsSource" Value="{Binding DataContext.UnitStoragesList, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowProduct}}}" />
-                                </Style>
-                            </DataGridComboBoxColumn.EditingElementStyle>
-                        </DataGridComboBoxColumn>
-                        <DataGridComboBoxColumn Header="Гарантия" DisplayMemberPath="Period" CanUserResize="False" Visibility="Visible" SelectedValuePath="Id"
+                            </DataGridTemplateColumn.CellTemplate>-->
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Артикул" Binding="{Binding VendorCode, UpdateSourceTrigger=PropertyChanged}" MaxWidth="200"  Visibility="Collapsed"/>
+                    <DataGridTextColumn Header="Штрихкод" Binding="{Binding Barcode, UpdateSourceTrigger=PropertyChanged}" MaxWidth="200"  IsReadOnly="True" Visibility="Collapsed"/>
+                    <DataGridComboBoxColumn Header="Ед. хр." DisplayMemberPath="Title" CanUserResize="False" Visibility="Visible" SelectedValuePath="Id"
+                                                 SelectedValueBinding="{Binding IdUnitStorage, RelativeSource={RelativeSource PreviousData}}">
+                        <DataGridComboBoxColumn.ElementStyle>
+                            <Style TargetType="{x:Type ComboBox}">
+                                <Setter Property="ItemsSource" Value="{Binding DataContext.UnitStoragesList, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowProduct}}}" />
+                            </Style>
+                        </DataGridComboBoxColumn.ElementStyle>
+                        <DataGridComboBoxColumn.EditingElementStyle>
+                            <Style TargetType="{x:Type ComboBox}">
+                                <Setter Property="ItemsSource" Value="{Binding DataContext.UnitStoragesList, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowProduct}}}" />
+                            </Style>
+                        </DataGridComboBoxColumn.EditingElementStyle>
+                    </DataGridComboBoxColumn>
+                    <DataGridComboBoxColumn Header="Гарантия" DisplayMemberPath="Period" CanUserResize="False" Visibility="Visible" SelectedValuePath="Id"
                                                 SelectedValueBinding="{Binding IdWarrantyPeriod, RelativeSource={RelativeSource PreviousData}}" IsReadOnly="True">
-                            <DataGridComboBoxColumn.ElementStyle>
-                                <Style TargetType="{x:Type ComboBox}">
-                                    <Setter Property="ItemsSource" Value="{Binding DataContext.WarrantyPeriodsList, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowProduct}}}" />
-                                </Style>
-                            </DataGridComboBoxColumn.ElementStyle>
-                            <DataGridComboBoxColumn.EditingElementStyle>
-                                <Style TargetType="{x:Type ComboBox}">
-                                    <Setter Property="ItemsSource" Value="{Binding DataContext.WarrantyPeriodsList, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowProduct}}}" />
-                                </Style>
-                            </DataGridComboBoxColumn.EditingElementStyle>
-                        </DataGridComboBoxColumn>
-                        <DataGridTextColumn Header="Цена" Binding="{Binding Price, ConverterCulture=ua-UA, StringFormat=C, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True"/>
-                        <DataGridTextColumn Header="Остаток" Binding="{Binding Count, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" CanUserResize="False"/>
-                    </customcontrollibrary:ExtendedDataGrid.Columns>
-                </customcontrollibrary:ExtendedDataGrid>
-            </ScrollViewer>
-            <GridSplitter Grid.Column="3" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="Black" />
-            <ScrollViewer Grid.Column="4" HorizontalContentAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" MinHeight="200" MaxHeight="500">
-                <ContentControl prism:RegionManager.RegionName="ProductInfo" prism:RegionManager.RegionContext="{Binding SelectedItem, ElementName=ProductData}"/>
-            </ScrollViewer>
-        </Grid>
+                        <DataGridComboBoxColumn.ElementStyle>
+                            <Style TargetType="{x:Type ComboBox}">
+                                <Setter Property="ItemsSource" Value="{Binding DataContext.WarrantyPeriodsList, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowProduct}}}" />
+                            </Style>
+                        </DataGridComboBoxColumn.ElementStyle>
+                        <DataGridComboBoxColumn.EditingElementStyle>
+                            <Style TargetType="{x:Type ComboBox}">
+                                <Setter Property="ItemsSource" Value="{Binding DataContext.WarrantyPeriodsList, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowProduct}}}" />
+                            </Style>
+                        </DataGridComboBoxColumn.EditingElementStyle>
+                    </DataGridComboBoxColumn>
+                    <DataGridTextColumn Header="Цена" Binding="{Binding Price, ConverterCulture=ua-UA, StringFormat=C, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Остаток" Binding="{Binding Count, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" CanUserResize="False"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <ContentControl prism:RegionManager.RegionName="ProductInfo" prism:RegionManager.RegionContext="{Binding SelectedItem, ElementName=ProductData}"/>
+        </StackPanel>
     </StackPanel>
 </UserControl>

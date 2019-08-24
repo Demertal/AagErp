@@ -7,24 +7,27 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:WatermarkTextBox}">
-                    <Grid>
+                    <Grid Margin = "{TemplateBinding Margin}">
                         <TextBox Text="{Binding Text, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}, UpdateSourceTrigger=PropertyChanged}"
                                  HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
                                  Height="{TemplateBinding Height}"
+                                 FontSize="{TemplateBinding FontSize}"
+                                 FontFamily="{TemplateBinding FontFamily}"
                                  TextWrapping="{TemplateBinding TextWrapping}"
                                  VerticalAlignment="{TemplateBinding VerticalAlignment}"
                                  MinWidth="{TemplateBinding MinWidth}"
-                                 VerticalContentAlignment="Center" FontSize="18"/>
+                                 Margin="0"/>
                         <TextBlock x:Name="PART_WatermarkTextBlock"
                                    HorizontalAlignment="Left"
                                    TextWrapping="Wrap"
                                    VerticalAlignment="Center"
                                    Foreground="#FF808080"
+                                   FontSize="{TemplateBinding FontSize}"
                                    FontStyle="Italic"
                                    Margin="5,0,0,0"
                                    IsHitTestVisible="False"
                                    Visibility="Hidden"
-                                   Text="{TemplateBinding WatermarkText}" FontSize="18"/>
+                                   Text="{TemplateBinding WatermarkText}"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <MultiTrigger>

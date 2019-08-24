@@ -19,7 +19,6 @@
     </i:Interaction.Triggers>
 
     <UserControl.Resources>
-        <converters:IsReadOnlyConverterForBool x:Key="IsReadOnlyConverterForBool"/>
         <converters:VisibilityConverterForBool x:Key="VisibilityConverterForBool"/>
         <converters:IsEnabledConverterForBool x:Key="IsEnabledConverterForBool"/>
         <converters:VisibilityConverterFor2Bool x:Key="VisibilityConverterFor2Bool"/>
@@ -43,17 +42,10 @@
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <customControlLibrary:ExtendedDataGrid ItemsSource="{Binding Path=PropertyProductsList, UpdateSourceTrigger=PropertyChanged}" MaxWidth="300" MinWidth="100"
+            <DataGrid ItemsSource="{Binding Path=PropertyProductsList, UpdateSourceTrigger=PropertyChanged}" MaxWidth="300" MinWidth="100"
                     IsSynchronizedWithCurrentItem="True" CanUserResizeRows="False" CanUserAddRows="False" CanUserDeleteRows="False"
-                    CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Center"
-                    MaxHeight="200" SelectionMode="Single" Background="White" HeadersVisibility="None" GridLinesVisibility="None" FontSize="14" Grid.Row="2" Grid.Column="0" Grid.RowSpan="6">
-                <customControlLibrary:ExtendedDataGrid.CellStyle>
-                    <Style TargetType="DataGridCell">
-                        <Setter Property="BorderThickness" Value="0"/>
-                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                    </Style>
-                </customControlLibrary:ExtendedDataGrid.CellStyle>
-                <customControlLibrary:ExtendedDataGrid.Columns>
+                    CanUserReorderColumns="False" MaxHeight="200" SelectionMode="Single" HeadersVisibility="None" GridLinesVisibility="None" Grid.Row="2" Grid.Column="0" Grid.RowSpan="6">
+                <DataGrid.Columns>
                     <DataGridTextColumn Header="Параметр"  Binding="{Binding Path=PropertyNames.Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" FontSize="14"/>
                     <DataGridTemplateColumn Header="Значение">
                         <DataGridTemplateColumn.CellTemplate>
@@ -69,31 +61,31 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                </customControlLibrary:ExtendedDataGrid.Columns>
-            </customControlLibrary:ExtendedDataGrid>
+                </DataGrid.Columns>
+            </DataGrid>
             <TextBlock Text="{Binding Path=Category}" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"/>
             <TextBlock Text="Наименование товара" Grid.Row="1" Grid.Column="1"/>
             <TextBox Text="{Binding SelectedProduct.Title,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="3">
-                <TextBox.IsReadOnly>
-                    <Binding Converter="{StaticResource IsReadOnlyConverterForBool}" UpdateSourceTrigger="PropertyChanged" Path="IsUpdate"/>
-                </TextBox.IsReadOnly>
+                <TextBox.IsEnabled>
+                    <Binding Converter="{StaticResource IsEnabledConverterForBool}" UpdateSourceTrigger="PropertyChanged" Path="IsUpdate"/>
+                </TextBox.IsEnabled>
             </TextBox>
             <TextBlock Text="Артикул товара" Grid.Row="2" Grid.Column="1"/>
             <TextBox Text="{Binding SelectedProduct.VendorCode,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="3">
-                <TextBox.IsReadOnly>
-                    <Binding Converter="{StaticResource IsReadOnlyConverterForBool}" UpdateSourceTrigger="PropertyChanged" Path="IsUpdate"/>
-                </TextBox.IsReadOnly>
+                <TextBox.IsEnabled>
+                    <Binding Converter="{StaticResource IsEnabledConverterForBool}" UpdateSourceTrigger="PropertyChanged" Path="IsUpdate"/>
+                </TextBox.IsEnabled>
             </TextBox>
             <TextBlock Text="Штрих код" Grid.Row="3" Grid.Column="1"/>
-            <Button Style="{DynamicResource ReloadImageButton}" Grid.Row="3" Grid.Column="2" Command="{Binding GenerateBarcodeCommand}">
+            <Button Style="{StaticResource ReloadImageButton}" Grid.Row="3" Grid.Column="2" Command="{Binding GenerateBarcodeCommand}">
                 <Button.Visibility>
                     <Binding Converter="{StaticResource VisibilityConverterForBool}" ConverterParameter="False" Path="IsUpdate"/>
                 </Button.Visibility>
             </Button>
             <TextBox Text="{Binding SelectedProduct.Barcode,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Grid.Column="3">
-                <TextBox.IsReadOnly>
-                    <Binding Converter="{StaticResource IsReadOnlyConverterForBool}" UpdateSourceTrigger="PropertyChanged" Path="IsUpdate"/>
-                </TextBox.IsReadOnly>
+                <TextBox.IsEnabled>
+                    <Binding Converter="{StaticResource IsEnabledConverterForBool}" UpdateSourceTrigger="PropertyChanged" Path="IsUpdate"/>
+                </TextBox.IsEnabled>
             </TextBox>
             <TextBlock Text="Гарантия" Grid.Row="4" Grid.Column="1"/>
             <ComboBox ItemsSource="{Binding WarrantyPeriodsList, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Id"

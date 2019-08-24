@@ -1,0 +1,40 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <LinearGradientBrush x:Key="WindowColor" EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+        <GradientStop Color="#FFDCEAEC" Offset="0"/>
+        <GradientStop Color="#FFC3DFE8" Offset="1"/>
+    </LinearGradientBrush>
+
+    <Color x:Key="DisabledControlColor">Gainsboro</Color>
+    <Color x:Key="DisabledForegroundColor">#FF888888</Color>
+
+    <Color x:Key="SelectedDataGridBackgroundColor">Blue</Color>
+    <Color x:Key="SelectedBackgroundColor">#DDFFDD</Color>
+    <Color x:Key="SelectedUnfocusedColor">#FFDDDDDD</Color>
+
+    <Color x:Key="ControlLightColor">White</Color>
+    <Color x:Key="ControlMediumColor">#00000000</Color>
+
+    <Color x:Key="ControlPressedColor">Green</Color>
+    <Color x:Key="ControlMouseOverColor">Green</Color>
+
+    <Color x:Key="BorderColor">Blue</Color>
+
+    <Color x:Key="ContextColor">LightSkyBlue</Color>
+
+    <Color x:Key="MouseOverBorderColor">Green</Color>
+
+    <Color x:Key="PressedBorderColor">Green</Color>
+
+    <Color x:Key="DisabledBorderColor">Gainsboro</Color>
+
+    <Color x:Key="DefaultBorderBrushColor">Black</Color>
+
+    <Color x:Key="GlyphColor">#FF444444</Color>
+    
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/CustomControlLibrary;component/Themes/BaseStyles/CustomUI.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+
+</ResourceDictionary>
