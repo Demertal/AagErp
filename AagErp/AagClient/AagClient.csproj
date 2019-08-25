@@ -254,6 +254,10 @@
       <Project>{A2C817E8-9AF6-4724-A7CF-3F6F2F8EB427}</Project>
       <Name>ProductModul</Name>
     </ProjectReference>
+    <ProjectReference Include="..\RevaluationProductsModul\RevaluationProductModul.csproj">
+      <Project>{0BFAA536-F50B-45D5-A01E-7F5B3F5A4BED}</Project>
+      <Name>RevaluationProductModul</Name>
+    </ProjectReference>
     <ProjectReference Include="..\StoreModul\StoreModul.csproj">
       <Project>{93E9F3C6-7BC5-4DA2-8C89-C7E96FD22B90}</Project>
       <Name>StoreModul</Name>

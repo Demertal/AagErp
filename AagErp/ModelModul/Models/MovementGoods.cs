@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ModelModul.Models
 {
@@ -38,7 +36,6 @@ namespace ModelModul.Models
         }
 
         private decimal? _rate;
-        [Column(TypeName = "money")]
         public decimal? Rate
         {
             get => _rate;
@@ -49,8 +46,18 @@ namespace ModelModul.Models
             }
         }
 
+        private decimal? _equivalentRate;
+        public decimal? EquivalentRate
+        {
+            get => _equivalentRate;
+            set
+            {
+                _equivalentRate = value;
+                OnPropertyChanged("EquivalentRate");
+            }
+        }
+
         private string _textInfo;
-        [StringLength(50)]
         public string TextInfo
         {
             get => _textInfo;
@@ -105,6 +112,17 @@ namespace ModelModul.Models
             }
         }
 
+        private int? _idEquivalentCurrency;
+        public int? IdEquivalentCurrency
+        {
+            get => _idEquivalentCurrency;
+            set
+            {
+                _idEquivalentCurrency = value;
+                OnPropertyChanged("IdEquivalentCurrency");
+            }
+        }
+
         private DateTime? _dateClose;
         public DateTime? DateClose
         {
@@ -146,6 +164,17 @@ namespace ModelModul.Models
             {
                 _counterparty = value;
                 OnPropertyChanged("Counterparty");
+            }
+        }
+
+        private Currency _equivalentcurrency;
+        public virtual Currency EquivalentCurrency
+        {
+            get => _equivalentcurrency;
+            set
+            {
+                _equivalentcurrency = value;
+                OnPropertyChanged("EquivalentCurrency");
             }
         }
 

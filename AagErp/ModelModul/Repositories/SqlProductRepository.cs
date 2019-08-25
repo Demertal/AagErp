@@ -43,6 +43,18 @@ namespace ModelModul.Repositories
                 .FromSql("select * from dbo.getCountProduct ({0})", itemId).Include(c => c.Store).AsNoTracking().ToListAsync();
         }
 
+        public async Task<List<EquivalentCostForЕxistingProduct>> GetEquivalentCostsForЕxistingProduct(long itemId)
+        {
+            return await Db.EquivalentCostForЕxistingProducts
+                .FromSql("select * from dbo.getEquivalentCostForЕxistingProduct ({0})", itemId).Include(c => c.EquivalentCurrency).AsNoTracking().ToListAsync();
+        }
+
+        public async Task<decimal> GetCurrentPrice(long itemId)
+        {
+            return await Db.Products.Select(p => AutomationAccountingGoodsContext.GetCurrentPrice(itemId))
+                .FirstOrDefaultAsync();
+        }
+
         public override async Task UpdateAsync(Product item)
         {
             using (var transaction = Db.Database.BeginTransaction())

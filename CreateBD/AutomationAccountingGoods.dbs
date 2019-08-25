@@ -30,7 +30,7 @@
 			<column name="props" type="nvarchar" length="40" decimal="0" jt="12" />
 			<column name="address" type="nvarchar" length="40" decimal="0" jt="12" />
 			<column name="whoIsIt" type="int" length="10" decimal="0" jt="4" mandatory="y" />
-			<column name="idPaymentType" type="int" length="10" decimal="0" jt="4" />
+			<column name="idPaymentType" type="int" length="10" decimal="0" jt="4" mandatory="y" />
 			<index name="PK_counterparties" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
@@ -160,6 +160,8 @@
 			<column name="isGoodsIssued" type="bit" jt="-7" mandatory="y" >
 				<defo>0</defo>
 			</column>
+			<column name="idEquivalentCurrency" type="int" jt="4" />
+			<column name="equivalentRate" type="money" jt="3" />
 			<index name="PK_movementGoods" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
@@ -196,6 +198,9 @@
 			<fk name="FK_movementGoods_idType_movementGoodTypes" to_schema="dbo" to_table="movmentGoodTypes" >
 				<fk_column name="idType" pk="id" />
 			</fk>
+			<fk name="FK_movementGoods_idEquivalentCurrency_currencies" to_schema="dbo" to_table="currencies" >
+				<fk_column name="idEquivalentCurrency" pk="id" />
+			</fk>
 		</table>
 		<table name="movementGoodsInfos" generator_rows="9000" >
 			<column name="id" type="bigint" jt="-5" mandatory="y" autoincrement="y" />
@@ -203,6 +208,7 @@
 			<column name="price" type="money" length="19" decimal="4" jt="3" regexp="double:from=0;to=100;format=###############.####;" />
 			<column name="idReport" type="uniqueidentifier" jt="1" mandatory="y" />
 			<column name="idProduct" type="bigint" jt="-5" mandatory="y" />
+			<column name="equivalentCost" type="money" jt="3" />
 			<index name="PK_movementGoodsInfos" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
@@ -252,7 +258,7 @@
 		</table>
 		<table name="priceGroups" >
 			<column name="id" type="int" length="10" decimal="0" jt="4" mandatory="y" autoincrement="y" />
-			<column name="markup" type="float" length="53" decimal="0" jt="8" mandatory="y" />
+			<column name="markup" type="decimal" length="5" decimal="2" jt="3" />
 			<index name="PK_priceGroups" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
@@ -526,7 +532,7 @@
 				<string>[period]&lt;&gt;&#039;&#039;</string>
 			</constraint>
 		</table>
-		<view name="productsWithCount" >
+		<view name="productsWithCountAndPrice" >
 			<view_script><![CDATA[SELECT 
 	p.id id,
 	p.title title,
@@ -537,8 +543,13 @@
 	p.idCategory idCategory,
 	p.idPriceGroup idPriceGroup,	
 	p.keepTrackSerialNumbers keepTrackSerialNumbers,
-	(SELECT sum(c.[count]) FROM dbo.getCountProduct(p.id) c) [count]
-FROM dbo.products p]]></view_script>
+	isnull((SELECT TOP 1 pp.price FROM dbo.priceProducts pp
+			INNER JOIN dbo.revaluationProducts rp ON ( pp.idRevaluation = rp.id )
+		WHERE pp.idProduct = p.id
+			ORDER BY rp.dateRevaluation DESC), 0) [price],
+	isnull((SELECT sum(c.[count]) FROM dbo.getCountProduct(p.id) c), 0) [count]
+FROM dbo.products p
+]]></view_script>
 			<column name="id" type="bigint" />
 			<column name="title" type="nvarchar" />
 			<column name="vendorCode" type="nvarchar" />
@@ -548,6 +559,7 @@ FROM dbo.products p]]></view_script>
 			<column name="idCategory" type="int" />
 			<column name="idPriceGroup" type="int" />
 			<column name="keepTrackSerialNumbers" type="bit" />
+			<column name="price" type="money" />
 			<column name="count" type="float" />
 		</view>
 		<procedure name="goods_issued" id="Procedure_49492f8" isSystem="false" params_known="n" >
@@ -605,26 +617,16 @@ BEGIN
 END
 ]]></string>
 		</trigger>
-		<function name="getCountProduct" id="Function_47579f0" isSystem="false" params_known="n" >
-			<string><![CDATA[
-CREATE FUNCTION [dbo].[getCountProduct](@idProduct BIGINT)
-RETURNS @result TABLE (storeID INT, storeName NVARCHAR(50), [count] float)
-AS BEGIN
-	INSERT INTO @result(storeID, storeName, [count])
-	SELECT
-		s.id storeID,
-		s.title storeName,
-		isnull(sum(CASE 
-			WHEN s.id = mg.idArrivalStore and ( mgt.code = 'purchase' OR mgt.code = 'returnFromBuyer' OR mgt.code = 'moving' ) then mgi.count
-			WHEN s.id = mg.idDisposalStore and (mgt.code = 'sale' OR mgt.code = 'returnToSupplier' OR mgt.code = 'change' OR mgt.code = 'moving') then -mgi.count
-		END), 0.0) [count]
-	FROM dbo.stores s 
-		LEFT JOIN dbo.movementGoods mg ON ( mg.idArrivalStore = s.id or mg.idDisposalStore = s.id )
-			LEFT JOIN dbo.movementGoodsInfos mgi ON ( mgi.idReport = mg.id and  mgi.idProduct = @idProduct )
-				LEFT JOIN dbo.movmentGoodTypes mgt ON ( mg.idType = mgt.id )
-	GROUP BY s.id, s.title
-RETURN
+		<function name="Function" id="Function_3e3e35c" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE FUNCTION dbo.getCurrentPrice (@idProduct int)
+RETURNS
+AS
+BEGIN
+RETURN (SELECT TOP 1 pp.price FROM dbo.revaluationProducts rp
+	INNER JOIN dbo.priceProducts pp ON (rp.id = pp.idRevaluation AND pp.idProduct = @idProduct)
+	ORDER BY rp.dateRevaluation DESC)
 END
+
 ]]></string>
 		</function>
 		<function name="getPropertyForProduct" id="Function_29d0f43" isSystem="false" params_known="n" >
@@ -661,27 +663,27 @@ END]]></string>
 		<entity schema="dbo" name="priceGroups" color="F4DDBE" x="1040" y="368" />
 		<entity schema="dbo" name="propertyValues" color="BEBEF4" x="1872" y="288" />
 		<entity schema="dbo" name="propertyNames" color="BEBEF4" x="1856" y="80" />
-		<entity schema="dbo" name="serialNumbers" color="BED3F4" x="400" y="240" />
-		<entity schema="dbo" name="revaluationProducts" color="F4DDBE" x="1488" y="112" />
 		<entity schema="dbo" name="warranties" color="BED3F4" x="592" y="416" />
 		<entity schema="dbo" name="serialNumberLogs" color="BED3F4" x="608" y="240" />
 		<entity schema="dbo" name="moneyTransfers" color="C7F4BE" x="1040" y="752" />
 		<entity schema="dbo" name="moneyTransferTypes" color="C7F4BE" x="1216" y="768" />
 		<entity schema="dbo" name="invoiceInfos" color="F4DDBE" x="1280" y="368" />
 		<entity schema="dbo" name="propertyProducts" color="BEBEF4" x="2064" y="112" />
-		<entity schema="dbo" name="priceProducts" color="F4DDBE" x="1280" y="112" />
 		<entity schema="dbo" name="categories" color="BEBEF4" x="1712" y="112" />
 		<entity schema="dbo" name="unitStorages" color="F4DDBE" x="848" y="368" />
-		<entity schema="dbo" name="warrantyPeriods" color="F4DDBE" x="864" y="224" />
-		<entity schema="dbo" name="stores" color="BED3F4" x="432" y="512" />
-		<entity schema="dbo" name="currencies" color="BED3F4" x="80" y="336" />
-		<entity schema="dbo" name="counterparties" color="C7F4BE" x="848" y="752" />
 		<entity schema="dbo" name="paymentTypes" color="C7F4BE" x="1040" y="992" />
+		<entity schema="dbo" name="counterparties" color="C7F4BE" x="848" y="752" />
+		<entity schema="dbo" name="warrantyPeriods" color="F4DDBE" x="864" y="224" />
+		<entity schema="dbo" name="serialNumbers" color="BED3F4" x="400" y="240" />
+		<entity schema="dbo" name="stores" color="BED3F4" x="432" y="512" />
+		<entity schema="dbo" name="productsWithCountAndPrice" color="3986C1" x="1456" y="528" />
 		<entity schema="dbo" name="movmentGoodTypes" color="C1D8EE" x="48" y="112" />
-		<entity schema="dbo" name="movementGoods" color="BED3F4" x="240" y="256" />
-		<entity schema="dbo" name="movementGoodsInfos" color="BED3F4" x="224" y="512" />
+		<entity schema="dbo" name="priceProducts" color="F4DDBE" x="1280" y="112" />
+		<entity schema="dbo" name="revaluationProducts" color="F4DDBE" x="1488" y="112" />
+		<entity schema="dbo" name="currencies" color="BED3F4" x="80" y="336" />
 		<entity schema="dbo" name="products" color="F4DDBE" x="1040" y="112" />
-		<entity schema="dbo" name="productsWithCount" color="996600" x="1424" y="544" />
+		<entity schema="dbo" name="movementGoodsInfos" color="BED3F4" x="208" y="512" />
+		<entity schema="dbo" name="movementGoods" color="BED3F4" x="208" y="240" />
 		<group name="counterparties" color="EEF7EC" >
 			<entity schema="dbo" name="counterparties" />
 			<entity schema="dbo" name="moneyTransfers" />
@@ -714,6 +716,9 @@ END]]></string>
 			<entity schema="dbo" name="currencies" />
 			<entity schema="dbo" name="movmentGoodTypes" />
 		</group>
+		<script name="SQL_Editor" id="Editor_2bdec64" language="SQL" >
+			<string><![CDATA[select * from dbo.getCountProduct(1)]]></string>
+		</script>
 		<script name="movmentGoodTypes" id="Editor_2fe115a" language="SQL" >
 			<string><![CDATA[SELECT * 
 FROM

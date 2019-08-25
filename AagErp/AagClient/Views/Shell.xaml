@@ -26,7 +26,7 @@
             <MenuItem Header="Рабочее место кассира" Command="{Binding NavigateCommand}" CommandParameter="CashierWorkplace"/>
             <MenuItem Header="Номенклатура" Command="{Binding NavigateCommand}" CommandParameter="ShowProduct"/>
             <MenuItem Header="Действия с товаром">
-                <MenuItem Header="Переоценка товара" Command="{Binding NavigateCommand}" CommandParameter="RevaluationProductView"/>
+                <MenuItem Header="Переоценка товара" Command="{Binding NavigateCommand}" CommandParameter="RevaluationProduct"/>
                 <MenuItem Header="Приход товара" Command="{Binding NavigateCommand}" CommandParameter="PurchaseGoods"/>
             </MenuItem>
             <MenuItem Header="Справочники">

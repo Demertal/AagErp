@@ -11,6 +11,7 @@ namespace ModelModul.Configurations
             builder.ToTable("movementGoodsInfos");
             builder.HasKey(m => m.Id);
             builder.Property(m => m.Price).HasColumnType("money");
+            builder.Property(m => m.EquivalentCost).HasColumnType("money");
         }
     }
 }

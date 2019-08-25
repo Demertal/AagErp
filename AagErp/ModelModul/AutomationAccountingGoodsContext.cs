@@ -1,8 +1,4 @@
 using System;
-using System.Data;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using ModelModul.Configurations;
 using ModelModul.Models;
@@ -53,6 +49,9 @@ namespace ModelModul
         public virtual DbSet<Warranty> Warranties { get; set; }
         public virtual DbSet<WarrantyPeriod> WarrantyPeriods { get; set; }
         public virtual DbQuery<CountsProduct> CountsProducts { get; set; }
+        public virtual DbQuery<EquivalentCostForÅxistingProduct> EquivalentCostForÅxistingProducts { get; set; }
+
+        public static decimal GetCurrentPrice(long idProduct) => throw new NotSupportedException();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -80,6 +79,7 @@ namespace ModelModul
             modelBuilder.ApplyConfiguration(new UnitStorageConfiguration());
             modelBuilder.ApplyConfiguration(new WarrantyConfiguration());
             modelBuilder.ApplyConfiguration(new WarrantyPeriodConfiguration());
+            modelBuilder.HasDbFunction(() => GetCurrentPrice(default(long)));
         }
     }
 }

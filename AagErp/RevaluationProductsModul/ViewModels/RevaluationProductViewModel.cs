@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -10,10 +9,8 @@ using CustomControlLibrary.MVVM;
 using ModelModul.Models;
 using ModelModul.Repositories;
 using Prism.Commands;
-using Prism.Interactivity.InteractionRequest;
 using Prism.Regions;
 using Prism.Services.Dialogs;
-using RevaluationProductsModul.ViewModels;
 using RevaluationProduct = ModelModul.Models.RevaluationProduct;
 
 namespace RevaluationProductModul.ViewModels
@@ -22,12 +19,11 @@ namespace RevaluationProductModul.ViewModels
     {
         #region Properties
 
-        private IDialogService _dialogService;
+        private readonly IDialogService _dialogService;
 
         private string _barcode;
 
         private RevaluationProduct _revaluationProduct = new RevaluationProduct();
-
         public ObservableCollection<PriceProduct> RevaluationPriceProductsList
         {
             get => _revaluationProduct.PriceProducts as ObservableCollection<PriceProduct>;
@@ -35,6 +31,17 @@ namespace RevaluationProductModul.ViewModels
             {
                 _revaluationProduct.PriceProducts = value;
                 RaisePropertyChanged("RevaluationPriceProductsList");
+            }
+        }
+
+        private ObservableCollection<Currency> _currenciesList;
+        public ObservableCollection<Currency> CurrenciesList
+        {
+            get => _currenciesList;
+            set
+            {
+                _currenciesList = value;
+                RaisePropertyChanged("CurrenciesList");
             }
         }
 
@@ -81,14 +88,14 @@ namespace RevaluationProductModul.ViewModels
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Remove:
-                    foreach (RevaluationProductsForRevaluationViewModel item in e.OldItems)
+                    foreach (PriceProduct item in e.OldItems)
                     {
                         //Removed items
                         item.PropertyChanged -= RevaluationProductsViewModelPropertyChanged;
                     }
                     break;
                 case NotifyCollectionChangedAction.Add:
-                    foreach (RevaluationProductsForRevaluationViewModel item in e.NewItems)
+                    foreach (PriceProduct item in e.NewItems)
                     {
                         //Added items
                         item.PropertyChanged += RevaluationProductsViewModelPropertyChanged;
@@ -214,7 +221,7 @@ namespace RevaluationProductModul.ViewModels
             }
         }
 
-        private void InsertProduct(Product product)
+        private async void InsertProduct(Product product)
         {
             try
             {
@@ -224,31 +231,17 @@ namespace RevaluationProductModul.ViewModels
                     return;
                 }
 
-                //SqlProductRepository dbSetProducts = new SqlProductRepository();
-                //PurchaseStruct purchaseStructCur = dbSetProducts.GetPurchasePrice(product.Id);
-                //PurchaseStruct purchaseStructLast = null;
-                //SqlExchangeRateRepository dbSetExchange = new SqlExchangeRateRepository();
-                //Currency exchange = dbSetExchange.Load("ГРН");
-                //if (purchaseStructCur != null)
-                //{
-                //    purchaseStructLast = dbSetProducts.GetPurchasePrice(product.Id, 1);
-                //}
-                //RevaluationProductsInfos.AddAsync(new RevaluationProductsForRevaluationViewModel
-                //{
-                //    RevaluationProductsInfo = new RevaluationProductsInfos
-                //    {
-                //        Product = product,
-                //        IdProduct = product.Id,
-                //        OldSalesPrice = product.SalesPrice,
-                //        NewSalesPrice = 0
-                //    },
-                //    Currency = purchaseStructCur?.Currency ?? exchange,
-                //    PurchasePrice = purchaseStructCur?.PurchasePrice ?? 0,
-                //    ExchangeRateOld = purchaseStructLast?.Currency ?? exchange,
-                //    PurchasePriceOld = purchaseStructLast?.PurchasePrice ?? 0
-                //});
-
-                RaisePropertyChanged("RevaluationProductsInfos");
+                SqlProductRepository productRepository = new SqlProductRepository();
+                IRepository<PriceGroup> priceGroupRepository = new SqlPriceGroupRepository();
+                product.EquivalentCostForЕxistingProducts =
+                    new ObservableCollection<EquivalentCostForЕxistingProduct>(
+                        await productRepository.GetEquivalentCostsForЕxistingProduct(product.Id));
+                product.Price = await productRepository.GetCurrentPrice(product.Id);
+                product.PriceGroup = await priceGroupRepository.GetItemAsync(product.IdPriceGroup.Value);
+                EquivalentCostForЕxistingProduct equivalentCost = product.EquivalentCostForЕxistingProducts
+                    .OrderByDescending(c => c.EquivalentCost).FirstOrDefault();
+                RevaluationPriceProductsList.Add(new PriceProduct {Product = product, Price = equivalentCost.EquivalentCost * (1 + product.PriceGroup.Markup) * equivalentCost.EquivalentCurrency.Cost });
+                RaisePropertyChanged("RevaluationPriceProductsList");
                 RaisePropertyChanged("IsValidate");
             }
             catch (Exception e)

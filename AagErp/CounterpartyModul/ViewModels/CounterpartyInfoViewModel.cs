@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Windows;
 using CustomControlLibrary.MVVM;
-using ModelModul;
 using ModelModul.Models;
 using ModelModul.Repositories;
 using Prism.Commands;

@@ -8,7 +8,6 @@ using ModelModul.Models;
 using ModelModul.Repositories;
 using ModelModul.Specifications;
 using Prism.Commands;
-using Prism.Interactivity.InteractionRequest;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 

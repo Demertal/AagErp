@@ -171,12 +171,12 @@
     <Compile Include="ConnectionTools.cs" />
     <Compile Include="Models\Counterparty.cs" />
     <Compile Include="Models\CountsProduct.cs" />
+    <Compile Include="Models\EquivalentCostForЕxistingProduct.cs" />
     <Compile Include="Models\MoneyTransferType.cs" />
     <Compile Include="Models\MovmentGoodType.cs" />
     <Compile Include="Models\PaymentType.cs" />
     <Compile Include="Models\SerialNumberLog.cs" />
     <Compile Include="Repositories\SqlCurrencyRepository.cs" />
-    <Compile Include="Repositories\SqlExchangeRateRepository.cs" />
     <Compile Include="Repositories\SqlCategoryRepository.cs" />
     <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Repositories\SqlPaymentTypeRepository.cs" />
@@ -232,6 +232,7 @@
     <Compile Include="Specifications\BasisSpecifications\ExpressionSpecification.cs" />
     <Compile Include="Specifications\CategorySpecification.cs" />
     <Compile Include="Specifications\CurrencySpecification.cs" />
+    <Compile Include="Specifications\PriceGroupSpecification.cs" />
     <Compile Include="Specifications\SerialNumberSpecification.cs" />
     <Compile Include="Specifications\PropertyValueSpecification.cs" />
     <Compile Include="Specifications\PropertyProductSpecification.cs" />

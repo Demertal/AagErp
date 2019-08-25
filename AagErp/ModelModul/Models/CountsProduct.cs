@@ -1,5 +1,4 @@
-﻿
-namespace ModelModul.Models
+﻿namespace ModelModul.Models
 {
     public class CountsProduct : ModelBase
     {
@@ -21,14 +20,8 @@ namespace ModelModul.Models
             set
             {
                 _store = value;
-                _store.PropertyChanged += _store_PropertyChanged;
                 OnPropertyChanged("Store");
             }
-        }
-
-        private void _store_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            OnPropertyChanged("Store");
         }
 
         private double _count;

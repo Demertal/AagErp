@@ -30,11 +30,11 @@
         //                int tempCountProduct = 0;
 
         //                List<SalesReports> tempSalesReports =  salesReports.Where(obj =>
-        //                    obj.IdStore == countProduct.IdStore &&
+        //                    obj.StoreId == countProduct.StoreId &&
         //                    obj.SalesInfos.Any(objInf => objInf.IdProduct == countProduct.IdProduct)).ToList();
 
         //                List<PurchaseReports> tempPurchaseReports = purchaseReports.Where(obj =>
-        //                    obj.IdStore == countProduct.IdStore &&
+        //                    obj.StoreId == countProduct.StoreId &&
         //                    obj.PurchaseInfos.Any(objInf => objInf.IdProduct == countProduct.IdProduct)).ToList();
 
         //                if(tempSalesReports.Count == 0) continue;
@@ -51,7 +51,7 @@
         //                {
         //                    PurchaseReports temp = db.PurchaseReports.First(obj =>
         //                        obj.DataOrder >= tempPurchaseReports.Last().DataOrder &&
-        //                        obj.IdStore == countProduct.IdStore &&
+        //                        obj.StoreId == countProduct.StoreId &&
         //                        obj.PurchaseInfos.Any(objInf => objInf.IdProduct == countProduct.IdProduct));
 
         //                    tempCountProduct += temp.PurchaseInfos.First(obj => obj.IdProduct == countProduct.IdProduct)

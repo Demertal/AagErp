@@ -9,7 +9,6 @@ using ModelModul.Repositories;
 using ModelModul.Specifications;
 using Prism.Commands;
 using Prism.Events;
-using Prism.Interactivity.InteractionRequest;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 
@@ -31,23 +30,6 @@ namespace ProductModul.ViewModels
             get => _isAddPurchase;
             set => SetProperty(ref _isAddPurchase, value);
         }
-
-        private Confirmation _notification;
-        public INotification Notification
-        {
-            get => _notification;
-            set
-            {
-                SetProperty(ref _notification, value as Confirmation);
-                IsAddPurchase = true;
-                FindString = "";
-                SelectedCategory = null;
-                ProductsList = new ObservableCollection<Product>();
-                LoadCategoryAsync();
-            }
-        }
-
-        public Action FinishInteraction { get; set; }
 
         public DelegateCommand<Product> AddCommandPurchaseGoods { get; }
 
@@ -318,19 +300,15 @@ namespace ProductModul.ViewModels
 
         public virtual void OnDialogOpened(IDialogParameters parameters)
         {
-
+            Title = "Выборать товар";
+            LoadCategoryAsync();
         }
 
         #endregion
 
         private void AddPurchaseGoods(Product obj)
         {
-            if (_notification != null)
-            {
-                _notification.Confirmed = true;
-                _notification.Content = obj;
-            }
-            FinishInteraction?.Invoke();
+            RaiseRequestClose(new DialogResult(ButtonResult.OK, new DialogParameters{ {"product", obj} }));
         }
     }
 }

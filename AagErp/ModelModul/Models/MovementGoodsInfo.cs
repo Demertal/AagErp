@@ -1,5 +1,4 @@
 using System;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ModelModul.Models
 {
@@ -28,7 +27,6 @@ namespace ModelModul.Models
         }
 
         private decimal? _price;
-        [Column(TypeName = "money")]
         public decimal? Price
         {
             get => _price;
@@ -36,6 +34,17 @@ namespace ModelModul.Models
             {
                 _price = value;
                 OnPropertyChanged("Price");
+            }
+        }
+
+        private decimal? _equivalentCost;
+        public decimal? EquivalentCost
+        {
+            get => _equivalentCost;
+            set
+            {
+                _equivalentCost = value;
+                OnPropertyChanged("EquivalentCost");
             }
         }
 

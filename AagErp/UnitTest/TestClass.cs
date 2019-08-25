@@ -72,7 +72,7 @@ namespace UnitTest
         //    dbSetMovementGoodsReports.AddAsync(new PurchaseReports
         //    {
         //        IdCounterparty = 1,
-        //        IdStore = 1,
+        //        StoreId = 1,
         //        Cost = 1,
         //        PurchaseInfos = new List<PurchaseInfos> { purchaseInfo }
         //    });
@@ -90,7 +90,7 @@ namespace UnitTest
         //    dbSetMovementGoodsReports.AddAsync(new PurchaseReports
         //    {
         //        IdCounterparty = 1,
-        //        IdStore = 1,
+        //        StoreId = 1,
         //        Cost = 20,
         //        PurchaseInfos = new List<PurchaseInfos> { purchaseInfo }
         //    });
@@ -125,7 +125,7 @@ namespace UnitTest
         //    dbSetMovementGoodsReports.AddAsync(new PurchaseReports
         //    {
         //        IdCounterparty = 1,
-        //        IdStore = 1,
+        //        StoreId = 1,
         //        Cost = 1,
         //        PurchaseInfos = new List<PurchaseInfos> { purchaseInfo }
         //    });
@@ -143,7 +143,7 @@ namespace UnitTest
         //    dbSetMovementGoodsReports.AddAsync(new PurchaseReports
         //    {
         //        IdCounterparty = 1,
-        //        IdStore = 1,
+        //        StoreId = 1,
         //        Cost = 20,
         //        PurchaseInfos = new List<PurchaseInfos> { purchaseInfo }
         //    });
@@ -153,7 +153,7 @@ namespace UnitTest
         //    dbSetMovementGoodsReports.AddAsync(new PurchaseReports
         //    {
         //        IdCounterparty = 1,
-        //        IdStore = 1,
+        //        StoreId = 1,
         //        Cost = 20,
         //        PurchaseInfos = new List<PurchaseInfos> { purchaseInfo }
         //    });
@@ -163,14 +163,14 @@ namespace UnitTest
         //    dbSetSalesGoods.AddAsync(new SalesReports
         //    {
         //        IdCounterparty = 2,
-        //        IdStore = 1,
+        //        StoreId = 1,
         //        SalesInfos = new List<SalesInfos> { salesInfo }
         //    });
         //    salesInfo = new SalesInfos { Count = 2, IdProduct = 1, SellingPrice = 150 };
         //    dbSetSalesGoods.AddAsync(new SalesReports
         //    {
         //        IdCounterparty = 2,
-        //        IdStore = 1,
+        //        StoreId = 1,
         //        SalesInfos = new List<SalesInfos> { salesInfo }
         //    });
 
@@ -221,7 +221,7 @@ namespace UnitTest
         //    dbSetMovementGoodsReports.AddAsync(new PurchaseReports
         //    {
         //        IdCounterparty = 1,
-        //        IdStore = 1,
+        //        StoreId = 1,
         //        Cost = 1,
         //        PurchaseInfos = new List<PurchaseInfos> { purchaseInfo }
         //    });
@@ -231,7 +231,7 @@ namespace UnitTest
         //    dbSetMovementGoodsReports.AddAsync(new PurchaseReports
         //    {
         //        IdCounterparty = 1,
-        //        IdStore = 1,
+        //        StoreId = 1,
         //        Cost = 20,
         //        PurchaseInfos = new List<PurchaseInfos> { purchaseInfo }
         //    });
@@ -249,7 +249,7 @@ namespace UnitTest
         //    dbSetMovementGoodsReports.AddAsync(new PurchaseReports
         //    {
         //        IdCounterparty = 1,
-        //        IdStore = 1,
+        //        StoreId = 1,
         //        Cost = 20,
         //        PurchaseInfos = new List<PurchaseInfos> { purchaseInfo }
         //    });
@@ -267,7 +267,7 @@ namespace UnitTest
         //    dbSetMovementGoodsReports.AddAsync(new PurchaseReports
         //    {
         //        IdCounterparty = 1,
-        //        IdStore = 1,
+        //        StoreId = 1,
         //        Cost = 20,
         //        PurchaseInfos = new List<PurchaseInfos> { purchaseInfo }
         //    });
@@ -277,14 +277,14 @@ namespace UnitTest
         //    dbSetSalesGoods.AddAsync(new SalesReports
         //    {
         //        IdCounterparty = 2,
-        //        IdStore = 1,
+        //        StoreId = 1,
         //        SalesInfos = new List<SalesInfos> { salesInfo }
         //    });
         //    salesInfo = new SalesInfos { Count = 2, IdProduct = 1, SellingPrice = 150 };
         //    dbSetSalesGoods.AddAsync(new SalesReports
         //    {
         //        IdCounterparty = 2,
-        //        IdStore = 1,
+        //        StoreId = 1,
         //        SalesInfos = new List<SalesInfos> { salesInfo }
         //    });
         //    ;

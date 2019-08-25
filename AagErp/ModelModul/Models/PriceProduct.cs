@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
-
 namespace ModelModul.Models
 {
     public class PriceProduct : ModelBase
@@ -38,7 +36,6 @@ namespace ModelModul.Models
         }
 
         private decimal _price;
-        [Column(TypeName = "money")]
         public decimal Price
         {
             get => _price;

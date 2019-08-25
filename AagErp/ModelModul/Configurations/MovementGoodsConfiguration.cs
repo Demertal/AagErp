@@ -11,6 +11,7 @@ namespace ModelModul.Configurations
             builder.ToTable("movementGoods");
             builder.HasKey(m => m.Id);
             builder.Property(m => m.Rate).HasColumnType("money");
+            builder.Property(m => m.EquivalentRate).HasColumnType("money");
             builder.Property(m => m.TextInfo).HasMaxLength(50);
             builder.HasMany(m => m.MoneyTransfers).WithOne(m => m.MovementGoods).HasForeignKey(m => m.IdMovementGoods).IsRequired();
             builder.HasMany(m => m.MovementGoodsInfos).WithOne(m => m.MovementGoods).HasForeignKey(m => m.IdReport).IsRequired();

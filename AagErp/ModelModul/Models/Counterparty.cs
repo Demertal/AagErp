@@ -5,7 +5,6 @@ namespace ModelModul.Models
 {
     public class Counterparty : ModelBase, ICloneable
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Counterparty()
         {
             MoneyTransfers = new List<MoneyTransfer>();
@@ -116,7 +115,6 @@ namespace ModelModul.Models
         public bool IsValidate => !string.IsNullOrEmpty(Title) && IdPaymentType != 0;
 
         private ICollection<MoneyTransfer> _moneyTransfers;
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MoneyTransfer> MoneyTransfers
         {
             get => _moneyTransfers;
@@ -128,7 +126,6 @@ namespace ModelModul.Models
         }
 
         private ICollection<MovementGoods> _movementGoods;
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MovementGoods> MovementGoods
         {
             get => _movementGoods;

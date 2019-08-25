@@ -3,20 +3,18 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 
 namespace ModelModul.Models
 {
     public class Product : ModelBase, ICloneable
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Product()
         {
-            InvoiceInfos = new HashSet<InvoiceInfo>();
-            MovementGoodsInfos = new HashSet<MovementGoodsInfo>();
-            PriceProducts = new HashSet<PriceProduct>();
-            PropertyProducts = new HashSet<PropertyProduct>();
-            SerialNumbers = new HashSet<SerialNumber>();
+            InvoiceInfos = new List<InvoiceInfo>();
+            MovementGoodsInfos = new List<MovementGoodsInfo>();
+            PriceProducts = new List<PriceProduct>();
+            PropertyProducts = new List<PropertyProduct>();
+            SerialNumbers = new List<SerialNumber>();
         }
 
         private long _id;
@@ -134,8 +132,8 @@ namespace ModelModul.Models
             }
         }
 
-        private double _price;
-        public double Price
+        private decimal _price;
+        public decimal Price
         {
             get => _price;
             set
@@ -172,7 +170,6 @@ namespace ModelModul.Models
         }
 
         private ICollection<InvoiceInfo> _invoiceInfos;
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<InvoiceInfo> InvoiceInfos
         {
             get => _invoiceInfos;
@@ -184,7 +181,6 @@ namespace ModelModul.Models
         }
 
         private ICollection<MovementGoodsInfo> _movementGoodsInfos;
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MovementGoodsInfo> MovementGoodsInfos
         {
             get => _movementGoodsInfos;
@@ -207,7 +203,6 @@ namespace ModelModul.Models
         }
 
         private ICollection<PriceProduct> _priceProducts;
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PriceProduct> PriceProducts
         {
             get => _priceProducts;
@@ -241,7 +236,6 @@ namespace ModelModul.Models
         }
 
         private ICollection<PropertyProduct> _propertyProducts;
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PropertyProduct> PropertyProducts
         {
             get => _propertyProducts;
@@ -253,7 +247,6 @@ namespace ModelModul.Models
         }
 
         private ICollection<SerialNumber> _serialNumbers;
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SerialNumber> SerialNumbers
         {
             get => _serialNumbers;
@@ -267,6 +260,19 @@ namespace ModelModul.Models
         public bool IsValidate => !string.IsNullOrEmpty(Title) &&
                                   !string.IsNullOrEmpty(Barcode) &&
                                   IdUnitStorage != 0 && IdWarrantyPeriod != 0 && IdCategory != 0;
+
+        private ObservableCollection<EquivalentCostFor≈xistingProduct> _equivalentCostFor≈xistingProducts;
+        public virtual ObservableCollection<EquivalentCostFor≈xistingProduct> EquivalentCostFor≈xistingProducts
+        {
+            get => _equivalentCostFor≈xistingProducts;
+            set
+            {
+                _equivalentCostFor≈xistingProducts = value;
+                if(_equivalentCostFor≈xistingProducts != null)
+                    _equivalentCostFor≈xistingProducts.CollectionChanged += EquivalentCostFor≈xistingProductsOnCollectionChanged;
+                OnPropertyChanged("EquivalentCostFor≈xistingProducts");
+            }
+        }
 
         #region CollectionChanged
 
@@ -297,6 +303,35 @@ namespace ModelModul.Models
         private void CountsProductItemChanged(object sender, PropertyChangedEventArgs e)
         {
             OnPropertyChanged("CountsProduct");
+        }
+
+        private void EquivalentCostFor≈xistingProductsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (EquivalentCostFor≈xistingProduct item in e.OldItems)
+                    {
+                        //Removed items
+                        item.PropertyChanged -= EquivalentCostFor≈xistingProductItemPropertyChanged;
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Add:
+                    foreach (EquivalentCostFor≈xistingProduct item in e.NewItems)
+                    {
+                        //Added items
+                        item.PropertyChanged += EquivalentCostFor≈xistingProductItemPropertyChanged;
+                    }
+
+                    break;
+            }
+
+            OnPropertyChanged("EquivalentCostFor≈xistingProducts");
+        }
+
+        private void EquivalentCostFor≈xistingProductItemPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged("EquivalentCostFor≈xistingProducts");
         }
 
         #endregion

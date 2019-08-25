@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using ModelModul.Models;
+﻿using ModelModul.Models;
 
 namespace ModelModul.Repositories
 {
