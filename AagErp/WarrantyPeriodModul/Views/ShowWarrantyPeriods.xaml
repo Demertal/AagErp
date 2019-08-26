@@ -11,29 +11,24 @@
             <MenuItem Header="Удалить" CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
                       Command="{Binding DataContext.DeleteWarrantyPeriodsCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>
         </ContextMenu>
-        <Style x:Key="DefaultRowStyle" TargetType="{x:Type DataGridRow}">
-            <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
-        </Style>
     </UserControl.Resources>
 
     <Grid>
         <DataGrid ItemsSource="{Binding Path=WarrantyPeriodsList, UpdateSourceTrigger=PropertyChanged}" MaxWidth="400"
-                    IsSynchronizedWithCurrentItem="True" CanUserResizeRows="False" CanUserDeleteRows="False"
-                    CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center"
-                    MinHeight="200" MaxHeight="500" RowStyle="{StaticResource DefaultRowStyle}" SelectionMode="Single" HorizontalAlignment="Center" FontSize="14">
+                    IsSynchronizedWithCurrentItem="True" MinHeight="200" MaxHeight="500" SelectionMode="Single" CanUserAddRows="True">
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+                    <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
+                </Style>
+            </DataGrid.RowStyle>
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="CellEditEnding">
                     <mvvm:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Path=DataContext.ChangeWarrantyPeriodsCommand}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
-            <DataGrid.CellStyle>
-                <Style TargetType="DataGridCell">
-                    <Setter Property="BorderThickness" Value="0"/>
-                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                </Style>
-            </DataGrid.CellStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Период" Binding="{Binding Path=Period, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Период" Binding="{Binding Path=Period, UpdateSourceTrigger=PropertyChanged}"
+                                    ElementStyle="{StaticResource {x:Type TextBlock}}" EditingElementStyle="{StaticResource {x:Type TextBox}}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

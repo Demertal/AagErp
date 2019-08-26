@@ -12,29 +12,24 @@
             <MenuItem Header="Удалить" CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
                       Command="{Binding DataContext.DeletePriceGroupsCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>
         </ContextMenu>
-        <Style x:Key="DefaultRowStyle" TargetType="{x:Type DataGridRow}">
-            <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
-        </Style>
     </UserControl.Resources>
 
     <Grid>
         <DataGrid   ItemsSource="{Binding Path=PriceGroupsList, UpdateSourceTrigger=PropertyChanged}" MaxWidth="400"
-                    IsSynchronizedWithCurrentItem="True" CanUserResizeRows="False" CanUserDeleteRows="False"
-                    CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center"
-                    MinHeight="200" MaxHeight="500" RowStyle="{StaticResource DefaultRowStyle}" SelectionMode="Single" FontSize="14" HorizontalAlignment="Center">
+                    IsSynchronizedWithCurrentItem="True" MinHeight="200" MaxHeight="500" SelectionMode="Single" CanUserAddRows="True">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="RowEditEnding">
                     <mvvm:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Path=DataContext.ChangePriceGroupsCommand}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
-            <DataGrid.CellStyle>
-                <Style TargetType="DataGridCell">
-                    <Setter Property="BorderThickness" Value="0"/>
-                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+                    <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
                 </Style>
-            </DataGrid.CellStyle>
+            </DataGrid.RowStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Ценовая&#10;группа" Binding="{Binding Path=Markup, UpdateSourceTrigger=PropertyChanged, StringFormat=P1}"/>
+                <DataGridTextColumn Header="Ценовая&#10;группа" Binding="{Binding Path=Markup, UpdateSourceTrigger=PropertyChanged, StringFormat=P1}"
+                                    ElementStyle="{StaticResource {x:Type TextBlock}}" EditingElementStyle="{StaticResource {x:Type TextBox}}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

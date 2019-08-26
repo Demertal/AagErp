@@ -11,21 +11,6 @@ namespace ModelModul.Repositories
 {
     public class SqlProductRepository : SqlRepository<Product>
     {
-        //public PurchaseStruct GetPurchasePrice(int id, int last = 0)
-        //{
-        //    using (var db = new AutomationAccountingGoodsContext(AutomationAccountingGoodsContext.ConnectionString))
-        //    {
-        //        MovementGoodsInfo temp = db.MovementGoodsInfos.Include(obj => obj.MovementGoods).Where(obj => obj.MovementGoods.TypeAction == 0)
-        //            .Include(obj => obj.MovementGoods.Currencies)
-        //            .OrderByDesc(obj => obj.MovementGoods.DateCreate)
-        //            .ThenByDesc(obj => obj.MovementGoods.Id).Skip(last)
-        //            .FirstOrDefault(obj => obj.IdProduct == id);
-        //        return temp == null
-        //            ? null
-        //            : new PurchaseStruct {Currency = temp.MovementGoods.Currencies, PurchasePrice = temp.Price.Value};
-        //    }
-        //}
-
         public override async Task<IEnumerable<Product>> GetListAsync(ISpecification<Product> where = null, Dictionary<string, SortingTypes> order = null, int skip = 0, int take = -1, params Expression<Func<Product, Object>>[] include)
         {
             var query = Db.Products.FromSql("select * from productsWithCountAndPrice").AsQueryable();

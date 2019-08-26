@@ -1,6 +1,8 @@
+using System;
+
 namespace ModelModul.Models
 {
-    public class PriceProduct : ModelBase
+    public class PriceProduct : ModelBase, ICloneable
     {
         private long _id;
         public long Id
@@ -66,6 +68,11 @@ namespace ModelModul.Models
                 _revaluationProduct = value;
                 OnPropertyChanged("RevaluationProduct");
             }
+        }
+
+        public object Clone()
+        {
+            return new PriceProduct{Id = Id, IdProduct = IdProduct, IdRevaluation = IdRevaluation, Price = Price};
         }
     }
 }

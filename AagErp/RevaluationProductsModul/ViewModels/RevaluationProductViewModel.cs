@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -60,7 +61,7 @@ namespace RevaluationProductModul.ViewModels
         public DelegateCommand<Collection<object>> DeleteProductCommand { get; }
         public DelegateCommand<KeyEventArgs> ListenKeyboardCommand { get; }
 
-        public DelegateCommand<object> TestCommand { get; }
+        //public DelegateCommand<object> TestCommand { get; }
 
         #endregion
 
@@ -72,14 +73,14 @@ namespace RevaluationProductModul.ViewModels
             AddProductCommand = new DelegateCommand(AddProduct);
             DeleteProductCommand = new DelegateCommand<Collection<object>>(DeleteProduct);
             ListenKeyboardCommand = new DelegateCommand<KeyEventArgs>(ListenKeyboard);
-            TestCommand = new DelegateCommand<object>(Test);
+            //TestCommand = new DelegateCommand<object>(Test);
             NewRevaluationProduct();
         }
 
-        private void Test(object obj)
-        {
-            (((RoutedEventArgs)obj).OriginalSource as Views.RevaluationProduct).BringPurchasePriceCh.Focus();
-        }
+        //private void Test(object obj)
+        //{
+        //    (((RoutedEventArgs)obj).OriginalSource as Views.RevaluationProduct).BringPurchasePriceCh.Focus();
+        //}
 
         #region PropertyChanged
 
@@ -128,7 +129,7 @@ namespace RevaluationProductModul.ViewModels
 
         #region DelegateCommand
 
-        private void Post()
+        private async void Post()
         {
             _barcode = "";
             if (MessageBox.Show(
@@ -137,25 +138,13 @@ namespace RevaluationProductModul.ViewModels
                 MessageBoxResult.Yes) return;
             try
             {
-                //bool ch = false;
-                //foreach (var revaluationProductsInfo in RevaluationProductsInfos)
-                //{
-                //    _revaluationProductReports.RevaluationProductsInfos.AddAsync(revaluationProductsInfo.RevaluationProductsInfo);
-                //    if (revaluationProductsInfo.NewSalesPrice <= revaluationProductsInfo.PurchasePrice) ch = true;
-                //}
-
-                //if (ch)
-                //{
-                //    if (MessageBox.Show(
-                //            "На некоторый товар цена продажи меньше цены закупки. Все верно?",
-                //            "Проведение закупки", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
-                //        MessageBoxResult.Yes) return;
-                //}
-
-                //SqlRevaluationProductRepository dbSet = new SqlRevaluationProductRepository();
-                //dbSet.AddAsync(_revaluationProductReports);
-                //MessageBox.Show("Отчет о переоценке добавлен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                //NewRevaluationProduct();
+                RevaluationProduct temp = (RevaluationProduct)_revaluationProduct.Clone();
+                temp.DateRevaluation = null;
+                temp.PriceProducts.ToList().ForEach(pp => pp.Product = null);
+                IRepository<RevaluationProduct> revaluationProductRepository = new SqlRevaluationProductRepository();
+                await revaluationProductRepository.CreateAsync(temp);
+                MessageBox.Show("Отчет о переоценке добавлен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                NewRevaluationProduct();
             }
             catch (Exception ex)
             {
@@ -179,9 +168,8 @@ namespace RevaluationProductModul.ViewModels
         private void DeleteProduct(Collection<object> obj)
         {
             _barcode = "";
-            //List<RevaluationProductsForRevaluationViewModel> list = obj.Cast<RevaluationProductsForRevaluationViewModel>().ToList();
-            //list.ForEach(item => RevaluationProductsInfos.Remove(item));
-            //list.ForEach(item => _revaluationProductReports.RevaluationProductsInfos.Remove(item.RevaluationProductsInfo));
+            List<PriceProduct> list = obj.Cast<PriceProduct>().ToList();
+            list.ForEach(item => RevaluationPriceProductsList.Remove(item));
         }
 
         private void ListenKeyboard(KeyEventArgs obj)
@@ -240,7 +228,15 @@ namespace RevaluationProductModul.ViewModels
                 product.PriceGroup = await priceGroupRepository.GetItemAsync(product.IdPriceGroup.Value);
                 EquivalentCostForЕxistingProduct equivalentCost = product.EquivalentCostForЕxistingProducts
                     .OrderByDescending(c => c.EquivalentCost).FirstOrDefault();
-                RevaluationPriceProductsList.Add(new PriceProduct {Product = product, Price = equivalentCost.EquivalentCost * (1 + product.PriceGroup.Markup) * equivalentCost.EquivalentCurrency.Cost });
+                RevaluationPriceProductsList.Add(equivalentCost == null
+                    ? new PriceProduct {IdProduct = product.Id, Product = product, Price = 0}
+                    : new PriceProduct
+                    {
+                        IdProduct = product.Id,
+                        Product = product,
+                        Price = equivalentCost.EquivalentCost * (1 + product.PriceGroup.Markup) *
+                                equivalentCost.EquivalentCurrency.Cost
+                    });
                 RaisePropertyChanged("RevaluationPriceProductsList");
                 RaisePropertyChanged("IsValidate");
             }

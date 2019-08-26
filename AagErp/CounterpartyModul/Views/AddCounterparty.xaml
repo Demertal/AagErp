@@ -22,7 +22,7 @@
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <TextBlock Text="{Binding Path=WhoShowText}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center"/>
+        <TextBlock Text="{Binding Path=WhoShowText}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"/>
         <TextBlock Text="Наименование" Grid.Row="1" Grid.Column="0"/>
         <TextBox Text="{Binding Counterparty.Title,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1"/>
         <TextBlock Text="Контактное лицо" Grid.Row="2" Grid.Column="0"/>

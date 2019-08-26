@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace ModelModul.Models
 {
-    public class RevaluationProduct : ModelBase
+    public class RevaluationProduct : ModelBase, ICloneable
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public RevaluationProduct()
         {
             PriceProducts = new ObservableCollection<PriceProduct>();
@@ -23,8 +23,8 @@ namespace ModelModul.Models
             }
         }
 
-        private DateTime _dateRevaluation;
-        public DateTime DateRevaluation
+        private DateTime? _dateRevaluation;
+        public DateTime? DateRevaluation
         {
             get => _dateRevaluation;
             set
@@ -35,7 +35,6 @@ namespace ModelModul.Models
         }
 
         private ICollection<PriceProduct> _priceProducts;
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PriceProduct> PriceProducts
         {
             get => _priceProducts;
@@ -44,6 +43,16 @@ namespace ModelModul.Models
                 _priceProducts = value;
                 OnPropertyChanged("PriceProducts");
             }
+        }
+
+        public object Clone()
+        {
+            return new RevaluationProduct
+            {
+                Id = Id,
+                DateRevaluation = DateRevaluation,
+                PriceProducts = new List<PriceProduct>(PriceProducts.Select(pp => (PriceProduct) pp.Clone()).ToList())
+            };
         }
     }
 }

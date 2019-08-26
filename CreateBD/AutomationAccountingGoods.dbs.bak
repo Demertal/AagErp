@@ -724,16 +724,5 @@ END]]></string>
 FROM
 	dbo.movmentGoodTypes s;]]></string>
 		</script>
-		<browser id="Browse_35ff8b3" name="revaluationProducts" confirm_updates="y" >
-			<browse_table schema="dbo" entity="movementGoods" x="110" y="62" width="1145" height="295" />
-		</browser>
-		<query id="Query_4bba2b7" name="Builder" >
-			<query_table schema="dbo" name="priceProducts" alias="pp" x="48" y="48" >
-				<column name="price" />
-				<query_table schema="dbo" name="revaluationProducts" alias="rp" x="224" y="64" fk="FK_priceProducts_idRevaluation_revaluationProducts" type="Inner Join" >
-					<column name="dateRevaluation" orderby="desc" />
-				</query_table>
-			</query_table>
-		</query>
 	</layout>
 </project>
