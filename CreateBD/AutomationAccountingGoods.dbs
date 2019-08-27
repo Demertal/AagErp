@@ -144,7 +144,7 @@
 			<column name="id" type="uniqueidentifier" jt="1" mandatory="y" regexp="uuid:pattern=[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}" >
 				<defo>newid()</defo>
 			</column>
-			<column name="dateCreate" type="datetime" jt="93" mandatory="y" >
+			<column name="dateCreate" type="datetime" jt="93" >
 				<defo>getdate()</defo>
 			</column>
 			<column name="rate" type="money" length="19" decimal="4" jt="3" regexp="double:from=0;to=100;format=###############.####;" >
@@ -445,7 +445,7 @@
 			<column name="id" type="bigint" jt="-5" mandatory="y" autoincrement="y" />
 			<column name="value" type="varchar" length="20" decimal="0" jt="12" mandatory="y" />
 			<column name="idProduct" type="bigint" jt="-5" mandatory="y" />
-			<column name="dateCreated" type="datetime" jt="93" mandatory="y" >
+			<column name="dateCreated" type="datetime" jt="93" >
 				<defo>getdate()</defo>
 			</column>
 			<index name="PK_serialNumbers" unique="PRIMARY_KEY" >
@@ -721,20 +721,20 @@ END]]></string>
 		<entity schema="dbo" name="invoiceInfos" color="F4DDBE" x="1280" y="368" />
 		<entity schema="dbo" name="propertyProducts" color="BEBEF4" x="2064" y="112" />
 		<entity schema="dbo" name="categories" color="BEBEF4" x="1712" y="112" />
-		<entity schema="dbo" name="unitStorages" color="F4DDBE" x="848" y="368" />
 		<entity schema="dbo" name="paymentTypes" color="C7F4BE" x="1040" y="992" />
 		<entity schema="dbo" name="counterparties" color="C7F4BE" x="848" y="752" />
 		<entity schema="dbo" name="warrantyPeriods" color="F4DDBE" x="864" y="224" />
-		<entity schema="dbo" name="serialNumbers" color="BED3F4" x="400" y="240" />
 		<entity schema="dbo" name="stores" color="BED3F4" x="432" y="512" />
 		<entity schema="dbo" name="productsWithCountAndPrice" color="3986C1" x="1456" y="528" />
-		<entity schema="dbo" name="movmentGoodTypes" color="C1D8EE" x="48" y="112" />
 		<entity schema="dbo" name="priceProducts" color="F4DDBE" x="1280" y="112" />
 		<entity schema="dbo" name="currencies" color="BED3F4" x="80" y="336" />
 		<entity schema="dbo" name="movementGoodsInfos" color="BED3F4" x="208" y="512" />
-		<entity schema="dbo" name="movementGoods" color="BED3F4" x="208" y="240" />
 		<entity schema="dbo" name="revaluationProducts" color="F4DDBE" x="1488" y="112" />
 		<entity schema="dbo" name="products" color="F4DDBE" x="1040" y="112" />
+		<entity schema="dbo" name="unitStorages" color="F4DDBE" x="848" y="368" />
+		<entity schema="dbo" name="movmentGoodTypes" color="C1D8EE" x="48" y="112" />
+		<entity schema="dbo" name="movementGoods" color="BED3F4" x="208" y="240" />
+		<entity schema="dbo" name="serialNumbers" color="BED3F4" x="400" y="240" />
 		<group name="counterparties" color="EEF7EC" >
 			<entity schema="dbo" name="counterparties" />
 			<entity schema="dbo" name="moneyTransfers" />
@@ -771,6 +771,11 @@ END]]></string>
 			<string><![CDATA[select * from dbo.getCountProduct(1)]]></string>
 		</script>
 		<script name="movmentGoodTypes" id="Editor_2fe115a" language="SQL" >
+			<string><![CDATA[SELECT * 
+FROM
+	dbo.movmentGoodTypes s;]]></string>
+		</script>
+		<script name="movmentGoodTypes_001" id="Editor_1320637" language="SQL" >
 			<string><![CDATA[SELECT * 
 FROM
 	dbo.movmentGoodTypes s;]]></string>
