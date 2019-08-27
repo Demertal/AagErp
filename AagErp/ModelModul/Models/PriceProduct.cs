@@ -70,6 +70,24 @@ namespace ModelModul.Models
             }
         }
 
+        public override string this[string columnName]
+        {
+            get
+            {
+                string error = string.Empty;
+                switch (columnName)
+                {
+                    case "Price":
+                        if (Price <= 0)
+                        {
+                            error = "Цена не может быть меньше и равной 0";
+                        }
+                        break;
+                }
+                return error;
+            }
+        }
+
         public object Clone()
         {
             return new PriceProduct{Id = Id, IdProduct = IdProduct, IdRevaluation = IdRevaluation, Price = Price};

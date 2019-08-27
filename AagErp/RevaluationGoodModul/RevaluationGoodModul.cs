@@ -3,11 +3,11 @@ using Prism.Ioc;
 using Prism.Modularity;
 using ProductModul.ViewModels;
 using ProductModul.Views;
-using RevaluationProductModul.Views;
+using RevaluationGoodModul.Views;
 
-namespace RevaluationProductModul
+namespace RevaluationGoodModul
 {
-    public class RevaluationProductModul : IModule
+    public class RevaluationGoodModul : IModule
     {
         public void OnInitialized(IContainerProvider containerProvider)
         {
@@ -15,7 +15,7 @@ namespace RevaluationProductModul
 
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterForNavigation<RevaluationProduct>();
+            containerRegistry.RegisterForNavigation<RevaluationGood>();
             containerRegistry.RegisterDialogWindow<DialogWindow>();
             containerRegistry.RegisterDialog<ShowProduct, ShowProductViewModel>();
         }

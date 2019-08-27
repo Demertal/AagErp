@@ -4,7 +4,6 @@ namespace ModelModul.Models
 {
     public class PriceGroup : ModelBase
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public PriceGroup()
         {
             Products = new HashSet<Product>();
@@ -33,7 +32,6 @@ namespace ModelModul.Models
         }
 
         private ICollection<Product> _products;
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Product> Products
         {
             get => _products;

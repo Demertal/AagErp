@@ -14,9 +14,9 @@ using Prism.Regions;
 using Prism.Services.Dialogs;
 using RevaluationProduct = ModelModul.Models.RevaluationProduct;
 
-namespace RevaluationProductModul.ViewModels
+namespace RevaluationGoodModul.ViewModels
 {
-    public class RevaluationProductViewModel : ViewModelBase
+    public class RevaluationGoodViewModel : ViewModelBase
     {
         #region Properties
 
@@ -65,7 +65,7 @@ namespace RevaluationProductModul.ViewModels
 
         #endregion
 
-        public RevaluationProductViewModel(IDialogService dialogService)
+        public RevaluationGoodViewModel(IDialogService dialogService)
         {
             _dialogService = dialogService;
             NewRevaluationProduct();
@@ -79,7 +79,7 @@ namespace RevaluationProductModul.ViewModels
 
         //private void Test(object obj)
         //{
-        //    (((RoutedEventArgs)obj).OriginalSource as Views.RevaluationProduct).BringPurchasePriceCh.Focus();
+        //    (((RoutedEventArgs)obj).OriginalSource as Views.RevaluationGood).BringPurchasePriceCh.Focus();
         //}
 
         #region PropertyChanged
@@ -251,7 +251,7 @@ namespace RevaluationProductModul.ViewModels
 
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
-            //if (!(navigationContext.Parameters["RevaluationProduct"] is List<Product> revaluationProducts)) return;
+            //if (!(navigationContext.Parameters["RevaluationGood"] is List<Product> revaluationProducts)) return;
             //foreach (var product in revaluationProducts)
             //{
             //    if (RevaluationProductsInfos.FirstOrDefault(objRev => objRev.Product.Id == product.Id) !=
