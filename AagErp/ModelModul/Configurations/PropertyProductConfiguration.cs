@@ -10,6 +10,7 @@ namespace ModelModul.Configurations
         {
             builder.ToTable("propertyProducts");
             builder.HasKey(p => p.Id);
+            builder.Ignore(p => p.Error);
         }
     }
 }

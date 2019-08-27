@@ -19,6 +19,7 @@ namespace ModelModul.Configurations
             builder.Ignore(p => p.CountsProduct);
             builder.Ignore(p => p.IsValidate);
             builder.Ignore(p => p.EquivalentCostForЕxistingProducts);
+            builder.Ignore(p => p.Error);
             builder.HasMany(p => p.InvoiceInfos).WithOne(i => i.Product).HasForeignKey(i => i.IdProduct).IsRequired();
             builder.HasMany(p => p.MovementGoodsInfos).WithOne(m => m.Product).HasForeignKey(m => m.IdProduct)
                 .IsRequired();

@@ -154,7 +154,6 @@ namespace RevaluationProductModul.ViewModels
 
         private void AddProduct()
         {
-            _barcode = "";
             _dialogService.ShowDialog("ShowProduct", new DialogParameters(), Callback);
         }
 

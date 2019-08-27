@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ModelModul.Models
 {
-    public class MovementGoods : ModelBase
+    public class MovementGoods : ModelBase, ICloneable
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public MovementGoods()
         {
             MovementGoodsInfos = new List<MovementGoodsInfo>();
@@ -24,8 +24,8 @@ namespace ModelModul.Models
             }
         }
 
-        private DateTime _dateCreate;
-        public DateTime DateCreate
+        private DateTime? _dateCreate;
+        public DateTime? DateCreate
         {
             get => _dateCreate;
             set
@@ -190,7 +190,6 @@ namespace ModelModul.Models
         }
 
         private ICollection<MoneyTransfer> _moneyTransfers;
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MoneyTransfer> MoneyTransfers
         {
             get => _moneyTransfers;
@@ -235,7 +234,6 @@ namespace ModelModul.Models
         }
 
         private ICollection<MovementGoodsInfo> _movementGoodsInfos;
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MovementGoodsInfo> MovementGoodsInfos
         {
             get => _movementGoodsInfos;
@@ -247,7 +245,6 @@ namespace ModelModul.Models
         }
 
         private ICollection<SerialNumberLog> _serialNumberLogs;
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SerialNumberLog> SerialNumberLogs
         {
             get => _serialNumberLogs;
@@ -256,6 +253,92 @@ namespace ModelModul.Models
                 _serialNumberLogs = value;
                 OnPropertyChanged("SerialNumberLogs");
             }
+        }
+
+        public override string this[string columnName]
+        {
+            get
+            {
+                string error = string.Empty;
+                if(MovmentGoodType == null)
+                    error = "Нужно указать тип движения товара";
+                else 
+                    switch (MovmentGoodType.Code)
+                    {
+                        case "purchase" :
+                            switch (columnName)
+                            {
+                                case "Rate":
+                                    if (Rate == null || Rate < 0)
+                                    {
+                                        error = "Курс не может быть отрицательным";
+                                    }
+
+                                    break;
+                                case "EquivalentRate":
+                                    if (EquivalentRate == null || Rate < 0)
+                                    {
+                                        error = "Курс не может быть отрицательным";
+                                    }
+
+                                    break;
+                                case "IdArrivalStore":
+                                    if (IdArrivalStore == null || IdArrivalStore < 0)
+                                    {
+                                        error = "Требуется указать склад";
+                                    }
+
+                                    break;
+                                case "IdCounterparty":
+                                    if (IdCounterparty == null || IdCounterparty < 0)
+                                    {
+                                        error = "Требуется указать поставщика";
+                                    }
+
+                                    break;
+                                case "IdCurrency":
+                                    if (IdCurrency == null || IdCurrency < 0)
+                                    {
+                                        error = "Требуется указать валюту закупки";
+                                    }
+
+                                    break;
+                                case "IdEquivalentCurrency":
+                                    if (IdEquivalentCurrency == null || IdEquivalentCurrency < 0)
+                                    {
+                                        error = "Требуется указать валюту эквивалента";
+                                    }
+
+                                    break;
+                            }
+                        break;
+                    }
+
+                Error = error;
+                return error;
+            }
+        }
+
+        public object Clone()
+        {
+            return new MovementGoods
+            {
+                Id = Id,
+                IdArrivalStore = IdArrivalStore,
+                IdDisposalStore = IdDisposalStore,
+                IdCounterparty = IdCounterparty,
+                IdCurrency = IdCurrency,
+                IdEquivalentCurrency = IdEquivalentCurrency,
+                IdType = IdType,
+                DateClose = DateClose,
+                DateCreate = DateCreate,
+                EquivalentRate = EquivalentRate,
+                IsGoodsIssued = IsGoodsIssued,
+                Rate = Rate,
+                TextInfo = TextInfo,
+                MovementGoodsInfos =
+                    new List<MovementGoodsInfo>(MovementGoodsInfos.Select(m => (MovementGoodsInfo) m.Clone()))
+            };
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿<UserControl
+﻿<UserControl x:Class="ProductModul.Views.ShowProduct"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -9,13 +9,13 @@
              xmlns:converters="clr-namespace:CustomControlLibrary.Converters;assembly=CustomControlLibrary"
              xmlns:models="clr-namespace:ModelModul.Models;assembly=ModelModul"
              xmlns:viewModels="clr-namespace:ProductModul.ViewModels"
-             xmlns:local="clr-namespace:ProductModul.Views" x:Class="ProductModul.Views.ShowProduct"
+             xmlns:local="clr-namespace:ProductModul.Views"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Padding="10,5,5,10">
 
     <UserControl.Resources>
-        <converters:VisibilityConverterForBool x:Key="VisibilityConverterForBool"/>
+        <converters:VisibilityBoolConverter x:Key="VisibilityConverterForBool"/>
 
         <!--<ContextMenu x:Key="DataGridMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}"
                      Visibility="{Binding IsAddPurchase, ConverterParameter=True, Converter={StaticResource VisibilityConverterForBool}}">

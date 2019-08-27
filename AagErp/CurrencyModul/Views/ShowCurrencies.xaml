@@ -29,7 +29,7 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Валюта" Binding="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}"
                                     ElementStyle="{StaticResource {x:Type TextBlock}}" EditingElementStyle="{StaticResource {x:Type TextBox}}"/>
-                <DataGridTextColumn Header="Курс" Binding="{Binding Path=Cost, UpdateSourceTrigger=PropertyChanged}"
+                <DataGridTextColumn Header="Курс" Binding="{Binding Path=Cost, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}"
                                     ElementStyle="{StaticResource {x:Type TextBlock}}" EditingElementStyle="{StaticResource {x:Type TextBox}}"/>
                 <DataGridCheckBoxColumn Header="Основная?" Binding="{Binding Path=IsDefault, UpdateSourceTrigger=PropertyChanged}"/>
             </DataGrid.Columns>

@@ -617,21 +617,72 @@ BEGIN
 END
 ]]></string>
 		</trigger>
-		<function name="Function" id="Function_3e3e35c" isSystem="false" params_known="n" >
-			<string><![CDATA[CREATE FUNCTION dbo.getCurrentPrice (@idProduct int)
-RETURNS
+		<function name="getCurrentPrice" id="Function_276d590" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE FUNCTION [dbo].[getCurrentPrice] (@idProduct bigint)
+RETURNS MONEY
 AS
 BEGIN
-RETURN (SELECT TOP 1 pp.price FROM dbo.revaluationProducts rp
-	INNER JOIN dbo.priceProducts pp ON (rp.id = pp.idRevaluation AND pp.idProduct = @idProduct)
-	ORDER BY rp.dateRevaluation DESC)
+RETURN isnull((SELECT TOP 1 pp.price
+	FROM dbo.priceProducts pp 
+		INNER JOIN dbo.revaluationProducts rp ON ( pp.idRevaluation = rp.id  )
+	WHERE pp.idProduct = @idProduct
+		ORDER BY rp.dateRevaluation DESC), 0)
+END]]></string>
+		</function>
+		<function name="getEquivalentCostForЕxistingProduct" id="Function_21df0f1" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE FUNCTION [dbo].[getEquivalentCostForЕxistingProduct]( @idProduct bigint)
+RETURNS @result TABLE([count] float, equivalentCost money, equivalentCurrencyId int)
+AS
+BEGIN
+DECLARE @countProductCur TABLE(idStore int, [count] float);
+DECLARE @countProduct TABLE(idStore int, [count] float, isComlete bit);
+INSERT INTO @countProductCur(idStore, [count]) select c.storeID, c.[count] from dbo.getCountProduct(@idProduct) c
+INSERT INTO @countProduct(idStore, [count], isComlete) select c.idStore, 0, 0 from @countProductCur c 
+DECLARE @count float, @equivalentCost money, @idArrivalStore int, @date datetime, @prevDate datetime, @idEquivalentCurrency int
+SELECT TOP 1 @prevDate = mg.dateCreate FROM dbo.movementGoods mg ORDER BY mg.dateCreate DESC
+DECLARE movementProduct CURSOR FOR
+	SELECT mgi.count, mgi.equivalentCost, mg.idArrivalStore, mg.dateCreate, mg.idEquivalentCurrency FROM dbo.movementGoodsInfos mgi
+		INNER JOIN dbo.movementGoods mg ON ( mgi.idReport = mg.id)
+			INNER JOIN dbo.movmentGoodTypes mgt ON ( mg.idType = mgt.id  )  
+	WHERE mgi.idProduct = @idProduct AND mgt.code = 'purchase'
+		ORDER BY mg.dateCreate DESC
+OPEN movementProduct
+FETCH NEXT FROM movementProduct INTO @count, @equivalentCost, @idArrivalStore, @date, @idEquivalentCurrency;
+WHILE @@FETCH_STATUS = 0 OR
+	EXISTS(SELECT 1 FROM @countProduct c WHERE isComlete = 0)
+BEGIN
+	UPDATE @countProduct SET [count] += isnull((SELECT sum(mgi.count) FROM dbo.movementGoodsInfos mgi
+		INNER JOIN dbo.movementGoods mg ON ( mgi.idReport = mg.id)
+			INNER JOIN dbo.movmentGoodTypes mgt ON ( mg.idType = mgt.id  )  
+	WHERE mgi.idProduct = 1 AND mgt.code = 'moving' AND mg.dateCreate BETWEEN @date AND @prevDate AND mg.idArrivalStore = idStore), 0)
+	UPDATE @countProduct SET [count] -= isnull((SELECT sum(mgi.count) FROM dbo.movementGoodsInfos mgi
+		INNER JOIN dbo.movementGoods mg ON ( mgi.idReport = mg.id)
+			INNER JOIN dbo.movmentGoodTypes mgt ON ( mg.idType = mgt.id  )  
+	WHERE mgi.idProduct = 1 AND mgt.code IN ('moving', 'sale') AND mg.dateCreate BETWEEN @date AND @prevDate AND mg.idDisposalStore = idStore), 0)
+	IF((SELECT isComlete FROM @countProduct WHERE idStore = @idArrivalStore) != 1 AND
+		(SELECT [count] FROM @countProduct WHERE idStore = @idArrivalStore) != (SELECT [count] FROM @countProductCur WHERE idStore = @idArrivalStore)) BEGIN
+		UPDATE @countProduct SET [count] += @count WHERE idStore = @idArrivalStore
+	
+		IF((SELECT [count] FROM @countProduct WHERE idStore = @idArrivalStore) > 0) BEGIN
+			INSERT INTO @result ([count], equivalentCost, equivalentCurrencyId) 
+				VALUES ((SELECT @count - abs([count] - @count) FROM @countProduct WHERE idStore = @idArrivalStore), @equivalentCost, @idEquivalentCurrency);
+		END
+	END
+	IF((SELECT isComlete FROM @countProduct WHERE idStore = @idArrivalStore) = 1 OR
+		(SELECT [count] FROM @countProduct WHERE idStore = @idArrivalStore) = (SELECT [count] FROM @countProductCur WHERE idStore = @idArrivalStore)) BEGIN
+		UPDATE @countProduct SET isComlete = 1 WHERE idStore = @idArrivalStore
+	END
+	SET @prevDate = @date;
+	FETCH NEXT FROM movementProduct INTO @count, @equivalentCost, @idArrivalStore, @date, @idEquivalentCurrency;
 END
-
-]]></string>
+CLOSE movementProduct;  
+DEALLOCATE movementProduct;
+RETURN
+END]]></string>
 		</function>
 		<function name="getPropertyForProduct" id="Function_29d0f43" isSystem="false" params_known="n" >
 			<string><![CDATA[
-CREATE FUNCTION dbo.getPropertyForProduct(@idProduct INT, @idCategory INT)
+CREATE FUNCTION [dbo].[getPropertyForProduct](@idProduct bigint, @idCategory INT)
 RETURNS @result TABLE (nameID INT, [name] NVARCHAR(20), valueID INT, [value] NVARCHAR(50))
 AS
 BEGIN
@@ -724,8 +775,5 @@ END]]></string>
 FROM
 	dbo.movmentGoodTypes s;]]></string>
 		</script>
-		<browser id="Browse_5634af2" name="revaluationProducts" confirm_updates="y" >
-			<browse_table schema="dbo" entity="revaluationProducts" x="20" y="20" width="400" height="300" />
-		</browser>
 	</layout>
 </project>

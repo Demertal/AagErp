@@ -295,12 +295,12 @@
 		</table>
 		<table name="products" generator_rows="1000" >
 			<column name="id" type="bigint" jt="-5" mandatory="y" autoincrement="y" />
-			<column name="title" type="nvarchar" length="120" decimal="0" jt="12" mandatory="y" regexp="[a-z]{20}" />
+			<column name="title" type="nvarchar" length="256" jt="12" mandatory="y" regexp="[a-z]{20}" />
 			<column name="vendorCode" type="nvarchar" length="20" decimal="0" jt="12" />
 			<column name="barcode" type="nvarchar" length="13" decimal="0" jt="12" regexp="[a-z]{13}" />
 			<column name="idWarrantyPeriod" type="int" length="10" decimal="0" jt="4" mandatory="y" />
 			<column name="idCategory" type="int" length="10" decimal="0" jt="4" mandatory="y" />
-			<column name="idPriceGroup" type="int" jt="4" />
+			<column name="idPriceGroup" type="int" jt="4" mandatory="y" />
 			<column name="idUnitStorage" type="int" length="10" decimal="0" jt="4" mandatory="y" />
 			<column name="keepTrackSerialNumbers" type="bit" length="1" decimal="0" jt="-7" mandatory="y" >
 				<defo>0</defo>
@@ -317,14 +317,14 @@
 			<index name="ind_products_idCategory" unique="NORMAL" >
 				<column name="idCategory" />
 			</index>
-			<index name="ind_products_idPriceGroup" unique="NORMAL" >
-				<column name="idPriceGroup" />
-			</index>
 			<index name="ind_products_idUnitStorage" unique="NORMAL" >
 				<column name="idUnitStorage" />
 			</index>
 			<index name="PK_products" unique="PRIMARY_KEY" >
 				<column name="id" />
+			</index>
+			<index name="ind_products_idPriceGroup" unique="NORMAL" >
+				<column name="idPriceGroup" />
 			</index>
 			<constraint name="CK_products_title" >
 				<string>[title]&lt;&gt;&#039;&#039;</string>
@@ -679,11 +679,11 @@ END]]></string>
 		<entity schema="dbo" name="productsWithCountAndPrice" color="3986C1" x="1456" y="528" />
 		<entity schema="dbo" name="movmentGoodTypes" color="C1D8EE" x="48" y="112" />
 		<entity schema="dbo" name="priceProducts" color="F4DDBE" x="1280" y="112" />
-		<entity schema="dbo" name="revaluationProducts" color="F4DDBE" x="1488" y="112" />
 		<entity schema="dbo" name="currencies" color="BED3F4" x="80" y="336" />
-		<entity schema="dbo" name="products" color="F4DDBE" x="1040" y="112" />
 		<entity schema="dbo" name="movementGoodsInfos" color="BED3F4" x="208" y="512" />
 		<entity schema="dbo" name="movementGoods" color="BED3F4" x="208" y="240" />
+		<entity schema="dbo" name="revaluationProducts" color="F4DDBE" x="1488" y="112" />
+		<entity schema="dbo" name="products" color="F4DDBE" x="1040" y="112" />
 		<group name="counterparties" color="EEF7EC" >
 			<entity schema="dbo" name="counterparties" />
 			<entity schema="dbo" name="moneyTransfers" />
@@ -724,5 +724,8 @@ END]]></string>
 FROM
 	dbo.movmentGoodTypes s;]]></string>
 		</script>
+		<browser id="Browse_5634af2" name="revaluationProducts" confirm_updates="y" >
+			<browse_table schema="dbo" entity="revaluationProducts" x="20" y="20" width="400" height="300" />
+		</browser>
 	</layout>
 </project>

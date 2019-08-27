@@ -80,6 +80,8 @@ namespace ModelModul
             modelBuilder.ApplyConfiguration(new WarrantyConfiguration());
             modelBuilder.ApplyConfiguration(new WarrantyPeriodConfiguration());
             modelBuilder.HasDbFunction(() => GetCurrentPrice(default(long)));
+            modelBuilder.Query<CountsProduct>().Ignore(r => r.Error);
+            modelBuilder.Query<EquivalentCostForÅxistingProduct>().Ignore(r => r.Error);
         }
     }
 }

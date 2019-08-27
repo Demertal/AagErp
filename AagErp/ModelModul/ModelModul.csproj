@@ -169,6 +169,7 @@
     <Compile Include="Configurations\CurrencyConfiguration.cs" />
     <Compile Include="Configurations\CounterpartyConfiguration.cs" />
     <Compile Include="ConnectionTools.cs" />
+    <Compile Include="CountValidationRule.cs" />
     <Compile Include="Models\Counterparty.cs" />
     <Compile Include="Models\CountsProduct.cs" />
     <Compile Include="Models\EquivalentCostForЕxistingProduct.cs" />
@@ -176,6 +177,7 @@
     <Compile Include="Models\MovmentGoodType.cs" />
     <Compile Include="Models\PaymentType.cs" />
     <Compile Include="Models\SerialNumberLog.cs" />
+    <Compile Include="Repositories\SqlMovmentGoodTypeRepository.cs" />
     <Compile Include="Repositories\SqlCurrencyRepository.cs" />
     <Compile Include="Repositories\SqlCategoryRepository.cs" />
     <Compile Include="Repositories\IRepository.cs" />
@@ -210,7 +212,7 @@
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\SqlPropertyNameRepository.cs" />
-    <Compile Include="Repositories\SqlMovementGoodsReportRepository.cs" />
+    <Compile Include="Repositories\SqlMovementGoodsRepository.cs" />
     <Compile Include="MovementGoodsInfosViewModel.cs" />
     <Compile Include="Repositories\SqlRepositoryUtility.cs" />
     <Compile Include="Repositories\SqlRevaluationProductRepository.cs" />
@@ -232,6 +234,7 @@
     <Compile Include="Specifications\BasisSpecifications\ExpressionSpecification.cs" />
     <Compile Include="Specifications\CategorySpecification.cs" />
     <Compile Include="Specifications\CurrencySpecification.cs" />
+    <Compile Include="Specifications\MovmentGoodTypeSpecification.cs" />
     <Compile Include="Specifications\PriceGroupSpecification.cs" />
     <Compile Include="Specifications\SerialNumberSpecification.cs" />
     <Compile Include="Specifications\PropertyValueSpecification.cs" />

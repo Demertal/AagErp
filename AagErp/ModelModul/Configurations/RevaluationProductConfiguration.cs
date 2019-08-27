@@ -11,6 +11,7 @@ namespace ModelModul.Configurations
             builder.ToTable("revaluationProducts");
             builder.HasKey(r => r.Id);
             builder.Property(r => r.DateRevaluation).HasColumnType("datetime").IsRequired().HasDefaultValueSql("getdate()");
+            builder.Ignore(r => r.Error);
             builder.HasMany(r => r.PriceProducts).WithOne(p => p.RevaluationProduct)
                 .HasForeignKey(p => p.IdRevaluation).IsRequired();
         }

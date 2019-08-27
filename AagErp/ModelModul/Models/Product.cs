@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 
 namespace ModelModul.Models
 {
@@ -352,7 +353,8 @@ namespace ModelModul.Models
                 KeepTrackSerialNumbers = KeepTrackSerialNumbers,
                 Category = (Category) Category?.Clone(),
                 UnitStorage = (UnitStorage) UnitStorage?.Clone(),
-                WarrantyPeriod = (WarrantyPeriod) WarrantyPeriod?.Clone()
+                WarrantyPeriod = (WarrantyPeriod) WarrantyPeriod?.Clone(),
+                SerialNumbers = new List<SerialNumber>(SerialNumbers.Select(s => (SerialNumber)s.Clone()))
             };
         }
     }

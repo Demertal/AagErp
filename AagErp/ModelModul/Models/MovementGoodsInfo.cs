@@ -2,7 +2,7 @@ using System;
 
 namespace ModelModul.Models
 {
-    public class MovementGoodsInfo : ModelBase
+    public class MovementGoodsInfo : ModelBase, ICloneable
     {
         private long _id;
         public long Id
@@ -90,6 +90,44 @@ namespace ModelModul.Models
                 _movementGoods = value;
                 OnPropertyChanged("MovementGoods");
             }
+        }
+
+        public override string this[string columnName]
+        {
+            get
+            {
+                string error = string.Empty;
+                switch (columnName)
+                {
+                    case "Price":
+                        if (Price != null && Price <= 0)
+                        {
+                            error = "Цена не может быть меньше и равной 0";
+                        }
+                        break;
+                    case "Count":
+                        if (Count <= 0)
+                        {
+                            error = "Кол-во не может быть меньше и равным 0";
+                        }
+                        break;
+                }
+                return error;
+            }
+        }
+
+        public object Clone()
+        {
+            return new MovementGoodsInfo
+            {
+                Id = Id,
+                Count = Count,
+                IdProduct = IdProduct,
+                IdReport = IdReport,
+                Price = Price,
+                EquivalentCost = EquivalentCost,
+                Product = (Product)Product?.Clone()
+            };
         }
     }
 }

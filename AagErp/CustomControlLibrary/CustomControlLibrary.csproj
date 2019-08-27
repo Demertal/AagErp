@@ -137,10 +137,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BindingProxy.cs" />
+    <Compile Include="Converters\CalculationTotal.cs" />
+    <Compile Include="Converters\ConvertCount.cs" />
     <Compile Include="Converters\ConvertDecimalToPercent.cs" />
-    <Compile Include="Converters\ConverterSum.cs" />
-    <Compile Include="Converters\CurrencyConverter2Parametrs.cs" />
-    <Compile Include="Converters\CurrencyConverter4Parametrs.cs" />
+    <Compile Include="Converters\CalculationSum.cs" />
     <Compile Include="Converters\GetProductsTitleFromMovementGoodsInfo.cs" />
     <Compile Include="Converters\GetProductsTitleFromRevaluaitionInfo.cs" />
     <Compile Include="Converters\IsEnabledConverterForBool.cs" />
@@ -150,7 +150,7 @@
     <Compile Include="Converters\IsReadOnlyConverterForSerialNumberForPurchase.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="Converters\VisibilityConverterFor2Bool.cs" />
-    <Compile Include="Converters\VisibilityConverterForBool.cs" />
+    <Compile Include="Converters\VisibilityBoolConverter.cs" />
     <Compile Include="Converters\VisibilityConverterForNull.cs" />
     <Compile Include="Converters\VisibilityConverterForNullAndBool.cs" />
     <Compile Include="MVVM\DialogViewModelBase.cs" />

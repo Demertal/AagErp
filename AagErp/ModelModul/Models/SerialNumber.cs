@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace ModelModul.Models
 {
-    public class SerialNumber : ModelBase
+    public class SerialNumber : ModelBase, ICloneable
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public SerialNumber()
         {
             SerialNumberLogs = new List<SerialNumberLog>();
@@ -26,8 +24,6 @@ namespace ModelModul.Models
         }
 
         private string _value;
-        [Required]
-        [StringLength(20)]
         public string Value
         {
             get => _value;
@@ -49,8 +45,8 @@ namespace ModelModul.Models
             }
         }
 
-        private DateTime _dateCreated;
-        public DateTime DateCreated
+        private DateTime? _dateCreated;
+        public DateTime? DateCreated
         {
             get => _dateCreated;
             set
@@ -72,7 +68,6 @@ namespace ModelModul.Models
         }
 
         private ICollection<SerialNumberLog> _serialNumberLogs;
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SerialNumberLog> SerialNumberLogs
         {
             get => _serialNumberLogs;
@@ -84,7 +79,6 @@ namespace ModelModul.Models
         }
 
         private ICollection<Warranty> _warranties;
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Warranty> Warranties
         {
             get => _warranties;
@@ -96,7 +90,6 @@ namespace ModelModul.Models
         }
 
         private ICollection<Warranty> _change;
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Warranty> Change
         {
             get => _change;

@@ -9,7 +9,7 @@
              mc:Ignorable="d" 
              VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Padding="10,5,5,10">
     <UserControl.Resources>
-        <converters:VisibilityConverterForBool x:Key="VisibilityConverterForBool"/>
+        <converters:VisibilityBoolConverter x:Key="VisibilityBoolConverter"/>
         <converters:IsEnabledConverterForBool x:Key="IsEnabledConverterForBool"/>
     </UserControl.Resources>
     <Grid>
@@ -66,17 +66,17 @@
         </ComboBox>
         <Button Content="Ок" Width="75" Command="{Binding OkCommand}" Grid.Row="6" Grid.Column="0">
             <Button.Visibility>
-                <Binding Converter="{StaticResource VisibilityConverterForBool}" ConverterParameter="False" Path="IsUpdate"/>
+                <Binding Converter="{StaticResource VisibilityBoolConverter}" ConverterParameter="False" Path="IsUpdate"/>
             </Button.Visibility>
         </Button>
         <Button Content="Отмена" Width="75" Command="{Binding ResetCommand}" Grid.Column="1" Grid.Row="6">
             <Button.Visibility>
-                <Binding Converter="{StaticResource VisibilityConverterForBool}" ConverterParameter="False" Path="IsUpdate"/>
+                <Binding Converter="{StaticResource VisibilityBoolConverter}" ConverterParameter="False" Path="IsUpdate"/>
             </Button.Visibility>
         </Button>
         <Button Content="Редактировать" Command="{Binding UpdateCommand}" Grid.Row="6" Grid.Column="1">
             <Button.Visibility>
-                <Binding Converter="{StaticResource VisibilityConverterForBool}" ConverterParameter="True" Path="IsUpdate"/>
+                <Binding Converter="{StaticResource VisibilityBoolConverter}" ConverterParameter="True" Path="IsUpdate"/>
             </Button.Visibility>
         </Button>
     </Grid>

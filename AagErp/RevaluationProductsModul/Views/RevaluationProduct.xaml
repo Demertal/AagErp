@@ -29,7 +29,8 @@
                 </Style>
             </DataGrid.RowStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Наименование" Binding="{Binding Path=Product.Title, UpdateSourceTrigger=PropertyChanged}" ElementStyle="{StaticResource {x:Type TextBlock}}"/>
+                <DataGridTextColumn Header="Наименование" Binding="{Binding Path=Product.Title, UpdateSourceTrigger=PropertyChanged}"
+                                    ElementStyle="{StaticResource {x:Type TextBlock}}"/>
                 <DataGridTextColumn Header="Артикул" Binding="{Binding Path=Product.VendorCode, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Visibility="Collapsed" 
                                     ElementStyle="{StaticResource {x:Type TextBlock}}"/>
                 <DataGridTextColumn Header="Штрихкод" Binding="{Binding Path=Product.Barcode, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True" Visibility="Collapsed" 

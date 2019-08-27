@@ -12,6 +12,7 @@ namespace ModelModul.Configurations
             builder.ToTable("priceGroups");
             builder.HasKey(p => p.Id);
             builder.Property(p => p.Markup).IsRequired().HasColumnType("decimal(5,2)");
+            builder.Ignore(p => p.Error);
             builder.HasMany(p => p.Products).WithOne(p => p.PriceGroup).HasForeignKey(p => p.IdPriceGroup).IsRequired();
         }
     }

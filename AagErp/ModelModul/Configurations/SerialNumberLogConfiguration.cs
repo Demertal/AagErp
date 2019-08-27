@@ -10,6 +10,7 @@ namespace ModelModul.Configurations
         {
             builder.ToTable("serialNumberLogs");
             builder.HasKey(s => s.Id);
+            builder.Ignore(s => s.Error);
         }
     }
 }
