@@ -1,5 +1,4 @@
 using System;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ModelModul.Models
 {
@@ -39,7 +38,6 @@ namespace ModelModul.Models
         }
 
         private decimal _moneyAmount;
-        [Column(TypeName = "money")]
         public decimal MoneyAmount
         {
             get => _moneyAmount;

@@ -1,15 +1,13 @@
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace ModelModul.Models
 {
     public class PropertyName : ModelBase
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public PropertyName()
         {
-            PropertyProducts = new List<PropertyProduct>();
-            PropertyValues = new List<PropertyValue>();
+            PropertyProductsCollection = new List<PropertyProduct>();
+            PropertyValuesCollection = new List<PropertyValue>();
         }
 
         private int _id;
@@ -24,8 +22,6 @@ namespace ModelModul.Models
         }
 
         private string _title;
-        [Required]
-        [StringLength(20)]
         public string Title
         {
             get => _title;
@@ -58,27 +54,25 @@ namespace ModelModul.Models
             }
         }
 
-        private ICollection<PropertyProduct> _propertyProducts;
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PropertyProduct> PropertyProducts
+        private ICollection<PropertyProduct> _propertyProductsCollection;
+        public virtual ICollection<PropertyProduct> PropertyProductsCollection
         {
-            get => _propertyProducts;
+            get => _propertyProductsCollection;
             set
             {
-                _propertyProducts = value;
-                OnPropertyChanged("PropertyProducts");
+                _propertyProductsCollection = value;
+                OnPropertyChanged("PropertyProductsCollection");
             }
         }
 
-        private ICollection<PropertyValue> _propertyValues;
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PropertyValue> PropertyValues
+        private ICollection<PropertyValue> _propertyValuesCollection;
+        public virtual ICollection<PropertyValue> PropertyValuesCollection
         {
-            get => _propertyValues;
+            get => _propertyValuesCollection;
             set
             {
-                _propertyValues = value;
-                OnPropertyChanged("PropertyValues");
+                _propertyValuesCollection = value;
+                OnPropertyChanged("PropertyValuesCollection");
             }
         }
     }

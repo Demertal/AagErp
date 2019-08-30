@@ -7,8 +7,8 @@ namespace ModelModul.Models
     {
         public Counterparty()
         {
-            MoneyTransfers = new List<MoneyTransfer>();
-            MovementGoods = new List<MovementGoods>();
+            MoneyTransfersCollection = new List<MoneyTransfer>();
+            MovementGoodsCollection = new List<MovementGoods>();
         }
 
         private int _id;
@@ -112,29 +112,29 @@ namespace ModelModul.Models
             }
         }
 
+        private ICollection<MoneyTransfer> _moneyTransfersCollection;
+        public virtual ICollection<MoneyTransfer> MoneyTransfersCollection
+        {
+            get => _moneyTransfersCollection;
+            set
+            {
+                _moneyTransfersCollection = value;
+                OnPropertyChanged("MoneyTransfersCollection");
+            }
+        }
+
+        private ICollection<MovementGoods> _movementGoodsCollection;
+        public virtual ICollection<MovementGoods> MovementGoodsCollection
+        {
+            get => _movementGoodsCollection;
+            set
+            {
+                _movementGoodsCollection = value;
+                OnPropertyChanged("MovementGoodsCollection");
+            }
+        }
+
         public bool IsValidate => !string.IsNullOrEmpty(Title) && IdPaymentType != 0;
-
-        private ICollection<MoneyTransfer> _moneyTransfers;
-        public virtual ICollection<MoneyTransfer> MoneyTransfers
-        {
-            get => _moneyTransfers;
-            set
-            {
-                _moneyTransfers = value;
-                OnPropertyChanged("MoneyTransfers");
-            }
-        }
-
-        private ICollection<MovementGoods> _movementGoods;
-        public virtual ICollection<MovementGoods> MovementGoods
-        {
-            get => _movementGoods;
-            set
-            {
-                _movementGoods = value;
-                OnPropertyChanged("MovementGoods");
-            }
-        }
 
         public object Clone()
         {

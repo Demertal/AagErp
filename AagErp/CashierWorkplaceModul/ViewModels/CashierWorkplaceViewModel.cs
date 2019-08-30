@@ -63,7 +63,7 @@ namespace CashierWorkplaceModul.ViewModels
                 if (SalesGoodsList.Count == 0) return false;
                 if (SalesGoodsList.Any(p => p.Price <= 0 || p.Count <= 0)) return false;
                 return !SalesGoodsList.Where(p => p.Product.KeepTrackSerialNumbers).Any(p =>
-                    p.Product.SerialNumbers.Any(s => string.IsNullOrEmpty(s.Value)));
+                    p.Product.SerialNumbersCollection.Any(s => string.IsNullOrEmpty(s.Value)));
             }
         }
 
@@ -106,8 +106,8 @@ namespace CashierWorkplaceModul.ViewModels
                         item.PropertyChanged += SalesInfosViewModelPropertyChanged;
                         if (item.Product.KeepTrackSerialNumbers)
                         {
-                            item.Product.SerialNumbers = new ObservableCollection<SerialNumber>();
-                            ((ObservableCollection<SerialNumber>)item.Product.SerialNumbers).CollectionChanged += OnSerialNumbersCollectionChanged;
+                            item.Product.SerialNumbersCollection = new ObservableCollection<SerialNumber>();
+                            ((ObservableCollection<SerialNumber>)item.Product.SerialNumbersCollection).CollectionChanged += OnSerialNumbersCollectionChanged;
                         }
                     }
                     break;
@@ -145,7 +145,7 @@ if (sender is MovementGoodsInfo movement && e.PropertyName == "Count")
             {
                 if (movement.Product.KeepTrackSerialNumbers)
                 {
-                    int count = (int)movement.Count - movement.Product.SerialNumbers.Count;
+                    int count = (int)movement.Count - movement.Product.SerialNumbersCollection.Count;
                     if (count > 0)
                     {
                         for (int i = 0; i < count; i++)
@@ -156,17 +156,17 @@ if (sender is MovementGoodsInfo movement && e.PropertyName == "Count")
                                 Product = movement.Product,
                                 IdStore = SalesGood.IdDisposalStore
                             };
-                            temp.Product.SerialNumbers = movement.Product.SerialNumbers;
-                            movement.Product.SerialNumbers.Add(temp);
+                            temp.Product.SerialNumbersCollection = movement.Product.SerialNumbersCollection;
+                            movement.Product.SerialNumbersCollection.Add(temp);
                         }
                     }
                     else if (count < 0)
                     {
                         for (int i = 0; i > count; i--)
                         {
-                            var temp = movement.Product.SerialNumbers.FirstOrDefault(s =>
+                            var temp = movement.Product.SerialNumbersCollection.FirstOrDefault(s =>
                                 string.IsNullOrEmpty(s.Value));
-                            movement.Product.SerialNumbers.Remove(temp ?? movement.Product.SerialNumbers.Last());
+                            movement.Product.SerialNumbersCollection.Remove(temp ?? movement.Product.SerialNumbersCollection.Last());
                         }
                     }
                 }
@@ -222,7 +222,7 @@ if (sender is MovementGoodsInfo movement && e.PropertyName == "Count")
                 temp.DateCreate = null;
                 foreach (var movementGoodsInfo in temp.MovementGoodsInfosCollection)
                 {
-                    foreach (var serialNumber in movementGoodsInfo.Product.SerialNumbers)
+                    foreach (var serialNumber in movementGoodsInfo.Product.SerialNumbersCollection)
                     {
                         List<long> freeSerialNumbers =
                             await serialNumberRepository.GetFreeSerialNumbers(movementGoodsInfo.Product.Id,
@@ -253,11 +253,11 @@ if (sender is MovementGoodsInfo movement && e.PropertyName == "Count")
                     foreach (var movementGoodsInfo in SalesGood.MovementGoodsInfosCollection)
                     {
                         movementGoodsInfo.Count = movementGoodsInfo.Count;
-                        foreach (var serialNumber in movementGoodsInfo.Product.SerialNumbers)
+                        foreach (var serialNumber in movementGoodsInfo.Product.SerialNumbersCollection)
                         {
                             serialNumber.Value = serialNumber.Value;
                         }
-                        foreach (var serialNumber in movementGoodsInfo.Product.SerialNumbers)
+                        foreach (var serialNumber in movementGoodsInfo.Product.SerialNumbersCollection)
                         {
                             serialNumber.Id = 0;
                         }

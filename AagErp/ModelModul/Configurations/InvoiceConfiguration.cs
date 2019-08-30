@@ -11,7 +11,7 @@ namespace ModelModul.Configurations
             builder.ToTable("invoices");
             builder.Ignore(i => i.Error);
             builder.HasKey(c => c.Id);
-            builder.HasMany(i => i.InvoiceInfos).WithOne(i => i.Invoice).HasForeignKey(i => i.IdInvoice).IsRequired();
+            builder.HasMany(i => i.InvoiceInfosCollection).WithOne(i => i.Invoice).HasForeignKey(i => i.IdInvoice).IsRequired();
         }
     }
 }

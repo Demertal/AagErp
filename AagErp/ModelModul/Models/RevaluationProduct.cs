@@ -9,7 +9,7 @@ namespace ModelModul.Models
     {
         public RevaluationProduct()
         {
-            PriceProducts = new ObservableCollection<PriceProduct>();
+            PriceProductsCollection = new ObservableCollection<PriceProduct>();
         }
 
         private long _id;
@@ -34,14 +34,14 @@ namespace ModelModul.Models
             }
         }
 
-        private ICollection<PriceProduct> _priceProducts;
-        public virtual ICollection<PriceProduct> PriceProducts
+        private ICollection<PriceProduct> _priceProductsCollection;
+        public virtual ICollection<PriceProduct> PriceProductsCollection
         {
-            get => _priceProducts;
+            get => _priceProductsCollection;
             set
             {
-                _priceProducts = value;
-                OnPropertyChanged("PriceProducts");
+                _priceProductsCollection = value;
+                OnPropertyChanged("PriceProductsCollection");
             }
         }
 
@@ -51,7 +51,7 @@ namespace ModelModul.Models
             {
                 Id = Id,
                 DateRevaluation = DateRevaluation,
-                PriceProducts = new List<PriceProduct>(PriceProducts.Select(pp => (PriceProduct) pp.Clone()).ToList())
+                PriceProductsCollection = new List<PriceProduct>(PriceProductsCollection.Select(pp => (PriceProduct) pp.Clone()).ToList())
             };
         }
     }

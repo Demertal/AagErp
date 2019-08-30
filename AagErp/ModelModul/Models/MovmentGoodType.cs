@@ -6,7 +6,7 @@ namespace ModelModul.Models
     {
          public MovmentGoodType()
         {
-            MovementGoods = new List<MovementGoods>();
+            MovementGoodsCollection = new List<MovementGoods>();
         }
 
         private int _id;
@@ -42,14 +42,14 @@ namespace ModelModul.Models
             }
         }
 
-        private ICollection<MovementGoods> _movementGoods;
-        public virtual ICollection<MovementGoods> MovementGoods
+        private ICollection<MovementGoods> _movementGoodsCollection;
+        public virtual ICollection<MovementGoods> MovementGoodsCollection
         {
-            get => _movementGoods;
+            get => _movementGoodsCollection;
             set
             {
-                _movementGoods = value;
-                OnPropertyChanged("MovementGoods");
+                _movementGoodsCollection = value;
+                OnPropertyChanged("MovementGoodsCollection");
             }
         }
     }

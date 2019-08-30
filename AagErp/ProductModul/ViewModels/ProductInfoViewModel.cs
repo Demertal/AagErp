@@ -138,7 +138,7 @@ namespace ProductModul.ViewModels
             {
                 if (SelectedProduct == null) return;
                 SqlProductRepository sqlProductRepository = new SqlProductRepository();
-                SelectedProduct.CountsProduct =
+                SelectedProduct.CountsProductCollection =
                     new ObservableCollection<CountsProduct>(
                         await sqlProductRepository.GetCountsProduct(SelectedProduct.Id));
             }

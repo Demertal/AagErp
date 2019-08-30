@@ -12,7 +12,7 @@ namespace ModelModul.Configurations
             builder.HasKey(p => p.Id);
             builder.Property(p => p.Price).HasColumnType("money");
             builder.Ignore(p => p.Error);
-            builder.HasOne(p => p.Product).WithMany(p => p.PriceProducts).HasForeignKey(p => p.IdProduct).IsRequired();
+            builder.HasOne(p => p.Product).WithMany(p => p.PriceProductsCollection).HasForeignKey(p => p.IdProduct).IsRequired();
         }
     }
 }

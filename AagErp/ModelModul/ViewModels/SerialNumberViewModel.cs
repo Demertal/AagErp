@@ -67,7 +67,7 @@ namespace ModelModul.ViewModels
                     IdStore.Value)).Count;
                 if (freeSerialNumbers != 0 && Product != null)
                 {
-                    if (freeSerialNumbers - Product.SerialNumbers.Count(s => s.Value == Value) < 0)
+                    if (freeSerialNumbers - Product.SerialNumbersCollection.Count(s => s.Value == Value) < 0)
                     {
                         _validationErrors[propertyKey] = new List<string> {"Нет доступных серийных номеров"};
                         RaiseErrorsChanged(propertyKey);

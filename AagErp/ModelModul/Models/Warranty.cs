@@ -1,6 +1,4 @@
 using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ModelModul.Models
 {
@@ -18,8 +16,6 @@ namespace ModelModul.Models
         }
 
         private string _malfunction;
-        [Required]
-        [StringLength(256)]
         public string Malfunction
         {
             get => _malfunction;
@@ -31,7 +27,6 @@ namespace ModelModul.Models
         }
 
         private DateTime _dateReceipt;
-        [Column(TypeName = "date")]
         public DateTime DateReceipt
         {
             get => _dateReceipt;
@@ -43,7 +38,6 @@ namespace ModelModul.Models
         }
 
         private DateTime? _dateDeparture;
-        [Column(TypeName = "date")]
         public DateTime? DateDeparture
         {
             get => _dateDeparture;
@@ -55,7 +49,6 @@ namespace ModelModul.Models
         }
 
         private DateTime? _dateIssue;
-        [Column(TypeName = "date")]
         public DateTime? DateIssue
         {
             get => _dateIssue;
@@ -67,7 +60,6 @@ namespace ModelModul.Models
         }
 
         private string _info;
-        [StringLength(256)]
         public string Info
         {
             get => _info;

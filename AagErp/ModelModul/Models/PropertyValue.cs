@@ -1,14 +1,12 @@
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace ModelModul.Models
 {
     public class PropertyValue : ModelBase
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public PropertyValue()
         {
-            PropertyProducts = new HashSet<PropertyProduct>();
+            PropertyProductsCollection = new HashSet<PropertyProduct>();
         }
 
         private int _id;
@@ -23,8 +21,6 @@ namespace ModelModul.Models
         }
 
         private string _value;
-        [Required]
-        [StringLength(50)]
         public string Value
         {
             get => _value;
@@ -57,15 +53,14 @@ namespace ModelModul.Models
             }
         }
 
-        private ICollection<PropertyProduct> _propertyProducts;
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PropertyProduct> PropertyProducts
+        private ICollection<PropertyProduct> _propertyProductsCollection;
+        public virtual ICollection<PropertyProduct> PropertyProductsCollection
         {
-            get => _propertyProducts;
+            get => _propertyProductsCollection;
             set
             {
-                _propertyProducts = value;
-                OnPropertyChanged("PropertyProducts");
+                _propertyProductsCollection = value;
+                OnPropertyChanged("PropertyProductsCollection");
             }
         }
     }

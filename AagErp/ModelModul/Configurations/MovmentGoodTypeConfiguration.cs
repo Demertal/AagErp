@@ -13,7 +13,7 @@ namespace ModelModul.Configurations
             builder.Property(m => m.Code).IsRequired().HasMaxLength(20);
             builder.Property(m => m.Description).IsRequired().HasMaxLength(50);
             builder.Ignore(m => m.Error);
-            builder.HasMany(m => m.MovementGoods).WithOne(m => m.MovmentGoodType).HasForeignKey(m => m.IdType)
+            builder.HasMany(m => m.MovementGoodsCollection).WithOne(m => m.MovmentGoodType).HasForeignKey(m => m.IdType)
                 .IsRequired();
         }
     }

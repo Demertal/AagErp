@@ -12,8 +12,8 @@ namespace ModelModul.Configurations
             builder.HasKey(s => s.Id);
             builder.Property(s => s.Title).IsRequired().HasMaxLength(50);
             builder.Ignore(s => s.Error);
-            builder.HasMany(s => s.ArrivalMovementGoodsReports).WithOne(m => m.ArrivalStore).HasForeignKey(m => m.IdArrivalStore);
-            builder.HasMany(s => s.DisposalMovementGoodsReports).WithOne(m => m.DisposalStore).HasForeignKey(m => m.IdDisposalStore);
+            builder.HasMany(s => s.ArrivalMovementGoodsCollection).WithOne(m => m.ArrivalStore).HasForeignKey(m => m.IdArrivalStore);
+            builder.HasMany(s => s.DisposalMovementGoodsCollection).WithOne(m => m.DisposalStore).HasForeignKey(m => m.IdDisposalStore);
         }
     }
 }

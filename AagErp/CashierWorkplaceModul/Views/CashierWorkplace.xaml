@@ -53,8 +53,8 @@
                                                         ElementStyle="{StaticResource {x:Type TextBlock}}"/>
                         <DataGridTextColumn Header="Штрихкод" Binding="{Binding Product.Barcode, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True" Visibility="Collapsed" 
                                                         ElementStyle="{StaticResource {x:Type TextBlock}}"/>
-                        <DataGridTextColumn Header="Цена" ElementStyle="{StaticResource {x:Type TextBlock}}" IsReadOnly="True"
-                                            Binding="{Binding Path=Price, UpdateSourceTrigger=PropertyChanged, StringFormat=F2, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}"/>
+                        <DataGridTextColumn Header="Ед. хр." Binding="{Binding Product.UnitStorage.Title, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True"
+                                            ElementStyle="{StaticResource {x:Type TextBlock}}"/>
                         <DataGridTextColumn Header="Кол-во" ElementStyle="{StaticResource {x:Type TextBlock}}" EditingElementStyle="{DynamicResource TextBoxByDataGrid}">
                             <DataGridTextColumn.Binding>
                                 <MultiBinding UpdateSourceTrigger="PropertyChanged" Converter="{StaticResource ConvertCount}" ValidatesOnExceptions="True" NotifyOnValidationError="True" ValidatesOnNotifyDataErrors="True">
@@ -75,6 +75,8 @@
                                 </MultiBinding>
                             </DataGridTextColumn.Binding>
                         </DataGridTextColumn>
+                        <DataGridTextColumn Header="Цена" ElementStyle="{StaticResource {x:Type TextBlock}}" IsReadOnly="True"
+                                            Binding="{Binding Path=Price, UpdateSourceTrigger=PropertyChanged, StringFormat=F2, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}"/>
                         <DataGridTextColumn Header="Сумма" ElementStyle="{StaticResource {x:Type TextBlock}}" IsReadOnly="True">
                             <DataGridTextColumn.Binding>
                                 <MultiBinding StringFormat="F2" Converter="{StaticResource CalculationSum}">

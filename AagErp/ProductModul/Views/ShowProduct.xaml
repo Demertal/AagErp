@@ -76,7 +76,7 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
                 <TreeView.ItemTemplate>
-                    <HierarchicalDataTemplate ItemsSource="{Binding ChildCategories}" DataType="{x:Type models:Category}" >
+                    <HierarchicalDataTemplate ItemsSource="{Binding ChildCategoriesCollection}" DataType="{x:Type models:Category}" >
                         <TextBlock Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" ContextMenu="{StaticResource TreeViewContextNode}" AllowDrop="True"/>
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>

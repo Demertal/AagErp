@@ -16,9 +16,9 @@ namespace ModelModul.Configurations
             builder.Property(c => c.Props).HasMaxLength(40);
             builder.Property(c => c.Address).HasMaxLength(40);
             builder.Ignore(c => c.Error);
-            builder.HasMany(c => c.MoneyTransfers).WithOne(m => m.Counterparty).HasForeignKey(m => m.IdCounterparty)
+            builder.HasMany(c => c.MoneyTransfersCollection).WithOne(m => m.Counterparty).HasForeignKey(m => m.IdCounterparty)
                 .IsRequired();
-            builder.HasMany(c => c.MovementGoods).WithOne(m => m.Counterparty).HasForeignKey(m => m.IdCounterparty);
+            builder.HasMany(c => c.MovementGoodsCollection).WithOne(m => m.Counterparty).HasForeignKey(m => m.IdCounterparty);
         }
     }
 }

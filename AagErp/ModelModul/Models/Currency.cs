@@ -6,8 +6,8 @@ namespace ModelModul.Models
     {
         public Currency()
         {
-            MovementGoods = new List<MovementGoods>();
-            MovementGoodsEquivalent = new List<MovementGoods>();
+            MovementGoodsCollection = new List<MovementGoods>();
+            MovementGoodsEquivalentCollection = new List<MovementGoods>();
         }
 
         private int _id;
@@ -56,25 +56,25 @@ namespace ModelModul.Models
             }
         }
 
-        private ICollection<MovementGoods> _movementGoods;
-        public ICollection<MovementGoods> MovementGoods
+        private ICollection<MovementGoods> _movementGoodsCollection;
+        public ICollection<MovementGoods> MovementGoodsCollection
         {
-            get => _movementGoods;
+            get => _movementGoodsCollection;
             set
             {
-                _movementGoods = value;
-                OnPropertyChanged("MovementGoods");
+                _movementGoodsCollection = value;
+                OnPropertyChanged("MovementGoodsCollection");
             }
         }
 
-        private ICollection<MovementGoods> _movementGoodsEquivalent;
-        public ICollection<MovementGoods> MovementGoodsEquivalent
+        private ICollection<MovementGoods> _movementGoodsEquivalentCollection;
+        public ICollection<MovementGoods> MovementGoodsEquivalentCollection
         {
-            get => _movementGoodsEquivalent;
+            get => _movementGoodsEquivalentCollection;
             set
             {
-                _movementGoodsEquivalent = value;
-                OnPropertyChanged("MovementGoodsEquivalent");
+                _movementGoodsEquivalentCollection = value;
+                OnPropertyChanged("MovementGoodsEquivalentCollection");
             }
         }
     }

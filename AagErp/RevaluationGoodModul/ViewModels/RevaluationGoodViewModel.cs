@@ -27,10 +27,10 @@ namespace RevaluationGoodModul.ViewModels
         private RevaluationProduct _revaluationProduct = new RevaluationProduct();
         public ObservableCollection<PriceProduct> RevaluationPriceProductsList
         {
-            get => _revaluationProduct.PriceProducts as ObservableCollection<PriceProduct>;
+            get => _revaluationProduct.PriceProductsCollection as ObservableCollection<PriceProduct>;
             set
             {
-                _revaluationProduct.PriceProducts = value;
+                _revaluationProduct.PriceProductsCollection = value;
                 RaisePropertyChanged("RevaluationPriceProductsList");
             }
         }
@@ -140,7 +140,7 @@ namespace RevaluationGoodModul.ViewModels
             {
                 RevaluationProduct temp = (RevaluationProduct)_revaluationProduct.Clone();
                 temp.DateRevaluation = null;
-                temp.PriceProducts.ToList().ForEach(pp => pp.Product = null);
+                temp.PriceProductsCollection.ToList().ForEach(pp => pp.Product = null);
                 IRepository<RevaluationProduct> revaluationProductRepository = new SqlRevaluationProductRepository();
                 await revaluationProductRepository.CreateAsync(temp);
                 MessageBox.Show("Отчет о переоценке добавлен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -220,12 +220,12 @@ namespace RevaluationGoodModul.ViewModels
 
                 SqlProductRepository productRepository = new SqlProductRepository();
                 IRepository<PriceGroup> priceGroupRepository = new SqlPriceGroupRepository();
-                product.EquivalentCostForЕxistingProducts =
+                product.EquivalentCostForЕxistingProductsCollection =
                     new ObservableCollection<EquivalentCostForЕxistingProduct>(
                         await productRepository.GetEquivalentCostsForЕxistingProduct(product.Id));
                 product.Price = await productRepository.GetCurrentPrice(product.Id);
                 product.PriceGroup = await priceGroupRepository.GetItemAsync(product.IdPriceGroup.Value);
-                EquivalentCostForЕxistingProduct equivalentCost = product.EquivalentCostForЕxistingProducts
+                EquivalentCostForЕxistingProduct equivalentCost = product.EquivalentCostForЕxistingProductsCollection
                     .OrderByDescending(c => c.EquivalentCost).FirstOrDefault();
                 RevaluationPriceProductsList.Add(equivalentCost == null
                     ? new PriceProduct {IdProduct = product.Id, Product = product, Price = 0}

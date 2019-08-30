@@ -5,12 +5,11 @@ namespace ModelModul.Models
 {
     public class Category : ModelBase, ICloneable
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Category()
         {
-            ChildCategories = new List<Category>();
-            Products = new List<Product>();
-            PropertyNames = new List<PropertyName>();
+            ChildCategoriesCollection = new List<Category>();
+            ProductsCollection = new List<Product>();
+            PropertyNamesCollection = new List<PropertyName>();
         }
 
         private int _id;
@@ -47,18 +46,6 @@ namespace ModelModul.Models
             }
         }
 
-        private ICollection<Category> _childCategories;
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Category> ChildCategories
-        {
-            get => _childCategories;
-            set
-            {
-                _childCategories = value;
-                OnPropertyChanged("ChildCategories");
-            }
-        }
-
         private Category _parent;
         public virtual Category Parent
         {
@@ -70,27 +57,36 @@ namespace ModelModul.Models
             }
         }
 
-        private ICollection<Product> _products;
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Product> Products
+        private ICollection<Category> _childCategoriesCollection;
+        public virtual ICollection<Category> ChildCategoriesCollection
         {
-            get => _products;
+            get => _childCategoriesCollection;
             set
             {
-                _products = value;
-                OnPropertyChanged("Products");
+                _childCategoriesCollection = value;
+                OnPropertyChanged("ChildCategoriesCollection");
             }
         }
 
-        private ICollection<PropertyName> _propertyNames;
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PropertyName> PropertyNames
+        private ICollection<Product> _productsCollection;
+        public virtual ICollection<Product> ProductsCollection
         {
-            get => _propertyNames;
+            get => _productsCollection;
             set
             {
-                _propertyNames = value;
-                OnPropertyChanged("PropertyNames");
+                _productsCollection = value;
+                OnPropertyChanged("ProductsCollection");
+            }
+        }
+
+        private ICollection<PropertyName> _propertyNamesCollection;
+        public virtual ICollection<PropertyName> PropertyNamesCollection
+        {
+            get => _propertyNamesCollection;
+            set
+            {
+                _propertyNamesCollection = value;
+                OnPropertyChanged("PropertyNamesCollection");
             }
         }
 

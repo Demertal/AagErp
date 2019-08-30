@@ -142,7 +142,7 @@ namespace ProductModul.ViewModels
 
                 var loadUnitStorage = Task.Run(() => sqlUnitStorageRepository.GetListAsync());
                 var loadWarrantyPeriod = Task.Run(() => sqlWarrantyPeriodRepository.GetListAsync());
-                var loadCategory = Task.Run(() => saCategoryRepository.GetListAsync(include: c => c.ChildCategories));
+                var loadCategory = Task.Run(() => saCategoryRepository.GetListAsync(include: c => c.ChildCategoriesCollection));
 
                 Task.WaitAll(loadUnitStorage, loadWarrantyPeriod, loadCategory);
 

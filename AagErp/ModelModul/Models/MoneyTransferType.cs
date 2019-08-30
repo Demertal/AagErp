@@ -1,14 +1,12 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace ModelModul.Models
 {
     public class MoneyTransferType : ModelBase
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public MoneyTransferType()
         {
-            MoneyTransfers = new List<MoneyTransfer>();
+            MoneyTransfersCollection = new List<MoneyTransfer>();
         }
 
         private int _id;
@@ -23,8 +21,6 @@ namespace ModelModul.Models
         }
 
         private string _code;
-        [Required]
-        [StringLength(20)]
         public string Code
         {
             get => _code;
@@ -36,8 +32,6 @@ namespace ModelModul.Models
         }
 
         private string _description;
-        [Required]
-        [StringLength(50)]
         public string Description
         {
             get => _description;
@@ -48,15 +42,14 @@ namespace ModelModul.Models
             }
         }
 
-        private ICollection<MoneyTransfer> _moneyTransfers;
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<MoneyTransfer> MoneyTransfers
+        private ICollection<MoneyTransfer> _moneyTransfersCollection;
+        public virtual ICollection<MoneyTransfer> MoneyTransfersCollection
         {
-            get => _moneyTransfers;
+            get => _moneyTransfersCollection;
             set
             {
-                _moneyTransfers = value;
-                OnPropertyChanged("MoneyTransfers");
+                _moneyTransfersCollection = value;
+                OnPropertyChanged("MoneyTransfersCollection");
             }
         }
     }

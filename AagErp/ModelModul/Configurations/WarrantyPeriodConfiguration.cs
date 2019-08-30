@@ -12,7 +12,7 @@ namespace ModelModul.Configurations
             builder.HasKey(w => w.Id);
             builder.Property(w => w.Period).IsRequired().HasMaxLength(20);
             builder.Ignore(w => w.Error);
-            builder.HasMany(w => w.Products).WithOne(p => p.WarrantyPeriod).HasForeignKey(p => p.IdWarrantyPeriod).IsRequired();
+            builder.HasMany(w => w.ProductsCollection).WithOne(p => p.WarrantyPeriod).HasForeignKey(p => p.IdWarrantyPeriod).IsRequired();
         }
     }
 }

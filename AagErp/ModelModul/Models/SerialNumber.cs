@@ -7,9 +7,9 @@ namespace ModelModul.Models
     {
         public SerialNumber()
         {
-            SerialNumberLogs = new List<SerialNumberLog>();
-            Warranties = new List<Warranty>();
-            Change = new List<Warranty>();
+            SerialNumberLogsCollection = new List<SerialNumberLog>();
+            WarrantiesCollection = new List<Warranty>();
+            ChangesCollection = new List<Warranty>();
         }
 
         private long _id;
@@ -67,36 +67,36 @@ namespace ModelModul.Models
             }
         }
 
-        private ICollection<SerialNumberLog> _serialNumberLogs;
-        public virtual ICollection<SerialNumberLog> SerialNumberLogs
+        private ICollection<SerialNumberLog> _serialNumberLogsCollection;
+        public virtual ICollection<SerialNumberLog> SerialNumberLogsCollection
         {
-            get => _serialNumberLogs;
+            get => _serialNumberLogsCollection;
             set
             {
-                _serialNumberLogs = value;
-                OnPropertyChanged("SerialNumberLogs");
+                _serialNumberLogsCollection = value;
+                OnPropertyChanged("SerialNumberLogsCollection");
             }
         }
 
-        private ICollection<Warranty> _warranties;
-        public virtual ICollection<Warranty> Warranties
+        private ICollection<Warranty> _warrantiesCollection;
+        public virtual ICollection<Warranty> WarrantiesCollection
         {
-            get => _warranties;
+            get => _warrantiesCollection;
             set
             {
-                _warranties = value;
-                OnPropertyChanged("Warranties");
+                _warrantiesCollection = value;
+                OnPropertyChanged("WarrantiesCollection");
             }
         }
 
-        private ICollection<Warranty> _change;
-        public virtual ICollection<Warranty> Change
+        private ICollection<Warranty> _changesCollection;
+        public virtual ICollection<Warranty> ChangesCollection
         {
-            get => _change;
+            get => _changesCollection;
             set
             {
-                _change = value;
-                OnPropertyChanged("Change");
+                _changesCollection = value;
+                OnPropertyChanged("ChangesCollection");
             }
         }
 

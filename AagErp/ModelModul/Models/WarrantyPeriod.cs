@@ -1,15 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace ModelModul.Models
 {
     public class WarrantyPeriod : ModelBase, ICloneable
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public WarrantyPeriod()
         {
-            Products = new HashSet<Product>();
+            ProductsCollection = new HashSet<Product>();
         }
 
         private int _id;
@@ -24,8 +22,6 @@ namespace ModelModul.Models
         }
 
         private string _period;
-        [Required]
-        [StringLength(20)]
         public string Period
         {
             get => _period;
@@ -36,15 +32,14 @@ namespace ModelModul.Models
             }
         }
 
-        private ICollection<Product> _products;
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Product> Products
+        private ICollection<Product> _productsCollection;
+        public virtual ICollection<Product> ProductsCollection
         {
-            get => _products;
+            get => _productsCollection;
             set
             {
-                _products = value;
-                OnPropertyChanged("Products");
+                _productsCollection = value;
+                OnPropertyChanged("ProductsCollection");
             }
         }
 

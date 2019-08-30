@@ -6,8 +6,8 @@ namespace ModelModul.Models
     {
         public Store()
         {
-            ArrivalMovementGoodsReports = new List<MovementGoods>();
-            DisposalMovementGoodsReports = new List<MovementGoods>();
+            ArrivalMovementGoodsCollection = new List<MovementGoods>();
+            DisposalMovementGoodsCollection = new List<MovementGoods>();
         }
 
         private int _id;
@@ -32,25 +32,25 @@ namespace ModelModul.Models
             }
         }
 
-        private ICollection<MovementGoods> _arrivalMovementGoodsReports;
-        public virtual ICollection<MovementGoods> ArrivalMovementGoodsReports
+        private ICollection<MovementGoods> _arrivalMovementGoodsCollection;
+        public virtual ICollection<MovementGoods> ArrivalMovementGoodsCollection
         {
-            get => _arrivalMovementGoodsReports;
+            get => _arrivalMovementGoodsCollection;
             set
             {
-                _arrivalMovementGoodsReports = value;
-                OnPropertyChanged("ArrivalMovementGoodsReports");
+                _arrivalMovementGoodsCollection = value;
+                OnPropertyChanged("ArrivalMovementGoodsCollection");
             }
         }
 
-        private ICollection<MovementGoods> _disposalMovementGoodsReports;
-        public virtual ICollection<MovementGoods> DisposalMovementGoodsReports
+        private ICollection<MovementGoods> _disposalMovementGoodsCollection;
+        public virtual ICollection<MovementGoods> DisposalMovementGoodsCollection
         {
-            get => _disposalMovementGoodsReports;
+            get => _disposalMovementGoodsCollection;
             set
             {
-                _disposalMovementGoodsReports = value;
-                OnPropertyChanged("DisposalMovementGoodsReports");
+                _disposalMovementGoodsCollection = value;
+                OnPropertyChanged("DisposalMovementGoodsCollection");
             }
         }
     }

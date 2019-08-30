@@ -86,7 +86,7 @@ namespace PurchaseGoodModul.ViewModels
                 if (PurchaseGoodsList.Count == 0) return false;
                 if (PurchaseGoodsList.Any(p => p.Price <= 0 || p.Count <= 0)) return false;
                 return !PurchaseGoodsList.Where(p => p.Product.KeepTrackSerialNumbers).Any(p =>
-                    p.Product.SerialNumbers.Any(s => string.IsNullOrEmpty(s.Value)));
+                    p.Product.SerialNumbersCollection.Any(s => string.IsNullOrEmpty(s.Value)));
             }
         }
 
@@ -128,8 +128,8 @@ namespace PurchaseGoodModul.ViewModels
                         item.PropertyChanged += PurchaseInfosViewModelPropertyChanged;
                         if (item.Product.KeepTrackSerialNumbers)
                         {
-                            item.Product.SerialNumbers = new ObservableCollection<SerialNumber>();
-                            ((ObservableCollection<SerialNumber>)item.Product.SerialNumbers).CollectionChanged += OnSerialNumbersCollectionChanged;
+                            item.Product.SerialNumbersCollection = new ObservableCollection<SerialNumber>();
+                            ((ObservableCollection<SerialNumber>)item.Product.SerialNumbersCollection).CollectionChanged += OnSerialNumbersCollectionChanged;
                         }
                     }
                     break;
@@ -166,19 +166,19 @@ namespace PurchaseGoodModul.ViewModels
             {
                 if(movement.Product.KeepTrackSerialNumbers)
                 {
-                    int count = (int) movement.Count - movement.Product.SerialNumbers.Count;
+                    int count = (int) movement.Count - movement.Product.SerialNumbersCollection.Count;
                     if (count > 0)
                     {
                         for (int i = 0; i < count; i++)
-                            movement.Product.SerialNumbers.Add(new SerialNumber());
+                            movement.Product.SerialNumbersCollection.Add(new SerialNumber());
                     }
                     else if (count < 0)
                     {
                         for (int i = 0; i > count; i--)
                         {
-                            var temp = movement.Product.SerialNumbers.FirstOrDefault(s =>
+                            var temp = movement.Product.SerialNumbersCollection.FirstOrDefault(s =>
                                 string.IsNullOrEmpty(s.Value));
-                            movement.Product.SerialNumbers.Remove(temp ?? movement.Product.SerialNumbers.Last());
+                            movement.Product.SerialNumbersCollection.Remove(temp ?? movement.Product.SerialNumbersCollection.Last());
                         }
                     }
                 }
@@ -252,7 +252,7 @@ namespace PurchaseGoodModul.ViewModels
                 foreach (var movementGoodsInfo in temp.MovementGoodsInfosCollection)
                 {
                     movementGoodsInfo.EquivalentCost = movementGoodsInfo.Price / temp.EquivalentRate;
-                    foreach (var serialNumber in movementGoodsInfo.Product.SerialNumbers)
+                    foreach (var serialNumber in movementGoodsInfo.Product.SerialNumbersCollection)
                     {
                         serialNumber.DateCreated = null;
                         serialNumber.IdProduct = movementGoodsInfo.Product.Id;

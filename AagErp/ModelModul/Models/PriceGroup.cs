@@ -6,7 +6,7 @@ namespace ModelModul.Models
     {
         public PriceGroup()
         {
-            Products = new HashSet<Product>();
+            ProductsCollection = new HashSet<Product>();
         }
 
         private int _id;
@@ -31,14 +31,14 @@ namespace ModelModul.Models
             }
         }
 
-        private ICollection<Product> _products;
-        public virtual ICollection<Product> Products
+        private ICollection<Product> _productsCollection;
+        public virtual ICollection<Product> ProductsCollection
         {
-            get => _products;
+            get => _productsCollection;
             set
             {
-                _products = value;
-                OnPropertyChanged("Products");
+                _productsCollection = value;
+                OnPropertyChanged("ProductsCollection");
             }
         }
     }

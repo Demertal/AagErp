@@ -13,11 +13,11 @@ namespace ModelModul.Configurations
             builder.Property(s => s.Value).IsRequired().HasMaxLength(20).IsUnicode(false);
             builder.Property(s => s.DateCreated).HasColumnType("datetime").HasDefaultValueSql("getdate()");
             builder.Ignore(s => s.Error);
-            builder.HasMany(s => s.SerialNumberLogs).WithOne(s => s.SerialNumber).HasForeignKey(s => s.IdSerialNumber)
+            builder.HasMany(s => s.SerialNumberLogsCollection).WithOne(s => s.SerialNumber).HasForeignKey(s => s.IdSerialNumber)
                 .IsRequired();
-            builder.HasMany(s => s.Warranties).WithOne(w => w.SerialNumber).HasForeignKey(w => w.IdSerialNumber)
+            builder.HasMany(s => s.WarrantiesCollection).WithOne(w => w.SerialNumber).HasForeignKey(w => w.IdSerialNumber)
                 .IsRequired();
-            builder.HasMany(s => s.Change).WithOne(w => w.SerialNumberСhange)
+            builder.HasMany(s => s.ChangesCollection).WithOne(w => w.SerialNumberСhange)
                 .HasForeignKey(w => w.IdSerialNumberСhange);
         }
     }

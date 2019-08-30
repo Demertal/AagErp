@@ -4,10 +4,9 @@ namespace ModelModul.Models
 {
     public class Invoice : ModelBase
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Invoice()
         {
-            InvoiceInfos = new List<InvoiceInfo>();
+            InvoiceInfosCollection = new List<InvoiceInfo>();
         }
 
         private int _id;
@@ -21,15 +20,14 @@ namespace ModelModul.Models
             }
         }
 
-        private ICollection<InvoiceInfo> _invoiceInfos;
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<InvoiceInfo> InvoiceInfos
+        private ICollection<InvoiceInfo> _invoiceInfosCollection;
+        public virtual ICollection<InvoiceInfo> InvoiceInfosCollection
         {
-            get => _invoiceInfos;
+            get => _invoiceInfosCollection;
             set
             {
-                _invoiceInfos = value;
-                OnPropertyChanged("InvoiceInfos");
+                _invoiceInfosCollection = value;
+                OnPropertyChanged("InvoiceInfosCollection");
             }
         }
     }

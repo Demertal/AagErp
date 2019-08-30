@@ -11,11 +11,11 @@ namespace ModelModul.Models
     {
         public Product()
         {
-            InvoiceInfos = new List<InvoiceInfo>();
-            MovementGoodsInfos = new List<MovementGoodsInfo>();
-            PriceProducts = new List<PriceProduct>();
-            PropertyProducts = new List<PropertyProduct>();
-            SerialNumbers = new List<SerialNumber>();
+            InvoiceInfosCollection = new List<InvoiceInfo>();
+            MovementGoodsInfosCollection = new List<MovementGoodsInfo>();
+            PriceProductsCollection = new List<PriceProduct>();
+            PropertyProductsCollection = new List<PropertyProduct>();
+            SerialNumbersCollection = new List<SerialNumber>();
         }
 
         private long _id;
@@ -144,21 +144,6 @@ namespace ModelModul.Models
             }
         }
 
-        private ObservableCollection<CountsProduct> _countsProduct;
-        public ObservableCollection<CountsProduct> CountsProduct
-        {
-            get => _countsProduct;
-            set
-            {
-                if(CountsProduct != null)
-                    CountsProduct.CollectionChanged -= CountsProductCollectionChanged;
-                _countsProduct = value;
-                if (CountsProduct != null)
-                    CountsProduct.CollectionChanged += CountsProductCollectionChanged;
-                OnPropertyChanged("CountsProduct");
-            }
-        }
-
         private Category _category;
         public virtual Category Category
         {
@@ -170,28 +155,6 @@ namespace ModelModul.Models
             }
         }
 
-        private ICollection<InvoiceInfo> _invoiceInfos;
-        public virtual ICollection<InvoiceInfo> InvoiceInfos
-        {
-            get => _invoiceInfos;
-            set
-            {
-                _invoiceInfos = value;
-                OnPropertyChanged("InvoiceInfos");
-            }
-        }
-
-        private ICollection<MovementGoodsInfo> _movementGoodsInfos;
-        public virtual ICollection<MovementGoodsInfo> MovementGoodsInfos
-        {
-            get => _movementGoodsInfos;
-            set
-            {
-                _movementGoodsInfos = value;
-                OnPropertyChanged("MovementGoodsInfos");
-            }
-        }
-
         private PriceGroup _priceGroup;
         public virtual PriceGroup PriceGroup
         {
@@ -200,17 +163,6 @@ namespace ModelModul.Models
             {
                 _priceGroup = value;
                 OnPropertyChanged("PriceGroup");
-            }
-        }
-
-        private ICollection<PriceProduct> _priceProducts;
-        public virtual ICollection<PriceProduct> PriceProducts
-        {
-            get => _priceProducts;
-            set
-            {
-                _priceProducts = value;
-                OnPropertyChanged("PriceProducts");
             }
         }
 
@@ -236,44 +188,92 @@ namespace ModelModul.Models
             }
         }
 
-        private ICollection<PropertyProduct> _propertyProducts;
-        public virtual ICollection<PropertyProduct> PropertyProducts
+        private ObservableCollection<CountsProduct> _countsProductCollection;
+        public ObservableCollection<CountsProduct> CountsProductCollection
         {
-            get => _propertyProducts;
+            get => _countsProductCollection;
             set
             {
-                _propertyProducts = value;
-                OnPropertyChanged("PropertyProducts");
+                if(CountsProductCollection != null)
+                    CountsProductCollection.CollectionChanged -= CountsProductCollectionChanged;
+                _countsProductCollection = value;
+                if (CountsProductCollection != null)
+                    CountsProductCollection.CollectionChanged += CountsProductCollectionChanged;
+                OnPropertyChanged("CountsProductCollection");
             }
         }
 
-        private ICollection<SerialNumber> _serialNumbers;
-        public virtual ICollection<SerialNumber> SerialNumbers
+        private ICollection<InvoiceInfo> _invoiceInfosCollection;
+        public virtual ICollection<InvoiceInfo> InvoiceInfosCollection
         {
-            get => _serialNumbers;
+            get => _invoiceInfosCollection;
             set
             {
-                _serialNumbers = value;
-                OnPropertyChanged("SerialNumbers");
+                _invoiceInfosCollection = value;
+                OnPropertyChanged("InvoiceInfosCollection");
+            }
+        }
+
+        private ICollection<MovementGoodsInfo> _movementGoodsInfosCollection;
+        public virtual ICollection<MovementGoodsInfo> MovementGoodsInfosCollection
+        {
+            get => _movementGoodsInfosCollection;
+            set
+            {
+                _movementGoodsInfosCollection = value;
+                OnPropertyChanged("MovementGoodsInfosCollection");
+            }
+        }
+
+        private ICollection<PriceProduct> _priceProductsCollection;
+        public virtual ICollection<PriceProduct> PriceProductsCollection
+        {
+            get => _priceProductsCollection;
+            set
+            {
+                _priceProductsCollection = value;
+                OnPropertyChanged("PriceProductsCollection");
+            }
+        }
+
+        private ICollection<PropertyProduct> _propertyProductsCollection;
+        public virtual ICollection<PropertyProduct> PropertyProductsCollection
+        {
+            get => _propertyProductsCollection;
+            set
+            {
+                _propertyProductsCollection = value;
+                OnPropertyChanged("PropertyProductsCollection");
+            }
+        }
+
+        private ICollection<SerialNumber> _serialNumbersCollection;
+        public virtual ICollection<SerialNumber> SerialNumbersCollection
+        {
+            get => _serialNumbersCollection;
+            set
+            {
+                _serialNumbersCollection = value;
+                OnPropertyChanged("SerialNumbersCollection");
+            }
+        }
+
+        private ObservableCollection<EquivalentCostFor≈xistingProduct> _equivalentCostFor≈xistingProductsCollection;
+        public virtual ObservableCollection<EquivalentCostFor≈xistingProduct> EquivalentCostFor≈xistingProductsCollection
+        {
+            get => _equivalentCostFor≈xistingProductsCollection;
+            set
+            {
+                _equivalentCostFor≈xistingProductsCollection = value;
+                if(_equivalentCostFor≈xistingProductsCollection != null)
+                    _equivalentCostFor≈xistingProductsCollection.CollectionChanged += EquivalentCostFor≈xistingProductsCollectionOnCollectionChanged;
+                OnPropertyChanged("EquivalentCostFor≈xistingProductsCollection");
             }
         }
 
         public bool IsValidate => !string.IsNullOrEmpty(Title) &&
                                   !string.IsNullOrEmpty(Barcode) &&
                                   IdUnitStorage != 0 && IdWarrantyPeriod != 0 && IdCategory != 0;
-
-        private ObservableCollection<EquivalentCostFor≈xistingProduct> _equivalentCostFor≈xistingProducts;
-        public virtual ObservableCollection<EquivalentCostFor≈xistingProduct> EquivalentCostFor≈xistingProducts
-        {
-            get => _equivalentCostFor≈xistingProducts;
-            set
-            {
-                _equivalentCostFor≈xistingProducts = value;
-                if(_equivalentCostFor≈xistingProducts != null)
-                    _equivalentCostFor≈xistingProducts.CollectionChanged += EquivalentCostFor≈xistingProductsOnCollectionChanged;
-                OnPropertyChanged("EquivalentCostFor≈xistingProducts");
-            }
-        }
 
         #region CollectionChanged
 
@@ -298,15 +298,15 @@ namespace ModelModul.Models
                     break;
             }
 
-            OnPropertyChanged("CountsProduct");
+            OnPropertyChanged("CountsProductCollection");
         }
 
         private void CountsProductItemChanged(object sender, PropertyChangedEventArgs e)
         {
-            OnPropertyChanged("CountsProduct");
+            OnPropertyChanged("CountsProductCollection");
         }
 
-        private void EquivalentCostFor≈xistingProductsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void EquivalentCostFor≈xistingProductsCollectionOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {
@@ -327,12 +327,12 @@ namespace ModelModul.Models
                     break;
             }
 
-            OnPropertyChanged("EquivalentCostFor≈xistingProducts");
+            OnPropertyChanged("EquivalentCostFor≈xistingProductsCollection");
         }
 
         private void EquivalentCostFor≈xistingProductItemPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            OnPropertyChanged("EquivalentCostFor≈xistingProducts");
+            OnPropertyChanged("EquivalentCostFor≈xistingProductsCollection");
         }
 
         #endregion
@@ -354,7 +354,7 @@ namespace ModelModul.Models
                 Category = (Category) Category?.Clone(),
                 UnitStorage = (UnitStorage) UnitStorage?.Clone(),
                 WarrantyPeriod = (WarrantyPeriod) WarrantyPeriod?.Clone(),
-                SerialNumbers = new List<SerialNumber>(SerialNumbers.Select(s => (SerialNumber)s.Clone()))
+                SerialNumbersCollection = new List<SerialNumber>(SerialNumbersCollection.Select(s => (SerialNumber)s.Clone()))
             };
         }
     }

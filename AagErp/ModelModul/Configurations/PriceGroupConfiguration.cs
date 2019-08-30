@@ -13,7 +13,7 @@ namespace ModelModul.Configurations
             builder.HasKey(p => p.Id);
             builder.Property(p => p.Markup).IsRequired().HasColumnType("decimal(5,2)");
             builder.Ignore(p => p.Error);
-            builder.HasMany(p => p.Products).WithOne(p => p.PriceGroup).HasForeignKey(p => p.IdPriceGroup).IsRequired();
+            builder.HasMany(p => p.ProductsCollection).WithOne(p => p.PriceGroup).HasForeignKey(p => p.IdPriceGroup).IsRequired();
         }
     }
 }
