@@ -31,7 +31,8 @@
                                     ElementStyle="{StaticResource {x:Type TextBlock}}" EditingElementStyle="{StaticResource {x:Type TextBox}}"/>
                 <DataGridTextColumn Header="Курс" Binding="{Binding Path=Cost, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}"
                                     ElementStyle="{StaticResource {x:Type TextBlock}}" EditingElementStyle="{StaticResource {x:Type TextBox}}"/>
-                <DataGridCheckBoxColumn Header="Основная?" Binding="{Binding Path=IsDefault, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridCheckBoxColumn Header="Основная?" Binding="{Binding Path=IsDefault, UpdateSourceTrigger=PropertyChanged}"
+                                        ElementStyle="{StaticResource {x:Type CheckBox}}" EditingElementStyle="{StaticResource {x:Type CheckBox}}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
