@@ -64,6 +64,17 @@ namespace ModelModul.Models
             }
         }
 
+        private string _description;
+        public string Description
+        {
+            get => _description;
+            set
+            {
+                _description = value;
+                OnPropertyChanged("Description");
+            }
+        }
+
         private int _idWarrantyPeriod;
         public int IdWarrantyPeriod
         {

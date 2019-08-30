@@ -14,6 +14,7 @@ namespace ModelModul.Configurations
             builder.Property(p => p.Title).IsRequired().HasMaxLength(256);
             builder.Property(p => p.VendorCode).HasMaxLength(20);
             builder.Property(p => p.Barcode).HasMaxLength(13);
+            builder.Property(p => p.Description).HasColumnType("nvarchar(max)");
             builder.Property(p => p.Price).HasColumnType("money").Metadata.BeforeSaveBehavior = PropertySaveBehavior.Ignore;
             builder.Property(p => p.Count).Metadata.BeforeSaveBehavior = PropertySaveBehavior.Ignore;
             builder.Ignore(p => p.CountsProductCollection);
