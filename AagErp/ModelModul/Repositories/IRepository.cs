@@ -21,7 +21,7 @@ namespace ModelModul.Repositories
         Task<int> GetCountAsync(ISpecification<TEntity> where = null, Dictionary<string, SortingTypes> order = null, int skip = 0, int take = -1);
 
         /// <summary>
-        /// Удаляет объект
+        /// Проверяет на существоание объект
         /// </summary>
         /// <param name="where">Фильтр для выборки, если null получает все данные</param>
         /// <param name="order">Список полей для сортировки</param>

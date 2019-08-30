@@ -1,17 +1,16 @@
-﻿using ModelModul.Models;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using ModelModul.Models;
 
 namespace ModelModul.Repositories
 {
     public class SqlSerialNumberRepository: SqlRepository<SerialNumber>
     {
-        //public override Task UpdateAsync(SerialNumber obj)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public override Task DeleteAsync(SerialNumber item)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public async Task<List<long>> GetFreeSerialNumbers(long idProduct, string value, int idStore)
+        {
+            return await Db.SerialNumbers.FromSql("select * from getFreeSerialNumbers({0}, {1}, {2})", idProduct, value, idStore).Select(s => s.Id).ToListAsync();
+        }
     }
 }

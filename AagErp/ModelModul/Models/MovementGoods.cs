@@ -8,9 +8,10 @@ namespace ModelModul.Models
     {
         public MovementGoods()
         {
-            MovementGoodsInfos = new List<MovementGoodsInfo>();
-            SerialNumberLogs = new List<SerialNumberLog>();
-            MoneyTransfers = new List<MoneyTransfer>();
+            MovementGoodsInfosCollection = new List<MovementGoodsInfo>();
+            SerialNumberLogsCollection = new List<SerialNumberLog>();
+            MoneyTransfersCollection = new List<MoneyTransfer>();
+            MovementGoodsCollection = new List<MovementGoods>();
         }
 
         private Guid _id;
@@ -156,6 +157,17 @@ namespace ModelModul.Models
             }
         }
 
+        private Guid? _idMovementGood;
+        public Guid? IdMovementGood
+        {
+            get => _idMovementGood;
+            set
+            {
+                _idMovementGood = value;
+                OnPropertyChanged("IdMovementGood");
+            }
+        }
+
         private Counterparty _counterparty;
         public virtual Counterparty Counterparty
         {
@@ -186,17 +198,6 @@ namespace ModelModul.Models
             {
                 _currency = value;
                 OnPropertyChanged("Currency");
-            }
-        }
-
-        private ICollection<MoneyTransfer> _moneyTransfers;
-        public virtual ICollection<MoneyTransfer> MoneyTransfers
-        {
-            get => _moneyTransfers;
-            set
-            {
-                _moneyTransfers = value;
-                OnPropertyChanged("MoneyTransfers");
             }
         }
 
@@ -233,25 +234,58 @@ namespace ModelModul.Models
             }
         }
 
-        private ICollection<MovementGoodsInfo> _movementGoodsInfos;
-        public virtual ICollection<MovementGoodsInfo> MovementGoodsInfos
+        private MovementGoods _movementGood;
+        public MovementGoods MovementGood
         {
-            get => _movementGoodsInfos;
+            get => _movementGood;
             set
             {
-                _movementGoodsInfos = value;
-                OnPropertyChanged("MovementGoodsInfos");
+                _movementGood = value;
+                OnPropertyChanged("MovementGood");
             }
         }
 
-        private ICollection<SerialNumberLog> _serialNumberLogs;
-        public virtual ICollection<SerialNumberLog> SerialNumberLogs
+        private ICollection<MovementGoodsInfo> _movementGoodsInfosCollection;
+        public virtual ICollection<MovementGoodsInfo> MovementGoodsInfosCollection
         {
-            get => _serialNumberLogs;
+            get => _movementGoodsInfosCollection;
             set
             {
-                _serialNumberLogs = value;
-                OnPropertyChanged("SerialNumberLogs");
+                _movementGoodsInfosCollection = value;
+                OnPropertyChanged("MovementGoodsInfosCollection");
+            }
+        }
+
+        private ICollection<SerialNumberLog> _serialNumberLogsCollection;
+        public virtual ICollection<SerialNumberLog> SerialNumberLogsCollection
+        {
+            get => _serialNumberLogsCollection;
+            set
+            {
+                _serialNumberLogsCollection = value;
+                OnPropertyChanged("SerialNumberLogsCollection");
+            }
+        }
+
+        private ICollection<MovementGoods> _movementGoodsCollection;
+        public ICollection<MovementGoods> MovementGoodsCollection
+        {
+            get => _movementGoodsCollection;
+            set
+            {
+                _movementGoodsCollection = value;
+                OnPropertyChanged("MovementGoods");
+            }
+        }
+
+        private ICollection<MoneyTransfer> _moneyTransfersCollection;
+        public virtual ICollection<MoneyTransfer> MoneyTransfersCollection
+        {
+            get => _moneyTransfersCollection;
+            set
+            {
+                _moneyTransfersCollection = value;
+                OnPropertyChanged("MoneyTransfersCollection");
             }
         }
 
@@ -336,8 +370,8 @@ namespace ModelModul.Models
                 IsGoodsIssued = IsGoodsIssued,
                 Rate = Rate,
                 TextInfo = TextInfo,
-                MovementGoodsInfos =
-                    new List<MovementGoodsInfo>(MovementGoodsInfos.Select(m => (MovementGoodsInfo) m.Clone()))
+                MovementGoodsInfosCollection =
+                    new List<MovementGoodsInfo>(MovementGoodsInfosCollection.Select(m => (MovementGoodsInfo) m.Clone()))
             };
         }
     }

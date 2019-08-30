@@ -5,8 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:interactivity="http://prismlibrary.com/"
-             xmlns:converters="clr-namespace:CustomControlLibrary.Converters;assembly=CustomControlLibrary"
              xmlns:modelModul="clr-namespace:ModelModul;assembly=ModelModul"
+             xmlns:customControlLibrary="clr-namespace:CustomControlLibrary;assembly=CustomControlLibrary"
+             xmlns:converters="clr-namespace:ModelModul.Converters;assembly=ModelModul"
              interactivity:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d">
     <UserControl.Resources>
@@ -27,29 +28,23 @@
     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
         <StackPanel>
             <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                <TextBlock Text="Cклад: " Margin="5"/>
+                <TextBlock Text="Cклад: " Margin="5" VerticalAlignment="Center"/>
                 <ComboBox  ItemsSource="{Binding StoresList, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True" DisplayMemberPath="Title" SelectedValuePath="Id"
-                           SelectedValue="{Binding PurchaseGood.IdArrivalStore, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBlock Text="Поставщика: " Margin="5"/>
+                           SelectedValue="{Binding PurchaseGood.IdArrivalStore, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+                <TextBlock Text="Поставщик: " Margin="5" VerticalAlignment="Center"/>
                 <ComboBox  ItemsSource="{Binding CounterpartiesList, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True" DisplayMemberPath="Title"
-                           SelectedValuePath="Id" SelectedValue="{Binding PurchaseGood.IdCounterparty, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBlock Text="Валюта закупки: " Margin="5"/>
+                           SelectedValuePath="Id" SelectedValue="{Binding PurchaseGood.IdCounterparty, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+                <TextBlock Text="Валюта закупки: " Margin="5" VerticalAlignment="Center"/>
                 <ComboBox  x:Name="CurrencyComboBox" ItemsSource="{Binding CurrenciesList, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True"
-                           DisplayMemberPath="Title" SelectedValuePath="Id" SelectedValue="{Binding PurchaseGood.IdCurrency, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBlock Text="Валюта эквивалента: " Margin="5"/>
+                           DisplayMemberPath="Title" SelectedValuePath="Id" SelectedValue="{Binding PurchaseGood.IdCurrency, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+                <TextBlock Text="Валюта эквивалента: " Margin="5" VerticalAlignment="Center"/>
                 <ComboBox  x:Name="EquivalentCurrencyComboBox" ItemsSource="{Binding EquivalentCurrenciesList, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True"
-                           DisplayMemberPath="Title" SelectedValuePath="Id" SelectedValue="{Binding PurchaseGood.IdEquivalentCurrency, UpdateSourceTrigger=PropertyChanged}"/>
+                           DisplayMemberPath="Title" SelectedValuePath="Id" SelectedValue="{Binding PurchaseGood.IdEquivalentCurrency, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{Binding SelectedItem.Title, ElementName=CurrencyComboBox, StringFormat=Курс {0}}" Margin="5"/>
-                <TextBox>
-                    <Binding Path="PurchaseGood.Rate" UpdateSourceTrigger="PropertyChanged" StringFormat="F2">
-                        <Binding.ValidationRules>
-                            <DataErrorValidationRule />
-                        </Binding.ValidationRules>
-                    </Binding>
-                </TextBox>
-                <TextBlock Margin="5">
+                <TextBlock Text="{Binding SelectedItem.Title, ElementName=CurrencyComboBox, StringFormat=Курс {0}}" Margin="5" VerticalAlignment="Center"/>
+                <TextBox Text="{Binding Path=PurchaseGood.Rate, UpdateSourceTrigger=PropertyChanged, StringFormat=F2, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}"/>
+                <TextBlock Margin="5" VerticalAlignment="Center">
                     <TextBlock.Text>
                         <MultiBinding StringFormat="Курс {1} к {0}">
                             <Binding Path="SelectedItem.Title" ElementName="EquivalentCurrencyComboBox"/>
@@ -57,16 +52,10 @@
                         </MultiBinding>
                     </TextBlock.Text>
                 </TextBlock>
-                <TextBox>
-                    <Binding Path="PurchaseGood.EquivalentRate" UpdateSourceTrigger="PropertyChanged" StringFormat="F2">
-                        <Binding.ValidationRules>
-                            <DataErrorValidationRule />
-                        </Binding.ValidationRules>
-                    </Binding>
-                </TextBox>
+                <TextBox Text="{Binding Path=PurchaseGood.EquivalentRate, UpdateSourceTrigger=PropertyChanged, StringFormat=F2, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Информация о закупке: " Margin="5"/>
+                <TextBlock Text="Информация о закупке: " Margin="5" VerticalAlignment="Center"/>
                 <TextBox Text="{Binding TextInfo, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
         </StackPanel>
@@ -78,6 +67,9 @@
                             <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
                         </Style>
                     </DataGrid.RowStyle>
+                    <DataGrid.Resources>
+                        <customControlLibrary:BindingProxy x:Key="Proxy" Data="{Binding ElementName=Goods, Path=SelectedItem}"/>
+                    </DataGrid.Resources>
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Наименование" Binding="{Binding Product.Title, UpdateSourceTrigger=PropertyChanged}" MinWidth="200"
                                             ElementStyle="{StaticResource {x:Type TextBlock}}"/>
@@ -85,26 +77,19 @@
                                                         ElementStyle="{StaticResource {x:Type TextBlock}}"/>
                         <DataGridTextColumn Header="Штрихкод" Binding="{Binding Product.Barcode, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True" Visibility="Collapsed" 
                                                         ElementStyle="{StaticResource {x:Type TextBlock}}"/>
-                        <DataGridTextColumn Header="Цена" ElementStyle="{StaticResource {x:Type TextBlock}}" EditingElementStyle="{DynamicResource TextBoxByDataGrid}">
-                            <DataGridTextColumn.Binding>
-                                <Binding Path="Price" UpdateSourceTrigger="PropertyChanged" StringFormat="F2">
-                                    <Binding.ValidationRules>
-                                        <DataErrorValidationRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </DataGridTextColumn.Binding>
-                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Цена" ElementStyle="{StaticResource {x:Type TextBlock}}" EditingElementStyle="{DynamicResource TextBoxByDataGrid}"
+                                            Binding="{Binding Path=Price, UpdateSourceTrigger=PropertyChanged, StringFormat=F2, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}"/>
                         <DataGridTextColumn Header="Кол-во" ElementStyle="{StaticResource {x:Type TextBlock}}" EditingElementStyle="{DynamicResource TextBoxByDataGrid}">
                             <DataGridTextColumn.Binding>
-                                <MultiBinding UpdateSourceTrigger="LostFocus" Converter="{StaticResource ConvertCount}" ValidatesOnExceptions="True">
-                                    <Binding  Path="Count">
-                                        <Binding.ValidationRules>
-                                            <DataErrorValidationRule />
-                                        </Binding.ValidationRules>
-                                    </Binding>
+                                <MultiBinding UpdateSourceTrigger="PropertyChanged" Converter="{StaticResource ConvertCount}" ValidatesOnExceptions="True">
+                                    <Binding  Path="Count" ValidatesOnExceptions="True" ValidatesOnDataErrors="True"/>
                                     <Binding Path="Product.UnitStorage.IsWeightGoods" Mode="OneWay"/>
                                     <MultiBinding.ValidationRules>
-                                        <modelModul:CountValidationRule ValidationStep="RawProposedValue"/>
+                                        <modelModul:CountValidationRule ValidationStep="RawProposedValue">
+                                            <modelModul:CountValidationRule.Wrapper>
+                                                <modelModul:Wrapper IsWeightGoods="{Binding Path=Data.Product.UnitStorage.IsWeightGoods, Source={StaticResource Proxy}}"/>
+                                            </modelModul:CountValidationRule.Wrapper>
+                                        </modelModul:CountValidationRule>
                                     </MultiBinding.ValidationRules>
                                 </MultiBinding>
                             </DataGridTextColumn.Binding>
@@ -119,10 +104,11 @@
                         </DataGridTextColumn>
                     </DataGrid.Columns>
                 </DataGrid>
-                <DataGrid ItemsSource="{Binding SelectedItem.Product.SerialNumbers, ElementName=Goods}" IsSynchronizedWithCurrentItem="True" Height="200" Margin="5" DockPanel.Dock="Right" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <DataGrid ItemsSource="{Binding SelectedItem.Product.SerialNumbers, ElementName=Goods}" IsSynchronizedWithCurrentItem="True" Height="200"
+                          Margin="5" DockPanel.Dock="Right" HorizontalAlignment="Left" VerticalAlignment="Top">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Серийные номера" Binding="{Binding Path=Value, UpdateSourceTrigger=PropertyChanged}" MinWidth="200"
-                                            ElementStyle="{StaticResource {x:Type TextBlock}}" EditingElementStyle="{DynamicResource TextBoxByDataGrid}"/>
+                        <DataGridTextColumn Header="Серийные номера" Binding="{Binding Path=Value, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}"
+                                            MinWidth="200" ElementStyle="{StaticResource {x:Type TextBlock}}" EditingElementStyle="{DynamicResource TextBoxByDataGrid}"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </DockPanel>
@@ -130,7 +116,7 @@
         <DockPanel>
             <Button Content="Добавить товар" Command="{Binding AddProductCommand}"/>
             <Button Content="Провести" Command="{Binding PostCommand}" DockPanel.Dock="Right"/>
-            <TextBlock Text="{Binding PurchaseGoodsList, Converter={StaticResource CalculationTotal}, StringFormat=Итого \{0:F2\}}"/>
+            <TextBlock Text="{Binding PurchaseGoodsList, Converter={StaticResource CalculationTotal}, StringFormat=Итого {0:F2}}"/>
         </DockPanel>
     </StackPanel>
 </UserControl>

@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace ModelModul.Models
 {
     public class UnitStorage : ModelBase, ICloneable
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public UnitStorage()
         {
             Products = new List<Product>();
@@ -24,8 +22,6 @@ namespace ModelModul.Models
         }
 
         private string _title;
-        [Required]
-        [StringLength(20)]
         public string Title
         {
             get => _title;
@@ -48,7 +44,6 @@ namespace ModelModul.Models
         }
 
         private ICollection<Product> _products;
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Product> Products
         {
             get => _products;

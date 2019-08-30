@@ -24,7 +24,7 @@ namespace ModelModul.Models
         }
 
         private string _value;
-        public string Value
+        public virtual string Value
         {
             get => _value;
             set
@@ -97,6 +97,26 @@ namespace ModelModul.Models
             {
                 _change = value;
                 OnPropertyChanged("Change");
+            }
+        }
+
+        public override string this[string columnName]
+        {
+            get
+            {
+                string error = string.Empty;
+                switch (columnName)
+                {
+                    case "Value":
+                        if (string.IsNullOrEmpty(Value))
+                        {
+                            error = "Номер должен быть указан";
+                        }
+
+                        break;
+                }
+                Error = error;
+                return error;
             }
         }
 

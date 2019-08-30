@@ -137,10 +137,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BindingProxy.cs" />
-    <Compile Include="Converters\CalculationTotal.cs" />
-    <Compile Include="Converters\ConvertCount.cs" />
     <Compile Include="Converters\ConvertDecimalToPercent.cs" />
-    <Compile Include="Converters\CalculationSum.cs" />
     <Compile Include="Converters\GetProductsTitleFromMovementGoodsInfo.cs" />
     <Compile Include="Converters\GetProductsTitleFromRevaluaitionInfo.cs" />
     <Compile Include="Converters\IsEnabledConverterForBool.cs" />

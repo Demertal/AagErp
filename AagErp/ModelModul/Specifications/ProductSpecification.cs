@@ -40,5 +40,13 @@ namespace ModelModul.Specifications
         {
             return new ExpressionSpecification<Product>(obj => obj.IdCategory == idGroup);
         }
+
+        public static ExpressionSpecification<Product> GetProductsByIdGroupOrFindString(int idGroup, string findString)
+        {
+            return idGroup == 0
+                ? new ExpressionSpecification<Product>(GetProductsByFindString(findString).IsSatisfiedBy())
+                : new ExpressionSpecification<Product>(GetProductsByIdGroup(idGroup)
+                    .And(GetProductsByFindString(findString)).IsSatisfiedBy());
+        }
     }
 }

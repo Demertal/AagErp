@@ -57,15 +57,8 @@
                 </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Текущая" Binding="{Binding Path=Product.Price, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}"
                                     IsReadOnly="True" ElementStyle="{StaticResource {x:Type TextBlock}}"/>
-                <DataGridTextColumn Header="Переоцененная"  ElementStyle="{StaticResource {x:Type TextBlock}}" EditingElementStyle="{DynamicResource TextBoxByDataGrid}">
-                    <DataGridTextColumn.Binding>
-                        <Binding Path="Price" UpdateSourceTrigger="PropertyChanged" StringFormat="F2">
-                            <Binding.ValidationRules>
-                                <DataErrorValidationRule />
-                            </Binding.ValidationRules>
-                        </Binding>
-                    </DataGridTextColumn.Binding>
-                </DataGridTextColumn>
+                <DataGridTextColumn Header="Переоцененная" Binding="{Binding Path=Price, UpdateSourceTrigger=PropertyChanged, StringFormat=F2, ValidatesOnDataErrors=True}"
+                                    ElementStyle="{StaticResource {x:Type TextBlock}}" EditingElementStyle="{DynamicResource TextBoxByDataGrid}"/>
             </DataGrid.Columns>
         </DataGrid>
         <DockPanel VerticalAlignment="Center">

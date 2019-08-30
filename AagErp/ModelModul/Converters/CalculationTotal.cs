@@ -5,14 +5,14 @@ using System.Linq;
 using System.Windows.Data;
 using ModelModul.Models;
 
-namespace CustomControlLibrary.Converters
+namespace ModelModul.Converters
 {
     public class CalculationTotal : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (!(value is ICollection<MovementGoodsInfo> movementGoods)) return 0;
-            return movementGoods.Sum(m => m.Price * (decimal)m.Count);
+            return movementGoods.Sum(m => m.Price * m.Count);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

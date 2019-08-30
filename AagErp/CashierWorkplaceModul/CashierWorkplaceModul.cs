@@ -1,6 +1,9 @@
 ﻿using CashierWorkplaceModul.Views;
+using CustomControlLibrary.MVVM;
 using Prism.Ioc;
 using Prism.Modularity;
+using ProductModul.ViewModels;
+using ProductModul.Views;
 
 namespace CashierWorkplaceModul
 {
@@ -13,6 +16,8 @@ namespace CashierWorkplaceModul
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterForNavigation<CashierWorkplace>();
+            containerRegistry.RegisterDialogWindow<DialogWindow>();
+            containerRegistry.RegisterDialog<ShowProduct, ShowProductViewModel>();
         }
     }
 }

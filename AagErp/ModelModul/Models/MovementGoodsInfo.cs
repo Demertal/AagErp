@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 
 namespace ModelModul.Models
 {
@@ -15,14 +16,25 @@ namespace ModelModul.Models
             }
         }
 
-        private double _count;
-        public double Count
+        private decimal _count;
+        public virtual decimal Count
         {
             get => _count;
             set
             {
                 _count = value;
                 OnPropertyChanged("Count");
+            }
+        }
+
+        private decimal _balance;
+        public decimal Balance
+        {
+            get => _balance;
+            set
+            {
+                _balance = value;
+                OnPropertyChanged("Balance");
             }
         }
 
@@ -106,6 +118,11 @@ namespace ModelModul.Models
                         }
                         break;
                     case "Count":
+                        if (Product?.UnitStorage != null)
+                        {
+                            if(!Product.UnitStorage.IsWeightGoods && Count.ToString(CultureInfo.InvariantCulture).IndexOfAny(new []{'.', ','}) != -1)
+                                error = "Кол-во не может быть дробным";
+                        }
                         if (Count <= 0)
                         {
                             error = "Кол-во не может быть меньше и равным 0";

@@ -2,8 +2,8 @@
 {
     public class EquivalentCostForЕxistingProduct : ModelBase
     {
-        private double _count;
-        public double Count
+        private decimal _count;
+        public decimal Count
         {
             get => _count;
             set

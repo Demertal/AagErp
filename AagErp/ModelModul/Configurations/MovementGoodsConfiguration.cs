@@ -16,9 +16,11 @@ namespace ModelModul.Configurations
             builder.Property(m => m.DateCreate).HasColumnType("datetime").HasDefaultValueSql("getdate()");
             builder.Property(m => m.DateClose).HasColumnType("datetime");
             builder.Ignore(m => m.Error);
-            builder.HasMany(m => m.MoneyTransfers).WithOne(m => m.MovementGoods).HasForeignKey(m => m.IdMovementGoods).IsRequired();
-            builder.HasMany(m => m.MovementGoodsInfos).WithOne(m => m.MovementGoods).HasForeignKey(m => m.IdReport).IsRequired();
-            builder.HasMany(m => m.SerialNumberLogs).WithOne(s => s.MovementGood).HasForeignKey(s => s.IdMovmentGood).IsRequired();
+            builder.HasMany(m => m.MoneyTransfersCollection).WithOne(m => m.MovementGoods).HasForeignKey(m => m.IdMovementGoods).IsRequired();
+            builder.HasMany(m => m.MovementGoodsInfosCollection).WithOne(m => m.MovementGoods).HasForeignKey(m => m.IdReport).IsRequired();
+            builder.HasMany(m => m.SerialNumberLogsCollection).WithOne(s => s.MovementGood).HasForeignKey(s => s.IdMovmentGood).IsRequired();
+            builder.HasMany(m => m.MovementGoodsCollection).WithOne(m => m.MovementGood)
+                .HasForeignKey(m => m.IdMovementGood);
         }
     }
 }

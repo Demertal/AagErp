@@ -117,7 +117,7 @@
 			<column name="idCounterparty" type="int" length="10" decimal="0" jt="4" mandatory="y" />
 			<column name="moneyAmount" type="money" length="19" decimal="4" jt="3" mandatory="y" />
 			<column name="idType" type="int" length="10" decimal="0" jt="4" mandatory="y" />
-			<column name="idMovementGoods" type="uniqueidentifier" jt="1" mandatory="y" />
+			<column name="idMovementGood" type="uniqueidentifier" jt="1" mandatory="y" />
 			<index name="PK_moneyTransfers" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
@@ -136,8 +136,8 @@
 			<fk name="FK_MoneyTransfers_idType_moneyTransferTypes" to_schema="dbo" to_table="moneyTransferTypes" >
 				<fk_column name="idType" pk="id" />
 			</fk>
-			<fk name="FK_moneyTransfers_idMovementGoods_movementGoods" to_schema="dbo" to_table="movementGoods" >
-				<fk_column name="idMovementGoods" pk="id" />
+			<fk name="dbo.FK_moneyTransfers_idMovementGood_movementGoods" to_schema="dbo" to_table="movementGoods" >
+				<fk_column name="idMovementGood" pk="id" />
 			</fk>
 		</table>
 		<table name="movementGoods" generator_rows="1000" >
@@ -162,6 +162,7 @@
 			</column>
 			<column name="idEquivalentCurrency" type="int" jt="4" />
 			<column name="equivalentRate" type="money" jt="3" />
+			<column name="idMovementGood" type="uniqueidentifier" jt="1" />
 			<index name="PK_movementGoods" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
@@ -201,14 +202,18 @@
 			<fk name="FK_movementGoods_idEquivalentCurrency_currencies" to_schema="dbo" to_table="currencies" >
 				<fk_column name="idEquivalentCurrency" pk="id" />
 			</fk>
+			<fk name="FK_movementGoods_idMovementGood_movementGoods" to_schema="dbo" to_table="movementGoods" >
+				<fk_column name="idMovementGood" pk="id" />
+			</fk>
 		</table>
 		<table name="movementGoodsInfos" generator_rows="9000" >
 			<column name="id" type="bigint" jt="-5" mandatory="y" autoincrement="y" />
-			<column name="count" type="float" length="53" decimal="0" jt="8" mandatory="y" regexp="double:from=0;to=100;format=####################.;" />
+			<column name="count" type="decimal" length="7" decimal="2" jt="3" mandatory="y" regexp="double:from=0;to=100;format=####################.;" />
 			<column name="price" type="money" length="19" decimal="4" jt="3" regexp="double:from=0;to=100;format=###############.####;" />
 			<column name="idReport" type="uniqueidentifier" jt="1" mandatory="y" />
 			<column name="idProduct" type="bigint" jt="-5" mandatory="y" />
 			<column name="equivalentCost" type="money" jt="3" />
+			<column name="balance" type="decimal" length="7" decimal="2" jt="3" />
 			<index name="PK_movementGoodsInfos" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
@@ -218,11 +223,11 @@
 			<index name="ind_movementGoodsInfos_idProduct" unique="NORMAL" >
 				<column name="idProduct" />
 			</index>
-			<constraint name="CK_movementGoodsInfos_count" >
-				<string>[count]&gt;(0)</string>
-			</constraint>
 			<constraint name="CK_movementGoodsInfos_price" >
 				<string>[Price]&gt;(0)</string>
+			</constraint>
+			<constraint name="CK_movementGoodsInfos_count" >
+				<string>[count]&gt;(0)</string>
 			</constraint>
 			<fk name="FK_movementGoodsInfos_idReport_movementGoods" to_schema="dbo" to_table="movementGoods" >
 				<fk_column name="idReport" pk="id" />
@@ -607,6 +612,62 @@ BEGIN
 END
 ]]></string>
 		</trigger>
+		<trigger name="movementGoodsInfos_insert" table="movementGoodsInfos" id="Trigger_4cf068a" isSystem="false" >
+			<string><![CDATA[CREATE TRIGGER [dbo].[movementGoodsInfos_insert] ON [dbo].[movementGoodsInfos]
+AFTER INSERT
+AS
+BEGIN
+	DECLARE @codeMoving int, @codePurchase int, @codeSales int
+	SELECT @codeMoving = id FROM movmentGoodTypes WHERE code = 'moving'
+	SELECT @codePurchase = id FROM movmentGoodTypes WHERE code = 'purchase'
+	SELECT @codeSales = id FROM movmentGoodTypes WHERE code = 'sale'
+	UPDATE dbo.movementGoodsInfos SET balance = i.count FROM inserted i
+		INNER JOIN dbo.movementGoods mg ON ( i.idReport = mg.id )
+		WHERE mg.idType = @codePurchase AND i.id = movementGoodsInfos.id
+	IF (EXISTS (SELECT 1 FROM inserted i
+			INNER JOIN dbo.movementGoods mg ON ( i.idReport = mg.id AND mg.idType = @codeSales)
+		WHERE i.count > (SELECT c.count FROM dbo.getCountProduct(i.idProduct) c WHERE c.storeId = mg.idDisposalStore))) BEGIN
+		RAISERROR ('Указанного кол-ва товара нет на складе', 16, 3)
+		ROLLBACK TRANSACTION;
+	END
+	DECLARE @iCount decimal(7, 2), @iIdProduct int, @iIdStore int
+	DECLARE insertedProduct CURSOR FOR
+		SELECT i.count, i.idProduct, mg.idDisposalStore
+		FROM inserted i
+			INNER JOIN dbo.movementGoods mg ON ( i.idReport = mg.id)
+		WHERE mg.idType = @codeSales
+	OPEN insertedProduct
+	FETCH NEXT FROM insertedProduct INTO @iCount, @iIdProduct, @iIdStore;
+	WHILE @@FETCH_STATUS = 0 BEGIN
+		DECLARE @count decimal(7, 2), @id int
+		DECLARE movementGoodsInfo CURSOR FOR
+		SELECT mgi.balance, mgi.id
+		FROM dbo.movementGoodsInfos mgi
+			INNER JOIN dbo.movementGoods mg ON ( mgi.idReport = mg.id)
+		WHERE mg.idType = @codePurchase AND mg.idArrivalStore = @iIdStore AND mgi.idProduct = @iIdProduct AND mgi.balance != 0
+			ORDER BY mg.dateCreate DESC
+		OPEN movementGoodsInfo
+		FETCH NEXT FROM movementGoodsInfo INTO @count, @id
+		WHILE @iCount > 0 BEGIN
+			IF @count >= @iCount BEGIN
+				UPDATE dbo.movementGoodsInfos SET balance -= @iCount WHERE id = @id
+				SET @iCount = 0
+			END
+			ELSE BEGIN
+				UPDATE dbo.movementGoodsInfos SET balance = 0 WHERE id = @id
+				SET @iCount -= @count
+			END
+			FETCH NEXT FROM movementGoodsInfo INTO @count, @id
+		
+		END		
+		CLOSE movementGoodsInfo;  
+		DEALLOCATE movementGoodsInfo;
+		FETCH NEXT FROM insertedProduct INTO @iCount, @iIdProduct, @iIdStore;
+	END
+	CLOSE insertedProduct;  
+	DEALLOCATE insertedProduct;
+END]]></string>
+		</trigger>
 		<trigger name="propertyNames_delete" table="propertyNames" id="Trigger_29b9e93" isSystem="false" >
 			<string><![CDATA[CREATE TRIGGER propertyNames_delete ON propertyNames
 INSTEAD OF DELETE
@@ -617,6 +678,45 @@ BEGIN
 END
 ]]></string>
 		</trigger>
+		<trigger name="serialNumberLogs_insert" table="serialNumberLogs" id="Trigger_5c7701c" isSystem="false" >
+			<string><![CDATA[CREATE TRIGGER [dbo].[serialNumberLogs_insert] ON [dbo].[serialNumberLogs]
+AFTER INSERT
+AS
+BEGIN
+	IF(EXISTS (SELECT count(1) FROM inserted i GROUP BY i.idSerialNumber HAVING count(1) > 1)) BEGIN
+		RAISERROR ('Одинаковые id серийного номера не допустимы', 16, 2)
+		ROLLBACK TRANSACTION;
+	END
+	IF (EXISTS (SELECT 1 FROM inserted i
+			INNER JOIN dbo.movementGoods mg ON ( i.idMovmentGood = mg.id )
+				INNER JOIN dbo.movmentGoodTypes mgt ON ( mg.idType = mgt.id)
+			INNER JOIN dbo.serialNumbers s ON ( i.idSerialNumber = s.id)
+		WHERE mgt.code = 'sales' AND i.id NOT IN (SELECT * FROM dbo.getFreeSerialNumbers(s.idProduct, s.value, mg.idDisposalStore)))) BEGIN
+		RAISERROR ('Указанного серийного номера нет на складе', 16, 3)
+		ROLLBACK TRANSACTION;
+	END
+END]]></string>
+		</trigger>
+		<function name="getCountProduct" id="Function_249b289" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE FUNCTION [dbo].[getCountProduct](@idProduct bigint)
+RETURNS TABLE
+AS
+RETURN
+(
+	SELECT 
+		s.id as storeId,
+		cast(isnull(sum(
+		case
+			when s.id = mg.idArrivalStore and mgt.code in ('purchase', 'returnFromBuyer', 'change', 'moving') then mgi.count
+			when s.id = mg.idDisposalStore and mgt.code in ('sale', 'returnToSupplier', 'change', 'moving') then -mgi.count
+		end), 0) as decimal(7, 2)) [count]
+	FROM dbo.stores s 
+		LEFT JOIN dbo.movementGoods mg ON ( s.id = mg.idArrivalStore or s.id = mg.idDisposalStore )
+			LEFT JOIN dbo.movementGoodsInfos mgi ON ( mg.id = mgi.idReport AND mgi.idProduct = @idProduct )  
+			LEFT JOIN dbo.movmentGoodTypes mgt ON ( mg.idType = mgt.id  )
+		GROUP BY s.id
+)]]></string>
+		</function>
 		<function name="getCurrentPrice" id="Function_276d590" isSystem="false" params_known="n" >
 			<string><![CDATA[CREATE FUNCTION [dbo].[getCurrentPrice] (@idProduct bigint)
 RETURNS MONEY
@@ -680,6 +780,51 @@ DEALLOCATE movementProduct;
 RETURN
 END]]></string>
 		</function>
+		<function name="getFreeSerialNumbers" id="Function_4a8b736" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE FUNCTION [dbo].[getFreeSerialNumbers] (@idProduct BIGINT, @value varchar(20), @idStore INT)
+RETURNS @result TABLE (id BIGINT)
+AS
+BEGIN
+INSERT INTO @result
+SELECT sn.id
+FROM dbo.serialNumbers sn 
+WHERE sn.value = @value AND
+	sn.idProduct = @idProduct AND
+	 NOT EXISTS ( 
+	SELECT 1 
+	FROM dbo.serialNumberLogs snl 
+		INNER JOIN dbo.movementGoods mg ON ( snl.idMovmentGood = mg.id  )  
+			INNER JOIN dbo.movmentGoodTypes mgt ON ( mg.idType = mgt.id  )  
+	WHERE sn.id = snl.idSerialNumber  AND
+		mgt.code in ('returnFromBuyer', 'change') ) AND
+	isnull((SELECT TOP 1 mg.dateCreate
+	FROM dbo.serialNumberLogs snl 
+		INNER JOIN dbo.movementGoods mg ON ( snl.idMovmentGood = mg.id  )  
+			INNER JOIN dbo.movmentGoodTypes mgt ON ( mg.idType = mgt.id  )  
+	WHERE sn.id = snl.idSerialNumber AND mg.idArrivalStore = @idStore AND mgt.code in ('purchase', 'moving')
+		ORDER BY mg.dateCreate DESC), '1990-1-2') > 
+	isnull((SELECT TOP 1 mg.dateCreate
+	FROM dbo.serialNumberLogs snl 
+		INNER JOIN dbo.movementGoods mg ON ( snl.idMovmentGood = mg.id  )  
+			INNER JOIN dbo.movmentGoodTypes mgt ON ( mg.idType = mgt.id  )
+	WHERE sn.id = snl.idSerialNumber AND mg.idDisposalStore = @idStore  AND mgt.code = 'moving'
+		ORDER BY mg.dateCreate DESC), '1990-1-1') AND
+	isnull((SELECT TOP 1 mg.dateCreate
+	FROM dbo.serialNumberLogs snl 
+		INNER JOIN dbo.movementGoods mg ON ( snl.idMovmentGood = mg.id  )  
+			INNER JOIN dbo.movmentGoodTypes mgt ON ( mg.idType = mgt.id  )  
+	WHERE sn.id = snl.idSerialNumber  AND mgt.code = 'sale' 
+		ORDER BY mg.dateCreate DESC), '1990-1-1') < 
+	isnull((SELECT TOP 1 mg.dateCreate
+	FROM dbo.serialNumberLogs snl 
+		INNER JOIN dbo.movementGoods mg ON ( snl.idMovmentGood = mg.id  )  
+			INNER JOIN dbo.movmentGoodTypes mgt ON ( mg.idType = mgt.id  )  
+	WHERE sn.id = snl.idSerialNumber  AND mgt.code = 'returnFromBuyer'
+		ORDER BY mg.dateCreate DESC), '1990-1-2')
+	ORDER BY sn.dateCreated DESC
+RETURN
+END]]></string>
+		</function>
 		<function name="getPropertyForProduct" id="Function_29d0f43" isSystem="false" params_known="n" >
 			<string><![CDATA[
 CREATE FUNCTION [dbo].[getPropertyForProduct](@idProduct bigint, @idCategory INT)
@@ -710,31 +855,31 @@ END]]></string>
 	</schema>
 	<connector name="SqlServer" database="SqlServer" driver_class="com.microsoft.sqlserver.jdbc.SQLServerDriver" driver_jar="mssql-jdbc-7.0.0.jre10.jar" driver_desc="Native Driver - Windows Authentication, Current User" host="DESKTOP-KC53E2S" port="1433" instance="AutomationAccountingGoods" user="ws" passwd="c2xvdzIzc3dpbTQ1QA==" />
 	<layout name="aag" id="Layout_9f7fe7" show_relation="columns" >
-		<entity schema="dbo" name="invoices" color="F4DDBE" x="1440" y="368" />
-		<entity schema="dbo" name="priceGroups" color="F4DDBE" x="1040" y="368" />
-		<entity schema="dbo" name="propertyValues" color="BEBEF4" x="1872" y="288" />
-		<entity schema="dbo" name="propertyNames" color="BEBEF4" x="1856" y="80" />
-		<entity schema="dbo" name="warranties" color="BED3F4" x="592" y="416" />
-		<entity schema="dbo" name="serialNumberLogs" color="BED3F4" x="608" y="240" />
-		<entity schema="dbo" name="moneyTransfers" color="C7F4BE" x="1040" y="752" />
-		<entity schema="dbo" name="moneyTransferTypes" color="C7F4BE" x="1216" y="768" />
-		<entity schema="dbo" name="invoiceInfos" color="F4DDBE" x="1280" y="368" />
-		<entity schema="dbo" name="propertyProducts" color="BEBEF4" x="2064" y="112" />
-		<entity schema="dbo" name="categories" color="BEBEF4" x="1712" y="112" />
-		<entity schema="dbo" name="paymentTypes" color="C7F4BE" x="1040" y="992" />
-		<entity schema="dbo" name="counterparties" color="C7F4BE" x="848" y="752" />
-		<entity schema="dbo" name="warrantyPeriods" color="F4DDBE" x="864" y="224" />
-		<entity schema="dbo" name="stores" color="BED3F4" x="432" y="512" />
-		<entity schema="dbo" name="productsWithCountAndPrice" color="3986C1" x="1456" y="528" />
-		<entity schema="dbo" name="priceProducts" color="F4DDBE" x="1280" y="112" />
-		<entity schema="dbo" name="currencies" color="BED3F4" x="80" y="336" />
-		<entity schema="dbo" name="movementGoodsInfos" color="BED3F4" x="208" y="512" />
-		<entity schema="dbo" name="revaluationProducts" color="F4DDBE" x="1488" y="112" />
-		<entity schema="dbo" name="products" color="F4DDBE" x="1040" y="112" />
-		<entity schema="dbo" name="unitStorages" color="F4DDBE" x="848" y="368" />
-		<entity schema="dbo" name="movmentGoodTypes" color="C1D8EE" x="48" y="112" />
-		<entity schema="dbo" name="movementGoods" color="BED3F4" x="208" y="240" />
-		<entity schema="dbo" name="serialNumbers" color="BED3F4" x="400" y="240" />
+		<entity schema="dbo" name="invoices" color="F4DDBE" x="1696" y="368" />
+		<entity schema="dbo" name="priceGroups" color="F4DDBE" x="1232" y="368" />
+		<entity schema="dbo" name="propertyValues" color="BEBEF4" x="2096" y="272" />
+		<entity schema="dbo" name="propertyNames" color="BEBEF4" x="2112" y="80" />
+		<entity schema="dbo" name="warranties" color="BED3F4" x="736" y="288" />
+		<entity schema="dbo" name="moneyTransferTypes" color="C7F4BE" x="1408" y="704" />
+		<entity schema="dbo" name="invoiceInfos" color="F4DDBE" x="1504" y="368" />
+		<entity schema="dbo" name="propertyProducts" color="BEBEF4" x="2320" y="80" />
+		<entity schema="dbo" name="categories" color="BEBEF4" x="1936" y="80" />
+		<entity schema="dbo" name="paymentTypes" color="C7F4BE" x="1200" y="944" />
+		<entity schema="dbo" name="counterparties" color="C7F4BE" x="1008" y="704" />
+		<entity schema="dbo" name="warrantyPeriods" color="F4DDBE" x="1024" y="192" />
+		<entity schema="dbo" name="stores" color="BED3F4" x="528" y="448" />
+		<entity schema="dbo" name="productsWithCountAndPrice" color="3986C1" x="1936" y="592" />
+		<entity schema="dbo" name="priceProducts" color="F4DDBE" x="1504" y="80" />
+		<entity schema="dbo" name="currencies" color="BED3F4" x="80" y="448" />
+		<entity schema="dbo" name="revaluationProducts" color="F4DDBE" x="1712" y="80" />
+		<entity schema="dbo" name="unitStorages" color="F4DDBE" x="1008" y="368" />
+		<entity schema="dbo" name="serialNumbers" color="BED3F4" x="528" y="80" />
+		<entity schema="dbo" name="serialNumberLogs" color="BED3F4" x="736" y="80" />
+		<entity schema="dbo" name="products" color="F4DDBE" x="1232" y="80" />
+		<entity schema="dbo" name="movmentGoodTypes" color="C1D8EE" x="48" y="256" />
+		<entity schema="dbo" name="moneyTransfers" color="C7F4BE" x="1200" y="704" />
+		<entity schema="dbo" name="movementGoods" color="BED3F4" x="272" y="80" />
+		<entity schema="dbo" name="movementGoodsInfos" color="BED3F4" x="272" y="448" />
 		<group name="counterparties" color="EEF7EC" >
 			<entity schema="dbo" name="counterparties" />
 			<entity schema="dbo" name="moneyTransfers" />
@@ -780,5 +925,13 @@ FROM
 FROM
 	dbo.movmentGoodTypes s;]]></string>
 		</script>
+		<browser id="Browse_2a36dd9" name="movementGoods" confirm_updates="y" >
+			<browse_table schema="dbo" entity="movementGoods" x="406" y="0" width="400" height="300" >
+				<browse_table schema="dbo" entity="movementGoodsInfos" fk="FK_movementGoodsInfos_idReport_movementGoods" x="897" y="0" width="495" height="344" record_view="y" />
+				<browse_table schema="dbo" entity="movmentGoodTypes" fk="FK_movementGoods_idType_movementGoodTypes" x="26" y="15" width="281" height="149" record_view="y" />
+				<browse_table schema="dbo" entity="counterparties" fk="FK_movementGoods_idCounterparty_counterparties" x="21" y="171" width="292" height="176" record_view="y" />
+				<browse_table schema="dbo" entity="stores" fk="FK_movementGoods_idArrivalStore_stores" x="143" y="364" width="337" height="125" record_view="y" />
+			</browse_table>
+		</browser>
 	</layout>
 </project>

@@ -222,6 +222,10 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CashierWorkplaceModul\CashierWorkplaceModul.csproj">
+      <Project>{8D451053-0BCE-4BF4-AE6D-99FA2C920946}</Project>
+      <Name>CashierWorkplaceModul</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CounterpartyModul\CounterpartyModul.csproj">
       <Project>{6407678E-40CB-4365-B707-21121734E873}</Project>
       <Name>CounterpartyModul</Name>

@@ -36,10 +36,10 @@ namespace PurchaseGoodModul.ViewModels
 
         public ObservableCollection<MovementGoodsInfo> PurchaseGoodsList
         {
-            get => _purchaseGood.MovementGoodsInfos as ObservableCollection<MovementGoodsInfo>;
+            get => _purchaseGood.MovementGoodsInfosCollection as ObservableCollection<MovementGoodsInfo>;
             set
             {
-                _purchaseGood.MovementGoodsInfos = value;
+                _purchaseGood.MovementGoodsInfosCollection = value;
                 RaisePropertyChanged("PurchaseGoodsList");
             }
         }
@@ -105,7 +105,7 @@ namespace PurchaseGoodModul.ViewModels
             AddProductCommand = new DelegateCommand(AddProduct);
             DeleteProductCommand = new DelegateCommand<Collection<object>>(DeleteProduct);
             ListenKeyboardCommand = new DelegateCommand<KeyEventArgs>(ListenKeyboard);
-            NewPurchaseGood();
+            NewMovementGood();
         }
 
         #region PropertyChanged
@@ -214,11 +214,11 @@ namespace PurchaseGoodModul.ViewModels
             }
         }
 
-        private async void NewPurchaseGood()
+        private async void NewMovementGood()
         {
             Load();
-            _purchaseGood = new MovementGoods { MovementGoodsInfos = new ObservableCollection<MovementGoodsInfo>() };
-            _purchaseGood.PropertyChanged += (o, e) => RaisePropertyChanged("IsValidate");
+            PurchaseGood = new MovementGoods { MovementGoodsInfosCollection = new ObservableCollection<MovementGoodsInfo>() };
+            PurchaseGood.PropertyChanged += (o, e) => RaisePropertyChanged("IsValidate");
 
             IRepository<MovmentGoodType> movmentGoodTypeRepository = new SqlMovmentGoodTypeRepository();
             _purchaseGood.MovmentGoodType = await movmentGoodTypeRepository.GetItemAsync(MovmentGoodTypeSpecification.GetMovmentGoodTypeByCode("purchase"));
@@ -249,14 +249,14 @@ namespace PurchaseGoodModul.ViewModels
                 MovementGoods temp = (MovementGoods)PurchaseGood.Clone();
                 temp.DateClose = null;
                 temp.DateCreate = null;
-                foreach (var movementGoodsInfo in temp.MovementGoodsInfos)
+                foreach (var movementGoodsInfo in temp.MovementGoodsInfosCollection)
                 {
                     movementGoodsInfo.EquivalentCost = movementGoodsInfo.Price / temp.EquivalentRate;
                     foreach (var serialNumber in movementGoodsInfo.Product.SerialNumbers)
                     {
                         serialNumber.DateCreated = null;
                         serialNumber.IdProduct = movementGoodsInfo.Product.Id;
-                        temp.SerialNumberLogs.Add(new SerialNumberLog{SerialNumber = serialNumber });
+                        temp.SerialNumberLogsCollection.Add(new SerialNumberLog{SerialNumber = serialNumber });
                     }
                     movementGoodsInfo.Product = null;
                 }
@@ -264,7 +264,7 @@ namespace PurchaseGoodModul.ViewModels
                 IRepository<MovementGoods> movementGoodsRepository = new SqlMovementGoodsRepository();
                 await movementGoodsRepository.CreateAsync(temp);
                 MessageBox.Show("Отчет о закупке добавлен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                NewPurchaseGood();
+                NewMovementGood();
 
                 //_report.PurchaseInfos = new List<PurchaseInfos>();
                 //foreach (var purchaseInfo in PurchaseInfos)
@@ -284,7 +284,7 @@ namespace PurchaseGoodModul.ViewModels
                 //            "Вопрос", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
                 //        MessageBoxResult.Yes)
                 //    {
-                //        NewPurchaseGood();
+                //        NewMovementGood();
                 //        return;
                 //    }
                 //    List<Product> revaluationProducts = PurchaseInfos
@@ -293,7 +293,7 @@ namespace PurchaseGoodModul.ViewModels
                 //            objPr.Currency.Id != objPr.ExchangeRateOld.Id).Select(objPr => objPr.Product).ToList();
                 //    Navigate(revaluationProducts);
                 //}
-                //NewPurchaseGood();
+                //NewMovementGood();
             }
             catch (Exception ex)
             {

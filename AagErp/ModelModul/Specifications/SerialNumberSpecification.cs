@@ -12,17 +12,19 @@ namespace ModelModul.Specifications
             return new ExpressionSpecification<SerialNumber>(obj => EF.Functions.Like(obj.Value, value));
         }
 
-        public static ExpressionSpecification<SerialNumber> GetSerialNumbersByIdProduct(int idProduct)
+        public static ExpressionSpecification<SerialNumber> GetSerialNumbersValue(string value)
+        {
+            return new ExpressionSpecification<SerialNumber>(obj => obj.Value == value);
+        }
+
+        public static ExpressionSpecification<SerialNumber> GetSerialNumbersByIdProduct(long idProduct)
         {
             return new ExpressionSpecification<SerialNumber>(obj => obj.IdProduct == idProduct);
         }
 
-        public static ExpressionSpecification<SerialNumber> GetFreeSerialNumbers(string value, int idProduct)
+        public static ExpressionSpecification<SerialNumber> GetSerialNumbersByIdProductAndValue(long idProduct, string value, int idStore)
         {
-            return null;
-            //return new ExpressionSpecification<SerialNumber>(GetSerialNumbersByContainsValue(value)
-            //    .And(GetSerialNumbersByIdProduct(idProduct)
-            //        .And(new ExpressionSpecification<SerialNumber>(obj => obj.IdSaleReport == null))).IsSatisfiedBy());
+            return new ExpressionSpecification<SerialNumber>(GetSerialNumbersByIdProduct(idProduct).And(GetSerialNumbersByContainsValue(value)).IsSatisfiedBy());
         }
     }
 }
