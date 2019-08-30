@@ -873,13 +873,13 @@ END]]></string>
 		<entity schema="dbo" name="currencies" color="BED3F4" x="80" y="448" />
 		<entity schema="dbo" name="revaluationProducts" color="F4DDBE" x="1712" y="80" />
 		<entity schema="dbo" name="unitStorages" color="F4DDBE" x="1008" y="368" />
-		<entity schema="dbo" name="serialNumbers" color="BED3F4" x="528" y="80" />
 		<entity schema="dbo" name="serialNumberLogs" color="BED3F4" x="736" y="80" />
 		<entity schema="dbo" name="products" color="F4DDBE" x="1232" y="80" />
 		<entity schema="dbo" name="movmentGoodTypes" color="C1D8EE" x="48" y="256" />
 		<entity schema="dbo" name="moneyTransfers" color="C7F4BE" x="1200" y="704" />
-		<entity schema="dbo" name="movementGoods" color="BED3F4" x="272" y="80" />
 		<entity schema="dbo" name="movementGoodsInfos" color="BED3F4" x="272" y="448" />
+		<entity schema="dbo" name="serialNumbers" color="BED3F4" x="528" y="80" />
+		<entity schema="dbo" name="movementGoods" color="BED3F4" x="272" y="80" />
 		<group name="counterparties" color="EEF7EC" >
 			<entity schema="dbo" name="counterparties" />
 			<entity schema="dbo" name="moneyTransfers" />
@@ -925,12 +925,10 @@ FROM
 FROM
 	dbo.movmentGoodTypes s;]]></string>
 		</script>
-		<browser id="Browse_2a36dd9" name="movementGoods" confirm_updates="y" >
-			<browse_table schema="dbo" entity="movementGoods" x="406" y="0" width="400" height="300" >
-				<browse_table schema="dbo" entity="movementGoodsInfos" fk="FK_movementGoodsInfos_idReport_movementGoods" x="897" y="0" width="495" height="344" record_view="y" />
-				<browse_table schema="dbo" entity="movmentGoodTypes" fk="FK_movementGoods_idType_movementGoodTypes" x="26" y="15" width="281" height="149" record_view="y" />
-				<browse_table schema="dbo" entity="counterparties" fk="FK_movementGoods_idCounterparty_counterparties" x="21" y="171" width="292" height="176" record_view="y" />
-				<browse_table schema="dbo" entity="stores" fk="FK_movementGoods_idArrivalStore_stores" x="143" y="364" width="337" height="125" record_view="y" />
+		<browser id="Browse_1657e50" name="movementGoods" confirm_updates="y" >
+			<browse_table schema="dbo" entity="movementGoods" x="20" y="20" width="400" height="300" >
+				<orderby on="dateCreate" />
+				<browse_table schema="dbo" entity="movementGoodsInfos" fk="FK_movementGoodsInfos_idReport_movementGoods" x="460" y="20" width="500" height="350" />
 			</browse_table>
 		</browser>
 	</layout>

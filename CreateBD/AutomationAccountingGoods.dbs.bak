@@ -613,17 +613,59 @@ END
 ]]></string>
 		</trigger>
 		<trigger name="movementGoodsInfos_insert" table="movementGoodsInfos" id="Trigger_4cf068a" isSystem="false" >
-			<string><![CDATA[CREATE TRIGGER movementGoodsInfos_insert ON movementGoodsInfos
+			<string><![CDATA[CREATE TRIGGER [dbo].[movementGoodsInfos_insert] ON [dbo].[movementGoodsInfos]
 AFTER INSERT
 AS
 BEGIN
+	DECLARE @codeMoving int, @codePurchase int, @codeSales int
+	SELECT @codeMoving = id FROM movmentGoodTypes WHERE code = 'moving'
+	SELECT @codePurchase = id FROM movmentGoodTypes WHERE code = 'purchase'
+	SELECT @codeSales = id FROM movmentGoodTypes WHERE code = 'sale'
+	UPDATE dbo.movementGoodsInfos SET balance = i.count FROM inserted i
+		INNER JOIN dbo.movementGoods mg ON ( i.idReport = mg.id )
+		WHERE mg.idType = @codePurchase AND i.id = movementGoodsInfos.id
 	IF (EXISTS (SELECT 1 FROM inserted i
-			INNER JOIN dbo.movementGoods mg ON ( i.idReport = mg.id )
-				INNER JOIN dbo.movmentGoodTypes mgt ON ( mg.idType = mgt.id)
-		WHERE mgt.code = 'sales' AND i.count > (SELECT c.count FROM dbo.getCountProduct(i.idProduct) c WHERE c.storeId = mg.idDisposalStore))) BEGIN
+			INNER JOIN dbo.movementGoods mg ON ( i.idReport = mg.id AND mg.idType = @codeSales)
+		WHERE i.count > (SELECT c.count FROM dbo.getCountProduct(i.idProduct) c WHERE c.storeId = mg.idDisposalStore))) BEGIN
 		RAISERROR ('Указанного кол-ва товара нет на складе', 16, 3)
 		ROLLBACK TRANSACTION;
 	END
+	DECLARE @iCount decimal(7, 2), @iIdProduct int, @iIdStore int
+	DECLARE insertedProduct CURSOR FOR
+		SELECT i.count, i.idProduct, mg.idDisposalStore
+		FROM inserted i
+			INNER JOIN dbo.movementGoods mg ON ( i.idReport = mg.id)
+		WHERE mg.idType = @codeSales
+	OPEN insertedProduct
+	FETCH NEXT FROM insertedProduct INTO @iCount, @iIdProduct, @iIdStore;
+	WHILE @@FETCH_STATUS = 0 BEGIN
+		DECLARE @count decimal(7, 2), @id int
+		DECLARE movementGoodsInfo CURSOR FOR
+		SELECT mgi.balance, mgi.id
+		FROM dbo.movementGoodsInfos mgi
+			INNER JOIN dbo.movementGoods mg ON ( mgi.idReport = mg.id)
+		WHERE mg.idType = @codePurchase AND mg.idArrivalStore = @iIdStore AND mgi.idProduct = @iIdProduct AND mgi.balance != 0
+			ORDER BY mg.dateCreate DESC
+		OPEN movementGoodsInfo
+		FETCH NEXT FROM movementGoodsInfo INTO @count, @id
+		WHILE @iCount > 0 BEGIN
+			IF @count >= @iCount BEGIN
+				UPDATE dbo.movementGoodsInfos SET balance -= @iCount WHERE id = @id
+				SET @iCount = 0
+			END
+			ELSE BEGIN
+				UPDATE dbo.movementGoodsInfos SET balance = 0 WHERE id = @id
+				SET @iCount -= @count
+			END
+			FETCH NEXT FROM movementGoodsInfo INTO @count, @id
+		
+		END		
+		CLOSE movementGoodsInfo;  
+		DEALLOCATE movementGoodsInfo;
+		FETCH NEXT FROM insertedProduct INTO @iCount, @iIdProduct, @iIdStore;
+	END
+	CLOSE insertedProduct;  
+	DEALLOCATE insertedProduct;
 END]]></string>
 		</trigger>
 		<trigger name="propertyNames_delete" table="propertyNames" id="Trigger_29b9e93" isSystem="false" >
@@ -655,6 +697,26 @@ BEGIN
 	END
 END]]></string>
 		</trigger>
+		<function name="getCountProduct" id="Function_249b289" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE FUNCTION [dbo].[getCountProduct](@idProduct bigint)
+RETURNS TABLE
+AS
+RETURN
+(
+	SELECT 
+		s.id as storeId,
+		cast(isnull(sum(
+		case
+			when s.id = mg.idArrivalStore and mgt.code in ('purchase', 'returnFromBuyer', 'change', 'moving') then mgi.count
+			when s.id = mg.idDisposalStore and mgt.code in ('sale', 'returnToSupplier', 'change', 'moving') then -mgi.count
+		end), 0) as decimal(7, 2)) [count]
+	FROM dbo.stores s 
+		LEFT JOIN dbo.movementGoods mg ON ( s.id = mg.idArrivalStore or s.id = mg.idDisposalStore )
+			LEFT JOIN dbo.movementGoodsInfos mgi ON ( mg.id = mgi.idReport AND mgi.idProduct = @idProduct )  
+			LEFT JOIN dbo.movmentGoodTypes mgt ON ( mg.idType = mgt.id  )
+		GROUP BY s.id
+)]]></string>
+		</function>
 		<function name="getCurrentPrice" id="Function_276d590" isSystem="false" params_known="n" >
 			<string><![CDATA[CREATE FUNCTION [dbo].[getCurrentPrice] (@idProduct bigint)
 RETURNS MONEY
