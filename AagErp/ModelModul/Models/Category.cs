@@ -31,7 +31,6 @@ namespace ModelModul.Models
             {
                 _title = value;
                 OnPropertyChanged("Title");
-                OnPropertyChanged("IsValidate");
             }
         }
 
@@ -87,6 +86,27 @@ namespace ModelModul.Models
             {
                 _propertyNamesCollection = value;
                 OnPropertyChanged("PropertyNamesCollection");
+            }
+        }
+
+        public override string this[string columnName]
+        {
+            get
+            {
+                string error = String.Empty;
+
+                switch (columnName)
+                {
+                    case "Title":
+                        if (string.IsNullOrEmpty(Title))
+                        {
+                            error = "Наименование должно быть указано";
+                        }
+
+                        break;
+                }
+
+                return error;
             }
         }
 

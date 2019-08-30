@@ -16,10 +16,6 @@ namespace ProductModul.ViewModels
 {
     public class ShowProductViewModel : ViewModelBase, IDialogAware
     {
-        private readonly IRegionManager _regionManager;
-
-        private IEventAggregator _ea;
-
         private readonly IDialogService _dialogService;
 
         #region Purchase
@@ -30,8 +26,6 @@ namespace ProductModul.ViewModels
             get => _isAddPurchase;
             set => SetProperty(ref _isAddPurchase, value);
         }
-
-        public DelegateCommand<Product> AddCommandPurchaseGoods { get; }
 
         #endregion
 
@@ -102,6 +96,7 @@ namespace ProductModul.ViewModels
 
         public DelegateCommand<Product> DeleteProductCommand { get; }
         public DelegateCommand AddProductCommand { get; }
+        public DelegateCommand<Product> SelectedProductCommand { get; }
 
         public bool IsEnabledAddProduct => SelectedCategory != null;
         #endregion
@@ -111,10 +106,8 @@ namespace ProductModul.ViewModels
 
         }
 
-        public ShowProductViewModel(IRegionManager regionManager, IEventAggregator ea, IDialogService dialogService)
+        public ShowProductViewModel(IDialogService dialogService)
         {
-            _ea = ea;
-            _regionManager = regionManager;
             _dialogService = dialogService;
             IsAddPurchase = false;
             SelectedCategoryCommand = new DelegateCommand<Category>(SelectedGroupChange);
@@ -122,12 +115,11 @@ namespace ProductModul.ViewModels
             RenameCategoryCommand = new DelegateCommand<Category>(RenameCategory);
             DeleteCategoryCommand = new DelegateCommand<Category>(DeleteCategoryAsync);
             ShowPropertiesCommand = new DelegateCommand<Category>(ShowProperties);
-            _ea.GetEvent<IsReadySentEvent>().Subscribe(obj => _ea.GetEvent<BoolSentEvent>().Publish(IsAddPurchase));
 
             DeleteProductCommand = new DelegateCommand<Product>(DeleteProductAsync);
             AddProductCommand = new DelegateCommand(AddProduct).ObservesCanExecute(() => IsEnabledAddProduct);
 
-            AddCommandPurchaseGoods = new DelegateCommand<Product>(AddPurchaseGoods);
+            SelectedProductCommand = new DelegateCommand<Product>(SelectedProduct);
         }
 
         #region CategoryCommands
@@ -136,9 +128,9 @@ namespace ProductModul.ViewModels
         {
             try
             {
-                SqlRepository<Category> saCategoryRepository = new SqlCategoryRepository();
-                SqlRepository<UnitStorage> sqlUnitStorageRepository = new SqlUnitStorageRepository();
-                SqlRepository<WarrantyPeriod> sqlWarrantyPeriodRepository = new SqlWarrantyPeriodRepository();
+                IRepository<Category> saCategoryRepository = new SqlCategoryRepository();
+                IRepository<UnitStorage> sqlUnitStorageRepository = new SqlUnitStorageRepository();
+                IRepository<WarrantyPeriod> sqlWarrantyPeriodRepository = new SqlWarrantyPeriodRepository();
 
                 var loadUnitStorage = Task.Run(() => sqlUnitStorageRepository.GetListAsync());
                 var loadWarrantyPeriod = Task.Run(() => sqlWarrantyPeriodRepository.GetListAsync());
@@ -209,11 +201,10 @@ namespace ProductModul.ViewModels
         {
             try
             {
-               SqlProductRepository sqlProductRepository = new SqlProductRepository();
+                SqlProductRepository sqlProductRepository = new SqlProductRepository();
 
-                ProductsList = new ObservableCollection<Product>( await sqlProductRepository.GetListAsync(SelectedCategory == null
-                    ? ProductSpecification.GetProductsByFindString(FindString)
-                    : ProductSpecification.GetProductsByIdGroup(SelectedCategory.Id)));
+                ProductsList = new ObservableCollection<Product>(await sqlProductRepository.GetListAsync(
+                    ProductSpecification.GetProductsByIdGroupOrFindString(SelectedCategory?.Id, FindString), null, 0, -1, p => p.UnitStorage, p => p.Category));
             }
             catch (Exception e)
             {
@@ -260,7 +251,6 @@ namespace ProductModul.ViewModels
 
         public override void OnNavigatedFrom(NavigationContext navigationContext)
         {
-            _regionManager.Regions.Remove("ProductInfo");
         }
 
         #endregion
@@ -301,14 +291,18 @@ namespace ProductModul.ViewModels
         public virtual void OnDialogOpened(IDialogParameters parameters)
         {
             Title = "Выборать товар";
+            IsAddPurchase = true;
             LoadCategoryAsync();
         }
 
         #endregion
 
-        private void AddPurchaseGoods(Product obj)
+        private void SelectedProduct(Product obj)
         {
-            RaiseRequestClose(new DialogResult(ButtonResult.OK, new DialogParameters{ {"product", obj} }));
+            if(IsAddPurchase)
+                RaiseRequestClose(new DialogResult(ButtonResult.OK, new DialogParameters { { "product", obj } }));
+            else
+                _dialogService.Show("ProductInfo", new DialogParameters { { "product", obj } }, null);
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using CustomControlLibrary.MVVM;
@@ -208,7 +209,7 @@ namespace RevaluationGoodModul.ViewModels
             }
         }
 
-        private async void InsertProduct(Product product)
+        private void InsertProduct(Product product)
         {
             try
             {
@@ -218,13 +219,23 @@ namespace RevaluationGoodModul.ViewModels
                     return;
                 }
 
-                SqlProductRepository productRepository = new SqlProductRepository();
+                SqlProductRepository productRepositoryPrice = new SqlProductRepository();
+                SqlProductRepository productRepositoryEquivalentCost = new SqlProductRepository();
                 IRepository<PriceGroup> priceGroupRepository = new SqlPriceGroupRepository();
+                
+                var currentPriceLoad = Task.Run(() => productRepositoryPrice.GetCurrentPrice(product.Id));
+                var equivalentCostLoad = Task.Run(() =>
+                    productRepositoryEquivalentCost.GetEquivalentCostsForЕxistingProduct(product.Id));
+                var priceGroupLoad = Task.Run(() => priceGroupRepository.GetItemAsync(product.IdPriceGroup));
+
+                Task.WaitAll(currentPriceLoad, priceGroupLoad, equivalentCostLoad);
+
+                product.Price = currentPriceLoad.Result;
+                product.PriceGroup = priceGroupLoad.Result;
                 product.EquivalentCostForЕxistingProductsCollection =
-                    new ObservableCollection<EquivalentCostForЕxistingProduct>(
-                        await productRepository.GetEquivalentCostsForЕxistingProduct(product.Id));
-                product.Price = await productRepository.GetCurrentPrice(product.Id);
-                product.PriceGroup = await priceGroupRepository.GetItemAsync(product.IdPriceGroup.Value);
+                    new ObservableCollection<EquivalentCostForЕxistingProduct>(equivalentCostLoad.Result);
+
+
                 EquivalentCostForЕxistingProduct equivalentCost = product.EquivalentCostForЕxistingProductsCollection
                     .OrderByDescending(c => c.EquivalentCost).FirstOrDefault();
                 RevaluationPriceProductsList.Add(equivalentCost == null

@@ -448,17 +448,14 @@ if (sender is MovementGoodsInfo movement && e.PropertyName == "Count")
                     _barcode = "";
                     return;
                 }
-                IRepository<UnitStorage> unitStorageRepository = new SqlUnitStorageRepository();
+
                 SqlProductRepository productRepository = new SqlProductRepository();
 
-                var unitStorageLoad = Task.Run(() => unitStorageRepository.GetItemAsync(product.IdUnitStorage));
-                var currentPricLoad = Task.Run(() => productRepository.GetCurrentPrice(product.Id));
+                var currentPriceLoad = Task.Run(() => productRepository.GetCurrentPrice(product.Id));
 
-                Task.WaitAll(unitStorageLoad, currentPricLoad);
-
-                product.UnitStorage = unitStorageLoad.Result;
+                Task.WaitAll(currentPriceLoad);
                 
-                SalesGoodsList.Add(new MovementGoodsInfoViewModel { IdProduct = product.Id, Price = currentPricLoad.Result, MovementGoods = SalesGood, Product = product, Count = 0, });
+                SalesGoodsList.Add(new MovementGoodsInfoViewModel { IdProduct = product.Id, Price = currentPriceLoad.Result, MovementGoods = SalesGood, Product = product, Count = 0, });
                 RaisePropertyChanged("SalesGoodsList");
                 RaisePropertyChanged("IsValidate");
             }

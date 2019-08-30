@@ -88,8 +88,8 @@ namespace ModelModul.Models
             }
         }
 
-        private int? _idPriceGroup;
-        public int? IdPriceGroup
+        private int _idPriceGroup;
+        public int IdPriceGroup
         {
             get => _idPriceGroup;
             set
@@ -271,9 +271,70 @@ namespace ModelModul.Models
             }
         }
 
+        public override string this[string columnName]
+        {
+            get
+            {
+                string error = String.Empty;
+
+                switch (columnName)
+                {
+                    case "Title":
+                        if (string.IsNullOrEmpty(Title))
+                        {
+                            error = "Наименование должно быть указано";
+                        }
+
+                        break;
+
+                    case "Barcode":
+                        if (string.IsNullOrEmpty(Barcode))
+                        {
+                            error = "Штрихкод должен быть указан";
+                        }
+
+                        break;
+
+                    case "IdUnitStorage":
+                        if (IdUnitStorage == 0 )
+                        {
+                            error = "Ед. хр. должна быть указана";
+                        }
+
+                        break;
+
+                    case "IdWarrantyPeriod":
+                        if (IdWarrantyPeriod == 0)
+                        {
+                            error = "Гарантийный период должен быть указан";
+                        }
+
+                        break;
+
+                    case "IdPriceGroup":
+                        if (IdPriceGroup == 0)
+                        {
+                            error = "Ценовая группа должна быть указана";
+                        }
+
+                        break;
+
+                    case "IdCategory":
+                        if (IdCategory == 0)
+                        {
+                            error = "Категория должна быть указана";
+                        }
+
+                        break;
+                }
+
+                return error;
+            }
+        }
+
         public bool IsValidate => !string.IsNullOrEmpty(Title) &&
                                   !string.IsNullOrEmpty(Barcode) &&
-                                  IdUnitStorage != 0 && IdWarrantyPeriod != 0 && IdCategory != 0;
+                                  IdUnitStorage != 0 && IdWarrantyPeriod != 0 && IdPriceGroup != 0 && IdCategory != 0;
 
         #region CollectionChanged
 

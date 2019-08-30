@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
@@ -14,7 +15,10 @@ namespace CustomControlLibrary
             CmHeaderCommand = new DelegateCommand<int?>(idx =>
             {
                 if(idx == null) return;
-                Columns[idx.Value].Visibility = Columns[idx.Value].Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+                if (Columns[idx.Value].Visibility == Visibility.Visible && Columns.Count(c => c.Visibility == Visibility.Visible) != 1)
+                    Columns[idx.Value].Visibility = Visibility.Collapsed;
+                else
+                    Columns[idx.Value].Visibility = Visibility.Visible;
             });
         }
 

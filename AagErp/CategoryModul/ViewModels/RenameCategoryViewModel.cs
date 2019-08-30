@@ -21,7 +21,7 @@ namespace CategoryModul.ViewModels
             {
                 SetProperty(ref _category, value);
                 if(Category != null)
-                    Category.PropertyChanged += delegate { RaisePropertyChanged("Category"); };
+                    Category.PropertyChanged += (o, e) => { RaisePropertyChanged("Category"); };
             }
         }
 

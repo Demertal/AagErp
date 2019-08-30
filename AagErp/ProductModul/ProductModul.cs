@@ -1,11 +1,11 @@
 ﻿using CategoryModul.ViewModels;
 using CustomControlLibrary.MVVM;
-using GroupModul.Views;
 using Prism.Ioc;
 using Prism.Modularity;
-using Prism.Regions;
 using ProductModul.ViewModels;
 using ProductModul.Views;
+using AddCategory = CategoryModul.Views.AddCategory;
+using RenameCategory = CategoryModul.Views.RenameCategory;
 
 namespace ProductModul
 {
@@ -13,8 +13,6 @@ namespace ProductModul
     {
         public void OnInitialized(IContainerProvider containerProvider)
         {
-            var regionManager = containerProvider.Resolve<IRegionManager>();
-            regionManager.RegisterViewWithRegion("ProductInfo", typeof(ProductInfo));
         }
 
         public void RegisterTypes(IContainerRegistry containerRegistry)
@@ -24,6 +22,7 @@ namespace ProductModul
             containerRegistry.RegisterDialog<AddCategory, AddCategoryViewModel>();
             containerRegistry.RegisterDialog<RenameCategory, RenameCategoryViewModel>();
             containerRegistry.RegisterDialog<AddProduct, AddProductViewModel>();
+            containerRegistry.RegisterDialog<ProductInfo, ProductInfoViewModel>();
         }
     }
 }

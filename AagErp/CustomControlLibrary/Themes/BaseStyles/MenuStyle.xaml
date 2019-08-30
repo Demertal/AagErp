@@ -160,6 +160,11 @@
                 <Setter TargetName="Icon" Property="Visibility" Value="Hidden" />
             </Trigger>
             <Trigger Property="IsChecked" Value="true">
+                <Setter Property="Background" TargetName="Border">
+                    <Setter.Value>
+                        <SolidColorBrush Color="{DynamicResource SelectedBackgroundColor}" />
+                    </Setter.Value>
+                </Setter>
                 <Setter TargetName="CheckMark" Property="Visibility" Value="Visible" />
             </Trigger>
             <Trigger Property="IsCheckable" Value="true">

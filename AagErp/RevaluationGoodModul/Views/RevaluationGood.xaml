@@ -38,7 +38,7 @@
                 <DataGridTemplateColumn Header="Цена закупки">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <ListBox ItemsSource="{Binding Path=Product.EquivalentCostForЕxistingProducts, UpdateSourceTrigger=PropertyChanged}" Style="{x:Null}" BorderThickness="0">
+                            <ListBox ItemsSource="{Binding Path=Product.EquivalentCostForЕxistingProductsCollection, UpdateSourceTrigger=PropertyChanged}" Style="{x:Null}" BorderThickness="0">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate DataType="models:EquivalentCostForЕxistingProduct">
                                         <TextBlock>

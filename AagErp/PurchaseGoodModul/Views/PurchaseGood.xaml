@@ -106,7 +106,7 @@
                         </DataGridTextColumn>
                     </DataGrid.Columns>
                 </DataGrid>
-                <DataGrid ItemsSource="{Binding SelectedItem.Product.SerialNumbers, ElementName=Goods}" IsSynchronizedWithCurrentItem="True" Height="200"
+                <DataGrid ItemsSource="{Binding SelectedItem.Product.SerialNumbersCollection, ElementName=Goods}" IsSynchronizedWithCurrentItem="True" Height="200"
                           Margin="5" DockPanel.Dock="Right" HorizontalAlignment="Left" VerticalAlignment="Top">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Серийные номера" Binding="{Binding Path=Value, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}"

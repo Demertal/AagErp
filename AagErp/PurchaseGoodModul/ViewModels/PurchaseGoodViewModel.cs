@@ -23,8 +23,6 @@ namespace PurchaseGoodModul.ViewModels
 
         private string _barcode;
 
-        private readonly IRegionManager _regionManager;
-
         private readonly IDialogService _dialogService;
 
         private MovementGoods _purchaseGood = new MovementGoods();
@@ -97,9 +95,8 @@ namespace PurchaseGoodModul.ViewModels
 
         #endregion
 
-        public PurchaseGoodViewModel(IRegionManager regionManager, IDialogService dialogService)
+        public PurchaseGoodViewModel(IDialogService dialogService)
         {
-            _regionManager = regionManager;
             _dialogService = dialogService;
             PostCommand = new DelegateCommand(Post).ObservesCanExecute(() => IsValidate);
             AddProductCommand = new DelegateCommand(AddProduct);
@@ -357,7 +354,7 @@ namespace PurchaseGoodModul.ViewModels
             //}
         }
 
-        private async void InsertProduct(Product product)
+        private void InsertProduct(Product product)
         {
             try
             {
@@ -366,9 +363,6 @@ namespace PurchaseGoodModul.ViewModels
                     _barcode = "";
                     return;
                 }
-
-                IRepository<UnitStorage> unitStorageRepository = new SqlUnitStorageRepository();
-                product.UnitStorage = await unitStorageRepository.GetItemAsync(product.IdUnitStorage);
 
                 PurchaseGoodsList.Add(new MovementGoodsInfo{Count = 0, IdProduct = product.Id, Price = 0, Product = product});
                 RaisePropertyChanged("PurchaseGoodsList");

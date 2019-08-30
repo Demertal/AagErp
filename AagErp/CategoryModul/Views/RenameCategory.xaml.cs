@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace GroupModul.Views
+namespace CategoryModul.Views
 {
     /// <summary>
     /// Логика взаимодействия для RenameCategory.xaml

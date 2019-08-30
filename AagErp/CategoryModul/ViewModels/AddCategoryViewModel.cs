@@ -12,7 +12,7 @@ namespace CategoryModul.ViewModels
     {
         #region Properties
 
-        private readonly Category _category = new Category();
+        private Category _category = new Category();
         public Category Category => _category;
 
         public DelegateCommand AddCategoryCommand { get; }
@@ -22,7 +22,7 @@ namespace CategoryModul.ViewModels
         public AddCategoryViewModel()
         {
             Title = "Добавить категорию";
-            Category.PropertyChanged += delegate { RaisePropertyChanged("Category"); };
+            Category.PropertyChanged += (o, e) => { RaisePropertyChanged("Category"); };
             AddCategoryCommand = new DelegateCommand(AddCategoryAsync).ObservesCanExecute(() => Category.IsValidate);
         }
 

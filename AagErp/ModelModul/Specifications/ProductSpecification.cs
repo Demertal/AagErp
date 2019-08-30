@@ -13,19 +13,19 @@ namespace ModelModul.Specifications
 
         public static ExpressionSpecification<Product> GetProductsByLikeBarcode(string barcode)
         {
-            if (barcode != "") barcode = "%" + barcode + "%";
+            barcode = "%" + barcode + "%";
             return new ExpressionSpecification<Product>(obj => EF.Functions.Like(obj.Barcode, barcode));
         }
 
         public static ExpressionSpecification<Product> GetProductsByLikeTitle(string title)
         {
-            if (title != "") title = "%" + title + "%";
+            title = "%" + title + "%";
             return new ExpressionSpecification<Product>(obj => EF.Functions.Like(obj.Title, title));
         }
 
         public static ExpressionSpecification<Product> GetProductsByContainsVendorCode(string vendorCode)
         {
-            if (vendorCode != "") vendorCode = "%" + vendorCode + "%";
+            vendorCode = "%" + vendorCode + "%";
             return new ExpressionSpecification<Product>(obj => EF.Functions.Like(obj.VendorCode, vendorCode));
         }
 
@@ -41,11 +41,11 @@ namespace ModelModul.Specifications
             return new ExpressionSpecification<Product>(obj => obj.IdCategory == idGroup);
         }
 
-        public static ExpressionSpecification<Product> GetProductsByIdGroupOrFindString(int idGroup, string findString)
+        public static ExpressionSpecification<Product> GetProductsByIdGroupOrFindString(int? idGroup, string findString)
         {
-            return idGroup == 0
+            return idGroup == null || idGroup == 0
                 ? new ExpressionSpecification<Product>(GetProductsByFindString(findString).IsSatisfiedBy())
-                : new ExpressionSpecification<Product>(GetProductsByIdGroup(idGroup)
+                : new ExpressionSpecification<Product>(GetProductsByIdGroup(idGroup.Value)
                     .And(GetProductsByFindString(findString)).IsSatisfiedBy());
         }
     }

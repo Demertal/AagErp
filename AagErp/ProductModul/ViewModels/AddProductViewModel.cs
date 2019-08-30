@@ -40,22 +40,11 @@ namespace ProductModul.ViewModels
         private readonly Product _product = new Product();
         public Product Product => _product;
 
-        //private Product _product = new Product();
-        //public Product Product
-        //{
-        //    get => _product;
-        //    set
-        //    {
-        //        SetProperty(ref _product, value);
-        //        Product.PropertyChanged += (o, e) => RaisePropertyChanged("Product");
-        //    }
-        //}
-
         private string _category;
 
         public string Category
         {
-            get => "Категория:" + _category;
+            get => _category;
             set
             {
                 _category = value;

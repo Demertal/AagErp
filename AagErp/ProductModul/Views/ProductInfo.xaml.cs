@@ -1,9 +1,4 @@
-﻿using System.ComponentModel;
-using System.Windows.Controls;
-using ModelModul.Models;
-using Prism.Common;
-using Prism.Regions;
-using ProductModul.ViewModels;
+﻿using System.Windows.Controls;
 
 namespace ProductModul.Views
 {
@@ -15,14 +10,6 @@ namespace ProductModul.Views
         public ProductInfo()
         {
             InitializeComponent();
-            RegionContext.GetObservableContext(this).PropertyChanged += ProductInfo_PropertyChanged;
-        }
-
-        private void ProductInfo_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            var context = (ObservableObject<object>)sender;
-            var selectedProduct = (Product)context.Value;
-            (DataContext as ProductInfoViewModel).SelectedProduct = selectedProduct ?? new Product();
         }
     }
 }

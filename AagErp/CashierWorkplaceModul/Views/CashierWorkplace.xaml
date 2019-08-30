@@ -87,7 +87,7 @@
                         </DataGridTextColumn>
                     </DataGrid.Columns>
                 </DataGrid>
-                <DataGrid ItemsSource="{Binding SelectedItem.Product.SerialNumbers, ElementName=Goods}" IsSynchronizedWithCurrentItem="True" Height="200" Margin="5"
+                <DataGrid ItemsSource="{Binding SelectedItem.Product.SerialNumbersCollection, ElementName=Goods}" IsSynchronizedWithCurrentItem="True" Height="200" Margin="5"
                           DockPanel.Dock="Right" HorizontalAlignment="Left" VerticalAlignment="Top">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Серийные номера" MinWidth="200" ElementStyle="{StaticResource {x:Type TextBlock}}" EditingElementStyle="{DynamicResource TextBoxByDataGrid}"
