@@ -28,10 +28,10 @@ namespace CategoryModul.ViewModels
         {
             try
             {
-                IRepository<Category> saCategoryRepository = new SqlCategoryRepository();
+                IRepository<Category> categoryRepository = new SqlCategoryRepository();
 
                 CategoriesList = new ObservableCollection<Category>(
-                    (await saCategoryRepository.GetListAsync(include: c => c.ChildCategoriesCollection)).Where(
+                    (await categoryRepository.GetListAsync(include: c => c.ChildCategoriesCollection)).Where(
                         CategorySpecification.GetCategoriesByIdParent().IsSatisfiedBy().Compile()));
             }
             catch (Exception e)

@@ -7,7 +7,6 @@
              xmlns:customcontrollibrary="clr-namespace:CustomControlLibrary;assembly=CustomControlLibrary"
              xmlns:prism="http://prismlibrary.com/"
              xmlns:converters="clr-namespace:CustomControlLibrary.Converters;assembly=CustomControlLibrary"
-             xmlns:models="clr-namespace:ModelModul.Models;assembly=ModelModul"
              xmlns:local="clr-namespace:ProductModul.Views"
              xmlns:converters1="clr-namespace:ModelModul.Converters;assembly=ModelModul"
              xmlns:views="clr-namespace:CategoryModul.Views;assembly=CategoryModul"
