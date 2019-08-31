@@ -9,24 +9,13 @@ using ModelModul.Models;
 using ModelModul.Repositories;
 using ModelModul.Specifications;
 using Prism.Commands;
-using Prism.Events;
 using Prism.Services.Dialogs;
 
 namespace ProductModul.ViewModels
 {
-    class ProductInfoViewModel : DialogViewModelBase
+    class ProductInfoViewModel : DialogViewModelBase, IEditableObject
     {
         #region ProductProperties
-
-        private bool _isUpdate;
-
-        public bool IsUpdate
-        {
-            get => _isUpdate;
-            set => SetProperty(ref _isUpdate, value);
-        }
-
-        private Product _oldProduct = new Product();
 
         private ObservableCollection<WarrantyPeriod> _warrantyPeriodsList = new ObservableCollection<WarrantyPeriod>();
         public ObservableCollection<WarrantyPeriod> WarrantyPeriodsList
@@ -62,14 +51,11 @@ namespace ProductModul.ViewModels
             get => _selectedProduct;
             set
             {
-                IsUpdate = false;
                 SetProperty(ref _selectedProduct, value);
                 _selectedProduct.PropertyChanged += (o, e) => { RaisePropertyChanged(e.PropertyName); };
-                RaisePropertyChanged("CanUpdate");
+                RaisePropertyChanged("CanEdit");
             }
         }
-
-        public bool CanUpdate => SelectedProduct != null && SelectedProduct.Id != 0;
 
         public DelegateCommand UpdateProductCommand { get; }
         public DelegateCommand GenerateBarcodeCommand { get; }
@@ -80,10 +66,10 @@ namespace ProductModul.ViewModels
 
         public ProductInfoViewModel()
         {
-            UpdateProductCommand = new DelegateCommand(UpdateProduct).ObservesCanExecute(() => CanUpdate);
+            UpdateProductCommand = new DelegateCommand(BeginEdit).ObservesCanExecute(() => CanEdit);
             GenerateBarcodeCommand = new DelegateCommand(GenerateBarcode);
-            ResetCommand = new DelegateCommand(Reset);
-            OkCommand = new DelegateCommand(Accept).ObservesCanExecute(() => SelectedProduct.IsValidate);
+            ResetCommand = new DelegateCommand(CancelEdit);
+            OkCommand = new DelegateCommand(EndEdit).ObservesCanExecute(() => SelectedProduct.IsValidate);
         }
 
         private void LoadAsync()
@@ -113,43 +99,6 @@ namespace ProductModul.ViewModels
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-        }
-
-        public void UpdateProduct()
-        {
-            _oldProduct = (Product)SelectedProduct?.Clone();
-            IsUpdate = true;
-        }
-
-        private async void Accept()
-        {
-            try
-            {
-                Product pr = (Product)SelectedProduct.Clone();
-                IRepository<Product> sqlProductRepository = new SqlProductRepository();
-                await sqlProductRepository.UpdateAsync(pr);
-                //SqlPropertyProductRepository sqlProperty = new SqlPropertyProductRepository();
-                //sqlProperty.UpdateAsync(PropertyProductsList.ToList());
-                MessageBox.Show("Товар изменен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                IsUpdate = false;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void Reset()
-        {
-            SelectedProduct.Barcode = _oldProduct.Barcode;
-            SelectedProduct.IdCategory = _oldProduct.IdCategory;
-            SelectedProduct.IdPriceGroup = _oldProduct.IdPriceGroup;
-            SelectedProduct.IdUnitStorage = _oldProduct.IdUnitStorage;
-            SelectedProduct.IdWarrantyPeriod = _oldProduct.IdWarrantyPeriod;
-            SelectedProduct.KeepTrackSerialNumbers = _oldProduct.KeepTrackSerialNumbers;
-            SelectedProduct.Title = _oldProduct.Title;
-            SelectedProduct.VendorCode = _oldProduct.VendorCode;
-            IsUpdate = false;
         }
 
         private async void GenerateBarcode()
@@ -184,5 +133,59 @@ namespace ProductModul.ViewModels
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        #region EditableObject
+
+        private Product _backup = new Product();
+
+        private bool _isEdit;
+        public bool IsEdit
+        {
+            get => _isEdit;
+            set => SetProperty(ref _isEdit, value);
+        }
+
+        public bool CanEdit => SelectedProduct != null && SelectedProduct.Id != 0;
+
+        public void BeginEdit()
+        {
+            _backup = (Product)SelectedProduct?.Clone();
+            IsEdit = true;
+            RaisePropertyChanged("SelectedProduct");
+        }
+
+        public async void EndEdit()
+        {
+            try
+            {
+                Product pr = (Product)SelectedProduct.Clone();
+                IRepository<Product> sqlProductRepository = new SqlProductRepository();
+                await sqlProductRepository.UpdateAsync(pr);
+                //SqlPropertyProductRepository sqlProperty = new SqlPropertyProductRepository();
+                //sqlProperty.UpdateAsync(PropertyProductsList.ToList());
+                MessageBox.Show("Товар изменен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                IsEdit = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        public void CancelEdit()
+        {
+            SelectedProduct.Barcode = _backup.Barcode;
+            SelectedProduct.IdCategory = _backup.IdCategory;
+            SelectedProduct.IdPriceGroup = _backup.IdPriceGroup;
+            SelectedProduct.IdUnitStorage = _backup.IdUnitStorage;
+            SelectedProduct.IdWarrantyPeriod = _backup.IdWarrantyPeriod;
+            SelectedProduct.KeepTrackSerialNumbers = _backup.KeepTrackSerialNumbers;
+            SelectedProduct.Title = _backup.Title;
+            SelectedProduct.VendorCode = _backup.VendorCode;
+            SelectedProduct.Description = _backup.Description;
+            IsEdit = false;
+        }
+
+        #endregion
     }
 }

@@ -5,147 +5,124 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:interactivity="http://prismlibrary.com/"
              xmlns:converters="clr-namespace:CustomControlLibrary.Converters;assembly=CustomControlLibrary"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:models="clr-namespace:ModelModul.Models;assembly=ModelModul"
              interactivity:ViewModelLocator.AutoWireViewModel="True"
-             mc:Ignorable="d" 
-             VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Padding="10,5,5,10">
-
-    <i:Interaction.Triggers>
-        <i:EventTrigger EventName="Loaded">
-            <interactivity:InvokeCommandAction Command="{Binding Path=LoadedCommand}"/>
-        </i:EventTrigger>
-    </i:Interaction.Triggers>
+             mc:Ignorable="d">
 
     <UserControl.Resources>
-        <converters:VisibilityBoolConverter x:Key="VisibilityBoolConverter"/>
+        
         <converters:IsEnabledConverterForBool x:Key="IsEnabledConverterForBool"/>
-        <converters:VisibilityConverterFor2Bool x:Key="VisibilityConverterFor2Bool"/>
-    </UserControl.Resources>
-    <StackPanel Orientation="Horizontal" >
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <TextBlock Text="Категория" Grid.Row="0" Grid.Column="0"/>
-            <TextBlock Text="{Binding Path=SelectedProduct.Category.Title}" Grid.Row="0" Grid.Column="2"/>
-            <TextBlock Text="Наименование товара" Grid.Row="1" Grid.Column="0"/>
-            <TextBox Text="{Binding SelectedProduct.Title,  UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Grid.Row="1" Grid.Column="2" MinWidth="200">
-                <TextBox.IsEnabled>
-                    <Binding Converter="{StaticResource IsEnabledConverterForBool}" UpdateSourceTrigger="PropertyChanged" Path="IsUpdate"/>
-                </TextBox.IsEnabled>
-            </TextBox>
-            <TextBlock Text="Артикул товара" Grid.Row="2" Grid.Column="0"/>
-            <TextBox Text="{Binding SelectedProduct.VendorCode,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="2">
-                <TextBox.IsEnabled>
-                    <Binding Converter="{StaticResource IsEnabledConverterForBool}" UpdateSourceTrigger="PropertyChanged" Path="IsUpdate"/>
-                </TextBox.IsEnabled>
-            </TextBox>
-            <TextBlock Text="Штрих код" Grid.Row="3" Grid.Column="0"/>
-            <Button Style="{StaticResource ReloadImageButton}" Grid.Row="3" Grid.Column="1" Command="{Binding GenerateBarcodeCommand}">
-                <Button.Visibility>
-                    <Binding Converter="{StaticResource VisibilityBoolConverter}" ConverterParameter="False" Path="IsUpdate"/>
-                </Button.Visibility>
-            </Button>
-            <TextBox Text="{Binding SelectedProduct.Barcode,  UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Grid.Row="3" Grid.Column="2">
-                <TextBox.IsEnabled>
-                    <Binding Converter="{StaticResource IsEnabledConverterForBool}" UpdateSourceTrigger="PropertyChanged" Path="IsUpdate"/>
-                </TextBox.IsEnabled>
-            </TextBox>
-            <TextBlock Text="Гарантия" Grid.Row="4" Grid.Column="0"/>
-            <ComboBox ItemsSource="{Binding WarrantyPeriodsList, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Id"
-                      SelectedValue="{Binding SelectedProduct.IdWarrantyPeriod, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" DisplayMemberPath="Period" Grid.Column="2" 
-                      Grid.Row="4">
-                <ComboBox.IsEnabled>
-                    <Binding Converter="{StaticResource IsEnabledConverterForBool}" UpdateSourceTrigger="PropertyChanged" Path="IsUpdate"/>
-                </ComboBox.IsEnabled>
-            </ComboBox>
-            <TextBlock Text="Ед. хр." Grid.Row="5" Grid.Column="0"/>
-            <ComboBox ItemsSource="{Binding UnitStoragesList, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Id"
-                      SelectedValue="{Binding SelectedProduct.IdUnitStorage, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
-                      DisplayMemberPath="Title" Grid.Column="2" Grid.Row="5">
-                <ComboBox.IsEnabled>
-                    <Binding Converter="{StaticResource IsEnabledConverterForBool}" UpdateSourceTrigger="PropertyChanged" Path="IsUpdate"/>
-                </ComboBox.IsEnabled>
-            </ComboBox>
-            <TextBlock Text="Ценовая группа" Grid.Row="6" Grid.Column="0"/>
-            <ComboBox ItemsSource="{Binding PriceGroupsList, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True" SelectedValuePath="Id"
-                      SelectedValue="{Binding Product.IdPriceGroup, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" DisplayMemberPath="Markup" ItemStringFormat="P2"
-                      Grid.Column="2" Grid.Row="6">
-                <ComboBox.IsEnabled>
-                    <Binding Converter="{StaticResource IsEnabledConverterForBool}" UpdateSourceTrigger="PropertyChanged" Path="IsUpdate"/>
-                </ComboBox.IsEnabled>
-            </ComboBox>
-            <TextBlock Text="Цена" Grid.Row="7" Grid.Column="0"/>
-            <TextBlock Text="{Binding Path=SelectedProduct.Price, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}" Grid.Row="7" Grid.Column="2"/>
-            <TextBlock Text="Остаток" Grid.Row="8" Grid.Column="0"/>
-            <ListBox ItemsSource="{Binding Path=SelectedProduct.CountsProductCollection}" Grid.Row="8" Grid.Column="2" MinWidth="100" MinHeight="50">
-                <ListBox.ItemTemplate>
-                    <DataTemplate DataType="models:CountsProduct">
-                        <TextBlock>
-                            <TextBlock.Text>
-                                <MultiBinding StringFormat="{}{0}: {1}" >
-                                    <Binding Path="Store.Title"></Binding>
-                                    <Binding Path="Count"></Binding>
-                                </MultiBinding>
-                            </TextBlock.Text>
-                        </TextBlock>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-            <Button Grid.Column="0" Content="Ок" Grid.Row="9" Width="75" Command="{Binding OkCommand}" HorizontalAlignment="Center">
-                <Button.Visibility>
-                    <Binding Converter="{StaticResource VisibilityBoolConverter}" ConverterParameter="False" Path="IsUpdate"/>
-                </Button.Visibility>
-            </Button>
-            <Button Grid.Column="2" Content="Отмена" Grid.Row="9" Width="75" Command="{Binding ResetCommand}" HorizontalAlignment="Center">
-                <Button.Visibility>
-                    <Binding Converter="{StaticResource VisibilityBoolConverter}" ConverterParameter="False" Path="IsUpdate"/>
-                </Button.Visibility>
-            </Button>
-            <Button Grid.Column="2" Content="Редактировать" Grid.Row="9" Command="{Binding UpdateProductCommand}" HorizontalAlignment="Center">
-                <Button.Visibility>
-                    <Binding Converter="{StaticResource VisibilityBoolConverter}" ConverterParameter="True" Path="IsUpdate"/>
-                </Button.Visibility>
-            </Button>
 
-            <DataGrid ItemsSource="{Binding Path=PropertyProductsList, UpdateSourceTrigger=PropertyChanged}" MaxWidth="300" MinWidth="100"
+        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
+            <Setter Property="MaxWidth" Value="300"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=IsEdit, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                    <Setter Property="IsReadOnly" Value="True"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="ButtonStartEdit" TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=IsEdit, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="ButtonInEdit" TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=IsEdit, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto" MinWidth="200"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Text="Категория" Grid.Row="0" Grid.Column="0"/>
+        <TextBlock Text="{Binding Path=SelectedProduct.Category.Title}" Grid.Row="0" Grid.Column="2"/>
+        <TextBlock Text="Наименование товара" Grid.Row="1" Grid.Column="0"/>
+        <TextBox x:Name="TextBoxTitle" Text="{Binding SelectedProduct.Title,  UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Grid.Row="1" Grid.Column="2"/>
+        <TextBlock Text="Артикул товара" Grid.Row="2" Grid.Column="0"/>
+        <TextBox Text="{Binding SelectedProduct.VendorCode,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="2"/>
+        <TextBlock Text="Штрих код" Grid.Row="3" Grid.Column="0"/>
+        <Button Grid.Row="3" Grid.Column="1" Command="{Binding GenerateBarcodeCommand}">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource ReloadImageButton}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=IsEdit, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+        <TextBox Text="{Binding SelectedProduct.Barcode,  UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Grid.Row="3" Grid.Column="2"/>
+        <TextBlock Text="Гарантия" Grid.Row="4" Grid.Column="0"/>
+        <ComboBox ItemsSource="{Binding WarrantyPeriodsList, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Id"
+                      SelectedValue="{Binding SelectedProduct.IdWarrantyPeriod, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" DisplayMemberPath="Period" Grid.Column="2" 
+                      Grid.Row="4" IsEnabled="{Binding Path=IsEdit, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBlock Text="Ед. хр." Grid.Row="5" Grid.Column="0"/>
+        <ComboBox ItemsSource="{Binding UnitStoragesList, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Id"
+                      SelectedValue="{Binding SelectedProduct.IdUnitStorage, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                      DisplayMemberPath="Title" Grid.Column="2" Grid.Row="5" IsEnabled="{Binding Path=IsEdit, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBlock Text="Ценовая группа" Grid.Row="6" Grid.Column="0"/>
+        <ComboBox ItemsSource="{Binding PriceGroupsList, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True" SelectedValuePath="Id"
+                      SelectedValue="{Binding Product.IdPriceGroup, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" DisplayMemberPath="Markup" ItemStringFormat="P2"
+                      Grid.Column="2" Grid.Row="6" IsEnabled="{Binding Path=IsEdit, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBlock Text="Цена" Grid.Row="7" Grid.Column="0"/>
+        <TextBlock Text="{Binding Path=SelectedProduct.Price, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}" Grid.Row="7" Grid.Column="2"/>
+        <TextBlock Text="Остаток" Grid.Row="8" Grid.Column="0"/>
+        <ListBox ItemsSource="{Binding Path=SelectedProduct.CountsProductCollection}" Grid.Row="8" Grid.Column="2" MinHeight="50" Focusable="False">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="models:CountsProduct">
+                    <TextBlock>
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0}: {1}" >
+                                <Binding Path="Store.Title"></Binding>
+                                <Binding Path="Count"></Binding>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <TextBlock Text="Описание" Grid.Row="9" Grid.Column="0"/>
+        <TextBox Text="{Binding Path=SelectedProduct.Description,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="9" Grid.Column="2"
+                     MinHeight="80" MaxHeight="120" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
+        <Button Grid.Column="0" Content="Ок" Grid.Row="10" Width="75" Command="{Binding OkCommand}" HorizontalAlignment="Center" Style="{StaticResource ButtonInEdit}"/>
+        <Button Grid.Column="2" Content="Отмена" Grid.Row="10" Width="75" Command="{Binding ResetCommand}" HorizontalAlignment="Center" Style="{StaticResource ButtonInEdit}"/>
+        <Button Grid.Column="2" Content="Редактировать" Grid.Row="10" Command="{Binding UpdateProductCommand}" HorizontalAlignment="Center" Style="{StaticResource ButtonStartEdit}"/>
+
+        <DataGrid ItemsSource="{Binding Path=PropertyProductsList, UpdateSourceTrigger=PropertyChanged}" MaxWidth="300" MinWidth="100"
                     IsSynchronizedWithCurrentItem="True" MaxHeight="290" SelectionMode="Single" HeadersVisibility="None" GridLinesVisibility="None" Grid.Row="1" Grid.Column="3" Grid.RowSpan="8">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Параметр"  Binding="{Binding Path=PropertyNames.Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
-                    <DataGridTemplateColumn Header="Значение">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <ComboBox ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}},
-                                Path=DataContext.PropertyNames.PropertyValues, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Value" SelectedValuePath="Id"
-                                      SelectedValue="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=Item.IdPropertyValue, UpdateSourceTrigger=PropertyChanged}" FontSize="14">
-                                    <ComboBox.IsEnabled>
-                                        <Binding Converter="{StaticResource IsEnabledConverterForBool}" UpdateSourceTrigger="PropertyChanged"
-                                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type UserControl}}" Path="DataContext.IsUpdate"/>
-                                    </ComboBox.IsEnabled>
-                                </ComboBox>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                </DataGrid.Columns>
-            </DataGrid>
-        </Grid>
-    </StackPanel>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Параметр"  Binding="{Binding Path=PropertyNames.Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+                <DataGridComboBoxColumn Header="Значение" ItemsSource="{Binding PropertyNames.PropertyValuesCollection, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Id"
+                                        SelectedValueBinding="{Binding IdPropertyValue, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Path=IsEdit, UpdateSourceTrigger=PropertyChanged}"
+                                        ElementStyle="{StaticResource {x:Type TextBlock}}" EditingElementStyle="{StaticResource {x:Type ComboBox}}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
 </UserControl>
 
 

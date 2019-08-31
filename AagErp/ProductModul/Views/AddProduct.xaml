@@ -19,6 +19,7 @@
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -28,7 +29,7 @@
             <TextBlock Text="Категория" Grid.Row="0" Grid.Column="0"/>
             <TextBlock Text="{Binding Path=Category}" Grid.Row="0" Grid.Column="2"/>
             <TextBlock Text="Наименование товара" Grid.Row="1" Grid.Column="0"/>
-            <TextBox x:Name="TextBoxTitle" Text="{Binding Product.Title,  UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Grid.Row="1" Grid.Column="2" MinWidth="200"/>
+            <TextBox x:Name="TextBoxTitle" Text="{Binding Product.Title,  UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Grid.Row="1" Grid.Column="2" MinWidth="200" MaxWidth="300"/>
             <TextBlock Text="Артикул товара" Grid.Row="2" Grid.Column="0"/>
             <TextBox Text="{Binding Product.VendorCode,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="2"/>
             <TextBlock Text="Штрих код" Grid.Row="3" Grid.Column="0"/>
@@ -48,7 +49,9 @@
                       Grid.Column="2" Grid.Row="6"/>
             <CheckBox Content="Вести учет по серийным номерам?" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3" FontSize="18" HorizontalContentAlignment="Stretch"
                       VerticalContentAlignment="Center" IsChecked="{Binding Product.KeepTrackSerialNumbers}" HorizontalAlignment="Center"/>
-            <Button Grid.Column="0" Grid.ColumnSpan="3" Content="Добавить" Grid.Row="8" Width="90" Command="{Binding AddProductCommand}" IsDefault="True"/>
+            <TextBlock Text="Описание" Grid.Row="8" Grid.Column="0"/>
+            <TextBox Text="{Binding Product.Description,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="8" Grid.Column="2" MinWidth="200" MaxWidth="300" MinHeight="80" MaxHeight="120" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
+            <Button Grid.Column="0" Grid.ColumnSpan="3" Content="Добавить" Grid.Row="9" Width="90" Command="{Binding AddProductCommand}" IsDefault="True"/>
         </Grid>
     </StackPanel>
 </UserControl>

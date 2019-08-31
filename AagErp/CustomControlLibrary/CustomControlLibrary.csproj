@@ -146,9 +146,6 @@
     <Compile Include="Converters\GetProductsTitleFromRevaluaitionInfo.cs" />
     <Compile Include="Converters\IsEnabledConverterForBool.cs" />
     <Compile Include="Converters\IsReadOnlyConverterForBool.cs" />
-    <Compile Include="Converters\IsReadOnlyConverterForSerialNumber.cs" />
-    <Compile Include="Converters\IsReadOnlyConverterForCount.cs" />
-    <Compile Include="Converters\IsReadOnlyConverterForSerialNumberForPurchase.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="Converters\VisibilityConverterFor2Bool.cs" />
     <Compile Include="Converters\VisibilityBoolConverter.cs" />

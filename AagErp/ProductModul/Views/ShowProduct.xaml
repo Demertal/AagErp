@@ -8,7 +8,6 @@
              xmlns:prism="http://prismlibrary.com/"
              xmlns:converters="clr-namespace:CustomControlLibrary.Converters;assembly=CustomControlLibrary"
              xmlns:models="clr-namespace:ModelModul.Models;assembly=ModelModul"
-             xmlns:viewModels="clr-namespace:ProductModul.ViewModels"
              xmlns:local="clr-namespace:ProductModul.Views"
              xmlns:converters1="clr-namespace:ModelModul.Converters;assembly=ModelModul"
              prism:ViewModelLocator.AutoWireViewModel="True"
@@ -46,10 +45,6 @@
             <MenuItem Header="Добавить категорию" Command="{Binding AddCategoryCommand}"/>
         </ContextMenu>
     </UserControl.Resources>
-
-    <d:DataContext>
-        <viewModels:ShowProductViewModel/>
-    </d:DataContext>
 
     <StackPanel VerticalAlignment="Top">
         <customcontrollibrary:WatermarkTextBox WatermarkText="Поиск..." Text="{Binding FindString, UpdateSourceTrigger=PropertyChanged}" Margin ="5" Padding="0,0,5,0" HorizontalAlignment="Left"

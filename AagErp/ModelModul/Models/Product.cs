@@ -416,6 +416,7 @@ namespace ModelModul.Models
                 Barcode = Barcode,
                 VendorCode = VendorCode,
                 Title = Title,
+                Description = Description,
                 Count = Count,
                 Id = Id,
                 IdCategory = IdCategory,
