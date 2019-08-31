@@ -8,7 +8,6 @@ using ModelModul.Models;
 using ModelModul.Repositories;
 using ModelModul.Specifications;
 using Prism.Commands;
-using Prism.Events;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 
@@ -69,7 +68,7 @@ namespace ProductModul.ViewModels
             set
             {
                 SetProperty(ref _selectedCategory, value);
-                LoadProductAsync();
+                LoadAsync();
                 RaisePropertyChanged("IsEnabledAddProduct");
             }
         }
@@ -81,7 +80,7 @@ namespace ProductModul.ViewModels
             set
             {
                 SetProperty(ref _findString, value);
-                LoadProductAsync();
+                LoadAsync();
             }
         }
 
@@ -98,11 +97,6 @@ namespace ProductModul.ViewModels
 
         public bool IsEnabledAddProduct => SelectedCategory != null;
         #endregion
-
-        public ShowProductViewModel()
-        {
-
-        }
 
         public ShowProductViewModel(IDialogService dialogService)
         {
@@ -121,7 +115,7 @@ namespace ProductModul.ViewModels
 
         #region CategoryCommands
 
-        private void LoadCategoryAsync()
+        private void PreLoadAsync()
         {
             try
             {
@@ -154,8 +148,8 @@ namespace ProductModul.ViewModels
 
         private void Callback(IDialogResult dialogResult)
         {
-            LoadCategoryAsync();
-            LoadProductAsync();
+            PreLoadAsync();
+            LoadAsync();
         }
 
         private void RenameCategory(Category category)
@@ -177,7 +171,7 @@ namespace ProductModul.ViewModels
                 SqlRepository<Category> sqlCategoryRepository = new SqlCategoryRepository();
                 await sqlCategoryRepository.DeleteAsync(category);
                 MessageBox.Show("Категория удалена.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                LoadCategoryAsync();
+                PreLoadAsync();
             }
             catch (Exception e)
             {
@@ -189,7 +183,7 @@ namespace ProductModul.ViewModels
 
         #region ProductCommands
 
-        private async void LoadProductAsync()
+        private async void LoadAsync()
         {
             try
             {
@@ -219,12 +213,20 @@ namespace ProductModul.ViewModels
                 SqlProductRepository dbSet = new SqlProductRepository();
                 await dbSet.DeleteAsync(obj);
                 MessageBox.Show("Товар удален.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                LoadProductAsync();
+                LoadAsync();
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.InnerException?.Message ?? e.Message, "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void SelectedProduct(Product obj)
+        {
+            if (IsAddPurchase)
+                RaiseRequestClose(new DialogResult(ButtonResult.OK, new DialogParameters { { "product", obj } }));
+            else
+                _dialogService.Show("ProductInfo", new DialogParameters { { "product", obj } }, null);
         }
 
         #endregion
@@ -233,7 +235,8 @@ namespace ProductModul.ViewModels
 
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
-            LoadCategoryAsync();
+            PreLoadAsync();
+            LoadAsync();
         }
 
         public override bool IsNavigationTarget(NavigationContext navigationContext)
@@ -284,17 +287,10 @@ namespace ProductModul.ViewModels
         {
             Title = "Выборать товар";
             IsAddPurchase = true;
-            LoadCategoryAsync();
+            PreLoadAsync();
+            LoadAsync();
         }
 
         #endregion
-
-        private void SelectedProduct(Product obj)
-        {
-            if(IsAddPurchase)
-                RaiseRequestClose(new DialogResult(ButtonResult.OK, new DialogParameters { { "product", obj } }));
-            else
-                _dialogService.Show("ProductInfo", new DialogParameters { { "product", obj } }, null);
-        }
     }
 }
