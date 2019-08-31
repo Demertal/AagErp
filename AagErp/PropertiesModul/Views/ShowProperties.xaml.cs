@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace PropertiesModul.Views
+namespace PropertyModul.Views
 {
     /// <summary>
     /// Логика взаимодействия для ShowProperties.xaml

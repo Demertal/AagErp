@@ -62,11 +62,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\AddCategoryViewModel.cs" />
     <Compile Include="ViewModels\RenameCategoryViewModel.cs" />
+    <Compile Include="ViewModels\ShowCategoriesViewModel.cs" />
     <Compile Include="Views\AddCategory.xaml.cs">
       <DependentUpon>AddCategory.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\RenameCategory.xaml.cs">
       <DependentUpon>RenameCategory.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ShowCategories.xaml.cs">
+      <DependentUpon>ShowCategories.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup />
@@ -90,6 +94,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\RenameCategory.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ShowCategories.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

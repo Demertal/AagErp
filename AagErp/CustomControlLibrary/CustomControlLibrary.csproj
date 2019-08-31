@@ -140,6 +140,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BindableSelectedItemBehavior.cs" />
     <Compile Include="BindingProxy.cs" />
     <Compile Include="Converters\ConvertDecimalToPercent.cs" />
     <Compile Include="Converters\GetProductsTitleFromMovementGoodsInfo.cs" />

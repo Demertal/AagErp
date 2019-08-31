@@ -39,8 +39,6 @@ namespace ProductModul.ViewModels
             set => SetProperty(ref _categoriesList, value);
         }
 
-        public DelegateCommand<Category> SelectedCategoryCommand { get; }
-
         public DelegateCommand<Category> DeleteCategoryCommand { get; }
         public DelegateCommand<Category> AddCategoryCommand { get; }
         public DelegateCommand<Category> RenameCategoryCommand { get; }
@@ -110,7 +108,6 @@ namespace ProductModul.ViewModels
         {
             _dialogService = dialogService;
             IsAddPurchase = false;
-            SelectedCategoryCommand = new DelegateCommand<Category>(SelectedGroupChange);
             AddCategoryCommand = new DelegateCommand<Category>(AddCategory);
             RenameCategoryCommand = new DelegateCommand<Category>(RenameCategory);
             DeleteCategoryCommand = new DelegateCommand<Category>(DeleteCategoryAsync);
@@ -148,11 +145,6 @@ namespace ProductModul.ViewModels
             }
         }
 
-        private void SelectedGroupChange(Category obj)
-        {
-            SelectedCategory = obj;
-        }
-
         private void AddCategory(Category category)
         {
             _dialogService.ShowDialog("AddCategory",
@@ -173,7 +165,7 @@ namespace ProductModul.ViewModels
 
         private void ShowProperties(Category category)
         {
-            //ShowPropertiesPopupRequest.Raise(new Notification { Title = "Свойства", Content = category });
+            _dialogService.ShowDialog("ShowProperties", new DialogParameters { { "category", category } }, Callback);
         }
 
         private async void DeleteCategoryAsync(Category category)

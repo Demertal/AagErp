@@ -42,7 +42,7 @@ namespace AagClient
             moduleCatalog.AddModule<RevaluationGoodModul.RevaluationGoodModul>();
             moduleCatalog.AddModule<PurchaseGoodModul.PurchaseGoodModul>();
             moduleCatalog.AddModule<CashierWorkplaceModul.CashierWorkplaceModul>();
-            //moduleCatalog.AddModule<PropertiesModul.PropertiesModul>();
+            moduleCatalog.AddModule<PropertyModul.PropertyModul>();
             //moduleCatalog.AddModule<WarrantyModul.WarrantyModul>();
             //moduleCatalog.AddModule<ReportModul.ReportModul>();
         }

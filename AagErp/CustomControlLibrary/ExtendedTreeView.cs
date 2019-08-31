@@ -11,24 +11,30 @@ namespace CustomControlLibrary
 
         private TreeViewItem _selectedItemTv;
 
-        public new object SelectedItem
+        public object SelectedItem
         {
             get => GetValue(SelectedItemProperty);
             set => SetValue(SelectedItemProperty, value);
         }
 
-        public new static readonly DependencyProperty SelectedItemProperty = DependencyProperty.Register("SelectedItem", typeof(object), typeof(ExtendedTreeView), new UIPropertyMetadata(null));
+        public static readonly DependencyProperty SelectedItemProperty = DependencyProperty.Register("SelectedItem", typeof(object), typeof(ExtendedTreeView), new UIPropertyMetadata(null));
 
         #endregion
 
-        public ExtendedTreeView()
+        public ExtendedTreeView() : base()
         {
+            //SelectedItemChanged += new RoutedPropertyChangedEventHandler<object>(MyTreeView_SelectedItemChanged);
             SelectedItemChanged += ___ICH;
             PreviewMouseRightButtonDown += ___MRBD;
             PreviewMouseLeftButtonDown += ___MLBD;
         }
 
         #region EventHandlers
+
+        private void MyTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            this.SelectedItem = base.SelectedItem;
+        }
 
         private void ___ICH(object sender, RoutedPropertyChangedEventArgs<object> e)
         {

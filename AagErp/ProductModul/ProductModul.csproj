@@ -111,6 +111,10 @@
       <Project>{c1088933-3223-41a0-a687-8d34c8a1e104}</Project>
       <Name>ModelModul</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PropertiesModul\PropertyModul.csproj">
+      <Project>{9EF8175E-79BF-4BE3-978A-1065EED8CD93}</Project>
+      <Name>PropertyModul</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

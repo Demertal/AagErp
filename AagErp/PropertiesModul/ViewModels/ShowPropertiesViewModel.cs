@@ -1,34 +1,25 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using ModelModul;
+using CustomControlLibrary.MVVM;
 using ModelModul.Models;
 using ModelModul.Repositories;
 using ModelModul.Specifications;
 using Prism.Commands;
-using Prism.Interactivity.InteractionRequest;
-using Prism.Regions;
+using Prism.Services.Dialogs;
 
-namespace PropertiesModul.ViewModels
+namespace PropertyModul.ViewModels
 {
-    class ShowPropertiesViewModel : ViewModelBase, IInteractionRequestAware
+    public class ShowPropertiesViewModel : DialogViewModelBase
     {
         #region Properties
 
-        private ObservableCollection<PropertyName> _propertyNames = new ObservableCollection<PropertyName>();
+        private ObservableCollection<PropertyName> _propertyNamesList = new ObservableCollection<PropertyName>();
         public ObservableCollection<PropertyName> PropertyNamesList
         {
-            get => _propertyNames;
-            set => SetProperty(ref _propertyNames, value);
-        }
-
-        private ObservableCollection<PropertyValue> _propertyValues = new ObservableCollection<PropertyValue>();
-        public ObservableCollection<PropertyValue> PropertyValuesList
-        {
-            get => _propertyValues;
-            set => SetProperty(ref _propertyValues, value);
+            get => _propertyNamesList;
+            set => SetProperty(ref _propertyNamesList, value);
         }
 
         private Category _category = new Category();
@@ -42,35 +33,18 @@ namespace PropertiesModul.ViewModels
             }
         }
 
-        private PropertyName _propertyName = new PropertyName();
-        public PropertyName PropertyName
-        {
-            get => _propertyName;
-            set
-            {
-                _propertyName = value;
-                RaisePropertyChanged();
-                RaisePropertyChanged("CanUserAddValues");
-                LoadValuesAsync();
-            }
-        }
-
-        private Notification _notification;
-        public INotification Notification
-        {
-            get => _notification;
-            set
-            {
-                SetProperty(ref _notification, value as Notification);
-                Category = (Category)_notification.Content;
-                PropertyName = _propertyName;
-                LoadNamesAsync();
-            }
-        }
-
-        public bool CanUserAddValues => PropertyName != null && PropertyName.Id != 0;
-
-        public Action FinishInteraction { get; set; }
+        //private Notification _notification;
+        //public INotification Notification
+        //{
+        //    get => _notification;
+        //    set
+        //    {
+        //        SetProperty(ref _notification, value as Notification);
+        //        Category = (Category)_notification.Content;
+        //        PropertyName = _propertyName;
+        //        LoadNamesAsync();
+        //    }
+        //}
 
         public DelegateCommand<SelectedCellsChangedEventArgs> SelectedPropertyNamesCommand { get; }
 
@@ -84,16 +58,10 @@ namespace PropertiesModul.ViewModels
 
         public ShowPropertiesViewModel()
         {
-            SelectedPropertyNamesCommand = new DelegateCommand<SelectedCellsChangedEventArgs>(SelectedPropertyNames);
             ChangePropertyNamesCommand = new DelegateCommand<DataGridCellEditEndingEventArgs>(ChangePropertyNames);
             DeletePropertyNamesCommand = new DelegateCommand<PropertyName>(DeletePropertyNamesAsync);
             ChangePropertyValuesCommand = new DelegateCommand<DataGridCellEditEndingEventArgs>(ChangePropertyValues);
             DeletePropertyValuesCommand = new DelegateCommand<PropertyValue>(DeletePropertyValuesAsync);
-        }
-
-        private void SelectedPropertyNames(SelectedCellsChangedEventArgs obj)
-        {
-            PropertyName = obj.AddedCells.FirstOrDefault().Item as PropertyName ?? null;
         }
 
         #region PropertyName
@@ -168,19 +136,11 @@ namespace PropertiesModul.ViewModels
         {
             try
             {
-                SqlPropertyNameRepository sql = new SqlPropertyNameRepository();
-                //PropertyNamesList = new ObservableCollection<PropertyName>(await sql.GetListAsync(PropertyNameSpecification.GetPropertyNamesByIdGroup(_category.Id)));
-                if (PropertyName == null || PropertyName.Id == 0)
-                {
-                    PropertyName = PropertyNamesList.FirstOrDefault();
-                }
-                else
-                {
-                    if (PropertyNamesList.FirstOrDefault(objPr => objPr.Id == PropertyName.Id) == null)
-                    {
-                        PropertyName = PropertyNamesList.FirstOrDefault();
-                    }
-                }
+                IRepository<PropertyName> propertyNameRepository = new SqlPropertyNameRepository();
+                PropertyNamesList = new ObservableCollection<PropertyName>(
+                    await propertyNameRepository.GetListAsync(
+                        PropertyNameSpecification.GetPropertyNamesByIdGroup(_category.Id),
+                        include: p => p.PropertyValuesCollection));
             }
             catch (Exception e)
             {
@@ -216,7 +176,7 @@ namespace PropertiesModul.ViewModels
         {
             try
             {
-                obj.IdPropertyName = PropertyName.Id;
+                //obj.IdPropertyName = PropertyName.Id;
                 SqlPropertyValueRepository sql = new SqlPropertyValueRepository();
                 await sql.CreateAsync(obj);
             }
@@ -224,7 +184,6 @@ namespace PropertiesModul.ViewModels
             {
                 MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            LoadValuesAsync();
         }
 
         private void UpdatePropertyValues(PropertyValue obj)
@@ -238,7 +197,6 @@ namespace PropertiesModul.ViewModels
             {
                 MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            LoadValuesAsync();
         }
 
         private async void DeletePropertyValuesAsync(PropertyValue obj)
@@ -255,42 +213,14 @@ namespace PropertiesModul.ViewModels
             {
                 MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            LoadValuesAsync();
-        }
-
-        private async void LoadValuesAsync()
-        {
-            try
-            {
-                SqlPropertyValueRepository sql = new SqlPropertyValueRepository();
-                //PropertyValuesList = PropertyName != null
-                //    ? new ObservableCollection<PropertyValue>(await sql.GetListAsync(PropertyValueSpecification.GetPropertyValuesByIdPropertyName(PropertyName.Id)))
-                //    : new ObservableCollection<PropertyValue>();
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
         }
 
         #endregion
 
-        #region INavigationAware
-
-        public override void OnNavigatedTo(NavigationContext navigationContext)
+        public override void OnDialogOpened(IDialogParameters parameters)
         {
-            LoadNamesAsync();
+            Category = parameters.GetValue<Category>("category");
+            Title = "Свойства группы " + Category.Title;
         }
-
-        public override bool IsNavigationTarget(NavigationContext navigationContext)
-        {
-            return false;
-        }
-
-        public override void OnNavigatedFrom(NavigationContext navigationContext)
-        {
-        }
-
-        #endregion
     }
 }

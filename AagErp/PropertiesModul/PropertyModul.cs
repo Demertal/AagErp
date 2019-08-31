@@ -1,10 +1,10 @@
 ﻿using Prism.Ioc;
 using Prism.Modularity;
-using PropertiesModul.Views;
+using ShowProperties = PropertyModul.Views.ShowProperties;
 
-namespace PropertiesModul
+namespace PropertyModul
 {
-    public class PropertiesModul : IModule
+    public class PropertyModul : IModule
     {
         public void OnInitialized(IContainerProvider containerProvider)
         {
