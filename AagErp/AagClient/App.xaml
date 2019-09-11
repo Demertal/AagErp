@@ -8,6 +8,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/CustomControlLibrary;component/Themes/SapphirineThem.xaml"/>
                 <ResourceDictionary Source="/CustomControlLibrary;component/Themes/Resourse.xaml"/>
+                <ResourceDictionary Source="/CustomControlLibrary;component/CustomControl/Generic.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <Style TargetType="{x:Type aagClient:Shell}" BasedOn="{StaticResource {x:Type Window}}"/>
         </ResourceDictionary>

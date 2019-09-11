@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace ModelModul.Models
 {
@@ -7,9 +8,9 @@ namespace ModelModul.Models
     {
         public Category()
         {
-            ChildCategoriesCollection = new List<Category>();
-            ProductsCollection = new List<Product>();
-            PropertyNamesCollection = new List<PropertyName>();
+            ChildCategoriesCollection = new ObservableCollection<Category>();
+            ProductsCollection = new ObservableCollection<Product>();
+            PropertyNamesCollection = new ObservableCollection<PropertyName>();
         }
 
         private int _id;

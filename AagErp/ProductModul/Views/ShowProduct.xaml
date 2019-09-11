@@ -6,44 +6,15 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:customcontrollibrary="clr-namespace:CustomControlLibrary;assembly=CustomControlLibrary"
              xmlns:prism="http://prismlibrary.com/"
-             xmlns:converters="clr-namespace:CustomControlLibrary.Converters;assembly=CustomControlLibrary"
              xmlns:local="clr-namespace:ProductModul.Views"
-             xmlns:converters1="clr-namespace:ModelModul.Converters;assembly=ModelModul"
+             xmlns:converters="clr-namespace:ModelModul.Converters;assembly=ModelModul"
              xmlns:views="clr-namespace:CategoryModul.Views;assembly=CategoryModul"
+             xmlns:customControl="clr-namespace:CustomControlLibrary.CustomControl;assembly=CustomControlLibrary"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" VerticalContentAlignment="Top" Padding="10,5,5,10">
 
     <UserControl.Resources>
-        <converters:VisibilityBoolConverter x:Key="VisibilityConverterForBool"/>
-        <converters1:ConvertCount x:Key="ConvertCount"/>
-        <!--<ContextMenu x:Key="DataGridMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}"
-                     Visibility="{Binding IsAddPurchase, ConverterParameter=True, Converter={StaticResource VisibilityConverterForBool}}">
-            <MenuItem Header="Добавить товар" Command="{Binding AddProductCommand}"/>
-        </ContextMenu>-->
-
-        <ContextMenu x:Key="DataGridMenu" Visibility="{Binding IsAddPurchase, ConverterParameter=True, Converter={StaticResource VisibilityConverterForBool}}">
-            <MenuItem Header="Добавить товар" Command="{Binding AddProductCommand}"/>
-        </ContextMenu>
-
-        <!--<ContextMenu  x:Key="RowMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}"
-                      Visibility="{Binding DataContext.IsAddPurchase, ConverterParameter=True, Converter={StaticResource VisibilityConverterForBool}, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}">
-            <MenuItem Header="Удалить" CommandParameter="{Binding}" Command="{Binding DataContext.DeleteProductCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}"/>
-            <MenuItem Header="Добавить товар" Command="{Binding DataContext.AddProductCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"/>
-        </ContextMenu>-->
-
-        <ContextMenu  x:Key="RowMenu" Visibility="{Binding DataContext.IsAddPurchase, ConverterParameter=True, Converter={StaticResource VisibilityConverterForBool}, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}">
-            <MenuItem Header="Удалить" CommandParameter="{Binding}" Command="{Binding DataContext.DeleteProductCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowProduct}}}"/>
-            <MenuItem Header="Добавить товар" Command="{Binding DataContext.AddProductCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowProduct}}}"/>
-        </ContextMenu>
-
-        <!--<ContextMenu x:Key="TreeViewContex" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}"
-                     Visibility="{Binding IsAddPurchase, ConverterParameter=True, Converter={StaticResource VisibilityConverterForBool}}">
-            <MenuItem Header="Добавить категорию" Command="{Binding AddCategoryCommand}"/>
-        </ContextMenu>-->
-
-        <ContextMenu x:Key="TreeViewContex" Visibility="{Binding IsAddPurchase, ConverterParameter=True, Converter={StaticResource VisibilityConverterForBool}}">
-            <MenuItem Header="Добавить категорию" Command="{Binding AddCategoryCommand}"/>
-        </ContextMenu>
+        <converters:ConvertCount x:Key="ConvertCount"/>
     </UserControl.Resources>
 
     <Grid VerticalAlignment="Top">
@@ -55,19 +26,14 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <customcontrollibrary:WatermarkTextBox WatermarkText="Поиск..." Text="{Binding FindString, UpdateSourceTrigger=PropertyChanged}" Margin ="5"
+        <customControl:WatermarkTextBox WatermarkText="Поиск..." Text="{Binding FindString, UpdateSourceTrigger=PropertyChanged}" Margin ="5"
                                                TextWrapping="Wrap" MinWidth="200" VerticalContentAlignment="Center " Grid.Column="0" Grid.Row="0"/>
 
         <views:ShowCategories SelectedCategory="{Binding DataContext.SelectedCategory, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowProduct}}, UpdateSourceTrigger=PropertyChanged}"
                               HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="0" Grid.Row="1"/>
 
-        <customcontrollibrary:ExtendedDataGrid x:Name="ProductData" ContextMenu="{StaticResource DataGridMenu}" ItemsSource="{Binding ProductsList, UpdateSourceTrigger=PropertyChanged}"
+        <customcontrollibrary:ExtendedDataGrid x:Name="ProductData" ItemsSource="{Binding ProductsList, UpdateSourceTrigger=PropertyChanged}"
                           MinHeight="200" MaxHeight="500" SelectionMode="Single" Grid.Column="1" Grid.Row="1">
-            <DataGrid.RowStyle>
-                <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
-                    <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
-                </Style>
-            </DataGrid.RowStyle>
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseDoubleClick">
                     <prism:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.SelectedProductCommand}"

@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ModelModul.Models;
 
@@ -15,11 +14,11 @@ namespace ModelModul.Configurations
             builder.Property(p => p.VendorCode).HasMaxLength(20);
             builder.Property(p => p.Barcode).HasMaxLength(13);
             builder.Property(p => p.Description).HasColumnType("nvarchar(max)");
-            builder.Property(p => p.Price).HasColumnType("money").Metadata.BeforeSaveBehavior = PropertySaveBehavior.Ignore;
-            builder.Property(p => p.Count).Metadata.BeforeSaveBehavior = PropertySaveBehavior.Ignore;
             builder.Ignore(p => p.CountsProductCollection);
             builder.Ignore(p => p.IsValidate);
             builder.Ignore(p => p.EquivalentCostForЕxistingProductsCollection);
+            builder.Ignore(p => p.Count);
+            builder.Ignore(p => p.Price);
             builder.Ignore(p => p.Error);
             builder.HasMany(p => p.InvoiceInfosCollection).WithOne(i => i.Product).HasForeignKey(i => i.IdProduct).IsRequired();
             builder.HasMany(p => p.MovementGoodsInfosCollection).WithOne(m => m.Product).HasForeignKey(m => m.IdProduct)

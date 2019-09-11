@@ -39,7 +39,7 @@ namespace ModelModul.Repositories
             return await query.AnyAsync();
         }
 
-        public virtual async Task<IEnumerable<TEntity>> GetListAsync(ISpecification<TEntity> where = null, Dictionary<string, SortingTypes> order = null, int skip = 0, int take = -1, params Expression<Func<TEntity, Object>>[] include)
+        public async Task<IEnumerable<TEntity>> GetListAsync(ISpecification<TEntity> where = null, Dictionary<string, SortingTypes> order = null, int skip = 0, int take = -1, params Expression<Func<TEntity, Object>>[] include)
         {
             var query = Db.Set<TEntity>().AsQueryable();
             if (where != null) query = query.Where(where.IsSatisfiedBy());
@@ -64,7 +64,7 @@ namespace ModelModul.Repositories
             return await Db.Set<TEntity>().FindAsync(id);
         }
 
-        public virtual async Task<TEntity> GetItemAsync(long id)
+        public async Task<TEntity> GetItemAsync(long id)
         {
             return await Db.Set<TEntity>().FindAsync(id);
         }
@@ -92,7 +92,7 @@ namespace ModelModul.Repositories
             }
         }
 
-        public virtual async Task UpdateAsync(TEntity item)
+        public async Task UpdateAsync(TEntity item)
         {
             using (var transaction = Db.Database.BeginTransaction())
             {

@@ -13,5 +13,6 @@
         <ResourceDictionary Source="/CustomControlLibrary;component/Themes/BaseStyles/TreeViewStyle.xaml"/>
         <ResourceDictionary Source="/CustomControlLibrary;component/Themes/BaseStyles/WindowStyle.xaml"/>
         <ResourceDictionary Source="/CustomControlLibrary;component/Themes/BaseStyles/CheckBoxStyle.xaml"/>
+        <ResourceDictionary Source="/CustomControlLibrary;component/Themes/BaseStyles/ExpanderStyle.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

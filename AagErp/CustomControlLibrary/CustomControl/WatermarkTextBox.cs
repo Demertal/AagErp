@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace CustomControlLibrary
+namespace CustomControlLibrary.CustomControl
 {
     public class WatermarkTextBox : TextBox
     {

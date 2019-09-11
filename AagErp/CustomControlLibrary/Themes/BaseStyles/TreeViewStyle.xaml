@@ -132,7 +132,7 @@
                                <VisualState x:Name="Collapsed" />
                            </VisualStateGroup>
                        </VisualStateManager.VisualStateGroups>
-                        <Border x:Name="Bd" BorderThickness="1" CornerRadius="10"  Grid.Column="0" Grid.ColumnSpan="3" Background="{TemplateBinding Background}" Margin="0,2,0,2">
+                       <Border x:Name="Bd" BorderThickness="1" CornerRadius="10"  Grid.Column="0" Grid.ColumnSpan="3" Background="{TemplateBinding Background}" Margin="0,2,0,2">
                            <Border.BorderBrush >
                                 <SolidColorBrush Color="{DynamicResource BorderColor}"/>
                            </Border.BorderBrush>

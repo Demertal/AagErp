@@ -21,6 +21,7 @@ namespace ProductModul
         {
             containerRegistry.RegisterDialogWindow<DialogWindow>();
             containerRegistry.RegisterForNavigation<ShowProduct>();
+            containerRegistry.RegisterForNavigation<ShowNomenclature>();
             containerRegistry.RegisterDialog<AddCategory, AddCategoryViewModel>();
             containerRegistry.RegisterDialog<RenameCategory, RenameCategoryViewModel>();
             containerRegistry.RegisterDialog<AddProduct, AddProductViewModel>();

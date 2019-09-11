@@ -587,7 +587,11 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
                     <Grid>
-                        <Rectangle Stroke="Blue" Margin="-1,0,0,0" Width="1" StrokeThickness="{TemplateBinding BorderThickness}" VerticalAlignment="Stretch" HorizontalAlignment="Left"/>
+                        <Rectangle Margin="-1,0,0,0" Width="1" StrokeThickness="{TemplateBinding BorderThickness}" VerticalAlignment="Stretch" HorizontalAlignment="Left">
+                            <Rectangle.Stroke>
+                                <SolidColorBrush Color="{DynamicResource BorderColor}"/>
+                            </Rectangle.Stroke>
+                        </Rectangle>
                         <Border x:Name="columnHeaderBorder" BorderThickness="0" Padding="3,0,3,0">
                             <Border.BorderBrush>
                                 <SolidColorBrush Color="Transparent"/>

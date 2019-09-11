@@ -34,7 +34,7 @@ namespace CategoryModul.ViewModels
                 await sqlCategoryRepository.CreateAsync(_category);
                 MessageBox.Show("Категория добавлена", "Успех",
                     MessageBoxButton.OK, MessageBoxImage.Information);
-                RaiseRequestClose(new DialogResult(ButtonResult.OK));
+                RaiseRequestClose(new DialogResult(ButtonResult.OK, new DialogParameters { { "category", _category } }));
             }
             catch (Exception ex)
             {

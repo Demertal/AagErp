@@ -98,7 +98,7 @@ namespace ProductModul.ViewModels
                 SqlProductRepository sqlProductRepository = new SqlProductRepository();
                 await sqlProductRepository.CreateAsync(_product);
                 MessageBox.Show("Товар добавлен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                RaiseRequestClose(new DialogResult(ButtonResult.OK));
+                RaiseRequestClose(new DialogResult(ButtonResult.OK, new DialogParameters { { "product", _product } }));
             }
             catch (Exception ex)
             {

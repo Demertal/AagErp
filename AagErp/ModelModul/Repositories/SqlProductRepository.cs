@@ -11,15 +11,15 @@ namespace ModelModul.Repositories
 {
     public class SqlProductRepository : SqlRepository<Product>
     {
-        public override async Task<IEnumerable<Product>> GetListAsync(ISpecification<Product> where = null, Dictionary<string, SortingTypes> order = null, int skip = 0, int take = -1, params Expression<Func<Product, Object>>[] include)
+        public async Task<IEnumerable<Product>> GetProductsWithCountAndPrice(ISpecification<ProductWithCountAndPrice> where = null, Dictionary<string, SortingTypes> order = null, int skip = 0, int take = -1, params Expression<Func<ProductWithCountAndPrice, Object>>[] include)
         {
-            var query = Db.Products.FromSql("select * from productsWithCountAndPrice").AsQueryable();
-            if (where != null) query = query.Where(where.IsSatisfiedBy());
-            if (order != null) query = query.OrderUsingSortExpression(order);
-            if (skip != 0) query = query.Skip(skip);
-            if (take != -1) query = query.Take(take);
-            if (include != null) query = query.ToLoad(include);
-            return await query.AsNoTracking().ToListAsync();
+            var query = Db.ProductWithCountAndPrice.AsQueryable();
+            if (where != null) query = query.Where(where.IsSatisfiedBy()).AsQueryable();
+            if (order != null) query = query.OrderUsingSortExpression(order).AsQueryable();
+            if (skip != 0) query = query.Skip(skip).AsQueryable();
+            if (take != -1) query = query.Take(take).AsQueryable();
+            if (include != null) query = query.ToLoad(include).AsQueryable();
+            return await query.Select(p => (Product)p).ToListAsync();
         }
 
         public async Task<List<CountsProduct>> GetCountsProduct(long itemId)
@@ -38,26 +38,6 @@ namespace ModelModul.Repositories
         {
             return await Db.Products.Select(p => AutomationAccountingGoodsContext.GetCurrentPrice(itemId))
                 .FirstOrDefaultAsync();
-        }
-
-        public override async Task UpdateAsync(Product item)
-        {
-            using (var transaction = Db.Database.BeginTransaction())
-            {
-                try
-                {
-                    Db.Products.Update(item);
-                    Db.Entry(item).Property(p => p.Count).IsModified = false;
-                    Db.Entry(item).Property(p => p.Price).IsModified = false;
-                    await Db.SaveChangesAsync();
-                    transaction.Commit();
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
         }
     }
 }

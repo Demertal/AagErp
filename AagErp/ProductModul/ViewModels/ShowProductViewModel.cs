@@ -28,8 +28,6 @@ namespace ProductModul.ViewModels
 
         #endregion
 
-        #region CategoryProperties
-
         private ObservableCollection<Category> _categoriesList = new ObservableCollection<Category>();
 
         public ObservableCollection<Category> CategoriesList
@@ -37,13 +35,6 @@ namespace ProductModul.ViewModels
             get => _categoriesList;
             set => SetProperty(ref _categoriesList, value);
         }
-
-        public DelegateCommand<Category> DeleteCategoryCommand { get; }
-        public DelegateCommand<Category> AddCategoryCommand { get; }
-        public DelegateCommand<Category> RenameCategoryCommand { get; }
-        public DelegateCommand<Category> ShowPropertiesCommand { get; }
-
-        #endregion
 
         private ObservableCollection<WarrantyPeriod> _warrantyPeriods = new ObservableCollection<WarrantyPeriod>();
         public ObservableCollection<WarrantyPeriod> WarrantyPeriodsList
@@ -90,9 +81,7 @@ namespace ProductModul.ViewModels
             get => _productsList;
             set => SetProperty(ref _productsList, value);
         }
-
-        public DelegateCommand<Product> DeleteProductCommand { get; }
-        public DelegateCommand AddProductCommand { get; }
+        
         public DelegateCommand<Product> SelectedProductCommand { get; }
 
         public bool IsEnabledAddProduct => SelectedCategory != null;
@@ -102,14 +91,6 @@ namespace ProductModul.ViewModels
         {
             _dialogService = dialogService;
             IsAddPurchase = false;
-            AddCategoryCommand = new DelegateCommand<Category>(AddCategory);
-            RenameCategoryCommand = new DelegateCommand<Category>(RenameCategory);
-            DeleteCategoryCommand = new DelegateCommand<Category>(DeleteCategoryAsync);
-            ShowPropertiesCommand = new DelegateCommand<Category>(ShowProperties);
-
-            DeleteProductCommand = new DelegateCommand<Product>(DeleteProductAsync);
-            AddProductCommand = new DelegateCommand(AddProduct).ObservesCanExecute(() => IsEnabledAddProduct);
-
             SelectedProductCommand = new DelegateCommand<Product>(SelectedProduct);
         }
 
@@ -139,46 +120,6 @@ namespace ProductModul.ViewModels
             }
         }
 
-        private void AddCategory(Category category)
-        {
-            _dialogService.ShowDialog("AddCategory",
-                new DialogParameters { { "id", category?.Id } },
-                Callback);
-        }
-
-        private void Callback(IDialogResult dialogResult)
-        {
-            PreLoadAsync();
-            LoadAsync();
-        }
-
-        private void RenameCategory(Category category)
-        {
-            _dialogService.ShowDialog("RenameCategory", new DialogParameters { { "category", category } }, Callback);
-        }
-
-        private void ShowProperties(Category category)
-        {
-            _dialogService.ShowDialog("ShowProperties", new DialogParameters { { "category", category } }, Callback);
-        }
-
-        private async void DeleteCategoryAsync(Category category)
-        {
-            try
-            {
-                if (MessageBox.Show("Вы уверены что хотите удалить категорию? При удалении категории будут также удалены все дочерние категории, товар в них и свойства!", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
-                    MessageBoxResult.Yes) return;
-                SqlRepository<Category> sqlCategoryRepository = new SqlCategoryRepository();
-                await sqlCategoryRepository.DeleteAsync(category);
-                MessageBox.Show("Категория удалена.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                PreLoadAsync();
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
         #endregion
 
         #region ProductCommands
@@ -189,35 +130,14 @@ namespace ProductModul.ViewModels
             {
                 SqlProductRepository sqlProductRepository = new SqlProductRepository();
 
-                ProductsList = new ObservableCollection<Product>(await sqlProductRepository.GetListAsync(
-                    ProductSpecification.GetProductsByIdGroupOrFindString(SelectedCategory?.Id, FindString), null, 0, -1, p => p.UnitStorage, p => p.Category));
+                ProductsList = new ObservableCollection<Product>(
+                    await sqlProductRepository.GetProductsWithCountAndPrice(
+                        ProductWithCountAndPriceSpecification.GetProductsByIdGroupOrFindString(SelectedCategory?.Id,
+                            FindString), null, 0, -1, p => p.UnitStorage, p => p.Category));
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void AddProduct()
-        {
-            _dialogService.ShowDialog("AddProduct", new DialogParameters { { "category", SelectedCategory } }, Callback);
-        }
-
-        private async void DeleteProductAsync(Product obj)
-        {
-            if (obj == null) return;
-            if (MessageBox.Show("Удалить товар?", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
-                MessageBoxResult.Yes) return;
-            try
-            {
-                SqlProductRepository dbSet = new SqlProductRepository();
-                await dbSet.DeleteAsync(obj);
-                MessageBox.Show("Товар удален.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                LoadAsync();
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.InnerException?.Message ?? e.Message, "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
