@@ -286,7 +286,7 @@ namespace ModelModul.Models
         {
             get
             {
-                string error = String.Empty;
+                string error = string.Empty;
 
                 switch (columnName)
                 {
@@ -354,14 +354,14 @@ namespace ModelModul.Models
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Remove:
-                    foreach (SerialNumber item in e.OldItems)
+                    foreach (CountsProduct item in e.OldItems)
                     {
                         //Removed items
                         item.PropertyChanged -= CountsProductItemChanged;
                     }
                     break;
                 case NotifyCollectionChangedAction.Add:
-                    foreach (SerialNumber item in e.NewItems)
+                    foreach (CountsProduct item in e.NewItems)
                     {
                         //Added items
                         item.PropertyChanged += CountsProductItemChanged;
@@ -427,7 +427,7 @@ namespace ModelModul.Models
                 Category = (Category) Category?.Clone(),
                 UnitStorage = (UnitStorage) UnitStorage?.Clone(),
                 WarrantyPeriod = (WarrantyPeriod) WarrantyPeriod?.Clone(),
-                SerialNumbersCollection = new List<SerialNumber>(SerialNumbersCollection.Select(s => (SerialNumber)s.Clone()))
+                SerialNumbersCollection = SerialNumbersCollection == null? null : new List<SerialNumber>(SerialNumbersCollection.Select(s => (SerialNumber)s.Clone()))
             };
         }
     }

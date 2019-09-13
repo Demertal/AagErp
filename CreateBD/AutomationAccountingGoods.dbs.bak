@@ -566,9 +566,9 @@ FROM dbo.products p
 			<column name="idCategory" type="int" />
 			<column name="idPriceGroup" type="int" />
 			<column name="keepTrackSerialNumbers" type="bit" />
+			<column name="description" type="nvarchar(max)" />
 			<column name="price" type="money" />
 			<column name="count" type="decimal" />
-			<column name="description" type="nvarchar(max)" />
 		</view>
 		<procedure name="goods_issued" id="Procedure_49492f8" isSystem="false" params_known="n" >
 			<string><![CDATA[CREATE PROCEDURE goods_issued
@@ -828,7 +828,6 @@ END]]></string>
 		<entity schema="dbo" name="moneyTransferTypes" color="C7F4BE" x="1408" y="704" />
 		<entity schema="dbo" name="invoiceInfos" color="F4DDBE" x="1504" y="368" />
 		<entity schema="dbo" name="propertyProducts" color="BEBEF4" x="2320" y="80" />
-		<entity schema="dbo" name="categories" color="BEBEF4" x="1936" y="80" />
 		<entity schema="dbo" name="paymentTypes" color="C7F4BE" x="1200" y="944" />
 		<entity schema="dbo" name="counterparties" color="C7F4BE" x="1008" y="704" />
 		<entity schema="dbo" name="warrantyPeriods" color="F4DDBE" x="1024" y="192" />
@@ -845,6 +844,7 @@ END]]></string>
 		<entity schema="dbo" name="movmentGoodTypes" color="C1D8EE" x="48" y="256" />
 		<entity schema="dbo" name="products" color="F4DDBE" x="1232" y="80" />
 		<entity schema="dbo" name="productsWithCountAndPrice" color="3986C1" x="1936" y="592" />
+		<entity schema="dbo" name="categories" color="BEBEF4" x="1936" y="80" />
 		<group name="counterparties" color="EEF7EC" >
 			<entity schema="dbo" name="counterparties" />
 			<entity schema="dbo" name="moneyTransfers" />
@@ -890,5 +890,8 @@ FROM
 FROM
 	dbo.movmentGoodTypes s;]]></string>
 		</script>
+		<browser id="Browse_54f12b5" name="categories" confirm_updates="y" >
+			<browse_table schema="dbo" entity="categories" x="20" y="20" width="400" height="300" />
+		</browser>
 	</layout>
 </project>

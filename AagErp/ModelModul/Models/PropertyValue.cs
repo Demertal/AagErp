@@ -1,8 +1,11 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace ModelModul.Models
 {
-    public class PropertyValue : ModelBase
+    public class PropertyValue : ModelBase, ICloneable
     {
         public PropertyValue()
         {
@@ -62,6 +65,39 @@ namespace ModelModul.Models
                 _propertyProductsCollection = value;
                 OnPropertyChanged("PropertyProductsCollection");
             }
+        }
+
+        public override string this[string columnName]
+        {
+            get
+            {
+                string error = string.Empty;
+
+                switch (columnName)
+                {
+                    case "Value":
+                        if (string.IsNullOrEmpty(Value))
+                        {
+                            error = "Значение должно быть указано";
+                        }
+
+                        if (PropertyName != null)
+                        {
+                            if (PropertyName.PropertyValuesCollection.Any(p => p.Value == Value))
+                                error = "Такое значение уже есть в этом параметре";
+                        }
+
+                        break;
+                }
+
+                return error;
+            }
+        }
+
+        public bool IsValidate => !string.IsNullOrEmpty(Value);
+        public object Clone()
+        {
+            return new PropertyValue{Id = Id, IdPropertyName = IdPropertyName, Value = Value};
         }
     }
 }

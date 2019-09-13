@@ -17,7 +17,7 @@
             <ColumnDefinition Width="Auto"></ColumnDefinition>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <Label Content="Категория" Grid.Row="1" Grid.Column="0"/>
+        <TextBlock Text="Категория" Grid.Row="1" Grid.Column="0"/>
         <TextBox Text="{Binding Category.Title,  UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"  Grid.Row="1" Grid.Column="1"/>
         <Button Grid.Column="1" Content="Добавить" Grid.Row="2" VerticalAlignment="Center" Width="110" Command="{Binding AddCategoryCommand}" IsDefault="True"/>
     </Grid>

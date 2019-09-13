@@ -25,6 +25,7 @@
             </MenuItem>
             <MenuItem Header="Справочники">
                 <MenuItem Header="Номенклатура" Command="{Binding NavigateCommand}" CommandParameter="ShowNomenclature"/>
+                <MenuItem Header="Параметры товара" Command="{Binding NavigateCommand}" CommandParameter="ShowProperties"/>
                 <MenuItem Header="Ед. хранения" Command="{Binding NavigateCommand}" CommandParameter="ShowUnitStorages"/>
                 <MenuItem Header="Гарантийный период" Command="{Binding NavigateCommand}" CommandParameter="ShowWarrantyPeriods"/>
                 <MenuItem Header="Ценовая группа" Command="{Binding NavigateCommand}" CommandParameter="ShowPriceGroups"/>

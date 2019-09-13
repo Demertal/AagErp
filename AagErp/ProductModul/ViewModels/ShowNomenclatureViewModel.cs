@@ -101,7 +101,12 @@ namespace ProductModul.ViewModels
             Category temp = dialogResult.Parameters.GetValue<Category>("category");
             if (temp == null) return;
             if(temp.IdParent == null) CategoriesList.Add(temp);
-            else FindCategory(CategoriesList, temp.IdParent.Value).ChildCategoriesCollection.Add(temp);
+            else
+            {
+                Category parent = FindCategory(CategoriesList, temp.IdParent.Value);
+                parent.ChildCategoriesCollection.Add(temp);
+                temp.Parent = parent;
+            }
         }
 
         private async void DeleteCategoryAsync(Category obj)
@@ -230,7 +235,7 @@ namespace ProductModul.ViewModels
             Category targetItemCategory = dropInfo.TargetItem as Category;
             switch (dropInfo.Data)
             {
-                case Category sourceItemCategory when targetItemCategory == null || !IsChild(sourceItemCategory, targetItemCategory):
+                case Category sourceItemCategory when !(dropInfo.TargetItem is PropertyName) && CheckCategoryByCategory(sourceItemCategory, targetItemCategory):
                     dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
                     dropInfo.Effects = DragDropEffects.Copy;
                     break;
@@ -242,10 +247,11 @@ namespace ProductModul.ViewModels
             }
         }
 
-        private bool IsChild(Category sourceItem, Category targetItem)
+        private bool CheckCategoryByCategory(Category sourceItem, Category targetItem)
         {
-            if (sourceItem == targetItem || sourceItem.ChildCategoriesCollection.Contains(targetItem)) return true;
-            return sourceItem.ChildCategoriesCollection.Any(category => IsChild(category, targetItem));
+            if (sourceItem == targetItem || sourceItem.Parent == targetItem ||
+                sourceItem.ChildCategoriesCollection.Contains(targetItem)) return false;
+            return sourceItem.ChildCategoriesCollection.All(category => CheckCategoryByCategory(category, targetItem));
         }
 
         public void Drop(IDropInfo dropInfo)

@@ -4,65 +4,291 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:interactivity="http://prismlibrary.com/"
+             xmlns:local="clr-namespace:PropertyModul.Views"
+             xmlns:dd="urn:gong-wpf-dragdrop"
+             xmlns:models="clr-namespace:ModelModul.Models;assembly=ModelModul"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              interactivity:ViewModelLocator.AutoWireViewModel="True"
-             mc:Ignorable="d" 
-             VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Padding="10">
+             mc:Ignorable="d" >
 
     <UserControl.Resources>
-        <ContextMenu  x:Key="PropertyNamesMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-            <MenuItem Header="Удалить" CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
-                      Command="{Binding DataContext.DeletePropertyNamesCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>
+        <Style TargetType="{x:Type Border}" x:Key="CellStyle">
+            <Setter Property="BorderBrush" Value="Black"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="1,1,1,1"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+        </Style>
+        <Style TargetType="{x:Type Border}" x:Key="RowStyle">
+            <Setter Property="BorderBrush" Value="Black"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Background">
+                <Setter.Value>
+                    <RadialGradientBrush GradientOrigin="0.496,1.052">
+                        <RadialGradientBrush.RelativeTransform>
+                            <TransformGroup>
+                                <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1.5" ScaleY="1.5"/>
+                                <TranslateTransform X="0.02" Y="0.3"/>
+                            </TransformGroup>
+                        </RadialGradientBrush.RelativeTransform>
+                        <GradientStop Color="White" Offset="0" />
+                        <GradientStop Color="White" Offset="1" />
+                    </RadialGradientBrush>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="{x:Type Border}" x:Key="BorderHeader">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <RadialGradientBrush GradientOrigin="0.496,1.052">
+                        <RadialGradientBrush.RelativeTransform>
+                            <TransformGroup>
+                                <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1.5" ScaleY="1.5"/>
+                                <TranslateTransform X="0.02" Y="0.3"/>
+                            </TransformGroup>
+                        </RadialGradientBrush.RelativeTransform>
+                        <GradientStop Color="{DynamicResource BorderColor}" Offset="0" />
+                        <GradientStop Color="Transparent" Offset="1" />
+                    </RadialGradientBrush>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="{x:Type Rectangle}" x:Key="RectangleHeader">
+            <Setter Property="Width" Value="1"/>
+            <Setter Property="StrokeThickness" Value="1"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="Stroke">
+                <Setter.Value>
+                    <SolidColorBrush Color="{DynamicResource BorderColor}"></SolidColorBrush>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="{x:Type ListView}">
+            <Setter Property="SnapsToDevicePixels" Value="true" />
+            <Setter Property="OverridesDefaultStyle" Value="true" />
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+            <Setter Property="ScrollViewer.CanContentScroll" Value="true" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="SelectionMode" Value="Single"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListView">
+                        <Border Name="Border" BorderThickness="{TemplateBinding BorderThickness}">
+                            <ItemsPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsGrouping" Value="true">
+                                <Setter Property="ScrollViewer.CanContentScroll" Value="false" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <ContextMenu x:Key="TreeViewContex">
+            <MenuItem Header="Добавить параметр" Command="{Binding DataContext.AddPropertyNameCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowProperties}}}"/>
+            <MenuItem Header="Добавить категорию" Command="{Binding DataContext.AddCategoryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowProperties}}}"/>
         </ContextMenu>
-
-        <ContextMenu  x:Key="PropertyValuesMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-            <MenuItem Header="Удалить" CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
-                      Command="{Binding DataContext.DeletePropertyValuesCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>
+        <Style TargetType="{x:Type TreeView}" BasedOn="{StaticResource {x:Type TreeView}}">
+            <Setter Property="ContextMenu" Value="{StaticResource TreeViewContex}"/>
+            <Setter Property="ItemTemplate">
+                <Setter.Value>
+                    <HierarchicalDataTemplate ItemsSource="{Binding ChildCategoriesCollection, UpdateSourceTrigger=PropertyChanged}" DataType="{x:Type models:Category}"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TreeView">
+                        <Border Name="Border" CornerRadius="10" BorderThickness="2">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{DynamicResource BorderColor}" />
+                            </Border.BorderBrush>
+                            <Border.Background>
+                                <SolidColorBrush Color="White"/>
+                            </Border.Background>
+                            <ScrollViewer Focusable="False" CanContentScroll="False" Padding="4">
+                                <Grid IsSharedSizeScope="True">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Grid Grid.Row="0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border Style="{StaticResource BorderHeader}" Grid.Column="0">
+                                            <Grid>
+                                                <TextBlock Text="Наименование"/>
+                                            </Grid>
+                                        </Border>
+                                    </Grid>
+                                    <Rectangle Style="{StaticResource RectangleHeader}" HorizontalAlignment="Stretch" VerticalAlignment="Center" Width="Auto" Grid.Row="1" Margin="-2,0"/>
+                                    <ScrollViewer Focusable="False" CanContentScroll="False" Padding="4" Grid.Row="2">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <ItemsPresenter Grid.Row="0"/>
+                                            <ListView x:Name="PropertyData" Grid.Row="1" ItemsSource="{Binding Path=DataContext.PropertyNamesList, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowProperties}}}"
+                                                      dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding Path=DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
+                                                <i:Interaction.Triggers>
+                                                    <i:EventTrigger EventName="MouseDoubleClick">
+                                                        <interactivity:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.SelectedPropertyNameCommand}"
+                                                                                          CommandParameter="{Binding ElementName=PropertyData, Path=SelectedItem}"/>
+                                                    </i:EventTrigger>
+                                                </i:Interaction.Triggers>
+                                            </ListView>
+                                        </Grid>
+                                    </ScrollViewer>
+                                </Grid>
+                            </ScrollViewer>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <ContextMenu x:Key="CategoryContextMenu">
+            <MenuItem Header="Добавить параметр" Command="{Binding DataContext.AddPropertyNameCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowProperties}}}" CommandParameter="{Binding}"/>
+            <MenuItem Header="Добавить категорию" Command="{Binding DataContext.AddCategoryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowProperties}}}" CommandParameter="{Binding}"/>
+            <MenuItem Header="Переименовать" Command="{Binding DataContext.RenameCategoryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowProperties}}}" CommandParameter="{Binding}"/>
+            <MenuItem Header="Удалить" Command="{Binding DataContext.DeleteCategoryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowProperties}}}" CommandParameter="{Binding}"/>
         </ContextMenu>
+        <Style TargetType="TreeViewItem">
+            <Setter Property="OverridesDefaultStyle" Value="true" />
+            <Setter Property="SnapsToDevicePixels" Value="true" />
+            <Setter Property="ContextMenu" Value="{StaticResource CategoryContextMenu}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Border x:Name="Bd" BorderThickness="1" CornerRadius="10" Background="{TemplateBinding Background}" Margin="0,3,0,3">
+                            <Border.BorderBrush >
+                                <SolidColorBrush Color="{DynamicResource BorderColor}"/>
+                            </Border.BorderBrush>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="SelectionStates">
+                                    <VisualState x:Name="Selected">
+                                        <Storyboard>
+                                            <ColorAnimationUsingKeyFrames Storyboard.TargetName="Bd" 
+                                                                     Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
+                                                <EasingColorKeyFrame KeyTime="0" Value="{DynamicResource SelectedBackgroundColor}" />
+                                            </ColorAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Unselected" />
+                                    <VisualState x:Name="SelectedInactive">
+                                        <Storyboard>
+                                            <ColorAnimationUsingKeyFrames Storyboard.TargetName="Bd" 
+                                                                     Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
+                                                <EasingColorKeyFrame KeyTime="0" Value="{DynamicResource SelectedUnfocusedColor}" />
+                                            </ColorAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Expander>
+                                <Expander.Header>
+                                    <Border BorderThickness="0" CornerRadius="10">
+                                        <Border.Background>
+                                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                                <GradientStop Color="{DynamicResource ControlLightColor}" Offset="0" />
+                                                <GradientStop Color="{DynamicResource ContextColor}" Offset="0.5" />
+                                                <GradientStop Color="{DynamicResource ControlLightColor}" Offset="1" />
+                                            </LinearGradientBrush>
+                                        </Border.Background>
+                                        <TextBlock Text="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Left" VerticalAlignment="Center"/>
+                                    </Border>
+                                </Expander.Header>
+                                <Expander.Content>
+                                    <StackPanel>
+                                        <ItemsPresenter />
+                                        <ListView x:Name="PropertyData" ItemsSource="{Binding PropertyNamesCollection, UpdateSourceTrigger=PropertyChanged}" Margin="2"  dd:DragDrop.IsDragSource="True" SelectionMode="Single"
+                                                          dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding Path=DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="MouseDoubleClick">
+                                                    <interactivity:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.SelectedPropertyNameCommand}"
+                                                                                      CommandParameter="{Binding ElementName=PropertyData, Path=SelectedItem}"/>
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                        </ListView>
+                                    </StackPanel>
+                                </Expander.Content>
+                            </Expander>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <ContextMenu x:Key="PropertyContextMenu">
+            <MenuItem Header="Удалить" Command="{Binding DataContext.DeletePropertyNameCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowProperties}}}" CommandParameter="{Binding}"/>
+        </ContextMenu>
+        <Style TargetType="{x:Type ListViewItem}">
+            <Setter Property="SnapsToDevicePixels" Value="true"/>
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="ContextMenu" Value="{StaticResource PropertyContextMenu}"/>
+            <Setter Property="AllowDrop" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                        <Grid>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal"/>
+                                    <VisualState x:Name="MouseOver">
+                                        <Storyboard>
+                                            <ColorAnimationUsingKeyFrames Storyboard.TargetName="DGR_Border"
+                                                                                                                          Storyboard.TargetProperty="(Panel.Background).(GradientBrush.GradientStops)[0].(GradientStop.Color)">
+                                                <EasingColorKeyFrame KeyTime="0" Value="{DynamicResource ControlMouseOverColor}" />
+                                            </ColorAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Disabled" />
+                                    <VisualState x:Name="Selected">
+                                        <Storyboard>
+                                            <ColorAnimationUsingKeyFrames Storyboard.TargetName="DGR_Border"
+                                                                                                                          Storyboard.TargetProperty="(Panel.Background).(GradientBrush.GradientStops)[0].(GradientStop.Color)">
+                                                <EasingColorKeyFrame KeyTime="0" Value="{DynamicResource SelectedDataGridBackgroundColor}" />
+                                            </ColorAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="SelectedUnfocused">
+                                        <Storyboard>
+                                            <ColorAnimationUsingKeyFrames Storyboard.TargetName="DGR_Border"
+                                                                                                                          Storyboard.TargetProperty="(Panel.Background).(GradientBrush.GradientStops)[0].(GradientStop.Color)">
+                                                <EasingColorKeyFrame KeyTime="0" Value="{DynamicResource SelectedDataGridBackgroundColor}" />
+                                            </ColorAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                                <VisualStateGroup x:Name="SelectionStates">
+                                    <VisualState x:Name="Unselected" />
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Border  x:Name="DGR_Border" Style="{StaticResource RowStyle}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border Style="{StaticResource CellStyle}" Grid.Column="0" Margin="0,-1,0,0">
+                                        <TextBlock Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
 
-
-    <StackPanel>
-        <TextBlock Text="{Binding StringFormat=Группа: {0}, Path=Group.Title}"/>
-        <DockPanel>
-            <StackPanel>
-                <Button Content="Добавить&#10;свойство" HorizontalAlignment="Left"/>
-                <DataGrid x:Name="PropertyNames" ItemsSource="{Binding Path=PropertyNamesList, UpdateSourceTrigger=PropertyChanged}"
-                          IsSynchronizedWithCurrentItem="True" MinHeight="200" MaxHeight="500" SelectionMode="Single" HorizontalAlignment="Center">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="RowEditEnding">
-                            <interactivity:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Path=DataContext.ChangeStoresCommand}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Параметры" MinWidth="120"  Binding="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}"/>
-                    </DataGrid.Columns>
-                    <DataGrid.RowStyle>
-                        <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
-                            <Setter Property="ContextMenu" Value="{StaticResource PropertyNamesMenu}" />
-                        </Style>
-                    </DataGrid.RowStyle>
-                </DataGrid>
-            </StackPanel>
-            <StackPanel DockPanel.Dock="Right">
-                <Button Content="Добавить&#10;значение" HorizontalAlignment="Right"/>
-                <DataGrid ItemsSource="{Binding ElementName=PropertyNames, Path=SelectedItem.PropertyValuesCollection, UpdateSourceTrigger=PropertyChanged}"
-                          IsSynchronizedWithCurrentItem="True" MinHeight="200" MaxHeight="500" SelectionMode="Single" HorizontalAlignment="Center">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="RowEditEnding">
-                            <interactivity:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Path=DataContext.ChangeStoresCommand}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                    <DataGrid.RowStyle>
-                        <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
-                            <Setter Property="ContextMenu" Value="{StaticResource PropertyValuesMenu}" />
-                        </Style>
-                    </DataGrid.RowStyle>
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Значения" MinWidth="120" Binding="{Binding Path=Value, UpdateSourceTrigger=PropertyChanged}"/>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </StackPanel>
-        </DockPanel>
-    </StackPanel>
+    <Grid>
+        <TreeView ItemsSource="{Binding CategoriesList, UpdateSourceTrigger=PropertyChanged}" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}"/>
+    </Grid>
 </UserControl>

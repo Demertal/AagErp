@@ -1,19 +1,31 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
+using System.Windows.Navigation;
 using CustomControlLibrary.MVVM;
+using GongSolutions.Wpf.DragDrop;
 using ModelModul.Models;
 using ModelModul.Repositories;
 using ModelModul.Specifications;
 using Prism.Commands;
+using Prism.Regions;
 using Prism.Services.Dialogs;
 
 namespace PropertyModul.ViewModels
 {
-    public class ShowPropertiesViewModel : DialogViewModelBase
+    public class ShowPropertiesViewModel : ViewModelBase, IDropTarget
     {
-        #region Properties
+        private readonly IDialogService _dialogService;
+
+        private ObservableCollection<Category> _categoriesList = new ObservableCollection<Category>();
+        public ObservableCollection<Category> CategoriesList
+        {
+            get => _categoriesList;
+            set => SetProperty(ref _categoriesList, value);
+        }
 
         private ObservableCollection<PropertyName> _propertyNamesList = new ObservableCollection<PropertyName>();
         public ObservableCollection<PropertyName> PropertyNamesList
@@ -22,125 +34,41 @@ namespace PropertyModul.ViewModels
             set => SetProperty(ref _propertyNamesList, value);
         }
 
-        private Category _category = new Category();
-        public Category Category
+        public DelegateCommand<Category> DeleteCategoryCommand { get; }
+        public DelegateCommand<Category> AddCategoryCommand { get; }
+        public DelegateCommand<Category> RenameCategoryCommand { get; }
+
+        public DelegateCommand<PropertyName> DeletePropertyNameCommand { get; }
+        public DelegateCommand<Category> AddPropertyNameCommand { get; }
+        public DelegateCommand<PropertyName> SelectedPropertyNameCommand { get; }
+
+        public ShowPropertiesViewModel(IDialogService dialogService)
         {
-            get => _category;
-            set
-            {
-                _category = value;
-                RaisePropertyChanged();
-            }
+            _dialogService = dialogService;
+            AddCategoryCommand = new DelegateCommand<Category>(AddCategory);
+            RenameCategoryCommand = new DelegateCommand<Category>(RenameCategory);
+            DeleteCategoryCommand = new DelegateCommand<Category>(DeleteCategoryAsync);
+
+            DeletePropertyNameCommand = new DelegateCommand<PropertyName>(DeletePropertyNameAsync);
+            AddPropertyNameCommand = new DelegateCommand<Category>(AddPropertyNameAsync);
+            SelectedPropertyNameCommand = new DelegateCommand<PropertyName>(SelectedPropertyName);
         }
 
-        //private Notification _notification;
-        //public INotification Notification
-        //{
-        //    get => _notification;
-        //    set
-        //    {
-        //        SetProperty(ref _notification, value as Notification);
-        //        Category = (Category)_notification.Content;
-        //        PropertyName = _propertyName;
-        //        LoadNamesAsync();
-        //    }
-        //}
-
-        public DelegateCommand<SelectedCellsChangedEventArgs> SelectedPropertyNamesCommand { get; }
-
-        public DelegateCommand<PropertyName> DeletePropertyNamesCommand { get; }
-        public DelegateCommand<DataGridCellEditEndingEventArgs> ChangePropertyNamesCommand { get; }
-
-        public DelegateCommand<PropertyValue> DeletePropertyValuesCommand { get; }
-        public DelegateCommand<DataGridCellEditEndingEventArgs> ChangePropertyValuesCommand { get; }
-
-        #endregion
-
-        public ShowPropertiesViewModel()
-        {
-            ChangePropertyNamesCommand = new DelegateCommand<DataGridCellEditEndingEventArgs>(ChangePropertyNames);
-            DeletePropertyNamesCommand = new DelegateCommand<PropertyName>(DeletePropertyNamesAsync);
-            ChangePropertyValuesCommand = new DelegateCommand<DataGridCellEditEndingEventArgs>(ChangePropertyValues);
-            DeletePropertyValuesCommand = new DelegateCommand<PropertyValue>(DeletePropertyValuesAsync);
-        }
-
-        #region PropertyName
-
-        private void ChangePropertyNames(DataGridCellEditEndingEventArgs obj)
-        {
-            if (obj == null) return;
-            if (string.IsNullOrEmpty(((PropertyName)obj.Row.DataContext).Title))
-            {
-                obj.Cancel = true;
-            }
-            else
-            {
-                if (obj.Row.IsNewItem)
-                {
-                    AddPropertyNamesAsync((PropertyName)obj.Row.Item);
-                }
-                else
-                {
-                    UpdatePropertyNamesAsync((PropertyName)obj.Row.Item);
-                }
-            }
-        }
-
-        private async void AddPropertyNamesAsync(PropertyName obj)
+        private void LoadAsync()
         {
             try
             {
-                obj.IdCategory = Category.Id;
-                SqlPropertyNameRepository sql = new SqlPropertyNameRepository();
-                await sql.CreateAsync(obj);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            LoadNamesAsync();
-        }
-
-        private async void UpdatePropertyNamesAsync(PropertyName obj)
-        {
-            try
-            {
-                SqlPropertyNameRepository sql = new SqlPropertyNameRepository();
-                await sql.UpdateAsync(obj);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            LoadNamesAsync();
-        }
-
-        private async void DeletePropertyNamesAsync(PropertyName obj)
-        {
-            if (obj == null) return;
-            if (MessageBox.Show("Удалить параметр? Внимание, если у какого-то товара был установлен этот параметр он лишится его", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
-                MessageBoxResult.Yes) return;
-            try
-            {
-                SqlPropertyNameRepository sql = new SqlPropertyNameRepository();
-                await sql.DeleteAsync(obj);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            LoadNamesAsync();
-        }
-
-        private async void LoadNamesAsync()
-        {
-            try
-            {
+                IRepository<Category> categoryRepository = new SqlCategoryRepository();
                 IRepository<PropertyName> propertyNameRepository = new SqlPropertyNameRepository();
-                PropertyNamesList = new ObservableCollection<PropertyName>(
-                    await propertyNameRepository.GetListAsync(
-                        PropertyNameSpecification.GetPropertyNamesByIdGroup(_category.Id),
-                        include: p => p.PropertyValuesCollection));
+                var loadCategory = Task.Run(() => categoryRepository.GetListAsync(null, null, 0, -1, c => c.ChildCategoriesCollection, c => c.PropertyNamesCollection));
+                var loadProperty = Task.Run(() => propertyNameRepository.GetListAsync(PropertyNameSpecification.GetPropertyNamesByIdGroup(null)));
+
+                Task.WaitAll(loadCategory, loadProperty);
+
+                PropertyNamesList = new ObservableCollection<PropertyName>(loadProperty.Result);
+                CategoriesList = new ObservableCollection<Category>(
+                    loadCategory.Result.Where(CategorySpecification.GetCategoriesByIdParent().IsSatisfiedBy()
+                        .Compile()));
             }
             catch (Exception e)
             {
@@ -148,37 +76,40 @@ namespace PropertyModul.ViewModels
             }
         }
 
-        #endregion
-
-        #region PropertyValue
-
-        private void ChangePropertyValues(DataGridCellEditEndingEventArgs obj)
+        private void AddCategory(Category obj)
         {
-            if (obj == null) return;
-            if (string.IsNullOrEmpty(((PropertyValue)obj.Row.DataContext).Value))
-            {
-                obj.Cancel = true;
-            }
+            _dialogService.ShowDialog("AddCategory", new DialogParameters { { "id", obj?.Id } }, CallbackCategory);
+        }
+
+        private void RenameCategory(Category obj)
+        {
+            _dialogService.ShowDialog("RenameCategory", new DialogParameters { { "category", obj } }, null);
+        }
+
+        private void CallbackCategory(IDialogResult dialogResult)
+        {
+            Category temp = dialogResult.Parameters.GetValue<Category>("category");
+            if (temp == null) return;
+            if (temp.IdParent == null) CategoriesList.Add(temp);
             else
             {
-                if (obj.Row.IsNewItem)
-                {
-                    AddPropertyValuesAsync((PropertyValue)obj.Row.Item);
-                }
-                else
-                {
-                    UpdatePropertyValues((PropertyValue)obj.Row.Item);
-                }
+                Category parent = FindCategory(CategoriesList, temp.IdParent.Value);
+                parent.ChildCategoriesCollection.Add(temp);
+                temp.Parent = parent;
             }
         }
 
-        private async void AddPropertyValuesAsync(PropertyValue obj)
+        private async void DeleteCategoryAsync(Category obj)
         {
             try
             {
-                //obj.IdPropertyName = PropertyName.Id;
-                SqlPropertyValueRepository sql = new SqlPropertyValueRepository();
-                await sql.CreateAsync(obj);
+                if (MessageBox.Show("Вы уверены что хотите удалить категорию? При удалении категории будут также удалены все дочерние категории, товар в них и свойства!", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
+                    MessageBoxResult.Yes) return;
+                SqlRepository<Category> sqlCategoryRepository = new SqlCategoryRepository();
+                await sqlCategoryRepository.DeleteAsync(obj);
+                MessageBox.Show("Категория удалена.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                if (obj.IdParent == null) CategoriesList.Remove(obj);
+                else FindCategory(CategoriesList, obj.IdParent.Value).ChildCategoriesCollection.Remove(obj);
             }
             catch (Exception e)
             {
@@ -186,41 +117,237 @@ namespace PropertyModul.ViewModels
             }
         }
 
-        private void UpdatePropertyValues(PropertyValue obj)
+        private async void MovingCategoryAsync(Category obj)
         {
             try
             {
-                SqlPropertyValueRepository sql = new SqlPropertyValueRepository();
-                sql.UpdateAsync(obj);
+                Category temp = (Category)obj.Clone();
+                temp.Parent = null;
+                temp.ChildCategoriesCollection = null;
+                temp.ProductsCollection = null;
+                SqlRepository<Category> sqlCategoryRepository = new SqlCategoryRepository();
+                await sqlCategoryRepository.UpdateAsync(temp);
+                MessageBox.Show("Категория перемещена.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception e)
             {
+                LoadAsync();
                 MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        private async void DeletePropertyValuesAsync(PropertyValue obj)
+        private void AddPropertyNameAsync(Category obj)
+        {
+            _dialogService.ShowDialog("ShowProperty", new DialogParameters { { "category", obj } }, CallbackProperty);
+        }
+
+        private void CallbackProperty(IDialogResult dialogResult)
+        {
+            PropertyName temp = dialogResult.Parameters.GetValue<PropertyName>("property");
+            if (temp == null) return;
+            if(temp.IdCategory != null)
+                FindCategory(CategoriesList, temp.IdCategory.Value).PropertyNamesCollection.Add(temp);
+            else
+                PropertyNamesList.Add(temp);
+        }
+
+        private Category FindCategory(ICollection<Category> categories, int id)
+        {
+            Category temp = categories.FirstOrDefault(c => c.Id == id);
+            if (temp != null) return temp;
+            foreach (var category in categories)
+            {
+                temp = FindCategory(category.ChildCategoriesCollection, id);
+                if (temp != null) break;
+            }
+            return temp;
+        }
+
+        private async void DeletePropertyNameAsync(PropertyName obj)
         {
             if (obj == null) return;
-            if (MessageBox.Show("Удалить значение параметра? Внимание, если у какого-то товара был установлено этот значение он лишится его", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
+            if (MessageBox.Show("Удалить параметр? При удалении параметра он исчезнет у всего товара!", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
                 MessageBoxResult.Yes) return;
             try
             {
-                SqlPropertyValueRepository sql = new SqlPropertyValueRepository();
-                await sql.DeleteAsync(obj);
+                SqlRepository<PropertyName> propertyNameRepository = new SqlPropertyNameRepository();
+                await propertyNameRepository.DeleteAsync(obj);
+                if (obj.IdCategory != null)
+                    FindCategory(CategoriesList, obj.IdCategory.Value).PropertyNamesCollection.Remove(obj);
+                else
+                    PropertyNamesList.Remove(obj);
+                MessageBox.Show("Параметр удален.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception e)
             {
+                MessageBox.Show(e.InnerException?.Message ?? e.Message, "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private async void MovingPropertyAsync(PropertyName obj)
+        {
+            try
+            {
+                PropertyName temp = (PropertyName) obj.Clone();
+                temp.Category = null;
+                temp.PropertyValuesCollection = null;
+                SqlRepository<PropertyName> propertyNameRepository = new SqlPropertyNameRepository();
+                await propertyNameRepository.UpdateAsync(temp);
+                MessageBox.Show("Параметр перемещен.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception e)
+            {
+                LoadAsync();
                 MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
+        private void SelectedPropertyName(PropertyName obj)
+        {
+            _dialogService.Show("ShowProperty", new DialogParameters { { "property", obj } }, null);
+        }
+
+        #region INavigationAware
+
+        public override void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            LoadAsync();
+        }
+
+        public override bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return false;
+        }
+
+        public override void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+        }
+
         #endregion
 
-        public override void OnDialogOpened(IDialogParameters parameters)
+        public void DragOver(IDropInfo dropInfo)
         {
-            Category = parameters.GetValue<Category>("category");
-            Title = "Свойства группы " + Category.Title;
+            Category targetItemCategory = dropInfo.TargetItem as Category;
+            switch (dropInfo.Data)
+            {
+                case Category sourceItemCategory when !(dropInfo.TargetItem is PropertyName) && CheckCategoryByCategory(sourceItemCategory, targetItemCategory):
+                    dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
+                    dropInfo.Effects = DragDropEffects.Copy;
+                    break;
+                case PropertyName sourceItemProperty when dropInfo.TargetItem is PropertyName targetItemProperty && CheckPropertyByCategory(sourceItemProperty, targetItemProperty.Category) ||
+                                                          !(dropInfo.TargetItem is PropertyName) && CheckPropertyByCategory(sourceItemProperty, targetItemCategory):
+                    dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
+                    dropInfo.Effects = DragDropEffects.Copy;
+                    break;
+            }
+        }
+
+        private bool CheckPropertyByCategory(PropertyName sourceItem, Category targetItem)
+        {
+            if (sourceItem.Category == targetItem || !CheckPropertyInParentCategory(sourceItem, targetItem)) return false;
+            if (targetItem == null)
+                if (CategoriesList.Any(c => !CheckPropertyInChildCategory(sourceItem, c)))
+                    return false;
+                else
+                    return true;
+            return CheckPropertyInChildCategory(sourceItem, targetItem);
+        }
+
+        private bool CheckPropertyInParentCategory(PropertyName sourceItem, Category targetItem)
+        {
+            if(targetItem == null)
+                if (PropertyNamesList.Any(p => p.Title == sourceItem.Title && p.Id != sourceItem.Id))
+                    return false;
+                else
+                    return true;
+            if (targetItem.PropertyNamesCollection.Any(p => p.Title == sourceItem.Title && p.Id != sourceItem.Id))
+                return false;
+            return CheckPropertyInParentCategory(sourceItem, targetItem.Parent);
+        }
+
+        private bool CheckPropertyInChildCategory(PropertyName sourceItem, Category targetItem)
+        {
+            if (targetItem.PropertyNamesCollection.Any(p => p.Title == sourceItem.Title && p.Id != sourceItem.Id))
+                return false;
+            if (targetItem.ChildCategoriesCollection.Any(
+                category => !CheckPropertyInChildCategory(sourceItem, category))) return false;
+            return true;
+        }
+
+        private bool CheckCategoryByCategory(Category sourceItem, Category targetItem)
+        {
+            if (sourceItem == targetItem || sourceItem.Parent == targetItem ||
+                sourceItem.ChildCategoriesCollection.Contains(targetItem)) return false;
+            return sourceItem.ChildCategoriesCollection.All(category => CheckCategoryByCategory(category, targetItem));
+        }
+
+        public void Drop(IDropInfo dropInfo)
+        {
+            switch (dropInfo.Data)
+            {
+                case Category sourceItemCategory:
+                    if (MessageBox.Show(
+                            "Вы уверены что хотите переместить категорию? При перемещении категории все родительские параметры будут изменены!",
+                            "Перемещение", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
+                        MessageBoxResult.Yes) return;
+
+                    if (sourceItemCategory.Parent != null)
+                        sourceItemCategory.Parent.ChildCategoriesCollection.Remove(sourceItemCategory);
+                    else
+                        CategoriesList.Remove(sourceItemCategory);
+
+                    switch (dropInfo.TargetItem)
+                    {
+                        case Category targetItem:
+                            sourceItemCategory.Parent = targetItem;
+                            sourceItemCategory.IdParent = targetItem.Id;
+                            targetItem.ChildCategoriesCollection.Add(sourceItemCategory);
+                            break;
+                        case null:
+                            sourceItemCategory.Parent = null;
+                            sourceItemCategory.IdParent = null;
+                            CategoriesList.Add(sourceItemCategory);
+                            break;
+                    }
+
+                    MovingCategoryAsync(sourceItemCategory);
+
+                    break;
+                case PropertyName sourceItemProperty:
+                    if (MessageBox.Show(
+                            "Вы уверены что хотите переместить параметр? При перемещении товара в другую категорию у товара не лежащего в новой иегррахии категорий этот параметр будет удален!",
+                            "Перемещение", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
+                        MessageBoxResult.Yes) return;
+                    if (sourceItemProperty.IdCategory != null)
+                        FindCategory(CategoriesList, sourceItemProperty.IdCategory.Value).PropertyNamesCollection.Remove(sourceItemProperty);
+                    else
+                        PropertyNamesList.Remove(sourceItemProperty);
+                    switch (dropInfo.TargetItem)
+                    {
+                        case Category targetItemCategory:
+                            sourceItemProperty.Category = targetItemCategory;
+                            sourceItemProperty.IdCategory = targetItemCategory.Id;
+                            targetItemCategory.PropertyNamesCollection.Add(sourceItemProperty);
+                            break;
+                        case PropertyName targetItemPropertyName:
+                            sourceItemProperty.Category = targetItemPropertyName.Category;
+                            sourceItemProperty.IdCategory = targetItemPropertyName.IdCategory;
+                            if (targetItemPropertyName.IdCategory != null)
+                                FindCategory(CategoriesList, targetItemPropertyName.IdCategory.Value).PropertyNamesCollection.Add(sourceItemProperty);
+                            else
+                                PropertyNamesList.Add(sourceItemProperty);
+                            break;
+                        case null:
+                            sourceItemProperty.Category = null;
+                            sourceItemProperty.IdCategory = null;
+                            PropertyNamesList.Add(sourceItemProperty);
+                            break;
+                    }
+
+                    MovingPropertyAsync(sourceItemProperty);
+
+                    break;
+            }
         }
     }
 }

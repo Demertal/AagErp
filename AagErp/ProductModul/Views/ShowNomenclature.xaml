@@ -73,265 +73,259 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style TargetType="{x:Type ListView}">
+            <Setter Property="SnapsToDevicePixels" Value="true" />
+            <Setter Property="OverridesDefaultStyle" Value="true" />
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+            <Setter Property="ScrollViewer.CanContentScroll" Value="true" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="SelectionMode" Value="Single"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListView">
+                        <Border Name="Border" BorderThickness="{TemplateBinding BorderThickness}">
+                            <ItemsPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsGrouping" Value="true">
+                                <Setter Property="ScrollViewer.CanContentScroll" Value="false" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <ContextMenu x:Key="ProductContextMenu">
             <MenuItem Header="Удалить" Command="{Binding DataContext.DeleteProductCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowNomenclature}}}" CommandParameter="{Binding}"/>
         </ContextMenu>
+        <Style TargetType="{x:Type ListViewItem}">
+            <Setter Property="SnapsToDevicePixels" Value="true"/>
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="ContextMenu" Value="{StaticResource ProductContextMenu}"/>
+            <Setter Property="AllowDrop" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                        <Grid>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal"/>
+                                    <VisualState x:Name="MouseOver">
+                                        <Storyboard>
+                                            <ColorAnimationUsingKeyFrames Storyboard.TargetName="DGR_Border"
+                                                                                                                          Storyboard.TargetProperty="(Panel.Background).(GradientBrush.GradientStops)[0].(GradientStop.Color)">
+                                                <EasingColorKeyFrame KeyTime="0" Value="{DynamicResource ControlMouseOverColor}" />
+                                            </ColorAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Disabled" />
+                                    <VisualState x:Name="Selected">
+                                        <Storyboard>
+                                            <ColorAnimationUsingKeyFrames Storyboard.TargetName="DGR_Border"
+                                                                                                                          Storyboard.TargetProperty="(Panel.Background).(GradientBrush.GradientStops)[0].(GradientStop.Color)">
+                                                <EasingColorKeyFrame KeyTime="0" Value="{DynamicResource SelectedDataGridBackgroundColor}" />
+                                            </ColorAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="SelectedUnfocused">
+                                        <Storyboard>
+                                            <ColorAnimationUsingKeyFrames Storyboard.TargetName="DGR_Border"
+                                                                                                                          Storyboard.TargetProperty="(Panel.Background).(GradientBrush.GradientStops)[0].(GradientStop.Color)">
+                                                <EasingColorKeyFrame KeyTime="0" Value="{DynamicResource SelectedDataGridBackgroundColor}" />
+                                            </ColorAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                                <VisualStateGroup x:Name="SelectionStates">
+                                    <VisualState x:Name="Unselected" />
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Border  x:Name="DGR_Border" Style="{StaticResource RowStyle}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto" SharedSizeGroup="VendorCodeGroup"/>
+                                        <ColumnDefinition Width="Auto" SharedSizeGroup="BarcodeGroup"/>
+                                        <ColumnDefinition Width="Auto" SharedSizeGroup="UnitStorageGroup"/>
+                                        <ColumnDefinition Width="Auto" SharedSizeGroup="WarrantyPeriodGroup"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border Style="{StaticResource CellStyle}" Grid.Column="0" Margin="0,-1,0,0">
+                                        <TextBlock Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </Border>
+                                    <Border Style="{StaticResource CellStyle}" Margin="-1,-1,0,0" Grid.Column="1">
+                                        <TextBlock Text="{Binding VendorCode, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </Border>
+                                    <Border Style="{StaticResource CellStyle}" Margin="-1,-1,0,0" Grid.Column="2">
+                                        <TextBlock Text="{Binding Barcode, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"/>
+                                    </Border>
+                                    <Border Style="{StaticResource CellStyle}" Margin="-1,-1,0,0" Grid.Column="3">
+                                        <ComboBox DisplayMemberPath="Title" SelectedValuePath="Id" SelectedValue="{Binding IdUnitStorage, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False"
+                                                                                              ItemsSource="{Binding DataContext.UnitStoragesList, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowNomenclature}}, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </Border>
+                                    <Border Style="{StaticResource CellStyle}" Margin="-1,-1,0,0" Grid.Column="4">
+                                        <ComboBox DisplayMemberPath="Period" SelectedValuePath="Id" SelectedValue="{Binding IdWarrantyPeriod, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False"
+                                                                                              ItemsSource="{Binding DataContext.WarrantyPeriodsList, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowNomenclature}}, UpdateSourceTrigger=PropertyChanged}" />
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <ContextMenu x:Key="TreeViewContex">
+            <MenuItem Header="Добавить категорию" Command="{Binding DataContext.AddCategoryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowNomenclature}}}"/>
+        </ContextMenu>
+        <Style TargetType="{x:Type TreeView}" BasedOn="{StaticResource {x:Type TreeView}}">
+            <Setter Property="ContextMenu" Value="{StaticResource TreeViewContex}"/>
+            <Setter Property="ItemTemplate">
+                <Setter.Value>
+                    <HierarchicalDataTemplate ItemsSource="{Binding ChildCategoriesCollection, UpdateSourceTrigger=PropertyChanged}" DataType="{x:Type models:Category}"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TreeView">
+                        <Border Name="Border" CornerRadius="10" BorderThickness="2">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{DynamicResource BorderColor}" />
+                            </Border.BorderBrush>
+                            <Border.Background>
+                                <SolidColorBrush Color="White"/>
+                            </Border.Background>
+                            <ScrollViewer Focusable="False" CanContentScroll="False" Padding="4">
+                                <Grid IsSharedSizeScope="True">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Grid Grid.Row="0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto" SharedSizeGroup="VendorCodeGroup"/>
+                                            <ColumnDefinition Width="Auto" SharedSizeGroup="BarcodeGroup"/>
+                                            <ColumnDefinition Width="Auto" SharedSizeGroup="UnitStorageGroup"/>
+                                            <ColumnDefinition Width="Auto" SharedSizeGroup="WarrantyPeriodGroup"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border Style="{StaticResource BorderHeader}" Grid.Column="0">
+                                            <Grid>
+                                                <TextBlock Text="Наименование"/>
+                                                <Rectangle Style="{StaticResource RectangleHeader}"/>
+                                            </Grid>
+                                        </Border>
+                                        <Border Style="{StaticResource BorderHeader}" Grid.Column="1">
+                                            <Grid>
+                                                <TextBlock Text="Артикул"/>
+                                                <Rectangle Style="{StaticResource RectangleHeader}"/>
+                                            </Grid>
+                                        </Border>
+                                        <Border Style="{StaticResource BorderHeader}" Grid.Column="2">
+                                            <Grid>
+                                                <TextBlock Text="Штрихкод"/>
+                                                <Rectangle Style="{StaticResource RectangleHeader}"/>
+                                            </Grid>
+                                        </Border>
+                                        <Border Style="{StaticResource BorderHeader}" Grid.Column="3">
+                                            <Grid>
+                                                <TextBlock Text="Ед. хр."/>
+                                                <Rectangle Style="{StaticResource RectangleHeader}"/>
+                                            </Grid>
+                                        </Border>
+                                        <Border Style="{StaticResource BorderHeader}" Grid.Column="4">
+                                            <TextBlock Text="Гар. период"/>
+                                        </Border>
+                                    </Grid>
+                                    <Rectangle Style="{StaticResource RectangleHeader}" HorizontalAlignment="Stretch" VerticalAlignment="Center" Width="Auto" Grid.Row="1" Margin="-2,0"/>
+                                    <ScrollViewer Focusable="False" CanContentScroll="False" Padding="4" Grid.Row="2">
+                                        <ItemsPresenter/>
+                                    </ScrollViewer>
+                                </Grid>
+                            </ScrollViewer>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <ContextMenu x:Key="CategoryContextMenu">
             <MenuItem Header="Добавить товар" Command="{Binding DataContext.AddProductCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowNomenclature}}}" CommandParameter="{Binding}"/>
             <MenuItem Header="Добавить категорию" Command="{Binding DataContext.AddCategoryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowNomenclature}}}" CommandParameter="{Binding}"/>
             <MenuItem Header="Переименовать" Command="{Binding DataContext.RenameCategoryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowNomenclature}}}" CommandParameter="{Binding}"/>
             <MenuItem Header="Удалить" Command="{Binding DataContext.DeleteCategoryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowNomenclature}}}" CommandParameter="{Binding}"/>
         </ContextMenu>
-        <ContextMenu x:Key="TreeViewContex">
-            <MenuItem Header="Добавить категорию" Command="{Binding DataContext.AddCategoryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowNomenclature}}}"/>
-        </ContextMenu>
+        <Style TargetType="TreeViewItem">
+            <Setter Property="OverridesDefaultStyle" Value="true" />
+            <Setter Property="SnapsToDevicePixels" Value="true" />
+            <Setter Property="ContextMenu" Value="{StaticResource CategoryContextMenu}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Border x:Name="Bd" BorderThickness="1" CornerRadius="10" Background="{TemplateBinding Background}" Margin="0,3,0,3">
+                            <Border.BorderBrush >
+                                <SolidColorBrush Color="{DynamicResource BorderColor}"/>
+                            </Border.BorderBrush>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="SelectionStates">
+                                    <VisualState x:Name="Selected">
+                                        <Storyboard>
+                                            <ColorAnimationUsingKeyFrames Storyboard.TargetName="Bd" 
+                                                                     Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
+                                                <EasingColorKeyFrame KeyTime="0" Value="{DynamicResource SelectedBackgroundColor}" />
+                                            </ColorAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Unselected" />
+                                    <VisualState x:Name="SelectedInactive">
+                                        <Storyboard>
+                                            <ColorAnimationUsingKeyFrames Storyboard.TargetName="Bd" 
+                                                                     Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
+                                                <EasingColorKeyFrame KeyTime="0" Value="{DynamicResource SelectedUnfocusedColor}" />
+                                            </ColorAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Expander>
+                                <Expander.Header>
+                                    <Border BorderThickness="0" CornerRadius="10">
+                                        <Border.Background>
+                                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                                <GradientStop Color="{DynamicResource ControlLightColor}" Offset="0" />
+                                                <GradientStop Color="{DynamicResource ContextColor}" Offset="0.5" />
+                                                <GradientStop Color="{DynamicResource ControlLightColor}" Offset="1" />
+                                            </LinearGradientBrush>
+                                        </Border.Background>
+                                        <TextBlock Text="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Left" VerticalAlignment="Center"/>
+                                    </Border>
+                                </Expander.Header>
+                                <Expander.Content>
+                                    <StackPanel>
+                                        <ItemsPresenter />
+                                        <ListView x:Name="ProductData" ItemsSource="{Binding ProductsCollection, UpdateSourceTrigger=PropertyChanged}" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"
+                                                          dd:DragDrop.DropHandler="{Binding Path=DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="MouseDoubleClick">
+                                                    <mvvm:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.SelectedProductCommand}"
+                                                                                       CommandParameter="{Binding ElementName=ProductData, Path=SelectedItem}"/>
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                        </ListView>
+                                    </StackPanel>
+                                </Expander.Content>
+                            </Expander>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
 
     <Grid>
-        <TreeView ItemsSource="{Binding CategoriesList, UpdateSourceTrigger=PropertyChanged}" dd:DragDrop.IsDragSource="True"
-                  dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}">
-            <TreeView.Style>
-                <Style TargetType="{x:Type TreeView}" BasedOn="{StaticResource {x:Type TreeView}}">
-                    <Setter Property="ContextMenu" Value="{StaticResource TreeViewContex}"/>
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="TreeView">
-                                <Border Name="Border" CornerRadius="10" BorderThickness="2">
-                                    <Border.BorderBrush>
-                                        <SolidColorBrush Color="{DynamicResource BorderColor}" />
-                                    </Border.BorderBrush>
-                                    <Border.Background>
-                                        <SolidColorBrush Color="White"/>
-                                    </Border.Background>
-                                    <ScrollViewer Focusable="False" CanContentScroll="False" Padding="4">
-                                        <Grid IsSharedSizeScope="True">
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition/>
-                                                <RowDefinition/>
-                                                <RowDefinition/>
-                                            </Grid.RowDefinitions>
-                                            <Grid Grid.Row="0">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="Auto" SharedSizeGroup="VendorCodeGroup"/>
-                                                    <ColumnDefinition Width="Auto" SharedSizeGroup="BarcodeGroup"/>
-                                                    <ColumnDefinition Width="Auto" SharedSizeGroup="UnitStorageGroup"/>
-                                                    <ColumnDefinition Width="Auto" SharedSizeGroup="WarrantyPeriodGroup"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Border Style="{StaticResource BorderHeader}" Grid.Column="0">
-                                                    <Grid>
-                                                        <TextBlock Text="Наименование"/>
-                                                        <Rectangle Style="{StaticResource RectangleHeader}"/>
-                                                    </Grid>
-                                                </Border>
-                                                <Border Style="{StaticResource BorderHeader}" Grid.Column="1">
-                                                    <Grid>
-                                                        <TextBlock Text="Артикул"/>
-                                                        <Rectangle Style="{StaticResource RectangleHeader}"/>
-                                                    </Grid>
-                                                </Border>
-                                                <Border Style="{StaticResource BorderHeader}" Grid.Column="2">
-                                                    <Grid>
-                                                        <TextBlock Text="Штрихкод"/>
-                                                        <Rectangle Style="{StaticResource RectangleHeader}"/>
-                                                    </Grid>
-                                                </Border>
-                                                <Border Style="{StaticResource BorderHeader}" Grid.Column="3">
-                                                    <Grid>
-                                                        <TextBlock Text="Ед. хр."/>
-                                                        <Rectangle Style="{StaticResource RectangleHeader}"/>
-                                                    </Grid>
-                                                </Border>
-                                                <Border Style="{StaticResource BorderHeader}" Grid.Column="4">
-                                                    <TextBlock Text="Гар. период"/>
-                                                </Border>
-                                            </Grid>
-                                            <Rectangle Style="{StaticResource RectangleHeader}" HorizontalAlignment="Stretch" VerticalAlignment="Center" Width="Auto" Grid.Row="1" Margin="-2,0"/>
-                                            <ScrollViewer Focusable="False" CanContentScroll="False" Padding="4" Grid.Row="2">
-                                                <ItemsPresenter/>
-                                            </ScrollViewer>
-                                        </Grid>
-                                    </ScrollViewer>
-                                </Border>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </TreeView.Style>
-            <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate ItemsSource="{Binding ChildCategoriesCollection, UpdateSourceTrigger=PropertyChanged}" DataType="{x:Type models:Category}"/>
-            </TreeView.ItemTemplate>
-            <TreeView.ItemContainerStyle>
-                <Style TargetType="TreeViewItem">
-                    <Setter Property="OverridesDefaultStyle" Value="true" />
-                    <Setter Property="SnapsToDevicePixels" Value="true" />
-                    <Setter Property="ContextMenu" Value="{StaticResource CategoryContextMenu}"/>
-                    <Setter Property="Background" Value="Transparent"/>
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate>
-                                <Border x:Name="Bd" BorderThickness="1" CornerRadius="10" Background="{TemplateBinding Background}" Margin="0,3,0,3">
-                                    <Border.BorderBrush >
-                                        <SolidColorBrush Color="{DynamicResource BorderColor}"/>
-                                    </Border.BorderBrush>
-                                    <VisualStateManager.VisualStateGroups>
-                                        <VisualStateGroup x:Name="SelectionStates">
-                                            <VisualState x:Name="Selected">
-                                                <Storyboard>
-                                                    <ColorAnimationUsingKeyFrames Storyboard.TargetName="Bd" 
-                                                                     Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
-                                                        <EasingColorKeyFrame KeyTime="0" Value="{DynamicResource SelectedBackgroundColor}" />
-                                                    </ColorAnimationUsingKeyFrames>
-                                                </Storyboard>
-                                            </VisualState>
-                                            <VisualState x:Name="Unselected" />
-                                            <VisualState x:Name="SelectedInactive">
-                                                <Storyboard>
-                                                    <ColorAnimationUsingKeyFrames Storyboard.TargetName="Bd" 
-                                                                     Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
-                                                        <EasingColorKeyFrame KeyTime="0" Value="{DynamicResource SelectedUnfocusedColor}" />
-                                                    </ColorAnimationUsingKeyFrames>
-                                                </Storyboard>
-                                            </VisualState>
-                                        </VisualStateGroup>
-                                    </VisualStateManager.VisualStateGroups>
-                                    <Expander>
-                                        <Expander.Header>
-                                            <Border BorderThickness="0" CornerRadius="10">
-                                                <Border.Background>
-                                                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                                        <GradientStop Color="{DynamicResource ControlLightColor}" Offset="0" />
-                                                        <GradientStop Color="{DynamicResource ContextColor}" Offset="0.5" />
-                                                        <GradientStop Color="{DynamicResource ControlLightColor}" Offset="1" />
-                                                    </LinearGradientBrush>
-                                                </Border.Background>
-                                                <TextBlock Text="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Left" VerticalAlignment="Center"/>
-                                            </Border>
-                                        </Expander.Header>
-                                        <Expander.Content>
-                                            <StackPanel>
-                                                <ItemsPresenter />
-                                                <ListView x:Name="ProductData" ItemsSource="{Binding ProductsCollection, UpdateSourceTrigger=PropertyChanged}" Margin="2"  dd:DragDrop.IsDragSource="True" SelectionMode="Single"
-                                                          dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding Path=DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="MouseDoubleClick">
-                                                            <mvvm:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.SelectedProductCommand}"
-                                                                                       CommandParameter="{Binding ElementName=ProductData, Path=SelectedItem}"/>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
-                                                    <ListView.Style>
-                                                        <Style TargetType="{x:Type ListView}">
-                                                            <Setter Property="SnapsToDevicePixels" Value="true" />
-                                                            <Setter Property="OverridesDefaultStyle" Value="true" />
-                                                            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
-                                                            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
-                                                            <Setter Property="ScrollViewer.CanContentScroll" Value="true" />
-                                                            <Setter Property="VerticalContentAlignment" Value="Center" />
-                                                            <Setter Property="BorderThickness" Value="0"/>
-                                                            <Setter Property="Background" Value="Transparent"/>
-                                                            <Setter Property="Template">
-                                                                <Setter.Value>
-                                                                    <ControlTemplate TargetType="ListView">
-                                                                        <Border Name="Border" BorderThickness="{TemplateBinding BorderThickness}">
-                                                                                <ItemsPresenter />
-                                                                        </Border>
-                                                                        <ControlTemplate.Triggers>
-                                                                            <Trigger Property="IsGrouping" Value="true">
-                                                                                <Setter Property="ScrollViewer.CanContentScroll" Value="false" />
-                                                                            </Trigger>
-                                                                        </ControlTemplate.Triggers>
-                                                                    </ControlTemplate>
-                                                                </Setter.Value>
-                                                            </Setter>
-                                                        </Style>
-                                                    </ListView.Style>
-                                                    <ListView.ItemContainerStyle>
-                                                        <Style TargetType="{x:Type ListViewItem}">
-                                                            <Setter Property="SnapsToDevicePixels" Value="true"/>
-                                                            <Setter Property="OverridesDefaultStyle" Value="true"/>
-                                                            <Setter Property="ContextMenu" Value="{StaticResource ProductContextMenu}"/>
-                                                            <Setter Property="AllowDrop" Value="True"/>
-                                                            <Setter Property="Template">
-                                                                <Setter.Value>
-                                                                    <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                                                        <Grid>
-                                                                            <VisualStateManager.VisualStateGroups>
-                                                                                <VisualStateGroup x:Name="CommonStates">
-                                                                                    <VisualState x:Name="Normal"/>
-                                                                                    <VisualState x:Name="MouseOver">
-                                                                                        <Storyboard>
-                                                                                            <ColorAnimationUsingKeyFrames Storyboard.TargetName="DGR_Border"
-                                                                                                                          Storyboard.TargetProperty="(Panel.Background).(GradientBrush.GradientStops)[0].(GradientStop.Color)">
-                                                                                                <EasingColorKeyFrame KeyTime="0" Value="{DynamicResource ControlMouseOverColor}" />
-                                                                                            </ColorAnimationUsingKeyFrames>
-                                                                                        </Storyboard>
-                                                                                    </VisualState>
-                                                                                    <VisualState x:Name="Disabled" />
-                                                                                    <VisualState x:Name="Selected">
-                                                                                        <Storyboard>
-                                                                                            <ColorAnimationUsingKeyFrames Storyboard.TargetName="DGR_Border"
-                                                                                                                          Storyboard.TargetProperty="(Panel.Background).(GradientBrush.GradientStops)[0].(GradientStop.Color)">
-                                                                                                <EasingColorKeyFrame KeyTime="0" Value="{DynamicResource SelectedDataGridBackgroundColor}" />
-                                                                                            </ColorAnimationUsingKeyFrames>
-                                                                                        </Storyboard>
-                                                                                    </VisualState>
-                                                                                    <VisualState x:Name="SelectedUnfocused">
-                                                                                        <Storyboard>
-                                                                                            <ColorAnimationUsingKeyFrames Storyboard.TargetName="DGR_Border"
-                                                                                                                          Storyboard.TargetProperty="(Panel.Background).(GradientBrush.GradientStops)[0].(GradientStop.Color)">
-                                                                                                <EasingColorKeyFrame KeyTime="0" Value="{DynamicResource SelectedDataGridBackgroundColor}" />
-                                                                                            </ColorAnimationUsingKeyFrames>
-                                                                                        </Storyboard>
-                                                                                    </VisualState>
-                                                                                </VisualStateGroup>
-                                                                                <VisualStateGroup x:Name="SelectionStates">
-                                                                                    <VisualState x:Name="Unselected" />
-                                                                                </VisualStateGroup>
-                                                                            </VisualStateManager.VisualStateGroups>
-                                                                            <Border  x:Name="DGR_Border" Style="{StaticResource RowStyle}">
-                                                                                <Grid>
-                                                                                    <Grid.ColumnDefinitions>
-                                                                                        <ColumnDefinition Width="*"/>
-                                                                                        <ColumnDefinition Width="Auto" SharedSizeGroup="VendorCodeGroup"/>
-                                                                                        <ColumnDefinition Width="Auto" SharedSizeGroup="BarcodeGroup"/>
-                                                                                        <ColumnDefinition Width="Auto" SharedSizeGroup="UnitStorageGroup"/>
-                                                                                        <ColumnDefinition Width="Auto" SharedSizeGroup="WarrantyPeriodGroup"/>
-                                                                                    </Grid.ColumnDefinitions>
-                                                                                    <Border Style="{StaticResource CellStyle}" Grid.Column="0" Margin="0,-1,0,0">
-                                                                                        <TextBlock Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}"/>
-                                                                                    </Border>
-                                                                                    <Border Style="{StaticResource CellStyle}" Margin="-1,-1,0,0" Grid.Column="1">
-                                                                                        <TextBlock Text="{Binding VendorCode, UpdateSourceTrigger=PropertyChanged}"/>
-                                                                                    </Border>
-                                                                                    <Border Style="{StaticResource CellStyle}" Margin="-1,-1,0,0" Grid.Column="2">
-                                                                                        <TextBlock Text="{Binding Barcode, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch"/>
-                                                                                    </Border>
-                                                                                    <Border Style="{StaticResource CellStyle}" Margin="-1,-1,0,0" Grid.Column="3">
-                                                                                        <ComboBox DisplayMemberPath="Title" SelectedValuePath="Id" SelectedValue="{Binding IdUnitStorage, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False"
-                                                                                              ItemsSource="{Binding DataContext.UnitStoragesList, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowNomenclature}}, UpdateSourceTrigger=PropertyChanged}"/>
-                                                                                    </Border>
-                                                                                    <Border Style="{StaticResource CellStyle}" Margin="-1,-1,0,0" Grid.Column="4">
-                                                                                        <ComboBox DisplayMemberPath="Period" SelectedValuePath="Id" SelectedValue="{Binding IdWarrantyPeriod, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False"
-                                                                                              ItemsSource="{Binding DataContext.WarrantyPeriodsList, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowNomenclature}}, UpdateSourceTrigger=PropertyChanged}" />
-                                                                                    </Border>
-                                                                                </Grid>
-                                                                            </Border>
-                                                                        </Grid>
-                                                                    </ControlTemplate>
-                                                                </Setter.Value>
-                                                            </Setter>
-                                                        </Style>
-                                                    </ListView.ItemContainerStyle>
-                                                </ListView>
-                                            </StackPanel>
-                                        </Expander.Content>
-                                    </Expander>
-                                </Border>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </TreeView.ItemContainerStyle>
-        </TreeView>
+        <TreeView ItemsSource="{Binding CategoriesList, UpdateSourceTrigger=PropertyChanged}" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}"/>
     </Grid>
 </UserControl>

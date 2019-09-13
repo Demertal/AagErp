@@ -1,8 +1,17 @@
-﻿using ModelModul.Models;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using ModelModul.Models;
 
 namespace ModelModul.Repositories
 {
     public class SqlPropertyNameRepository : SqlRepository<PropertyName>
     {
+        public async Task<bool> CheckProperty(int idProperty, int? idCategory, string title)
+        {
+           return await Db.MovmentGoodTypes.Take(1)
+                .Select(p => AutomationAccountingGoodsContext.CheckProperty(idProperty, idCategory, title))
+                .SingleOrDefaultAsync();
+        }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using Prism.Ioc;
 using Prism.Modularity;
+using PropertyModul.ViewModels;
+using PropertyModul.Views;
 using ShowProperties = PropertyModul.Views.ShowProperties;
 
 namespace PropertyModul
@@ -13,6 +15,7 @@ namespace PropertyModul
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterForNavigation<ShowProperties>();
+            containerRegistry.RegisterDialog<ShowProperty, ShowPropertyViewModel>();
         }
     }
 }

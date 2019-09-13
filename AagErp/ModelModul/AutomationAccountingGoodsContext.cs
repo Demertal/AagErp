@@ -52,8 +52,9 @@ namespace ModelModul
         public virtual DbQuery<EquivalentCostFor≈xistingProduct> EquivalentCostFor≈xistingProducts { get; set; }
         public virtual DbQuery<ProductWithCountAndPrice> ProductWithCountAndPrice { get; set; }
 
-
         public static decimal GetCurrentPrice(long idProduct) => throw new NotSupportedException();
+
+        public static bool CheckProperty(int idProperty, int? idCategory, string title) => throw new NotSupportedException();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -82,6 +83,7 @@ namespace ModelModul
             modelBuilder.ApplyConfiguration(new WarrantyConfiguration());
             modelBuilder.ApplyConfiguration(new WarrantyPeriodConfiguration());
             modelBuilder.HasDbFunction(() => GetCurrentPrice(default(long)));
+            modelBuilder.HasDbFunction(() => CheckProperty(default(int), default(int?), default(string)));
             modelBuilder.Query<CountsProduct>().Ignore(c => c.Error);
             modelBuilder.Query<EquivalentCostFor≈xistingProduct>().Ignore(e => e.Error);
             modelBuilder.Query<ProductWithCountAndPrice>().ToView("productsWithCountAndPrice");
