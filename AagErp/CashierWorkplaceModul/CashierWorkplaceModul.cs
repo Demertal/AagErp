@@ -17,7 +17,7 @@ namespace CashierWorkplaceModul
         {
             containerRegistry.RegisterForNavigation<CashierWorkplace>();
             containerRegistry.RegisterDialogWindow<DialogWindow>();
-            containerRegistry.RegisterDialog<ShowProduct, ShowProductViewModel>();
+            containerRegistry.RegisterDialog<Catalog, СatalogViewModel>();
         }
     }
 }

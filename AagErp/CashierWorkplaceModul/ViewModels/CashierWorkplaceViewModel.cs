@@ -286,7 +286,7 @@ if (sender is MovementGoodsInfo movement && e.PropertyName == "Count")
 
         private void AddProduct()
         {
-            _dialogService.ShowDialog("ShowProduct", new DialogParameters(), Callback);
+            _dialogService.ShowDialog("Catalog", new DialogParameters(), Callback);
         }
 
         private void Callback(IDialogResult dialogResult)

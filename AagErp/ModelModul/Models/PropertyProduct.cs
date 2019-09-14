@@ -24,8 +24,8 @@ namespace ModelModul.Models
             }
         }
 
-        private int? _idPropertyName;
-        public int? IdPropertyName
+        private int _idPropertyName;
+        public int IdPropertyName
         {
             get => _idPropertyName;
             set

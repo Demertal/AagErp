@@ -17,7 +17,7 @@ namespace RevaluationGoodModul
         {
             containerRegistry.RegisterForNavigation<RevaluationGood>();
             containerRegistry.RegisterDialogWindow<DialogWindow>();
-            containerRegistry.RegisterDialog<ShowProduct, ShowProductViewModel>();
+            containerRegistry.RegisterDialog<Catalog, СatalogViewModel>();
         }
     }
 }

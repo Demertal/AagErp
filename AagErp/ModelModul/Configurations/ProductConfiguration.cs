@@ -20,6 +20,8 @@ namespace ModelModul.Configurations
             builder.Ignore(p => p.Count);
             builder.Ignore(p => p.Price);
             builder.Ignore(p => p.Error);
+            builder.HasMany(p => p.PropertyProductsCollection).WithOne(p => p.Product).HasForeignKey(p => p.IdProduct)
+                .IsRequired();
             builder.HasMany(p => p.InvoiceInfosCollection).WithOne(i => i.Product).HasForeignKey(i => i.IdProduct).IsRequired();
             builder.HasMany(p => p.MovementGoodsInfosCollection).WithOne(m => m.Product).HasForeignKey(m => m.IdProduct)
                 .IsRequired();

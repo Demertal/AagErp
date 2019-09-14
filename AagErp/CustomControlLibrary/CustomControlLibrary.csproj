@@ -148,13 +148,8 @@
     <Compile Include="Converters\ConvertDecimalToPercent.cs" />
     <Compile Include="Converters\GetProductsTitleFromMovementGoodsInfo.cs" />
     <Compile Include="Converters\GetProductsTitleFromRevaluaitionInfo.cs" />
-    <Compile Include="Converters\IsEnabledConverterForBool.cs" />
-    <Compile Include="Converters\IsReadOnlyConverterForBool.cs" />
-    <Compile Include="Converters\VisibilityConverter.cs" />
-    <Compile Include="Converters\VisibilityConverterFor2Bool.cs" />
-    <Compile Include="Converters\VisibilityBoolConverter.cs" />
-    <Compile Include="Converters\VisibilityConverterForNull.cs" />
-    <Compile Include="Converters\VisibilityConverterForNullAndBool.cs" />
+    <Compile Include="Converters\InverseBoolConverter.cs" />
+    <Compile Include="Converters\NumToBoolConverter.cs" />
     <Compile Include="MVVM\DialogViewModelBase.cs" />
     <Compile Include="ExtendedDataGrid.cs" />
     <Compile Include="MVVM\DialogWindow.xaml.cs">

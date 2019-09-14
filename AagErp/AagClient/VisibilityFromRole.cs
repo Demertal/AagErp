@@ -22,7 +22,7 @@ namespace AagClient
                 case Roles.OldestSalesman:
                     switch (par)
                     {
-                        case "ShowProduct":
+                        case "Catalog":
                             return Visibility.Collapsed;
                         case "Directories":
                             return Visibility.Collapsed;

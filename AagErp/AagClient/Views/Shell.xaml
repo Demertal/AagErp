@@ -18,7 +18,7 @@
     <StackPanel>
         <Menu>
             <MenuItem Header="Рабочее место кассира" Command="{Binding NavigateCommand}" CommandParameter="CashierWorkplace"/>
-            <MenuItem Header="Каталог товара" Command="{Binding NavigateCommand}" CommandParameter="ShowProduct"/>
+            <MenuItem Header="Каталог товара" Command="{Binding NavigateCommand}" CommandParameter="Catalog"/>
             <MenuItem Header="Действия с товаром">
                 <MenuItem Header="Переоценка товара" Command="{Binding NavigateCommand}" CommandParameter="RevaluationGood"/>
                 <MenuItem Header="Приход товара" Command="{Binding NavigateCommand}" CommandParameter="PurchaseGood"/>

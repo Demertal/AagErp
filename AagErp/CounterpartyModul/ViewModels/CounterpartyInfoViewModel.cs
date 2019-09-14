@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows;
 using CustomControlLibrary.MVVM;
 using ModelModul.Models;
@@ -9,30 +10,19 @@ using Prism.Regions;
 
 namespace CounterpartyModul.ViewModels
 {
-    class CounterpartyInfoViewModel: ViewModelBase
+    class CounterpartyInfoViewModel: ViewModelBase, IEditableObject
     {
         #region Properties
 
-        private bool _isUpdate;
-
-        public bool IsUpdate
+        private Counterparty _counterparty = new Counterparty();
+        public Counterparty Counterparty
         {
-            get => _isUpdate;
-            set => SetProperty(ref _isUpdate, value);
-        }
-
-        private Counterparty _oldCounterparty = new Counterparty();
-
-        private Counterparty _selectedCounterparty = new Counterparty();
-        public Counterparty SelectedCounterparty
-        {
-            get => _selectedCounterparty;
+            get => _counterparty;
             set
             {
-                IsUpdate = false;
-                SetProperty(ref _selectedCounterparty, value);
-                _selectedCounterparty.PropertyChanged += (o, e) => RaisePropertyChanged(e.PropertyName);
-                RaisePropertyChanged("CanUpdate");
+                SetProperty(ref _counterparty, value);
+                _counterparty.PropertyChanged += (o, e) => { RaisePropertyChanged(e.PropertyName); };
+                RaisePropertyChanged("CanEdit");
             }
         }
 
@@ -43,8 +33,6 @@ namespace CounterpartyModul.ViewModels
             set => SetProperty(ref _paymentTypesList, value);
         }
 
-        public bool CanUpdate => SelectedCounterparty != null && SelectedCounterparty.Id != 0;
-
         public DelegateCommand UpdateCommand { get; }
         public DelegateCommand ResetCommand { get; }
         public DelegateCommand OkCommand { get; }
@@ -54,41 +42,9 @@ namespace CounterpartyModul.ViewModels
         public CounterpartyInfoViewModel()
         {
             LoadAsync();
-            UpdateCommand = new DelegateCommand(Update).ObservesCanExecute(() => SelectedCounterparty.IsValidate);
-            ResetCommand = new DelegateCommand(Reset);
-            OkCommand = new DelegateCommand(Accept).ObservesCanExecute(() => SelectedCounterparty.IsValidate);
-        }
-
-        private void Accept()
-        {
-            try
-            {
-                IRepository<Counterparty> counterpartyRepository = new SqlCounterpartyRepository();
-                counterpartyRepository.UpdateAsync(SelectedCounterparty);
-                MessageBox.Show("Контрагент изменен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                IsUpdate = false;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void Reset()
-        {
-            SelectedCounterparty.Title = _oldCounterparty.Title;
-            SelectedCounterparty.Address = _oldCounterparty.Address;
-            SelectedCounterparty.ContactPerson = _oldCounterparty.ContactPerson;
-            SelectedCounterparty.ContactPhone = _oldCounterparty.ContactPhone;
-            SelectedCounterparty.Props = _oldCounterparty.Props;
-            SelectedCounterparty.IdPaymentType = _oldCounterparty.IdPaymentType;
-            IsUpdate = false;
-        }
-
-        private void Update()
-        {
-            _oldCounterparty = (Counterparty)SelectedCounterparty.Clone();
-            IsUpdate = true;
+            UpdateCommand = new DelegateCommand(BeginEdit).ObservesCanExecute(() => CanEdit);
+            ResetCommand = new DelegateCommand(CancelEdit);
+            OkCommand = new DelegateCommand(EndEdit).ObservesCanExecute(() => Counterparty.IsValidate);
         }
 
         public async void LoadAsync()
@@ -110,6 +66,54 @@ namespace CounterpartyModul.ViewModels
 
         public override void OnNavigatedFrom(NavigationContext navigationContext)
         {
+        }
+
+        #endregion
+
+        #region EditableObject
+
+        private Counterparty _backup = new Counterparty();
+
+        private bool _isEdit;
+        public bool IsEdit
+        {
+            get => _isEdit;
+            set => SetProperty(ref _isEdit, value);
+        }
+
+        public bool CanEdit => Counterparty != null && Counterparty.Id != 0;
+
+        public void BeginEdit()
+        {
+            _backup = (Counterparty)Counterparty?.Clone();
+            IsEdit = true;
+            RaisePropertyChanged("Counterparty");
+        }
+
+        public async void EndEdit()
+        {
+            try
+            {
+                IRepository<Counterparty> counterpartyRepository = new SqlCounterpartyRepository();
+                await counterpartyRepository.UpdateAsync(Counterparty);
+                MessageBox.Show("Контрагент изменен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                IsEdit = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        public void CancelEdit()
+        {
+            Counterparty.Title = _backup.Title;
+            Counterparty.Address = _backup.Address;
+            Counterparty.ContactPerson = _backup.ContactPerson;
+            Counterparty.ContactPhone = _backup.ContactPhone;
+            Counterparty.Props = _backup.Props;
+            Counterparty.IdPaymentType = _backup.IdPaymentType;
+            IsEdit = false;
         }
 
         #endregion

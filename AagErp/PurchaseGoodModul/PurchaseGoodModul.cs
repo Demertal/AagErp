@@ -17,7 +17,7 @@ namespace PurchaseGoodModul
         {
             containerRegistry.RegisterForNavigation<PurchaseGood>();
             containerRegistry.RegisterDialogWindow<DialogWindow>();
-            containerRegistry.RegisterDialog<ShowProduct, ShowProductViewModel>();
+            containerRegistry.RegisterDialog<Catalog, СatalogViewModel>();
         }
     }
 }

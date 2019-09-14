@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using ModelModul.Configurations;
 using ModelModul.Models;
@@ -51,6 +52,7 @@ namespace ModelModul
         public virtual DbQuery<CountsProduct> CountsProducts { get; set; }
         public virtual DbQuery<EquivalentCostFor≈xistingProduct> EquivalentCostFor≈xistingProducts { get; set; }
         public virtual DbQuery<ProductWithCountAndPrice> ProductWithCountAndPrice { get; set; }
+        public virtual DbQuery<PropertyForProduct> PropertyForProduct { get; set; }
 
         public static decimal GetCurrentPrice(long idProduct) => throw new NotSupportedException();
 
@@ -71,9 +73,9 @@ namespace ModelModul
             modelBuilder.ApplyConfiguration(new PaymentTypeConfiguration());
             modelBuilder.ApplyConfiguration(new PriceGroupConfiguration());
             modelBuilder.ApplyConfiguration(new PriceProductConfiguration());
-            modelBuilder.ApplyConfiguration(new ProductConfiguration());
             modelBuilder.ApplyConfiguration(new PropertyNameConfiguration());
             modelBuilder.ApplyConfiguration(new PropertyProductConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductConfiguration());
             modelBuilder.ApplyConfiguration(new PropertyValueConfiguration());
             modelBuilder.ApplyConfiguration(new RevaluationProductConfiguration());
             modelBuilder.ApplyConfiguration(new SerialNumberConfiguration());
@@ -86,6 +88,7 @@ namespace ModelModul
             modelBuilder.HasDbFunction(() => CheckProperty(default(int), default(int?), default(string)));
             modelBuilder.Query<CountsProduct>().Ignore(c => c.Error);
             modelBuilder.Query<EquivalentCostFor≈xistingProduct>().Ignore(e => e.Error);
+            modelBuilder.Query<PropertyForProduct>().Ignore(e => e.Error);
             modelBuilder.Query<ProductWithCountAndPrice>().ToView("productsWithCountAndPrice");
         }
     }

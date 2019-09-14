@@ -18,12 +18,11 @@ namespace ProductModul
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterDialogWindow<DialogWindow>();
-            containerRegistry.RegisterForNavigation<ShowProduct>();
+            containerRegistry.RegisterForNavigation<Catalog>();
             containerRegistry.RegisterForNavigation<ShowNomenclature>();
             containerRegistry.RegisterDialog<AddCategory, AddCategoryViewModel>();
             containerRegistry.RegisterDialog<RenameCategory, RenameCategoryViewModel>();
-            containerRegistry.RegisterDialog<AddProduct, AddProductViewModel>();
-            containerRegistry.RegisterDialog<ProductInfo, ProductInfoViewModel>();
+            containerRegistry.RegisterDialog<ShowProduct, ShowProductViewModel>();
         }
     }
 }

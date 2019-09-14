@@ -70,37 +70,29 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProductModul.cs" />
-    <Compile Include="ViewModels\AddProductViewModel.cs" />
     <Compile Include="ViewModels\ShowNomenclatureViewModel.cs" />
+    <Compile Include="ViewModels\СatalogViewModel.cs" />
     <Compile Include="ViewModels\ShowProductViewModel.cs" />
-    <Compile Include="ViewModels\ProductInfoViewModel.cs" />
-    <Compile Include="Views\AddProduct.xaml.cs">
-      <DependentUpon>AddProduct.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\ShowNomenclature.xaml.cs">
       <DependentUpon>ShowNomenclature.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Catalog.xaml.cs">
+      <DependentUpon>Catalog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ShowProduct.xaml.cs">
       <DependentUpon>ShowProduct.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ProductInfo.xaml.cs">
-      <DependentUpon>ProductInfo.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Views\AddProduct.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\ShowNomenclature.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ShowProduct.xaml">
+    <Page Include="Views\Catalog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ProductInfo.xaml">
+    <Page Include="Views\ShowProduct.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

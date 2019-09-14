@@ -8,8 +8,8 @@ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left">
     
     <UserControl.Resources>
-        <converters:CurrencyConverter2Parametrs x:Key="CurrencyConverter2" />
-        <converters:ConverterSum x:Key="ConverterSum"/>
+        <!--<converters:CurrencyConverter2Parametrs x:Key="CurrencyConverter2" />
+        <converters:ConverterSum x:Key="ConverterSum"/>-->
     </UserControl.Resources>
 
     <StackPanel>

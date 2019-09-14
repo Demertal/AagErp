@@ -4,13 +4,34 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:interactivity="http://prismlibrary.com/"
-             xmlns:converters="clr-namespace:CustomControlLibrary.Converters;assembly=CustomControlLibrary"
              interactivity:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Padding="10,5,5,10">
     <UserControl.Resources>
-        <converters:VisibilityBoolConverter x:Key="VisibilityBoolConverter"/>
-        <converters:IsEnabledConverterForBool x:Key="IsEnabledConverterForBool"/>
+        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
+            <Setter Property="MaxWidth" Value="300"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=IsEdit, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                    <Setter Property="IsReadOnly" Value="True"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="ButtonStartEdit" TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=IsEdit, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="ButtonInEdit" TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=IsEdit, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -27,57 +48,21 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <TextBlock Text="Наименование" Grid.Row="0" Grid.Column="0"/>
-        <TextBox Text="{Binding SelectedCounterparty.Title,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1">
-            <TextBox.IsEnabled>
-                <Binding Converter="{StaticResource IsEnabledConverterForBool}" UpdateSourceTrigger="PropertyChanged" Path="IsUpdate"/>
-            </TextBox.IsEnabled>
-        </TextBox>
+        <TextBox Text="{Binding SelectedCounterparty.Title,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1"/>
         <TextBlock Text="Контактное лицо" Grid.Row="1" Grid.Column="0"/>
-        <TextBox Text="{Binding SelectedCounterparty.ContactPerson,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1">
-            <TextBox.IsEnabled>
-                <Binding Converter="{StaticResource IsEnabledConverterForBool}" UpdateSourceTrigger="PropertyChanged" Path="IsUpdate"/>
-            </TextBox.IsEnabled>
-        </TextBox>
+        <TextBox Text="{Binding SelectedCounterparty.ContactPerson,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1"/>
         <TextBlock Text="Контактный телефон" Grid.Row="2" Grid.Column="0"/>
-        <TextBox Text="{Binding SelectedCounterparty.ContactPhone,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="1">
-            <TextBox.IsEnabled>
-                <Binding Converter="{StaticResource IsEnabledConverterForBool}" UpdateSourceTrigger="PropertyChanged" Path="IsUpdate"/>
-            </TextBox.IsEnabled>
-        </TextBox>
+        <TextBox Text="{Binding SelectedCounterparty.ContactPhone,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="1"/>
         <TextBlock Text="Реквизит" Grid.Row="3" Grid.Column="0"/>
-        <TextBox Text="{Binding SelectedCounterparty.Props,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Grid.Column="1">
-            <TextBox.IsEnabled>
-                <Binding Converter="{StaticResource IsEnabledConverterForBool}" UpdateSourceTrigger="PropertyChanged" Path="IsUpdate"/>
-            </TextBox.IsEnabled>
-        </TextBox>
+        <TextBox Text="{Binding SelectedCounterparty.Props,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Grid.Column="1"/>
         <TextBlock Text="Адрес" Grid.Row="4" Grid.Column="0"/>
-        <TextBox Text="{Binding SelectedCounterparty.Address,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="4" Grid.Column="1">
-            <TextBox.IsEnabled>
-                <Binding Converter="{StaticResource IsEnabledConverterForBool}" UpdateSourceTrigger="PropertyChanged" Path="IsUpdate"/>
-            </TextBox.IsEnabled>
-        </TextBox>
+        <TextBox Text="{Binding SelectedCounterparty.Address,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="4" Grid.Column="1"/>
         <TextBlock Text="Тип оплаты" Grid.Row="5" Grid.Column="0"/>
         <ComboBox ItemsSource="{Binding PaymentTypesList, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Id"
                   SelectedValue="{Binding SelectedCounterparty.IdPaymentType, UpdateSourceTrigger=PropertyChanged}"
-                  DisplayMemberPath="Description" Grid.Column="1" Grid.Row="5">
-            <ComboBox.IsEnabled>
-                <Binding Converter="{StaticResource IsEnabledConverterForBool}" UpdateSourceTrigger="PropertyChanged" Path="IsUpdate"/>
-            </ComboBox.IsEnabled>
-        </ComboBox>
-        <Button Content="Ок" Width="75" Command="{Binding OkCommand}" Grid.Row="6" Grid.Column="0">
-            <Button.Visibility>
-                <Binding Converter="{StaticResource VisibilityBoolConverter}" ConverterParameter="False" Path="IsUpdate"/>
-            </Button.Visibility>
-        </Button>
-        <Button Content="Отмена" Width="75" Command="{Binding ResetCommand}" Grid.Column="1" Grid.Row="6">
-            <Button.Visibility>
-                <Binding Converter="{StaticResource VisibilityBoolConverter}" ConverterParameter="False" Path="IsUpdate"/>
-            </Button.Visibility>
-        </Button>
-        <Button Content="Редактировать" Command="{Binding UpdateCommand}" Grid.Row="6" Grid.Column="1">
-            <Button.Visibility>
-                <Binding Converter="{StaticResource VisibilityBoolConverter}" ConverterParameter="True" Path="IsUpdate"/>
-            </Button.Visibility>
-        </Button>
+                  DisplayMemberPath="Description" Grid.Column="1" Grid.Row="5" IsEnabled="{Binding Path=IsEdit, UpdateSourceTrigger=PropertyChanged}"/>
+        <Button Grid.Column="0" Content="Ок" Grid.Row="6" Width="75" Command="{Binding OkCommand}" HorizontalAlignment="Center" Style="{StaticResource ButtonInEdit}"/>
+        <Button Grid.Column="1" Content="Отмена" Grid.Row="6" Width="75" Command="{Binding ResetCommand}" HorizontalAlignment="Center" Style="{StaticResource ButtonInEdit}"/>
+        <Button Grid.Column="1" Content="Редактировать" Grid.Row="6" Command="{Binding UpdateCommand}" HorizontalAlignment="Center" Style="{StaticResource ButtonStartEdit}"/>
     </Grid>
 </UserControl>

@@ -22,7 +22,7 @@ namespace CounterpartyModul.Views
         {
             var context = (ObservableObject<object>)sender;
             var selectedCounterparty = (Counterparty)context.Value;
-            (DataContext as CounterpartyInfoViewModel).SelectedCounterparty = selectedCounterparty ?? new Counterparty();
+            (DataContext as CounterpartyInfoViewModel).Counterparty = selectedCounterparty ?? new Counterparty();
         }
     }
 }

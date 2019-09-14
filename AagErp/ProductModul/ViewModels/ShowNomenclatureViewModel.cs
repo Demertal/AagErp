@@ -148,7 +148,7 @@ namespace ProductModul.ViewModels
 
         private void AddProduct(Category obj)
         {
-            _dialogService.ShowDialog("AddProduct", new DialogParameters { { "category", obj } }, CallbackProduct);
+            _dialogService.ShowDialog("ShowProduct", new DialogParameters { { "category", obj } }, CallbackProduct);
         }
 
         private void CallbackProduct(IDialogResult dialogResult)
@@ -209,7 +209,7 @@ namespace ProductModul.ViewModels
 
         private void SelectedProduct(Product obj)
         {
-           _dialogService.Show("ProductInfo", new DialogParameters { { "product", obj } }, null);
+           _dialogService.Show("ShowProduct", new DialogParameters { { "product", obj } }, null);
         }
 
         #region INavigationAware
