@@ -218,10 +218,11 @@ namespace PurchaseGoodModul.ViewModels
             PurchaseGood.PropertyChanged += (o, e) => RaisePropertyChanged("IsValidate");
 
             IRepository<MovmentGoodType> movmentGoodTypeRepository = new SqlMovmentGoodTypeRepository();
-            _purchaseGood.MovmentGoodType = await movmentGoodTypeRepository.GetItemAsync(MovmentGoodTypeSpecification.GetMovmentGoodTypeByCode("purchase"));
-            _purchaseGood.IdType = _purchaseGood.MovmentGoodType.Id;
+            PurchaseGood.MovmentGoodType = await movmentGoodTypeRepository.GetItemAsync(MovmentGoodTypeSpecification.GetMovmentGoodTypeByCode("purchase"));
+            PurchaseGood.IdType = _purchaseGood.MovmentGoodType.Id;
 
             PurchaseGoodsList.CollectionChanged += OnPurchaseGoodsCollectionChanged;
+            RaisePropertyChanged("PurchaseGood");
             RaisePropertyChanged("PurchaseGoodsList");
             RaisePropertyChanged("IsValidate");
         }

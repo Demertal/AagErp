@@ -88,11 +88,11 @@
         </Button>
         <TextBox Text="{Binding Product.Barcode,  UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Grid.Row="3" Grid.Column="2"/>
         <TextBlock Text="Гарантия" Grid.Row="4" Grid.Column="0"/>
-        <ComboBox ItemsSource="{Binding WarrantyPeriodsList, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Id"
+        <ComboBox ItemsSource="{Binding WarrantyPeriodsList, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Id" IsSynchronizedWithCurrentItem="True"
                       SelectedValue="{Binding Product.IdWarrantyPeriod, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" DisplayMemberPath="Period" Grid.Column="2" 
                       Grid.Row="4" IsEnabled="{Binding Path=IsEdit, UpdateSourceTrigger=PropertyChanged}"/>
         <TextBlock Text="Ед. хр." Grid.Row="5" Grid.Column="0"/>
-        <ComboBox ItemsSource="{Binding UnitStoragesList, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Id"
+        <ComboBox ItemsSource="{Binding UnitStoragesList, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Id" IsSynchronizedWithCurrentItem="True"
                       SelectedValue="{Binding Product.IdUnitStorage, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                       DisplayMemberPath="Title" Grid.Column="2" Grid.Row="5" IsEnabled="{Binding Path=IsEdit, UpdateSourceTrigger=PropertyChanged}"/>
         <TextBlock Text="Ценовая группа" Grid.Row="6" Grid.Column="0"/>
