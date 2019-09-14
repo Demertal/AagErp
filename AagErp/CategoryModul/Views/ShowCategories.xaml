@@ -7,7 +7,7 @@
              xmlns:models="clr-namespace:ModelModul.Models;assembly=ModelModul"
              mc:Ignorable="d">
     <Grid>
-        <customControlLibrary:ExtendedTreeView ItemsSource="{Binding CategoriesList, UpdateSourceTrigger=PropertyChanged}" MinWidth="150"
+        <customControlLibrary:ExtendedTreeView x:Name="Etv" ItemsSource="{Binding CategoriesList, UpdateSourceTrigger=PropertyChanged}" MinWidth="150"
                                                SelectedItem="{Binding Path=SelectedCategory, RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type UserControl}}, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                                                HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
             <TreeView.ItemTemplate>

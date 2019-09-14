@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using ModelModul.Models;
 using ModelModul.Specifications.BasisSpecifications;
 
@@ -48,51 +51,21 @@ namespace ModelModul.Specifications
                 : new ExpressionSpecification<Product>(GetProductsByIdGroup(idGroup.Value)
                     .And(GetProductsByFindString(findString)).IsSatisfiedBy());
         }
-    }
 
-    public static class ProductWithCountAndPriceSpecification
-    {
-        public static ExpressionSpecification<ProductWithCountAndPrice> GetProductsByBarcode(string barcode)
+        public static ExpressionSpecification<Product> GetProductsByIdGroupOrFindStringOrProperty(int? idGroup, string findString, ICollection<PropertyProduct> properties)
         {
-            return new ExpressionSpecification<ProductWithCountAndPrice>(obj => obj.Barcode == barcode);
-        }
+            if (properties == null || properties.All(p => p.IdPropertyValue == null || p.IdPropertyValue == 0))
+                return GetProductsByIdGroupOrFindString(idGroup, findString);
+            var temp = new ExpressionSpecification<Product>(GetProductsByIdGroupOrFindString(idGroup, findString).IsSatisfiedBy());
+            foreach (var property in properties.Where(p => p.IdPropertyValue != null))
+            {
+                temp = new ExpressionSpecification<Product>(temp
+                    .And(new ExpressionSpecification<Product>(pp =>
+                        pp.PropertyProductsCollection.Any(p => p.IdPropertyValue == property.IdPropertyValue)))
+                    .IsSatisfiedBy());
+            }
 
-        public static ExpressionSpecification<ProductWithCountAndPrice> GetProductsByLikeBarcode(string barcode)
-        {
-            barcode = "%" + barcode + "%";
-            return new ExpressionSpecification<ProductWithCountAndPrice>(obj => EF.Functions.Like(obj.Barcode, barcode));
-        }
-
-        public static ExpressionSpecification<ProductWithCountAndPrice> GetProductsByLikeTitle(string title)
-        {
-            title = "%" + title + "%";
-            return new ExpressionSpecification<ProductWithCountAndPrice>(obj => EF.Functions.Like(obj.Title, title));
-        }
-
-        public static ExpressionSpecification<ProductWithCountAndPrice> GetProductsByContainsVendorCode(string vendorCode)
-        {
-            vendorCode = "%" + vendorCode + "%";
-            return new ExpressionSpecification<ProductWithCountAndPrice>(obj => EF.Functions.Like(obj.VendorCode, vendorCode));
-        }
-
-        public static ExpressionSpecification<ProductWithCountAndPrice> GetProductsByFindString(string findString)
-        {
-            return new ExpressionSpecification<ProductWithCountAndPrice>(GetProductsByLikeBarcode(findString)
-                .Or(GetProductsByContainsVendorCode(findString).Or(GetProductsByLikeTitle(findString)))
-                .IsSatisfiedBy());
-        }
-
-        public static ExpressionSpecification<ProductWithCountAndPrice> GetProductsByIdGroup(int idGroup)
-        {
-            return new ExpressionSpecification<ProductWithCountAndPrice>(obj => obj.CategoryId == idGroup);
-        }
-
-        public static ExpressionSpecification<ProductWithCountAndPrice> GetProductsByIdGroupOrFindString(int? idGroup, string findString)
-        {
-            return idGroup == null || idGroup == 0
-                ? new ExpressionSpecification<ProductWithCountAndPrice>(GetProductsByFindString(findString).IsSatisfiedBy())
-                : new ExpressionSpecification<ProductWithCountAndPrice>(GetProductsByIdGroup(idGroup.Value)
-                    .And(GetProductsByFindString(findString)).IsSatisfiedBy());
+            return temp;
         }
     }
 }

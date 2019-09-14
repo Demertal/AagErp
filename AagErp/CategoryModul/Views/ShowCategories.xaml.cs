@@ -30,7 +30,12 @@ namespace CategoryModul.Views
             ShowCategories ctl = (ShowCategories)d;
             Category newValue = (Category)e.NewValue;
             Category oldValue = (Category)e.OldValue;
-
+            if (newValue == null)
+            {
+                ctl.Etv.SelectedItemTv.IsSelected = false;
+                ctl.Etv.SelectedItemTv = null;
+                ctl.Etv.SelectedItem = null;
+            }
             ctl.OnSelectedCategoryChanged(
                 new RoutedPropertyChangedEventArgs<Category>(oldValue, newValue, SelectedCategoryChangedEvent));
         }

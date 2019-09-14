@@ -59,6 +59,7 @@ namespace ProductModul.ViewModels
             set
             {
                 SetProperty(ref _selectedCategory, value);
+                LoadPropertyAsync();
                 LoadAsync();
                 RaisePropertyChanged("IsEnabledAddProduct");
             }
@@ -75,6 +76,13 @@ namespace ProductModul.ViewModels
             }
         }
 
+        private ObservableCollection<PropertyProduct> _propertyProductsList;
+        public ObservableCollection<PropertyProduct> PropertyProductsList
+        {
+            get => _propertyProductsList;
+            set => SetProperty(ref _propertyProductsList, value);
+        }
+
         private ObservableCollection<Product> _productsList = new ObservableCollection<Product>();
         public ObservableCollection<Product> ProductsList
         {
@@ -84,6 +92,8 @@ namespace ProductModul.ViewModels
         
         public DelegateCommand<Product> SelectedProductCommand { get; }
 
+        public DelegateCommand ResetCommand { get; }
+
         public bool IsEnabledAddProduct => SelectedCategory != null;
         #endregion
 
@@ -92,7 +102,10 @@ namespace ProductModul.ViewModels
             _dialogService = dialogService;
             IsAddPurchase = false;
             SelectedProductCommand = new DelegateCommand<Product>(SelectedProduct);
+            ResetCommand = new DelegateCommand(Reset);
         }
+
+        
 
         #region CategoryCommands
 
@@ -113,6 +126,7 @@ namespace ProductModul.ViewModels
                 CategoriesList = new ObservableCollection<Category>(loadCategory.Result.Where(CategorySpecification.GetCategoriesByIdParent().IsSatisfiedBy().Compile()));
                 UnitStoragesList = new ObservableCollection<UnitStorage>(loadUnitStorage.Result);
                 WarrantyPeriodsList = new ObservableCollection<WarrantyPeriod>(loadWarrantyPeriod.Result);
+                LoadPropertyAsync();
             }
             catch (Exception e)
             {
@@ -124,6 +138,25 @@ namespace ProductModul.ViewModels
 
         #region ProductCommands
 
+        private async void LoadPropertyAsync()
+        {
+            try
+            {
+                SqlProductRepository productRepository = new SqlProductRepository();
+
+                PropertyProductsList = new ObservableCollection<PropertyProduct>(
+                    await productRepository.GetPropertyForProduct(SelectedCategory?.Id));
+                foreach (var propertyProduct in PropertyProductsList)
+                {
+                    propertyProduct.PropertyChanged += (o, e) => { LoadAsync(); };
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
         private async void LoadAsync()
         {
             try
@@ -132,8 +165,8 @@ namespace ProductModul.ViewModels
 
                 ProductsList = new ObservableCollection<Product>(
                     await sqlProductRepository.GetProductsWithCountAndPrice(
-                        ProductWithCountAndPriceSpecification.GetProductsByIdGroupOrFindString(SelectedCategory?.Id,
-                            FindString), null, 0, -1, p => p.UnitStorage, p => p.Category));
+                        ProductSpecification.GetProductsByIdGroupOrFindStringOrProperty(SelectedCategory?.Id,
+                            FindString, PropertyProductsList), null, 0, -1, p => p.UnitStorage, p => p.Category));
             }
             catch (Exception e)
             {
@@ -169,6 +202,15 @@ namespace ProductModul.ViewModels
         }
 
         #endregion
+
+        private void Reset()
+        {
+            _findString = null;
+            _propertyProductsList = null;
+            SelectedCategory = null;
+            RaisePropertyChanged("FindString");
+            RaisePropertyChanged("PropertyProductsList");
+        }
 
         #region IDialogAware
 

@@ -25,11 +25,12 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <customControl:WatermarkTextBox WatermarkText="Поиск..." Text="{Binding FindString, UpdateSourceTrigger=PropertyChanged}" Margin ="5"
                                                TextWrapping="Wrap" MinWidth="200" VerticalContentAlignment="Center " Grid.Column="0" Grid.Row="0"/>
 
-        <views:ShowCategories SelectedCategory="{Binding DataContext.SelectedCategory, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Catalog}}, UpdateSourceTrigger=PropertyChanged}"
+        <views:ShowCategories SelectedCategory="{Binding DataContext.SelectedCategory, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Catalog}}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                               HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="0" Grid.Row="1"/>
 
         <customcontrollibrary:ExtendedDataGrid x:Name="ProductData" ItemsSource="{Binding ProductsList, UpdateSourceTrigger=PropertyChanged}"
@@ -85,5 +86,28 @@
                 </DataGridTextColumn>
             </DataGrid.Columns>
         </customcontrollibrary:ExtendedDataGrid>
+        
+        <Button Content="Сбросить фильтр" Grid.Row="0" Grid.Column="2" Command="{Binding ResetCommand}" />
+
+        <DataGrid ItemsSource="{Binding Path=PropertyProductsList, UpdateSourceTrigger=PropertyChanged}" MaxWidth="300" MinWidth="100"
+                  IsSynchronizedWithCurrentItem="True" MaxHeight="310"  SelectionMode="Single" HeadersVisibility="None" GridLinesVisibility="None" Grid.Row="1" Grid.Column="2">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Параметр"  Binding="{Binding Path=PropertyName.Title, UpdateSourceTrigger=PropertyChanged}" ElementStyle="{StaticResource {x:Type TextBlock}}" IsReadOnly="True"/>
+                <DataGridComboBoxColumn Header="Значение" SelectedValuePath="Id" DisplayMemberPath="Value" SelectedValueBinding="{Binding Path=IdPropertyValue, UpdateSourceTrigger=PropertyChanged}">
+                    <DataGridComboBoxColumn.EditingElementStyle>
+                        <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
+                            <Setter Property="ItemsSource" Value="{Binding Path=PropertyName.PropertyValuesCollection, UpdateSourceTrigger=PropertyChanged}"/>
+                        </Style>
+                    </DataGridComboBoxColumn.EditingElementStyle>
+                    <DataGridComboBoxColumn.ElementStyle>
+                        <Style TargetType="{x:Type ComboBox}">
+                            <Setter Property="ItemsSource" Value="{Binding Path=PropertyName.PropertyValuesCollection, UpdateSourceTrigger=PropertyChanged}"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        </Style>
+                    </DataGridComboBoxColumn.ElementStyle>
+                </DataGridComboBoxColumn>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </UserControl>

@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using LinqToDB;
 using LinqToDB.Common;
-using LinqToDB.DataProvider.SqlServer;
 using LinqToDB.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.Expressions;
 using ModelModul.Models;
 using ModelModul.Specifications.BasisSpecifications;
 
@@ -24,15 +21,34 @@ namespace ModelModul.Repositories
 
     public class SqlProductRepository : SqlRepository<Product>
     {
-        public async Task<IEnumerable<Product>> GetProductsWithCountAndPrice(ISpecification<ProductWithCountAndPrice> where = null, Dictionary<string, SortingTypes> order = null, int skip = 0, int take = -1, params Expression<Func<ProductWithCountAndPrice, Object>>[] include)
+        public async Task<IEnumerable<Product>> GetProductsWithCountAndPrice(ISpecification<Product> where = null, Dictionary<string, SortingTypes> order = null, int skip = 0, int take = -1, params Expression<Func<Product, Object>>[] include)
         {
-            var query = Db.ProductWithCountAndPrice.AsQueryable();
+            var query = from p in Db.Products
+                select p;
+
             if (where != null) query = query.Where(where.IsSatisfiedBy()).AsQueryable();
             if (order != null) query = query.OrderUsingSortExpression(order).AsQueryable();
             if (skip != 0) query = query.Skip(skip).AsQueryable();
             if (take != -1) query = query.Take(take).AsQueryable();
             if (include != null) query = query.ToLoad(include).AsQueryable();
-            return await EntityFrameworkQueryableExtensions.ToListAsync(query.Select(p => (Product)p));
+            query =  from q in query
+                     from pwcap in Db.ProductWithCountAndPrice
+                            .InnerJoin(pwcap => q.Id == pwcap.Id)
+                     select new Product
+                     {
+                         Title = q.Title,
+                         Barcode = q.Barcode,
+                         Id = q.Id,
+                         Description = q.Description,
+                         IdCategory = q.IdCategory,
+                         IdPriceGroup = q.IdPriceGroup,
+                         IdUnitStorage = q.IdUnitStorage,
+                         IdWarrantyPeriod = q.IdWarrantyPeriod,
+                         KeepTrackSerialNumbers = q.KeepTrackSerialNumbers,
+                         Price = pwcap.Price,
+                         Count = pwcap.Count
+                     };
+            return await query.ToListAsyncLinqToDB();
         }
 
         public async Task<IEnumerable<CountsProduct>> GetCountsProduct(long itemId)
@@ -42,6 +58,11 @@ namespace ModelModul.Repositories
         }
 
         public async Task<IEnumerable<PropertyProduct>> GetPropertyForProduct(Product item)
+        {
+            return await GetPropertyForProduct(item.IdCategory, item.Id);
+        }
+
+        public async Task<IEnumerable<PropertyProduct>> GetPropertyForProduct(int? idCategory, long id = 0)
         {
             Configuration.Linq.AllowMultipleQuery = true;
             var hierarchyCategoryCte = Db.CreateLinqToDbContext().GetCte<HierarchyCategoriesCte>(hierarchyCategory =>
@@ -57,7 +78,7 @@ namespace ModelModul.Repositories
                      ).Take(1).Concat
                     (
                         from c in Db.Categories
-                        where c.Id == item.IdCategory
+                        where c.Id == idCategory
                         select new HierarchyCategoriesCte
                         {
                             Id = c.Id,
@@ -79,9 +100,9 @@ namespace ModelModul.Repositories
             var result = Db.PropertyNames.Include(pm => pm.PropertyValuesCollection)
                 .SelectMany(
                     pm => hierarchyCategoryCte.InnerJoin(hc =>
-                        pm.IdCategory == null && hc.Id == null || pm.IdCategory == hc.Id), (pm, hc) => new {pm, hc})
+                        pm.IdCategory == null && hc.Id == null || pm.IdCategory == hc.Id), (pm, hc) => new { pm, hc })
                 .SelectMany(
-                    @t => Db.PropertyProducts.LeftJoin(pp => pp.IdPropertyName == @t.pm.Id && pp.IdProduct == item.Id),
+                    @t => Db.PropertyProducts.LeftJoin(pp => pp.IdPropertyName == @t.pm.Id && pp.IdProduct == id),
                     (@t, pp) => new PropertyProduct
                     {
                         Id = pp == null ? 0 : pp.Id,

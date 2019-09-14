@@ -9,7 +9,7 @@ namespace CustomControlLibrary
     {
         #region Properies
 
-        private TreeViewItem _selectedItemTv;
+        public TreeViewItem SelectedItemTv;
 
         public object SelectedItem
         {
@@ -23,18 +23,12 @@ namespace CustomControlLibrary
 
         public ExtendedTreeView() : base()
         {
-            //SelectedItemChanged += new RoutedPropertyChangedEventHandler<object>(MyTreeView_SelectedItemChanged);
             SelectedItemChanged += ___ICH;
             PreviewMouseRightButtonDown += ___MRBD;
             PreviewMouseLeftButtonDown += ___MLBD;
         }
 
         #region EventHandlers
-
-        private void MyTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            this.SelectedItem = base.SelectedItem;
-        }
 
         private void ___ICH(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
@@ -47,17 +41,17 @@ namespace CustomControlLibrary
             treeViewItem?.Focus();
             if (treeViewItem != null)
             {
-                _selectedItemTv = treeViewItem;
+                SelectedItemTv = treeViewItem;
                 return;
             }
 
-            if (_selectedItemTv == null)
+            if (SelectedItemTv == null)
             {
                 ((ExtendedTreeView)sender).Focus();
                 return;
             }
-            _selectedItemTv.IsSelected = false;
-            _selectedItemTv = null;
+            SelectedItemTv.IsSelected = false;
+            SelectedItemTv = null;
             SetValue(SelectedItemProperty, null);
         }
 
@@ -66,13 +60,13 @@ namespace CustomControlLibrary
             TreeViewItem treeViewItem = VisualUpwardSearch(e.OriginalSource as DependencyObject);
             if (treeViewItem != null)
             {
-                _selectedItemTv = treeViewItem;
+                SelectedItemTv = treeViewItem;
                 return;
             }
 
-            if (_selectedItemTv == null) return;
-            _selectedItemTv.IsSelected = false;
-            _selectedItemTv = null;
+            if (SelectedItemTv == null) return;
+            SelectedItemTv.IsSelected = false;
+            SelectedItemTv = null;
             SetValue(SelectedItemProperty, null);
         }
 
