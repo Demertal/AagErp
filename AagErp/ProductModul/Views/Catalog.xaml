@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:customcontrollibrary="clr-namespace:CustomControlLibrary;assembly=CustomControlLibrary"
              xmlns:prism="http://prismlibrary.com/"
              xmlns:local="clr-namespace:ProductModul.Views"
@@ -71,9 +70,9 @@
                         </Style>
                     </DataGridComboBoxColumn.ElementStyle>
                 </DataGridComboBoxColumn>
-                <DataGridTextColumn Header="Цена" Binding="{Binding Price, StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True" Width="Auto"
+                <DataGridTextColumn Header="Цена" Binding="{Binding Price, StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True" Width="Auto" MinWidth="40"
                                         ElementStyle="{StaticResource {x:Type TextBlock}}"/>
-                <DataGridTextColumn Header="Остаток" IsReadOnly="True" Width="Auto"
+                <DataGridTextColumn Header="Остаток" IsReadOnly="True" MinWidth="50" Width="Auto"
                                         ElementStyle="{StaticResource {x:Type TextBlock}}">
                     <DataGridTextColumn.Binding>
                         <MultiBinding UpdateSourceTrigger="PropertyChanged" Converter="{StaticResource ConvertCount}" ValidatesOnExceptions="False">
