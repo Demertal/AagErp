@@ -22,7 +22,7 @@ namespace ModelModul.Models
         }
 
         private string _title;
-        public string Title
+        public virtual string Title
         {
             get => _title;
             set
@@ -52,6 +52,34 @@ namespace ModelModul.Models
                 _disposalMovementGoodsCollection = value;
                 OnPropertyChanged("DisposalMovementGoodsCollection");
             }
+        }
+
+        public override string this[string columnName]
+        {
+            get
+            {
+                string error = string.Empty;
+
+                switch (columnName)
+                {
+                    case "Title":
+                        if (string.IsNullOrEmpty(Title))
+                        {
+                            error = "Наименование должно быть указано";
+                        }
+
+                        break;
+                }
+
+                return error;
+            }
+        }
+
+        public override bool IsValidate => !string.IsNullOrEmpty(Title);
+
+        public override object Clone()
+        {
+            return new Store { Id = Id, Title = Title};
         }
     }
 }

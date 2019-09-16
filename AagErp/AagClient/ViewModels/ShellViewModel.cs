@@ -1,7 +1,8 @@
-﻿using CustomControlLibrary.MVVM;
-using ModelModul.Models;
+﻿using ModelModul.Models;
+using ModelModul.MVVM;
 using Prism.Commands;
 using Prism.Regions;
+using Prism.Services.Dialogs;
 
 namespace AagClient.ViewModels
 {
@@ -25,7 +26,7 @@ namespace AagClient.ViewModels
         public DelegateCommand<string> NavigateCommand { get; }
         #endregion
 
-        public ShellViewModel(IRegionManager regionManager)
+        public ShellViewModel(IRegionManager regionManager, IDialogService dialogService) : base(dialogService)
         {
             _regionManager = regionManager;
             Role = Roles.Admin;
@@ -62,16 +63,6 @@ namespace AagClient.ViewModels
         {
             if (navigatePath == null) return;
             NavigationParameters navigation = new NavigationParameters();
-            if (navigatePath == "ShowSuppliers")
-            {
-                navigation.Add("type", TypeCounterparties.Suppliers);
-                navigatePath = "ShowCounterparties";
-            }
-            else if(navigatePath == "ShowCustomers")
-            {
-                navigation.Add("type", TypeCounterparties.Buyers);
-                navigatePath = "ShowCounterparties";
-            }
             _regionManager.RequestNavigate("ContentRegion", navigatePath, navigation);
         }
 

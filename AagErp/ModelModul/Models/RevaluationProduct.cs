@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace ModelModul.Models
 {
-    public class RevaluationProduct : ModelBase, ICloneable
+    public class RevaluationProduct : ModelBase
     {
         public RevaluationProduct()
         {
@@ -45,7 +45,7 @@ namespace ModelModul.Models
             }
         }
 
-        public object Clone()
+        public override object Clone()
         {
             return new RevaluationProduct
             {

@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using Prism.Services.Dialogs;
 
-namespace CustomControlLibrary.MVVM
+namespace ModelModul.MVVM
 {
     /// <summary>
     /// Логика взаимодействия для DialogWindow.xaml

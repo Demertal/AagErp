@@ -64,6 +64,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ViewModels\ShowWarrantyPeriodsViewModel.cs" />
+    <Compile Include="ViewModels\ShowWarrantyPeriodViewModel.cs" />
+    <Compile Include="ViewModels\WarrantyPeriodViewModel.cs" />
+    <Compile Include="Views\ShowWarrantyPeriod.xaml.cs">
+      <DependentUpon>ShowWarrantyPeriod.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ShowWarrantyPeriods.xaml.cs">
       <DependentUpon>ShowWarrantyPeriods.xaml</DependentUpon>
     </Compile>
@@ -71,6 +76,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\ShowWarrantyPeriod.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ShowWarrantyPeriods.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

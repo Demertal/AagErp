@@ -1,9 +1,8 @@
-using System;
 using System.Collections.Generic;
 
 namespace ModelModul.Models
 {
-    public class WarrantyPeriod : ModelBase, ICloneable
+    public class WarrantyPeriod : ModelBase
     {
         public WarrantyPeriod()
         {
@@ -22,13 +21,14 @@ namespace ModelModul.Models
         }
 
         private string _period;
-        public string Period
+        public virtual string Period
         {
             get => _period;
             set
             {
                 _period = value;
                 OnPropertyChanged("Period");
+                OnPropertyChanged("IsValidate");
             }
         }
 
@@ -43,7 +43,30 @@ namespace ModelModul.Models
             }
         }
 
-        public object Clone()
+        public override string this[string columnName]
+        {
+            get
+            {
+                string error = string.Empty;
+
+                switch (columnName)
+                {
+                    case "Period":
+                        if (string.IsNullOrEmpty(Period))
+                        {
+                            error = "Период должен быть указан";
+                        }
+
+                        break;
+                }
+
+                return error;
+            }
+        }
+
+        public override bool IsValidate => !string.IsNullOrEmpty(Period);
+
+        public override object Clone()
         {
             return new WarrantyPeriod {Id = Id, Period = Period};
         }

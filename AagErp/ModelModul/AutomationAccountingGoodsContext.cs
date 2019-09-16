@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using ModelModul.Configurations;
 using ModelModul.Models;
@@ -86,9 +85,6 @@ namespace ModelModul
             modelBuilder.ApplyConfiguration(new WarrantyPeriodConfiguration());
             modelBuilder.HasDbFunction(() => GetCurrentPrice(default(long)));
             modelBuilder.HasDbFunction(() => CheckProperty(default(int), default(int?), default(string)));
-            modelBuilder.Query<CountsProduct>().Ignore(c => c.Error);
-            modelBuilder.Query<EquivalentCostForÅxistingProduct>().Ignore(e => e.Error);
-            modelBuilder.Query<PropertyForProduct>().Ignore(e => e.Error);
             modelBuilder.Query<ProductWithCountAndPrice>().ToView("productsWithCountAndPrice");
         }
     }

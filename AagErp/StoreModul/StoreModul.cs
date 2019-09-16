@@ -1,5 +1,7 @@
-﻿using Prism.Ioc;
+﻿using ModelModul.MVVM;
+using Prism.Ioc;
 using Prism.Modularity;
+using StoreModul.ViewModels;
 using StoreModul.Views;
 
 namespace StoreModul
@@ -13,6 +15,8 @@ namespace StoreModul
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterForNavigation<ShowStores>();
+            containerRegistry.RegisterDialogWindow<DialogWindow>();
+            containerRegistry.RegisterDialog<ShowStore, ShowStoreViewModel>();
         }
     }
 }

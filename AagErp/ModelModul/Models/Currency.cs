@@ -23,13 +23,14 @@ namespace ModelModul.Models
         }
 
         private string _title;
-        public string Title
+        public virtual string Title
         {
             get => _title;
             set
             {
                 _title = value;
                 OnPropertyChanged("Title");
+                OnPropertyChanged("IsValidate");
             }
         }
 
@@ -41,12 +42,12 @@ namespace ModelModul.Models
             {
                 _cost = value;
                 OnPropertyChanged("Cost");
+                OnPropertyChanged("IsValidate");
             }
         }
 
         private bool _isDefault;
-
-        public bool IsDefault
+        public virtual bool IsDefault
         {
             get => _isDefault;
             set
@@ -76,6 +77,43 @@ namespace ModelModul.Models
                 _movementGoodsEquivalentCollection = value;
                 OnPropertyChanged("MovementGoodsEquivalentCollection");
             }
+        }
+
+        public override string this[string columnName]
+        {
+            get
+            {
+                string error = string.Empty;
+
+                switch (columnName)
+                {
+                    case "Title":
+                        if (string.IsNullOrEmpty(Title))
+                        {
+                            error = "Наименование должно быть указано";
+                        }
+
+                        break;
+
+                    case "Cost":
+                        if (Cost <= 0)
+                        {
+                            error = "Курс должен быть больше 0";
+                        }
+
+                        break;
+                }
+
+                return error;
+            }
+        }
+
+        public override bool IsValidate => !string.IsNullOrEmpty(Title) &&
+                                  Cost > 0;
+
+        public override object Clone()
+        {
+            return new Currency {Id = Id, Title = Title, IsDefault = IsDefault, Cost = Cost};
         }
     }
 }

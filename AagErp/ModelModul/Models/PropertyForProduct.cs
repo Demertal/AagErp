@@ -1,49 +1,13 @@
 ﻿namespace ModelModul.Models
 {
-    public class PropertyForProduct : ModelBase
+    public class PropertyForProduct
     {
-        private int _propertyNameId;
-        public int PropertyNameId
-        {
-            get => _propertyNameId;
-            set
-            {
-                _propertyNameId = value;
-                OnPropertyChanged("PropertyNameId");
-            }
-        }
+        public int PropertyNameId { get; set; }
 
-        private int _propertyValueId;
-        public int PropertyValueId
-        {
-            get => _propertyValueId;
-            set
-            {
-                _propertyValueId = value;
-                OnPropertyChanged("PropertyValueId");
-            }
-        }
+        public int PropertyValueId { get; set; }
 
-        private PropertyName _propertyName;
-        public PropertyName PropertyName
-        {
-            get => _propertyName;
-            set
-            {
-                _propertyName = value;
-                OnPropertyChanged("PropertyName");
-            }
-        }
+        public PropertyName PropertyName { get; set; }
 
-        private PropertyValue _propertyValue;
-        public PropertyValue PropertyValue
-        {
-            get => _propertyValue;
-            set
-            {
-                _propertyValue = value;
-                OnPropertyChanged("PropertyValue");
-            }
-        }
+        public PropertyValue PropertyValue { get; set; }
     }
 }

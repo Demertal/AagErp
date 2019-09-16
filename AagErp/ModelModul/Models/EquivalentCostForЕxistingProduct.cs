@@ -1,49 +1,13 @@
 ﻿namespace ModelModul.Models
 {
-    public class EquivalentCostForЕxistingProduct : ModelBase
+    public class EquivalentCostForЕxistingProduct
     {
-        private decimal _count;
-        public decimal Count
-        {
-            get => _count;
-            set
-            {
-                _count = value;
-                OnPropertyChanged("Count");
-            }
-        }
+        public decimal Count { get; set; }
 
-        private decimal _equivalentCost;
-        public decimal EquivalentCost
-        {
-            get => _equivalentCost;
-            set
-            {
-                _equivalentCost = value;
-                OnPropertyChanged("EquivalentCost");
-            }
-        }
+        public decimal EquivalentCost { get; set; }
 
-        private int _equivalentCurrencyId;
-        public int EquivalentCurrencyId
-        {
-            get => _equivalentCurrencyId;
-            set
-            {
-                _equivalentCurrencyId = value;
-                OnPropertyChanged("EquivalentCurrencyId");
-            }
-        }
+        public int EquivalentCurrencyId { get; set; }
 
-        private Currency _equivalentCurrency;
-        public virtual Currency EquivalentCurrency
-        {
-            get => _equivalentCurrency;
-            set
-            {
-                _equivalentCurrency = value;
-                OnPropertyChanged("EquivalentCurrency");
-            }
-        }
+        public virtual Currency EquivalentCurrency { get; set; }
     }
 }

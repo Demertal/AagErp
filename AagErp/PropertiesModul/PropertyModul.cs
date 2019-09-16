@@ -16,6 +16,7 @@ namespace PropertyModul
         {
             containerRegistry.RegisterForNavigation<ShowProperties>();
             containerRegistry.RegisterDialog<ShowProperty, ShowPropertyViewModel>();
+            containerRegistry.RegisterDialog<ShowPropertyValue, ShowPropertyValueViewModel>();
         }
     }
 }

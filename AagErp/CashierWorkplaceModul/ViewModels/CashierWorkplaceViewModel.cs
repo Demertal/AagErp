@@ -8,9 +8,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using CustomControlLibrary.MVVM;
 using Microsoft.EntityFrameworkCore;
 using ModelModul.Models;
+using ModelModul.MVVM;
 using ModelModul.Repositories;
 using ModelModul.Specifications;
 using ModelModul.ViewModels;
@@ -23,8 +23,6 @@ namespace CashierWorkplaceModul.ViewModels
     class CashierWorkplaceViewModel : ViewModelBase
     {
         #region Properties
-
-        private readonly IDialogService _dialogService;
 
         private int _errorPostCount = 0;
         private string _barcode;
@@ -75,9 +73,8 @@ namespace CashierWorkplaceModul.ViewModels
         public DelegateCommand<KeyEventArgs> ListenKeyboardSerialNumbersCommand { get; }
         #endregion
 
-        public CashierWorkplaceViewModel(IDialogService dialogService)
+        public CashierWorkplaceViewModel(IDialogService dialogService) : base(dialogService)
         {
-            _dialogService = dialogService;
             NewMovementGood();
             PostCommand = new DelegateCommand(Post).ObservesCanExecute(() => IsValidate);
             AddProductCommand = new DelegateCommand(AddProduct);
@@ -286,7 +283,7 @@ if (sender is MovementGoodsInfo movement && e.PropertyName == "Count")
 
         private void AddProduct()
         {
-            _dialogService.ShowDialog("Catalog", new DialogParameters(), Callback);
+            DialogService.ShowDialog("Catalog", new DialogParameters(), Callback);
         }
 
         private void Callback(IDialogResult dialogResult)

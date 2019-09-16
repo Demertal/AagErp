@@ -2,7 +2,7 @@
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 
-namespace CustomControlLibrary.MVVM
+namespace ModelModul.MVVM
 {
     public class DialogViewModelBase : BindableBase, IDialogAware
     {

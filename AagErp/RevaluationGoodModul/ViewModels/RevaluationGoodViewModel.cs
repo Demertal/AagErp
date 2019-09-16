@@ -7,8 +7,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using CustomControlLibrary.MVVM;
 using ModelModul.Models;
+using ModelModul.MVVM;
 using ModelModul.Repositories;
 using Prism.Commands;
 using Prism.Regions;
@@ -20,8 +20,6 @@ namespace RevaluationGoodModul.ViewModels
     public class RevaluationGoodViewModel : ViewModelBase
     {
         #region Properties
-
-        private readonly IDialogService _dialogService;
 
         private string _barcode;
 
@@ -66,9 +64,8 @@ namespace RevaluationGoodModul.ViewModels
 
         #endregion
 
-        public RevaluationGoodViewModel(IDialogService dialogService)
+        public RevaluationGoodViewModel(IDialogService dialogService) : base(dialogService)
         {
-            _dialogService = dialogService;
             NewRevaluationProduct();
             PostCommand = new DelegateCommand(Post).ObservesCanExecute(() => IsValidate);
             AddProductCommand = new DelegateCommand(AddProduct);
@@ -155,7 +152,7 @@ namespace RevaluationGoodModul.ViewModels
 
         private void AddProduct()
         {
-            _dialogService.ShowDialog("Catalog", new DialogParameters(), Callback);
+            DialogService.ShowDialog("Catalog", new DialogParameters(), Callback);
         }
 
         private void Callback(IDialogResult dialogResult)

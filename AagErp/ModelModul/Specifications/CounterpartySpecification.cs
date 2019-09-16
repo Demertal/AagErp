@@ -5,7 +5,7 @@ namespace ModelModul.Specifications
 {
     public static class CounterpartySpecification
     {
-        public static ExpressionSpecification<Counterparty> GetCounterpartiesByType(TypeCounterparties type)
+        public static ExpressionSpecification<Counterparty> GetCounterpartiesByType(ETypeCounterparties type)
         {
             return new ExpressionSpecification<Counterparty>(obj => obj.WhoIsIt == type);
         }

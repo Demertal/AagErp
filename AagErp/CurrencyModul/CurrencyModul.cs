@@ -1,6 +1,8 @@
-﻿using CurrencyModul.Views;
+﻿using CurrencyModul.ViewModels;
+using CurrencyModul.Views;
 using Prism.Ioc;
 using Prism.Modularity;
+using DialogWindow = ModelModul.MVVM.DialogWindow;
 
 namespace CurrencyModul
 {
@@ -12,7 +14,9 @@ namespace CurrencyModul
 
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
+            containerRegistry.RegisterDialogWindow<DialogWindow>();
             containerRegistry.RegisterForNavigation<ShowCurrencies>();
+            containerRegistry.RegisterDialog<ShowCurrency, ShowCurrencyViewModel>();
         }
     }
 }

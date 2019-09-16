@@ -2,7 +2,7 @@
 namespace ModelModul.Models
 {
     //типы контрагентов
-    public enum TypeCounterparties
+    public enum ETypeCounterparties
     {
         Suppliers = 0,
         Buyers = 1

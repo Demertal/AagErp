@@ -8,6 +8,7 @@
              xmlns:modelModul="clr-namespace:ModelModul;assembly=ModelModul"
              xmlns:customControlLibrary="clr-namespace:CustomControlLibrary;assembly=CustomControlLibrary"
              xmlns:converters="clr-namespace:ModelModul.Converters;assembly=ModelModul"
+             xmlns:converters1="clr-namespace:CustomControlLibrary.Converters;assembly=CustomControlLibrary"
              interactivity:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d">
     <UserControl.Resources>
@@ -18,6 +19,7 @@
         <converters:CalculationSum x:Key="CalculationSum"/>
         <converters:CalculationTotal x:Key="CalculationTotal"/>
         <converters:ConvertCount x:Key="ConvertCount"/>
+        <converters1:CompareObjectConverter x:Key="CompareObjectConverter"/>
     </UserControl.Resources>
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="KeyDown">
@@ -43,7 +45,17 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="{Binding SelectedItem.Title, ElementName=CurrencyComboBox, StringFormat=Курс {0}}" Margin="5" VerticalAlignment="Center"/>
-                <TextBox Text="{Binding Path=PurchaseGood.Rate, UpdateSourceTrigger=PropertyChanged, StringFormat=F2, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}"/>
+                <TextBox Text="{Binding Path=PurchaseGood.Rate, UpdateSourceTrigger=PropertyChanged, StringFormat=F2, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}">
+                    <TextBox.Style>
+                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ElementName=CurrencyComboBox, Path=SelectedItem.IsDefault, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
                 <TextBlock Margin="5" VerticalAlignment="Center">
                     <TextBlock.Text>
                         <MultiBinding StringFormat="Курс {1} к {0}">
@@ -52,7 +64,23 @@
                         </MultiBinding>
                     </TextBlock.Text>
                 </TextBlock>
-                <TextBox Text="{Binding Path=PurchaseGood.EquivalentRate, UpdateSourceTrigger=PropertyChanged, StringFormat=F2, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}"/>
+                <TextBox Text="{Binding Path=PurchaseGood.EquivalentRate, UpdateSourceTrigger=PropertyChanged, StringFormat=F2, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}">
+                    <TextBox.Style>
+                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
+                            <Style.Triggers>
+                                <DataTrigger Value="True">
+                                    <DataTrigger.Binding>
+                                        <MultiBinding Converter="{StaticResource CompareObjectConverter}">
+                                            <Binding ElementName="CurrencyComboBox" Path="SelectedValue" UpdateSourceTrigger="PropertyChanged"/>
+                                            <Binding ElementName="EquivalentCurrencyComboBox" Path="SelectedValue" UpdateSourceTrigger="PropertyChanged"/>
+                                        </MultiBinding>
+                                    </DataTrigger.Binding>
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Информация о закупке: " Margin="5" VerticalAlignment="Center"/>

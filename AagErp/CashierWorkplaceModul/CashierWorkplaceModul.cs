@@ -1,9 +1,9 @@
 ﻿using CashierWorkplaceModul.Views;
-using CustomControlLibrary.MVVM;
 using Prism.Ioc;
 using Prism.Modularity;
 using ProductModul.ViewModels;
 using ProductModul.Views;
+using DialogWindow = ModelModul.MVVM.DialogWindow;
 
 namespace CashierWorkplaceModul
 {

@@ -7,8 +7,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using CustomControlLibrary.MVVM;
 using ModelModul.Models;
+using ModelModul.MVVM;
 using ModelModul.Repositories;
 using ModelModul.Specifications;
 using Prism.Commands;
@@ -22,8 +22,6 @@ namespace PurchaseGoodModul.ViewModels
         #region Properties
 
         private string _barcode;
-
-        private readonly IDialogService _dialogService;
 
         private MovementGoods _purchaseGood = new MovementGoods();
         public MovementGoods PurchaseGood
@@ -95,9 +93,8 @@ namespace PurchaseGoodModul.ViewModels
 
         #endregion
 
-        public PurchaseGoodViewModel(IDialogService dialogService)
+        public PurchaseGoodViewModel(IDialogService dialogService) : base(dialogService)
         {
-            _dialogService = dialogService;
             PostCommand = new DelegateCommand(Post).ObservesCanExecute(() => IsValidate);
             AddProductCommand = new DelegateCommand(AddProduct);
             DeleteProductCommand = new DelegateCommand<Collection<object>>(DeleteProduct);
@@ -196,7 +193,7 @@ namespace PurchaseGoodModul.ViewModels
 
                 var loadStore = Task.Run(() => storeRepository.GetListAsync());
                 var loadCurrency = Task.Run(() => currencyRepository.GetListAsync());
-                var loadCounterparty = Task.Run(() => counterpartyRepository.GetListAsync(CounterpartySpecification.GetCounterpartiesByType(TypeCounterparties.Suppliers)));
+                var loadCounterparty = Task.Run(() => counterpartyRepository.GetListAsync(CounterpartySpecification.GetCounterpartiesByType(ETypeCounterparties.Suppliers)));
 
                 Task.WaitAll(loadStore, loadCurrency, loadCounterparty);
 
@@ -215,7 +212,16 @@ namespace PurchaseGoodModul.ViewModels
         {
             Load();
             PurchaseGood = new MovementGoods { MovementGoodsInfosCollection = new ObservableCollection<MovementGoodsInfo>() };
-            PurchaseGood.PropertyChanged += (o, e) => RaisePropertyChanged("IsValidate");
+            PurchaseGood.PropertyChanged += (o, e) =>
+            {
+                if (e.PropertyName == "IdCurrency" && CurrenciesList != null)
+                    PurchaseGood.Rate = CurrenciesList.First(c => c.Id == PurchaseGood.IdCurrency).Cost;
+
+                if ((e.PropertyName == "IdCurrency" || e.PropertyName == "IdEquivalentCurrency") && PurchaseGood.IdCurrency == PurchaseGood.IdEquivalentCurrency)
+                    PurchaseGood.EquivalentRate = 1;
+
+                RaisePropertyChanged("IsValidate");
+            };
 
             IRepository<MovmentGoodType> movmentGoodTypeRepository = new SqlMovmentGoodTypeRepository();
             PurchaseGood.MovmentGoodType = await movmentGoodTypeRepository.GetItemAsync(MovmentGoodTypeSpecification.GetMovmentGoodTypeByCode("purchase"));
@@ -301,7 +307,7 @@ namespace PurchaseGoodModul.ViewModels
 
         private void AddProduct()
         {
-            _dialogService.ShowDialog("Catalog", new DialogParameters(), Callback);
+            DialogService.ShowDialog("Catalog", new DialogParameters(), Callback);
         }
 
         private void Callback(IDialogResult dialogResult)

@@ -4,15 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mvvm="http://prismlibrary.com/"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:customControlLibrary="clr-namespace:CustomControlLibrary;assembly=CustomControlLibrary"
              mc:Ignorable="d"
              mvvm:ViewModelLocator.AutoWireViewModel="True" Padding="0,0,10,5">
 
     <UserControl.Resources>
-        <ContextMenu  x:Key="RowMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-            <MenuItem Header="Удалить" CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
-                      Command="{Binding DataContext.DeletePropertyValueCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>
-        </ContextMenu>
+        <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+            <Setter Property="customControlLibrary:DataGridRowSelectedBehavior.Command"
+                    Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.SelectedEntityCommand}" />
+        </Style>
     </UserControl.Resources>
 
     <Grid>
@@ -27,21 +27,39 @@
             <ColumnDefinition Width="Auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <TextBlock Text="Параметр" Grid.Row="0" Grid.Column="0"/>
-        <TextBox Text="{Binding Name,  UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True}"  Grid.Row="0" Grid.Column="1"/>
+        <TextBox Text="{Binding Entity.Title,  UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True}"  Grid.Row="0" Grid.Column="1"/>
         <TextBlock Text="Категория" Grid.Row="1" Grid.Column="0"/>
-        <TextBlock Text="{Binding PropertyName.Category.Title,  UpdateSourceTrigger=PropertyChanged}"  Grid.Row="1" Grid.Column="1"/>
-        <DataGrid ItemsSource="{Binding Path=PropertyValuesCollection, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" MaxWidth="200" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
-                  IsSynchronizedWithCurrentItem="True" MinHeight="200" MaxHeight="500" SelectionMode="Single" CanUserAddRows="True">
-            <DataGrid.RowStyle>
-                <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
-                    <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
+        <TextBlock Text="{Binding Entity.Category.Title,  UpdateSourceTrigger=PropertyChanged}"  Grid.Row="1" Grid.Column="1"/>
+
+        <DataGrid ItemsSource="{Binding Path=EntitiesList, UpdateSourceTrigger=PropertyChanged}" MaxWidth="200" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                    IsSynchronizedWithCurrentItem="True" MinHeight="200" MaxHeight="500" SelectionMode="Single" IsReadOnly="True">
+            <DataGrid.Style>
+                <Style TargetType="{x:Type DataGrid}" BasedOn="{StaticResource {x:Type DataGrid}}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=IsAdd, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
                 </Style>
-            </DataGrid.RowStyle>
+            </DataGrid.Style>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Значения" Binding="{Binding Path=Value, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True}" Width="*"
-                                    ElementStyle="{StaticResource {x:Type TextBlock}}" EditingElementStyle="{StaticResource {x:Type TextBox}}"/>
+                                    ElementStyle="{StaticResource {x:Type TextBlock}}" EditingElementStyle="{StaticResource {x:Type TextBox}}" CanUserResize="False"/>
+                <DataGridTemplateColumn Width="Auto">
+                    <DataGridTemplateColumn.HeaderTemplate>
+                        <DataTemplate>
+                            <Button Style="{DynamicResource AddButton}" Command="{Binding DataContext.AddEntityCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button CommandParameter="{Binding}" Style="{DynamicResource DeleteButton}"
+                                    Command="{Binding DataContext.DeleteEntityCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
-        <Button Content="ОК" Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" Width="110" Command="{Binding AcceptPropertyNameCommand}" IsDefault="True"/>
+        <Button Content="ОК" Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" Width="110" Command="{Binding AcceptCommand}" IsDefault="True"/>
     </Grid>
 </UserControl>

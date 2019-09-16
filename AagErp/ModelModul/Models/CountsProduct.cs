@@ -1,38 +1,11 @@
 ﻿namespace ModelModul.Models
 {
-    public class CountsProduct : ModelBase
+    public class CountsProduct
     {
-        private int _storeId;
-        public int StoreId
-        {
-            get => _storeId;
-            set
-            {
-                _storeId = value;
-                OnPropertyChanged("StoreId");
-            }
-        }
+        public int StoreId { get; set; }
 
-        private Store _store;
-        public virtual Store Store
-        {
-            get => _store;
-            set
-            {
-                _store = value;
-                OnPropertyChanged("Store");
-            }
-        }
+        public virtual Store Store { get; set; }
 
-        private decimal _count;
-        public decimal Count
-        {
-            get => _count;
-            set
-            {
-                _count = value;
-                OnPropertyChanged("Count");
-            }
-        }
+        public decimal Count { get; set; }
     }
 }

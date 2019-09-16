@@ -1,9 +1,9 @@
-﻿using CustomControlLibrary.MVVM;
-using Prism.Ioc;
+﻿using Prism.Ioc;
 using Prism.Modularity;
 using ProductModul.ViewModels;
 using ProductModul.Views;
 using RevaluationGoodModul.Views;
+using DialogWindow = ModelModul.MVVM.DialogWindow;
 
 namespace RevaluationGoodModul
 {

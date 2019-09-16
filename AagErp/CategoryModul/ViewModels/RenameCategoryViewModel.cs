@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
-using CustomControlLibrary.MVVM;
 using ModelModul.Models;
+using ModelModul.MVVM;
 using ModelModul.Repositories;
 using Prism.Commands;
 using Prism.Services.Dialogs;

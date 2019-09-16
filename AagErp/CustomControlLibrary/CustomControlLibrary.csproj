@@ -66,10 +66,6 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="MVVM\DialogWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Themes\BaseStyles\ButtonStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -145,17 +141,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BindingProxy.cs" />
-    <Compile Include="Converters\ConvertDecimalToPercent.cs" />
     <Compile Include="Converters\GetProductsTitleFromMovementGoodsInfo.cs" />
     <Compile Include="Converters\GetProductsTitleFromRevaluaitionInfo.cs" />
     <Compile Include="Converters\InverseBoolConverter.cs" />
-    <Compile Include="Converters\NumToBoolConverter.cs" />
-    <Compile Include="MVVM\DialogViewModelBase.cs" />
+    <Compile Include="Converters\CompareObjectConverter.cs" />
     <Compile Include="ExtendedDataGrid.cs" />
-    <Compile Include="MVVM\DialogWindow.xaml.cs">
-      <DependentUpon>DialogWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="MVVM\ViewModelBase.cs" />
     <Compile Include="PasswordBehavior.cs" />
     <Compile Include="ExtendedTreeView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -172,9 +162,11 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="CustomControl\WatermarkTextBox.cs" />
+    <Compile Include="DataGridRowSelectedBehavior.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="app.config" />
     <None Include="packages.config" />

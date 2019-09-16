@@ -1,121 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Linq;
-using System.Windows;
-using CustomControlLibrary.MVVM;
-using ModelModul.Models;
+﻿using ModelModul.Models;
+using ModelModul.MVVM;
 using ModelModul.Repositories;
 using ModelModul.Specifications;
+using System;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Windows;
 using Prism.Commands;
 using Prism.Services.Dialogs;
 
 namespace PropertyModul.ViewModels
 {
-    public class ShowPropertyViewModel: DialogViewModelBase, INotifyDataErrorInfo
+    public class ShowPropertyViewModel : EntityViewModelBase<PropertyName, PropertyNameViewModel, SqlPropertyNameRepository>, IEntitiesViewModelBase<PropertyValue, SqlPropertyValueRepository>
     {
-        #region Properties
-
-        private readonly Dictionary<string, ICollection<string>>
-            _validationErrors = new Dictionary<string, ICollection<string>>();
-
-        private PropertyName _oldPropertyName;
-
-        private PropertyName _propertyName;
-
-        public PropertyName PropertyName
+        public ObservableCollection<PropertyValue> EntitiesList
         {
-            get => _propertyName;
+            get => Entity.PropertyValuesCollection as ObservableCollection<PropertyValue>;
             set
             {
-                SetProperty(ref _propertyName, value);
-                if (PropertyName != null)
-                    PropertyName.PropertyChanged += (o, e) => { RaisePropertyChanged("PropertyName"); };
-                RaisePropertyChanged("Name");
-                RaisePropertyChanged("PropertyValuesCollection");
-                RaisePropertyChanged("IsValidate");
+                Entity.PropertyValuesCollection = value;
+                RaisePropertyChanged("EntitiesList");
+                if (Entity.PropertyValuesCollection != null)
+                    ((ObservableCollection<PropertyValue>) Entity.PropertyValuesCollection).CollectionChanged +=
+                        PropertyValuesCollectionChanged;
             }
         }
+        public IDialogService DialogService { get; set; }
+        public DelegateCommand AddEntityCommand { get; }
+        public DelegateCommand<PropertyValue> SelectedEntityCommand { get; }
+        public DelegateCommand<PropertyValue> DeleteEntityCommand { get; }
 
-        public string Name
+        public ShowPropertyViewModel(IDialogService dialogService) : base("Параметр добавлен", "Параметр изменен")
         {
-            get => PropertyName.Title;
-            set
-            {
-                PropertyName.Title = value;
-                RaisePropertyChanged("Name");
-                RaisePropertyChanged("IsValidate");
-                ValidateName();
-            }
+            DialogService = dialogService;
+            AddEntityCommand = new DelegateCommand(AddEntity);
+            SelectedEntityCommand = new DelegateCommand<PropertyValue>(SelectedEntity);
+            DeleteEntityCommand = new DelegateCommand<PropertyValue>(DeleteEntity);
         }
 
-        public ObservableCollection<PropertyValue> PropertyValuesCollection
+        public override void PropertiesTransfer(PropertyName fromEntity, PropertyName toEntity)
         {
-            get => PropertyName.PropertyValuesCollection as ObservableCollection<PropertyValue>;
-            set
-            {
-                if (PropertyValuesCollection != null)
-                    PropertyValuesCollection.CollectionChanged -= PropertyValuesCollectionChanged;
-                PropertyName.PropertyValuesCollection = value;
-                if (PropertyValuesCollection != null)
-                    PropertyValuesCollection.CollectionChanged += PropertyValuesCollectionChanged;
-                RaisePropertyChanged("PropertyValuesCollection");
-            }
-        }
-
-        private bool _isValidateProperty, _isValidateName;
-        public bool IsValidate => _isValidateProperty && _isValidateName;
-
-        public DelegateCommand AcceptPropertyNameCommand { get; }
-        public DelegateCommand<PropertyValue> DeletePropertyValueCommand { get; }
-
-        #endregion
-
-        public ShowPropertyViewModel()
-        {
-            _isValidateProperty = _isValidateName = true;
-            PropertyName = new PropertyName();
-            AcceptPropertyNameCommand = new DelegateCommand(AcceptPropertyNameAsync).ObservesCanExecute(() => IsValidate);
-            DeletePropertyValueCommand = new DelegateCommand<PropertyValue>(DeletePropertyValue);
-        }
-
-        private void PropertyValuesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (PropertyValue item in e.OldItems)
-                    {
-                        //Removed items
-                        item.PropertyChanged -= PropertyValueItemChanged;
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Add:
-                    foreach (PropertyValue item in e.NewItems)
-                    {
-                        //Added items
-                        item.PropertyChanged += PropertyValueItemChanged;
-                    }
-
-                    break;
-            }
-
-            RaisePropertyChanged("PropertyValuesCollection");
-        }
-
-        private void PropertyValueItemChanged(object sender, PropertyChangedEventArgs e)
-        {
-            ValidatePropertyValues((PropertyValue)sender);
-            RaisePropertyChanged("PropertyValuesCollection");
-        }
-
-        private void DeletePropertyValue(PropertyValue obj)
-        {
-            if (MessageBox.Show("Вы уверены что хотите удалить параметр?", "Удаление", MessageBoxButton.YesNo,
-                    MessageBoxImage.Warning, MessageBoxResult.Yes) == MessageBoxResult.Yes)
-                PropertyValuesCollection.Remove(obj);
+            toEntity.Id = fromEntity.Id;
+            toEntity.Title = fromEntity.Title;
+            toEntity.IdCategory = fromEntity.IdCategory;
+            toEntity.Category = fromEntity.Category;
         }
 
         private async void LoadAsync()
@@ -123,12 +51,14 @@ namespace PropertyModul.ViewModels
             try
             {
                 IRepository<PropertyValue> propertyValueRepository = new SqlPropertyValueRepository();
-                PropertyValuesCollection = new ObservableCollection<PropertyValue>(
+                EntitiesList = new ObservableCollection<PropertyValue>(
                     await propertyValueRepository.GetListAsync(
-                        PropertyValueSpecification.GetPropertyValuesByIdPropertyName(PropertyName.Id)));
-                foreach (var propertyValue in PropertyValuesCollection)
+                        PropertyValueSpecification.GetPropertyValuesByIdPropertyName(Entity.Id)));
+                if (EntitiesList != null)
+                    EntitiesList.CollectionChanged += PropertyValuesCollectionChanged;
+                foreach (var propertyValue in EntitiesList)
                 {
-                    propertyValue.PropertyChanged += PropertyValueItemChanged;
+                    propertyValue.PropertyChanged += (o, e) => RaisePropertyChanged("EntitiesList");
                 }
             }
             catch (Exception e)
@@ -137,35 +67,63 @@ namespace PropertyModul.ViewModels
             }
         }
 
-        public async void AcceptPropertyNameAsync()
+        private void PropertyValuesCollectionChanged(object sender, NotifyCollectionChangedEventArgs ea)
         {
+            switch (ea.Action)
+            {
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (PropertyValue item in ea.OldItems)
+                    {
+                        //Removed items
+                        item.PropertyChanged += (o, e) => RaisePropertyChanged("EntitiesList");
+                    }
+
+                    break;
+                case NotifyCollectionChangedAction.Add:
+                    foreach (PropertyValue item in ea.NewItems)
+                    {
+                        //Added items
+                        item.PropertyChanged += (o, e) => RaisePropertyChanged("EntitiesList");
+                    }
+
+                    break;
+            }
+
+            RaisePropertyChanged("EntitiesList");
+        }
+
+        private void AddEntity()
+        {
+            DialogService.ShowDialog("ShowPropertyValue", new DialogParameters { { "propertyName", Entity.Id } }, CallbackProperty);
+        }
+
+        private void CallbackProperty(IDialogResult dialogResult)
+        {
+            PropertyValue temp = dialogResult.Parameters.GetValue<PropertyValue>("entity");
+            if (temp == null) return;
+            EntitiesList.Add(temp);
+        }
+
+        private void SelectedEntity(PropertyValue obj)
+        {
+            DialogService.Show("ShowPropertyValue", new DialogParameters { { "entity", obj } }, null);
+        }
+
+        private async void DeleteEntity(PropertyValue obj)
+        {
+            if (obj == null) return;
+            if (MessageBox.Show("Удалить значение?", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
+                MessageBoxResult.Yes) return;
             try
             {
-                string message;
-                PropertyName temp = (PropertyName)PropertyName.Clone();
-                IRepository<PropertyName> propertyNameRepository = new SqlPropertyNameRepository();
-                if(temp.Id == 0)
-                {
-                    await propertyNameRepository.CreateAsync(temp);
-                    message = "Параметр добавлен";
-                }
-                else
-                {
-                    await propertyNameRepository.UpdateAsync(temp);
-                    message = "Параметр изменен";
-                }
-                MessageBox.Show(message, "Успех",
-                    MessageBoxButton.OK, MessageBoxImage.Information);
-                if (_oldPropertyName != null)
-                {
-                    _oldPropertyName.Title = temp.Title;
-                }
-                _propertyName.Id = temp.Id;
-                RaiseRequestClose(new DialogResult(ButtonResult.OK, new DialogParameters { { "property", _propertyName } }));
+                IRepository<PropertyValue> propertyValueRepository = new SqlPropertyValueRepository();
+                await propertyValueRepository.DeleteAsync(obj);
+                EntitiesList.Remove(obj);
+                MessageBox.Show("Значение удалено", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -173,96 +131,28 @@ namespace PropertyModul.ViewModels
         {
             try
             {
-                Title = "Изменить параметр";
-                _oldPropertyName = parameters.GetValue<PropertyName>("property");
-                _propertyName = (PropertyName)_oldPropertyName?.Clone();
-                if (_propertyName == null)
+                Backup = parameters.GetValue<PropertyName>("entity");
+                Entity = new PropertyNameViewModel();
+                if (Backup == null)
                 {
-                    Title = "Добавить параметр";
-                    PropertyName = new PropertyName { Category = parameters.GetValue<Category>("category")};
-                    PropertyName.IdCategory = PropertyName.Category?.Id;
+                    Title = "Добавить";
+                    Entity.Category = parameters.GetValue<Category>("category");
+                    Entity.IdCategory = Entity.Category?.Id;
+                    IsAdd = true;
                 }
                 else
                 {
+                    Title = "Изменить";
+                    IsAdd = false;
+                    PropertiesTransfer(Backup, Entity);
                     LoadAsync();
                 }
-
-                ValidateName();
-                RaisePropertyChanged("PropertyName");
-                RaisePropertyChanged("Name");
-                RaisePropertyChanged("PropertyValuesCollection");
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 RaiseRequestClose(new DialogResult(ButtonResult.Abort));
             }
-        }
-
-        #region INotifyDataErrorInfo members
-
-        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
-        private void RaiseErrorsChanged(string propertyName)
-        {
-            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
-        }
-
-        public System.Collections.IEnumerable GetErrors(string propertyName)
-        {
-            if (string.IsNullOrEmpty(propertyName)
-                || !_validationErrors.ContainsKey(propertyName))
-                return null;
-
-            return _validationErrors[propertyName];
-        }
-
-        public bool HasErrors => _validationErrors.Count > 0;
-
-        #endregion
-
-        private async void ValidateName()
-        {
-            _isValidateName = true;
-            const string propertyKey = "Name";
-            SqlPropertyNameRepository propertyNameRepository = new SqlPropertyNameRepository();
-            if (string.IsNullOrEmpty(Name))
-            {
-                _isValidateName = false;
-                _validationErrors[propertyKey] = new List<string> { "Наименование должно быть указано" };
-                RaiseErrorsChanged(propertyKey);
-            }
-            else if (!await propertyNameRepository.CheckProperty(PropertyName.Id, PropertyName.IdCategory,
-                PropertyName.Title))
-            {
-                _isValidateName = false;
-                _validationErrors[propertyKey] =
-                    new List<string> {"Параметр с таким названием уже есть в этой категории"};
-                RaiseErrorsChanged(propertyKey);
-            }
-            else if (_validationErrors.ContainsKey(propertyKey))
-            {
-                _validationErrors.Remove(propertyKey);
-                RaiseErrorsChanged(propertyKey);
-            }
-            RaisePropertyChanged("IsValidate");
-        }
-
-        private void ValidatePropertyValues(PropertyValue obj)
-        {
-            _isValidateProperty = true;
-            const string propertyKey = "PropertyValuesCollection";
-            if (PropertyValuesCollection.Count(p => p.Value == obj.Value) > 1)
-            {
-                _isValidateProperty = false;
-                _validationErrors[propertyKey] = new List<string> { "Параметр с таким названием уже есть в этой категории" };
-                RaiseErrorsChanged(propertyKey);
-            }
-            else if (_validationErrors.ContainsKey(propertyKey))
-            {
-                _validationErrors.Remove(propertyKey);
-                RaiseErrorsChanged(propertyKey);
-            }
-            RaisePropertyChanged("IsValidate");
         }
     }
 }

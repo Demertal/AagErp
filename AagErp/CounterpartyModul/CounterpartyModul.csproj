@@ -65,14 +65,11 @@
   <ItemGroup>
     <Compile Include="CounterpartyModul.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ViewModels\AddCounterpartyViewModel.cs" />
-    <Compile Include="ViewModels\CounterpartyInfoViewModel.cs" />
+    <Compile Include="ViewModels\CounterpartyViewModel.cs" />
+    <Compile Include="ViewModels\ShowCounterpartyViewModel.cs" />
     <Compile Include="ViewModels\ShowCounterpartiesViewModel.cs" />
-    <Compile Include="Views\AddCounterparty.xaml.cs">
-      <DependentUpon>AddCounterparty.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\CounterpartyInfo.xaml.cs">
-      <DependentUpon>CounterpartyInfo.xaml</DependentUpon>
+    <Compile Include="Views\ShowCounterparty.xaml.cs">
+      <DependentUpon>ShowCounterparty.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ShowCounterparties.xaml.cs">
       <DependentUpon>ShowCounterparties.xaml</DependentUpon>
@@ -83,11 +80,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Views\AddCounterparty.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\CounterpartyInfo.xaml">
+    <Page Include="Views\ShowCounterparty.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

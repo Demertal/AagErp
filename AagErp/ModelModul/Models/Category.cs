@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 
 namespace ModelModul.Models
 {
-    public class Category : ModelBase, ICloneable
+    public class Category : ModelBase
     {
         public Category()
         {
@@ -111,9 +111,9 @@ namespace ModelModul.Models
             }
         }
 
-        public bool IsValidate => !string.IsNullOrEmpty(Title);
+        public override bool IsValidate => !string.IsNullOrEmpty(Title);
 
-        public object Clone()
+        public override object Clone()
         {
             return new Category {Id = Id, Title = Title, IdParent = IdParent, Parent = (Category) Parent?.Clone()};
         }

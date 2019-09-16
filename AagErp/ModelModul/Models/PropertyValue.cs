@@ -1,11 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore.Internal;
-
 namespace ModelModul.Models
 {
-    public class PropertyValue : ModelBase, ICloneable
+    public class PropertyValue : ModelBase
     {
         public PropertyValue()
         {
@@ -24,7 +21,7 @@ namespace ModelModul.Models
         }
 
         private string _value;
-        public string Value
+        public virtual string Value
         {
             get => _value;
             set
@@ -94,8 +91,8 @@ namespace ModelModul.Models
             }
         }
 
-        public bool IsValidate => !string.IsNullOrEmpty(Value);
-        public object Clone()
+        public override bool IsValidate => !string.IsNullOrEmpty(Value);
+        public override object Clone()
         {
             return new PropertyValue{Id = Id, IdPropertyName = IdPropertyName, Value = Value};
         }

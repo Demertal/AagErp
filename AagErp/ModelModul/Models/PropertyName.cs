@@ -1,11 +1,10 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace ModelModul.Models
 {
-    public class PropertyName : ModelBase, ICloneable
+    public class PropertyName : ModelBase
     {
         public PropertyName()
         {
@@ -25,7 +24,7 @@ namespace ModelModul.Models
         }
 
         private string _title;
-        public string Title
+        public virtual string Title
         {
             get => _title;
             set
@@ -100,8 +99,8 @@ namespace ModelModul.Models
             }
         }
 
-        public bool IsValidate => !string.IsNullOrEmpty(Title);
-        public object Clone()
+        public override bool IsValidate => !string.IsNullOrEmpty(Title);
+        public override object Clone()
         {
             return new PropertyName
             {

@@ -1,13 +1,10 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Linq;
 
 namespace ModelModul.Models
 {
-    public class Product : ModelBase, ICloneable
+    public class Product : ModelBase
     {
         public Product()
         {
@@ -205,11 +202,7 @@ namespace ModelModul.Models
             get => _countsProductCollection;
             set
             {
-                if(CountsProductCollection != null)
-                    CountsProductCollection.CollectionChanged -= CountsProductCollectionChanged;
                 _countsProductCollection = value;
-                if (CountsProductCollection != null)
-                    CountsProductCollection.CollectionChanged += CountsProductCollectionChanged;
                 OnPropertyChanged("CountsProductCollection");
             }
         }
@@ -276,8 +269,6 @@ namespace ModelModul.Models
             set
             {
                 _equivalentCostFor≈xistingProductsCollection = value;
-                if(_equivalentCostFor≈xistingProductsCollection != null)
-                    _equivalentCostFor≈xistingProductsCollection.CollectionChanged += EquivalentCostFor≈xistingProductsCollectionOnCollectionChanged;
                 OnPropertyChanged("EquivalentCostFor≈xistingProductsCollection");
             }
         }
@@ -343,73 +334,11 @@ namespace ModelModul.Models
             }
         }
 
-        public bool IsValidate => !string.IsNullOrEmpty(Title) &&
+        public override bool IsValidate => !string.IsNullOrEmpty(Title) &&
                                   !string.IsNullOrEmpty(Barcode) &&
                                   IdUnitStorage != 0 && IdWarrantyPeriod != 0 && IdPriceGroup != 0 && IdCategory != 0;
 
-        #region CollectionChanged
-
-        private void CountsProductCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (CountsProduct item in e.OldItems)
-                    {
-                        //Removed items
-                        item.PropertyChanged -= CountsProductItemChanged;
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Add:
-                    foreach (CountsProduct item in e.NewItems)
-                    {
-                        //Added items
-                        item.PropertyChanged += CountsProductItemChanged;
-                    }
-
-                    break;
-            }
-
-            OnPropertyChanged("CountsProductCollection");
-        }
-
-        private void CountsProductItemChanged(object sender, PropertyChangedEventArgs e)
-        {
-            OnPropertyChanged("CountsProductCollection");
-        }
-
-        private void EquivalentCostFor≈xistingProductsCollectionOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (EquivalentCostFor≈xistingProduct item in e.OldItems)
-                    {
-                        //Removed items
-                        item.PropertyChanged -= EquivalentCostFor≈xistingProductItemPropertyChanged;
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Add:
-                    foreach (EquivalentCostFor≈xistingProduct item in e.NewItems)
-                    {
-                        //Added items
-                        item.PropertyChanged += EquivalentCostFor≈xistingProductItemPropertyChanged;
-                    }
-
-                    break;
-            }
-
-            OnPropertyChanged("EquivalentCostFor≈xistingProductsCollection");
-        }
-
-        private void EquivalentCostFor≈xistingProductItemPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            OnPropertyChanged("EquivalentCostFor≈xistingProductsCollection");
-        }
-
-        #endregion
-
-        public object Clone()
+        public override object Clone()
         {
             return new Product
             {

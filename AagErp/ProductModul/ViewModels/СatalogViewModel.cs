@@ -3,8 +3,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using CustomControlLibrary.MVVM;
 using ModelModul.Models;
+using ModelModul.MVVM;
 using ModelModul.Repositories;
 using ModelModul.Specifications;
 using Prism.Commands;
@@ -15,8 +15,6 @@ namespace ProductModul.ViewModels
 {
     public class СatalogViewModel : ViewModelBase, IDialogAware
     {
-        private readonly IDialogService _dialogService;
-
         #region Purchase
 
         private bool _isAddPurchase;
@@ -97,9 +95,8 @@ namespace ProductModul.ViewModels
         public bool IsEnabledAddProduct => SelectedCategory != null;
         #endregion
 
-        public СatalogViewModel(IDialogService dialogService)
+        public СatalogViewModel(IDialogService dialogService) : base(dialogService)
         {
-            _dialogService = dialogService;
             IsAddPurchase = false;
             SelectedProductCommand = new DelegateCommand<Product>(SelectedProduct);
             ResetCommand = new DelegateCommand(Reset);
@@ -179,7 +176,7 @@ namespace ProductModul.ViewModels
             if (IsAddPurchase)
                 RaiseRequestClose(new DialogResult(ButtonResult.OK, new DialogParameters { { "product", obj } }));
             else
-                _dialogService.Show("ShowProduct", new DialogParameters { { "product", obj } }, null);
+                DialogService.Show("ShowProduct", new DialogParameters { { "product", obj } }, null);
         }
 
         #endregion

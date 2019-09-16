@@ -1,12 +1,13 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Forms;
-using CustomControlLibrary.MVVM;
 using ModelModul;
+using ModelModul.MVVM;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Prism.Commands;
 using Prism.Regions;
+using Prism.Services.Dialogs;
 
 namespace AagClient.ViewModels
 {
@@ -36,7 +37,7 @@ namespace AagClient.ViewModels
 
         #endregion
 
-        public AuthorizationViewModel()
+        public AuthorizationViewModel(IDialogService dialogService) : base(dialogService)
         {
             EnterCommand = new DelegateCommand(Enter);
         }

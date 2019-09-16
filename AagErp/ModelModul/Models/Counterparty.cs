@@ -1,9 +1,8 @@
-using System;
 using System.Collections.Generic;
 
 namespace ModelModul.Models
 {
-    public class Counterparty : ModelBase, ICloneable
+    public class Counterparty : ModelBase
     {
         public Counterparty()
         {
@@ -23,7 +22,7 @@ namespace ModelModul.Models
         }
 
         private string _title;
-        public string Title
+        public virtual string Title
         {
             get => _title;
             set
@@ -78,8 +77,8 @@ namespace ModelModul.Models
             }
         }
 
-        private TypeCounterparties _whoIsIt;
-        public TypeCounterparties WhoIsIt
+        private ETypeCounterparties _whoIsIt;
+        public virtual ETypeCounterparties WhoIsIt
         {
             get => _whoIsIt;
             set
@@ -134,9 +133,38 @@ namespace ModelModul.Models
             }
         }
 
-        public bool IsValidate => !string.IsNullOrEmpty(Title) && IdPaymentType != 0;
+        public override string this[string columnName]
+        {
+            get
+            {
+                string error = string.Empty;
 
-        public object Clone()
+                switch (columnName)
+                {
+                    case "Title":
+                        if (string.IsNullOrEmpty(Title))
+                        {
+                            error = "Наименование должно быть указано";
+                        }
+
+                        break;
+
+                    case "IdPaymentType":
+                        if (IdPaymentType == 0)
+                        {
+                            error = "Тип оплаты должен быть указан";
+                        }
+
+                        break;
+                }
+
+                return error;
+            }
+        }
+
+        public override bool IsValidate => !string.IsNullOrEmpty(Title) && IdPaymentType != 0;
+
+        public override object Clone()
         {
             return new Counterparty
             {

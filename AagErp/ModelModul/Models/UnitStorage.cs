@@ -1,9 +1,8 @@
-using System;
 using System.Collections.Generic;
 
 namespace ModelModul.Models
 {
-    public class UnitStorage : ModelBase, ICloneable
+    public class UnitStorage : ModelBase
     {
         public UnitStorage()
         {
@@ -22,7 +21,7 @@ namespace ModelModul.Models
         }
 
         private string _title;
-        public string Title
+        public virtual string Title
         {
             get => _title;
             set
@@ -54,7 +53,30 @@ namespace ModelModul.Models
             }
         }
 
-        public object Clone()
+        public override string this[string columnName]
+        {
+            get
+            {
+                string error = string.Empty;
+
+                switch (columnName)
+                {
+                    case "Title":
+                        if (string.IsNullOrEmpty(Title))
+                        {
+                            error = "Наименование должно быть указано";
+                        }
+
+                        break;
+                }
+
+                return error;
+            }
+        }
+
+        public override bool IsValidate => !string.IsNullOrEmpty(Title);
+
+        public override object Clone()
         {
             return new UnitStorage {Id = Id, Title = Title, IsWeightGoods = IsWeightGoods};
         }

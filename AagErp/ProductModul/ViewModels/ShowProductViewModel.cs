@@ -3,9 +3,9 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
-using CustomControlLibrary.MVVM;
 using GenerationBarcodeLibrary;
 using ModelModul.Models;
+using ModelModul.MVVM;
 using ModelModul.Repositories;
 using ModelModul.Specifications;
 using Prism.Commands;
@@ -58,7 +58,6 @@ namespace ProductModul.ViewModels
         }
 
         private bool _isAdd;
-
         public bool IsAdd
         {
             get => _isAdd;

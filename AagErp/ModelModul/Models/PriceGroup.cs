@@ -21,7 +21,7 @@ namespace ModelModul.Models
         }
 
         private decimal _markup;
-        public decimal Markup
+        public virtual decimal Markup
         {
             get => _markup;
             set
@@ -40,6 +40,34 @@ namespace ModelModul.Models
                 _productsCollection = value;
                 OnPropertyChanged("ProductsCollection");
             }
+        }
+
+        public override string this[string columnName]
+        {
+            get
+            {
+                string error = string.Empty;
+
+                switch (columnName)
+                {
+                    case "Markup":
+                        if (Markup <= 0)
+                        {
+                            error = "Наценка должна быть больше 0";
+                        }
+
+                        break;
+                }
+
+                return error;
+            }
+        }
+
+        public override bool IsValidate => Markup > 0;
+
+        public override object Clone()
+        {
+            return new PriceGroup { Id = Id, Markup = Markup };
         }
     }
 }

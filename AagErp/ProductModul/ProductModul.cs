@@ -1,10 +1,10 @@
 ﻿using CategoryModul.ViewModels;
-using CustomControlLibrary.MVVM;
 using Prism.Ioc;
 using Prism.Modularity;
 using ProductModul.ViewModels;
 using ProductModul.Views;
 using AddCategory = CategoryModul.Views.AddCategory;
+using DialogWindow = ModelModul.MVVM.DialogWindow;
 using RenameCategory = CategoryModul.Views.RenameCategory;
 
 namespace ProductModul

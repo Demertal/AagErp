@@ -31,23 +31,35 @@ namespace ModelModul.Repositories
             if (skip != 0) query = query.Skip(skip).AsQueryable();
             if (take != -1) query = query.Take(take).AsQueryable();
             if (include != null) query = query.ToLoad(include).AsQueryable();
-            query =  from q in query
-                     from pwcap in Db.ProductWithCountAndPrice
-                            .InnerJoin(pwcap => q.Id == pwcap.Id)
-                     select new Product
-                     {
-                         Title = q.Title,
-                         Barcode = q.Barcode,
-                         Id = q.Id,
-                         Description = q.Description,
-                         IdCategory = q.IdCategory,
-                         IdPriceGroup = q.IdPriceGroup,
-                         IdUnitStorage = q.IdUnitStorage,
-                         IdWarrantyPeriod = q.IdWarrantyPeriod,
-                         KeepTrackSerialNumbers = q.KeepTrackSerialNumbers,
-                         Price = pwcap.Price,
-                         Count = pwcap.Count
-                     };
+            query = from q in query
+                from pwcap in Db.ProductWithCountAndPrice
+                    .InnerJoin(pwcap => q.Id == pwcap.Id)
+                select new Product
+                {
+                    Title = q.Title,
+                    Barcode = q.Barcode,
+                    Id = q.Id,
+                    Description = q.Description,
+                    IdCategory = q.IdCategory,
+                    IdPriceGroup = q.IdPriceGroup,
+                    IdUnitStorage = q.IdUnitStorage,
+                    IdWarrantyPeriod = q.IdWarrantyPeriod,
+                    KeepTrackSerialNumbers = q.KeepTrackSerialNumbers,
+                    Price = pwcap.Price,
+                    Count = pwcap.Count,
+                    Category = q.Category,
+                    PriceGroup = q.PriceGroup,
+                    UnitStorage = q.UnitStorage,
+                    VendorCode = q.VendorCode,
+                    WarrantyPeriod = q.WarrantyPeriod,
+                    PropertyProductsCollection = q.PropertyProductsCollection,
+                    PriceProductsCollection = q.PriceProductsCollection,
+                    MovementGoodsInfosCollection = q.MovementGoodsInfosCollection,
+                    InvoiceInfosCollection = q.InvoiceInfosCollection,
+                    SerialNumbersCollection = q.SerialNumbersCollection,
+                    CountsProductCollection = q.CountsProductCollection,
+                    EquivalentCostForЕxistingProductsCollection = q.EquivalentCostForЕxistingProductsCollection
+                };
             return await query.ToListAsyncLinqToDB();
         }
 

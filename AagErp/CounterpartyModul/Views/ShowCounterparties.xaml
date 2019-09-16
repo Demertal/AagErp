@@ -2,38 +2,66 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:interactivity="http://prismlibrary.com/"
+             xmlns:local="clr-namespace:CounterpartyModul.Views"
+             xmlns:customControlLibrary="clr-namespace:CustomControlLibrary;assembly=CustomControlLibrary"
              interactivity:ViewModelLocator.AutoWireViewModel="True"
              VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left">
 
     <UserControl.Resources>
-        <ContextMenu x:Key="DataGridMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-            <MenuItem Header="Добавить" Command="{Binding Path=AddCounterpartyCommand}"/>
-        </ContextMenu>
-
-        <ContextMenu  x:Key="RowMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-            <MenuItem Header="Удалить" CommandParameter="{Binding}"
-                      Command="{Binding DataContext.DeleteCounterpartyCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>
-            <MenuItem Header="Добавить"
-                      Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.AddCounterpartyCommand}"/>
-        </ContextMenu>
+        <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+            <Setter Property="customControlLibrary:DataGridRowSelectedBehavior.Command"
+                    Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.SelectedEntityCommand}" />
+        </Style>
     </UserControl.Resources>
 
-    <StackPanel>
-        <TextBlock Text="{Binding Path=WhoShowText}"/>
-        <StackPanel Orientation="Horizontal">
-            <DataGrid x:Name="CounterpartiesDataGrid" ItemsSource="{Binding Path=CounterpartiesList, UpdateSourceTrigger=PropertyChanged}" MaxWidth="400"
-                      IsSynchronizedWithCurrentItem="True" MinHeight="200" MaxHeight="500" SelectionMode="Single" ContextMenu="{StaticResource DataGridMenu}">
-                <DataGrid.RowStyle>
-                    <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
-                        <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
-                    </Style>
-                </DataGrid.RowStyle>
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Название" Binding="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" ElementStyle="{StaticResource {x:Type TextBlock}}"/>
-                </DataGrid.Columns>
-            </DataGrid>
-
-            <ContentControl interactivity:RegionManager.RegionName="CounterpartyInfo" interactivity:RegionManager.RegionContext="{Binding Path=SelectedItem, ElementName=CounterpartiesDataGrid}"/>
-        </StackPanel>
-    </StackPanel>
+    <Grid>
+        <DataGrid ItemsSource="{Binding Path=EntitiesList, UpdateSourceTrigger=PropertyChanged}"
+                    IsSynchronizedWithCurrentItem="True" MinHeight="200" MaxHeight="500" SelectionMode="Single" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Контрагент" Binding="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}"
+                                    ElementStyle="{StaticResource {x:Type TextBlock}}"/>
+                <DataGridTextColumn Header="Контактное лицо" Binding="{Binding Path=ContactPerson, UpdateSourceTrigger=PropertyChanged}"
+                                    ElementStyle="{StaticResource {x:Type TextBlock}}"/>
+                <DataGridTextColumn Header="Контактное телефон" Binding="{Binding Path=ContactPhone, UpdateSourceTrigger=PropertyChanged}"
+                                    ElementStyle="{StaticResource {x:Type TextBlock}}"/>
+                <DataGridTextColumn Header="Реквизит" Binding="{Binding Path=Props, UpdateSourceTrigger=PropertyChanged}"
+                                    ElementStyle="{StaticResource {x:Type TextBlock}}"/>
+                <DataGridTextColumn Header="Адрес" Binding="{Binding Path=Address, UpdateSourceTrigger=PropertyChanged}"
+                                    ElementStyle="{StaticResource {x:Type TextBlock}}"/>
+                <DataGridComboBoxColumn Header="Тип оплаы" DisplayMemberPath="Description" CanUserResize="False" SelectedValuePath="Id" IsReadOnly="True" Width="Auto"
+                                        SelectedValueBinding="{Binding IdPaymentType, RelativeSource={RelativeSource PreviousData}}">
+                    <DataGridComboBoxColumn.ElementStyle>
+                        <Style TargetType="{x:Type ComboBox}">
+                            <Setter Property="ItemsSource" Value="{Binding DataContext.PaymentTypesList, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowCounterparties}}}" />
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        </Style>
+                    </DataGridComboBoxColumn.ElementStyle>
+                </DataGridComboBoxColumn>
+                <DataGridComboBoxColumn Header="Тип" DisplayMemberPath="Description" CanUserResize="False" SelectedValuePath="Id" IsReadOnly="True" Width="Auto"
+                                        SelectedValueBinding="{Binding WhoIsIt, RelativeSource={RelativeSource PreviousData}}">
+                    <DataGridComboBoxColumn.ElementStyle>
+                        <Style TargetType="{x:Type ComboBox}">
+                            <Setter Property="ItemsSource" Value="{Binding DataContext.CounterpartyTypesList, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowCounterparties}}}" />
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        </Style>
+                    </DataGridComboBoxColumn.ElementStyle>
+                </DataGridComboBoxColumn>
+                <DataGridTemplateColumn Width="Auto">
+                    <DataGridTemplateColumn.HeaderTemplate>
+                        <DataTemplate>
+                            <Button Style="{DynamicResource AddButton}" Command="{Binding DataContext.AddEntityCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button CommandParameter="{Binding}" Style="{DynamicResource DeleteButton}"
+                                    Command="{Binding DataContext.DeleteEntityCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
 </UserControl>

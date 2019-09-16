@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ModelModul.Models
 {
-    public class SerialNumber : ModelBase, ICloneable
+    public class SerialNumber : ModelBase
     {
         public SerialNumber()
         {
@@ -120,7 +120,7 @@ namespace ModelModul.Models
             }
         }
 
-        public object Clone()
+        public override object Clone()
         {
             return new SerialNumber
             {

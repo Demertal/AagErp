@@ -2,11 +2,12 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
-using CustomControlLibrary.MVVM;
 using ModelModul.Models;
+using ModelModul.MVVM;
 using ModelModul.Repositories;
 using ModelModul.Specifications;
 using Prism.Regions;
+using Prism.Services.Dialogs;
 
 namespace CategoryModul.ViewModels
 {
@@ -20,7 +21,7 @@ namespace CategoryModul.ViewModels
             set => SetProperty(ref _categoriesList, value);
         }
 
-        public ShowCategoriesViewModel()
+        public ShowCategoriesViewModel(IDialogService dialogService) : base(dialogService)
         {
         }
 

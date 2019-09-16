@@ -4,9 +4,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using CustomControlLibrary.MVVM;
 using GongSolutions.Wpf.DragDrop;
 using ModelModul.Models;
+using ModelModul.MVVM;
 using ModelModul.Repositories;
 using ModelModul.Specifications;
 using Prism.Commands;
@@ -17,8 +17,6 @@ namespace ProductModul.ViewModels
 {
     class ShowNomenclatureViewModel : ViewModelBase, IDropTarget
     {
-        private readonly IDialogService _dialogService;
-
         private ObservableCollection<WarrantyPeriod> _warrantyPeriods = new ObservableCollection<WarrantyPeriod>();
         public ObservableCollection<WarrantyPeriod> WarrantyPeriodsList
         {
@@ -48,9 +46,8 @@ namespace ProductModul.ViewModels
         public DelegateCommand<Category> AddProductCommand { get; }
         public DelegateCommand<Product> SelectedProductCommand { get; }
 
-        public ShowNomenclatureViewModel(IDialogService dialogService)
+        public ShowNomenclatureViewModel(IDialogService dialogService) : base(dialogService)
         {
-            _dialogService = dialogService;
             AddCategoryCommand = new DelegateCommand<Category>(AddCategory);
             RenameCategoryCommand = new DelegateCommand<Category>(RenameCategory);
             DeleteCategoryCommand = new DelegateCommand<Category>(DeleteCategoryAsync);
@@ -88,12 +85,12 @@ namespace ProductModul.ViewModels
 
         private void AddCategory(Category obj)
         {
-            _dialogService.ShowDialog("AddCategory", new DialogParameters { { "id", obj?.Id } }, CallbackCategory);
+            DialogService.ShowDialog("AddCategory", new DialogParameters { { "id", obj?.Id } }, CallbackCategory);
         }
 
         private void RenameCategory(Category obj)
         {
-            _dialogService.ShowDialog("RenameCategory", new DialogParameters { { "category", obj } }, null);
+            DialogService.ShowDialog("RenameCategory", new DialogParameters { { "category", obj } }, null);
         }
 
         private void CallbackCategory(IDialogResult dialogResult)
@@ -148,7 +145,7 @@ namespace ProductModul.ViewModels
 
         private void AddProduct(Category obj)
         {
-            _dialogService.ShowDialog("ShowProduct", new DialogParameters { { "category", obj } }, CallbackProduct);
+            DialogService.ShowDialog("ShowProduct", new DialogParameters { { "category", obj } }, CallbackProduct);
         }
 
         private void CallbackProduct(IDialogResult dialogResult)
@@ -209,7 +206,7 @@ namespace ProductModul.ViewModels
 
         private void SelectedProduct(Product obj)
         {
-           _dialogService.Show("ShowProduct", new DialogParameters { { "product", obj } }, null);
+            DialogService.Show("ShowProduct", new DialogParameters { { "product", obj } }, null);
         }
 
         #region INavigationAware

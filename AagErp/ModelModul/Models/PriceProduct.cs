@@ -1,8 +1,6 @@
-using System;
-
 namespace ModelModul.Models
 {
-    public class PriceProduct : ModelBase, ICloneable
+    public class PriceProduct : ModelBase
     {
         private long _id;
         public long Id
@@ -88,7 +86,7 @@ namespace ModelModul.Models
             }
         }
 
-        public object Clone()
+        public override object Clone()
         {
             return new PriceProduct{Id = Id, IdProduct = IdProduct, IdRevaluation = IdRevaluation, Price = Price};
         }

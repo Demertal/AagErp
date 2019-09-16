@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace ModelModul.Models
 {
-    public class MovementGoods : ModelBase, ICloneable
+    public class MovementGoods : ModelBase
     {
         public MovementGoods()
         {
@@ -353,7 +353,7 @@ namespace ModelModul.Models
             }
         }
 
-        public object Clone()
+        public override object Clone()
         {
             return new MovementGoods
             {

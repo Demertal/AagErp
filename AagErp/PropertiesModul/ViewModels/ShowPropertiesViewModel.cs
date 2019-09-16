@@ -4,10 +4,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Navigation;
-using CustomControlLibrary.MVVM;
 using GongSolutions.Wpf.DragDrop;
 using ModelModul.Models;
+using ModelModul.MVVM;
 using ModelModul.Repositories;
 using ModelModul.Specifications;
 using Prism.Commands;
@@ -18,8 +17,6 @@ namespace PropertyModul.ViewModels
 {
     public class ShowPropertiesViewModel : ViewModelBase, IDropTarget
     {
-        private readonly IDialogService _dialogService;
-
         private ObservableCollection<Category> _categoriesList = new ObservableCollection<Category>();
         public ObservableCollection<Category> CategoriesList
         {
@@ -42,9 +39,8 @@ namespace PropertyModul.ViewModels
         public DelegateCommand<Category> AddPropertyNameCommand { get; }
         public DelegateCommand<PropertyName> SelectedPropertyNameCommand { get; }
 
-        public ShowPropertiesViewModel(IDialogService dialogService)
+        public ShowPropertiesViewModel(IDialogService dialogService) : base(dialogService)
         {
-            _dialogService = dialogService;
             AddCategoryCommand = new DelegateCommand<Category>(AddCategory);
             RenameCategoryCommand = new DelegateCommand<Category>(RenameCategory);
             DeleteCategoryCommand = new DelegateCommand<Category>(DeleteCategoryAsync);
@@ -78,12 +74,12 @@ namespace PropertyModul.ViewModels
 
         private void AddCategory(Category obj)
         {
-            _dialogService.ShowDialog("AddCategory", new DialogParameters { { "id", obj?.Id } }, CallbackCategory);
+            DialogService.ShowDialog("AddCategory", new DialogParameters { { "id", obj?.Id } }, CallbackCategory);
         }
 
         private void RenameCategory(Category obj)
         {
-            _dialogService.ShowDialog("RenameCategory", new DialogParameters { { "category", obj } }, null);
+            DialogService.ShowDialog("RenameCategory", new DialogParameters { { "category", obj } }, null);
         }
 
         private void CallbackCategory(IDialogResult dialogResult)
@@ -138,12 +134,12 @@ namespace PropertyModul.ViewModels
 
         private void AddPropertyNameAsync(Category obj)
         {
-            _dialogService.ShowDialog("ShowProperty", new DialogParameters { { "category", obj } }, CallbackProperty);
+            DialogService.ShowDialog("ShowProperty", new DialogParameters { { "category", obj } }, CallbackProperty);
         }
 
         private void CallbackProperty(IDialogResult dialogResult)
         {
-            PropertyName temp = dialogResult.Parameters.GetValue<PropertyName>("property");
+            PropertyName temp = dialogResult.Parameters.GetValue<PropertyName>("entity");
             if (temp == null) return;
             if(temp.IdCategory != null)
                 FindCategory(CategoriesList, temp.IdCategory.Value).PropertyNamesCollection.Add(temp);
@@ -204,7 +200,7 @@ namespace PropertyModul.ViewModels
 
         private void SelectedPropertyName(PropertyName obj)
         {
-            _dialogService.Show("ShowProperty", new DialogParameters { { "property", obj } }, null);
+            DialogService.Show("ShowProperty", new DialogParameters { { "entity", obj } }, null);
         }
 
         #region INavigationAware
@@ -224,6 +220,8 @@ namespace PropertyModul.ViewModels
         }
 
         #endregion
+
+        #region IDropTarget
 
         public void DragOver(IDropInfo dropInfo)
         {
@@ -349,5 +347,7 @@ namespace PropertyModul.ViewModels
                     break;
             }
         }
+
+        #endregion
     }
 }

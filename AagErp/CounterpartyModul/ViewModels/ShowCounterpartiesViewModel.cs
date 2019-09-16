@@ -1,155 +1,37 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Windows;
-using CustomControlLibrary.MVVM;
+﻿using System.Collections.ObjectModel;
 using ModelModul.Models;
+using ModelModul.MVVM;
 using ModelModul.Repositories;
-using ModelModul.Specifications;
-using Prism.Commands;
-using Prism.Regions;
 using Prism.Services.Dialogs;
 
 namespace CounterpartyModul.ViewModels
 {
-    public class ShowCounterpartiesViewModel: ViewModelBase
+    public class ShowCounterpartiesViewModel : EntitiesViewModelBase<Counterparty, SqlCounterpartyRepository>
     {
-        #region Properties
-
-        private readonly IRegionManager _regionManager;
-
-        private readonly IDialogService _dialogService;
-
-        private TypeCounterparties _type;
-
-        private TypeCounterparties Type
-        {
-            get => _type;
-            set
+        private readonly ObservableCollection<CounterpartyType> _counterpartyTypesList =
+            new ObservableCollection<CounterpartyType>
             {
-                SetProperty(ref _type, value);
-                RaisePropertyChanged("WhoShowText");
-                LoadAsync();
-            }
-        }
+                new CounterpartyType(ETypeCounterparties.Buyers, "Покупатель"),
+                new CounterpartyType(ETypeCounterparties.Suppliers, "Поставщик")
+            };
+        public ObservableCollection<CounterpartyType> CounterpartyTypesList => _counterpartyTypesList;
 
-        private ObservableCollection<Counterparty> _counterpartiesList = new ObservableCollection<Counterparty>();
-        public ObservableCollection<Counterparty> CounterpartiesList
+        private ObservableCollection<PaymentType> _paymentTypesList = new ObservableCollection<PaymentType>();
+        public ObservableCollection<PaymentType> PaymentTypesList
         {
-            get => _counterpartiesList;
-            set
-            {
-                if (_counterpartiesList != null)
-                    _counterpartiesList.CollectionChanged -= CounterpartiesListOnCollectionChanged;
-                SetProperty(ref _counterpartiesList, value);
-                if (_counterpartiesList != null)
-                    _counterpartiesList.CollectionChanged += CounterpartiesListOnCollectionChanged;
-            }
+            get => _paymentTypesList;
+            set => SetProperty(ref _paymentTypesList, value);
         }
 
-
-        #region CollectionChanged
-
-        private void CounterpartiesListOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        public ShowCounterpartiesViewModel(IDialogService dialogService) : base(dialogService, "ShowCounterparty", "Удалить контрагента?", "Контрагент удален.")
         {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (Counterparty item in e.OldItems)
-                    {
-                        //Removed items
-                        item.PropertyChanged -= CountsProductItemChanged;
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Add:
-                    foreach (Counterparty item in e.NewItems)
-                    {
-                        //Added items
-                        item.PropertyChanged += CountsProductItemChanged;
-                    }
-
-                    break;
-            }
-
-            RaisePropertyChanged("CounterpartiesList");
+            LoadAsync();
         }
 
-        private void CountsProductItemChanged(object sender, PropertyChangedEventArgs e)
+        public async void LoadAsync()
         {
-            RaisePropertyChanged("CounterpartiesList");
+            IRepository<PaymentType> paymentTypeRepository = new SqlPaymentTypeRepository();
+            PaymentTypesList = new ObservableCollection<PaymentType>(await paymentTypeRepository.GetListAsync());
         }
-
-        #endregion
-
-        public string WhoShowText => Type == TypeCounterparties.Suppliers ? "Поставщики" : "Покупатели";
-
-        public DelegateCommand<Counterparty> DeleteCounterpartyCommand { get; }
-        public DelegateCommand AddCounterpartyCommand { get; }
-        #endregion
-
-        public ShowCounterpartiesViewModel(IRegionManager regionManager, IDialogService dialogService)
-        {
-            _regionManager = regionManager;
-            _dialogService = dialogService;
-            DeleteCounterpartyCommand = new DelegateCommand<Counterparty>(DeletCounterpartyAsync);
-            AddCounterpartyCommand = new DelegateCommand(AddCounterparty);
-        }
-
-        private void AddCounterparty()
-        {
-            _dialogService.ShowDialog("AddCounterparty", new DialogParameters { { "type", Type } }, result => LoadAsync());
-        }
-
-        private async void DeletCounterpartyAsync(Counterparty obj)
-        {
-            if (obj == null) return;
-            if (MessageBox.Show("Удалить контрагента?", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
-                MessageBoxResult.Yes) return;
-            try
-            {
-                IRepository<Counterparty> counterpartyRepository = new SqlCounterpartyRepository();
-                await counterpartyRepository.DeleteAsync(obj);
-                LoadAsync();
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private async void LoadAsync()
-        {
-            try
-            {
-                IRepository<Counterparty> counterpartyRepository = new SqlCounterpartyRepository();
-                CounterpartiesList = new ObservableCollection<Counterparty>(
-                    await counterpartyRepository.GetListAsync(
-                        CounterpartySpecification.GetCounterpartiesByType(_type)));
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        #region INavigationAware
-
-        public override void OnNavigatedTo(NavigationContext navigationContext)
-        {
-            Type = (TypeCounterparties)navigationContext.Parameters["type"];
-        }
-
-        public override bool IsNavigationTarget(NavigationContext navigationContext)
-        {
-            return false;
-        }
-
-        public override void OnNavigatedFrom(NavigationContext navigationContext)
-        {
-            _regionManager.Regions.Remove("CounterpartyInfo");
-        }
-
-        #endregion
     }
 }

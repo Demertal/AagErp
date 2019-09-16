@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace ModelModul.Models
 {
-    public class MovementGoodsInfo : ModelBase, ICloneable
+    public class MovementGoodsInfo : ModelBase
     {
         private long _id;
         public long Id
@@ -133,7 +133,7 @@ namespace ModelModul.Models
             }
         }
 
-        public object Clone()
+        public override object Clone()
         {
             return new MovementGoodsInfo
             {
