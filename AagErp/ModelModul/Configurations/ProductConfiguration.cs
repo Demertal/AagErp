@@ -16,7 +16,7 @@ namespace ModelModul.Configurations
             builder.Property(p => p.Description).HasColumnType("nvarchar(max)");
             builder.Ignore(p => p.CountsProductCollection);
             builder.Ignore(p => p.IsValidate);
-            builder.Ignore(p => p.EquivalentCostForЕxistingProductsCollection);
+            builder.Ignore(p => p.EquivalentCostForExistingProductsCollection);
             builder.Ignore(p => p.Count);
             builder.Ignore(p => p.Price);
             builder.Ignore(p => p.Error);

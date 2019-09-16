@@ -90,59 +90,60 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TreeViewItem}">
-                   <Grid>
-                       <Grid.ColumnDefinitions>
-                           <ColumnDefinition MinWidth="19" Width="Auto" />
-                           <ColumnDefinition Width="Auto" />
-                           <ColumnDefinition Width="*" />
-                       </Grid.ColumnDefinitions>
-                       <Grid.RowDefinitions>
-                           <RowDefinition Height="Auto" />
-                           <RowDefinition />
-                       </Grid.RowDefinitions>
-                       <VisualStateManager.VisualStateGroups>
-                           <VisualStateGroup x:Name="SelectionStates">
-                               <VisualState x:Name="Selected">
-                                   <Storyboard>
-                                       <ColorAnimationUsingKeyFrames Storyboard.TargetName="Bd" 
-                                                                     Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
-                                           <EasingColorKeyFrame KeyTime="0" Value="{DynamicResource SelectedBackgroundColor}" />
-                                       </ColorAnimationUsingKeyFrames>
-                                   </Storyboard>
-                               </VisualState>
-                               <VisualState x:Name="Unselected" />
-                               <VisualState x:Name="SelectedInactive">
-                                   <Storyboard>
-                                       <ColorAnimationUsingKeyFrames Storyboard.TargetName="Bd" 
-                                                                     Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
-                                           <EasingColorKeyFrame KeyTime="0" Value="{DynamicResource SelectedUnfocusedColor}" />
-                                       </ColorAnimationUsingKeyFrames>
-                                   </Storyboard>
-                               </VisualState>
-                           </VisualStateGroup>
-                           <VisualStateGroup x:Name="ExpansionStates">
-                               <VisualState x:Name="Expanded">
-                                   <Storyboard>
-                                       <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ItemsHost"
-                                                                      Storyboard.TargetProperty="(UIElement.Visibility)">
-                                           <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}" />
-                                       </ObjectAnimationUsingKeyFrames>
-                                   </Storyboard>
-                               </VisualState>
-                               <VisualState x:Name="Collapsed" />
-                           </VisualStateGroup>
-                       </VisualStateManager.VisualStateGroups>
-                       <Border x:Name="Bd" BorderThickness="1" CornerRadius="10"  Grid.Column="0" Grid.ColumnSpan="3" Background="{TemplateBinding Background}" Margin="0,2,0,2">
-                           <Border.BorderBrush >
+                    <Grid>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="SelectionStates">
+                                <VisualState x:Name="Selected">
+                                    <Storyboard>
+                                        <ColorAnimationUsingKeyFrames Storyboard.TargetName="Bd" 
+                                                                             Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
+                                            <EasingColorKeyFrame KeyTime="0" Value="{DynamicResource SelectedBackgroundColor}" />
+                                        </ColorAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Unselected" />
+                                <VisualState x:Name="SelectedInactive">
+                                    <Storyboard>
+                                        <ColorAnimationUsingKeyFrames Storyboard.TargetName="Bd" 
+                                                                             Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
+                                            <EasingColorKeyFrame KeyTime="0" Value="{DynamicResource SelectedUnfocusedColor}" />
+                                        </ColorAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="ExpansionStates">
+                                <VisualState x:Name="Expanded">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ItemsHost"
+                                                                              Storyboard.TargetProperty="(UIElement.Visibility)">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Collapsed" />
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <Border x:Name="Bd" BorderThickness="1" CornerRadius="10" Background="{TemplateBinding Background}" Margin="0,2,0,2" Padding="2">
+                            <Border.BorderBrush >
                                 <SolidColorBrush Color="{DynamicResource BorderColor}"/>
-                           </Border.BorderBrush>
-                            <StackPanel Orientation="Horizontal">
-                               <ToggleButton x:Name="Expander" Style="{StaticResource ExpandCollapseToggleStyle}" ClickMode="Press" IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" Margin="2,0,0,0"/>
-                               <ContentPresenter x:Name="PART_Header" ContentSource="Header" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
-                            </StackPanel>
-                       </Border>
-                       <ItemsPresenter x:Name="ItemsHost" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Visibility="Collapsed" />
-                   </Grid>
+                            </Border.BorderBrush>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition MinWidth="19" Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <ToggleButton x:Name="Expander" Style="{StaticResource ExpandCollapseToggleStyle}" ClickMode="Press" Grid.Column="0" Grid.Row="0"
+                                              IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" Margin="2,0,0,0" HorizontalAlignment="Stretch"/>
+                                <ContentPresenter x:Name="PART_Header" ContentSource="Header" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"  Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"/>
+                                <ItemsPresenter x:Name="ItemsHost" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Visibility="Collapsed" />
+                            </Grid>
+                        </Border>
+                    </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="HasItems" Value="false">
                             <Setter TargetName="Expander" Property="Visibility" Value="Hidden" />

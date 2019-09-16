@@ -262,14 +262,14 @@ namespace ModelModul.Models
             }
         }
 
-        private ObservableCollection<EquivalentCostFor≈xistingProduct> _equivalentCostFor≈xistingProductsCollection;
-        public virtual ObservableCollection<EquivalentCostFor≈xistingProduct> EquivalentCostFor≈xistingProductsCollection
+        private ObservableCollection<EquivalentCostForExistingProduct> _equivalentCostForExistingProductsCollection;
+        public virtual ObservableCollection<EquivalentCostForExistingProduct> EquivalentCostForExistingProductsCollection
         {
-            get => _equivalentCostFor≈xistingProductsCollection;
+            get => _equivalentCostForExistingProductsCollection;
             set
             {
-                _equivalentCostFor≈xistingProductsCollection = value;
-                OnPropertyChanged("EquivalentCostFor≈xistingProductsCollection");
+                _equivalentCostForExistingProductsCollection = value;
+                OnPropertyChanged("EquivalentCostForExistingProductsCollection");
             }
         }
 

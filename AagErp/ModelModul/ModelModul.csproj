@@ -193,7 +193,7 @@
     <Compile Include="CountValidationRule.cs" />
     <Compile Include="Models\Counterparty.cs" />
     <Compile Include="Models\CountsProduct.cs" />
-    <Compile Include="Models\EquivalentCostForЕxistingProduct.cs" />
+    <Compile Include="Models\EquivalentCostForExistingProduct.cs" />
     <Compile Include="Models\MoneyTransferType.cs" />
     <Compile Include="Models\MovmentGoodType.cs" />
     <Compile Include="Models\PaymentType.cs" />

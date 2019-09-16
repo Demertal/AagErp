@@ -1,6 +1,6 @@
 ﻿namespace ModelModul.Models
 {
-    public class EquivalentCostForЕxistingProduct
+    public class EquivalentCostForExistingProduct
     {
         public decimal Count { get; set; }
 

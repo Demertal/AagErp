@@ -36,13 +36,14 @@ namespace ModelModul.Models
         }
 
         private decimal _price;
-        public decimal Price
+        public virtual decimal Price
         {
             get => _price;
             set
             {
                 _price = value;
                 OnPropertyChanged("Price");
+                OnPropertyChanged("IsValidate");
             }
         }
 
@@ -85,6 +86,8 @@ namespace ModelModul.Models
                 return error;
             }
         }
+
+        public override bool IsValidate => Price > 0;
 
         public override object Clone()
         {

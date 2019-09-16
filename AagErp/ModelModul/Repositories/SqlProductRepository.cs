@@ -58,7 +58,7 @@ namespace ModelModul.Repositories
                     InvoiceInfosCollection = q.InvoiceInfosCollection,
                     SerialNumbersCollection = q.SerialNumbersCollection,
                     CountsProductCollection = q.CountsProductCollection,
-                    EquivalentCostForЕxistingProductsCollection = q.EquivalentCostForЕxistingProductsCollection
+                    EquivalentCostForExistingProductsCollection = q.EquivalentCostForExistingProductsCollection
                 };
             return await query.ToListAsyncLinqToDB();
         }
@@ -126,7 +126,7 @@ namespace ModelModul.Repositories
             return await result.ToListAsyncLinqToDB();
         }
 
-        public async Task<IEnumerable<EquivalentCostForЕxistingProduct>> GetEquivalentCostsForЕxistingProduct(long itemId)
+        public async Task<IEnumerable<EquivalentCostForExistingProduct>> GetEquivalentCostsForЕxistingProduct(long itemId)
         {
             return await EntityFrameworkQueryableExtensions.ToListAsync(Db.EquivalentCostForЕxistingProducts
                     .FromSql("select * from dbo.getEquivalentCostForЕxistingProduct ({0})", itemId).Include(c => c.EquivalentCurrency).AsNoTracking());
