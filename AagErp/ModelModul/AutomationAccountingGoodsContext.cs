@@ -7,7 +7,7 @@ namespace ModelModul
 {
     public class AutomationAccountingGoodsContext : DbContext
     {
-        private readonly string _connectionString;
+        //private readonly string _connectionString;
 
         public AutomationAccountingGoodsContext()
         {
@@ -16,12 +16,12 @@ namespace ModelModul
 
         public AutomationAccountingGoodsContext(string connectionString)
         {
-            _connectionString = connectionString;
+            //_connectionString = connectionString;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(_connectionString);
+            //optionsBuilder.UseSqlServer(_connectionString);
         }
 
         public virtual DbSet<Category> Categories { get; set; }
