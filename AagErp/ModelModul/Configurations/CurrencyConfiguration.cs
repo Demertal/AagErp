@@ -12,7 +12,7 @@ namespace ModelModul.Configurations
             builder.HasKey(c => c.Id);
             builder.Property(c => c.Title).IsRequired().HasMaxLength(10);
             builder.Property(c => c.Cost).HasColumnType("money");
-            builder.Ignore(c => c.Error);
+            builder.Ignore(c => c.ValidationRules);
             builder.HasMany(c => c.MovementGoodsCollection).WithOne(m => m.Currency).HasForeignKey(m => m.IdCurrency);
             builder.HasMany(c => c.MovementGoodsEquivalentCollection).WithOne(m => m.EquivalentCurrency).HasForeignKey(m => m.IdEquivalentCurrency);
         }

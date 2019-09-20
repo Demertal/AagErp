@@ -1,12 +1,21 @@
 using System.Collections.Generic;
 using System.Linq;
+using ModelModul.Specifications.BasisSpecifications;
+
 namespace ModelModul.Models
 {
-    public class PropertyValue : ModelBase
+    public class PropertyValue : ModelBase<PropertyValue>
     {
         public PropertyValue()
         {
             PropertyProductsCollection = new HashSet<PropertyProduct>();
+            ValidationRules = new ExpressionSpecification<PropertyValue>(
+                new ExpressionSpecification<PropertyValue>(p => !string.IsNullOrEmpty(p.Value))
+                    .And(new ExpressionSpecification<PropertyValue>(
+                        new ExpressionSpecification<PropertyValue>(p => p.PropertyName == null)
+                            .Or(new ExpressionSpecification<PropertyValue>(p =>
+                                PropertyName.PropertyValuesCollection.Any(pp => pp.Value == p.Value))).IsSatisfiedBy()))
+                    .And(new ExpressionSpecification<PropertyValue>(p => !p.HasErrors)).IsSatisfiedBy());
         }
 
         private int _id;
@@ -28,6 +37,7 @@ namespace ModelModul.Models
             {
                 _value = value;
                 OnPropertyChanged("Value");
+                OnPropertyChanged("IsValid");
             }
         }
 
@@ -91,10 +101,11 @@ namespace ModelModul.Models
             }
         }
 
-        public override bool IsValidate => !string.IsNullOrEmpty(Value);
         public override object Clone()
         {
             return new PropertyValue{Id = Id, IdPropertyName = IdPropertyName, Value = Value};
         }
+
+        public override bool IsValid => ValidationRules.IsSatisfiedBy().Compile().Invoke(this);
     }
 }

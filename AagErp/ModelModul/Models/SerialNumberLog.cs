@@ -2,7 +2,7 @@
 
 namespace ModelModul.Models
 {
-    public class SerialNumberLog : ModelBase
+    public class SerialNumberLog : ModelBase<SerialNumberLog>
     {
         private long _id;
         public long Id
@@ -58,5 +58,7 @@ namespace ModelModul.Models
                 OnPropertyChanged("SerialNumber");
             }
         }
+
+        public override bool IsValid => true;
     }
 }

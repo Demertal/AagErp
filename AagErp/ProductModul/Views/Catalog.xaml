@@ -14,9 +14,11 @@
 
     <UserControl.Resources>
         <converters:ConvertCount x:Key="ConvertCount"/>
-        <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
-            <Setter Property="customcontrollibrary:DataGridRowSelectedBehavior.Command"
+        <Style x:Key="DataGridRowStyle" TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+            <Setter Property="customcontrollibrary:MouseDoubleClickCommandBehavior.Command"
                     Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.SelectedProductCommand}" />
+            <Setter Property="customcontrollibrary:MouseDoubleClickCommandBehavior.CommandParameter"
+                    Value="{Binding}" />
         </Style>
     </UserControl.Resources>
 
@@ -37,7 +39,7 @@
                               HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="0" Grid.Row="1"/>
 
         <customcontrollibrary:ExtendedDataGrid x:Name="ProductData" ItemsSource="{Binding ProductsList, UpdateSourceTrigger=PropertyChanged}"
-                          MinHeight="200" MaxHeight="500" SelectionMode="Single" Grid.Column="1" Grid.Row="1">
+                          MinHeight="200" MaxHeight="500" SelectionMode="Single" Grid.Column="1" Grid.Row="1" RowStyle="{StaticResource DataGridRowStyle}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Наименование" Binding="{Binding Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="*">
                     <DataGridTextColumn.ElementStyle>

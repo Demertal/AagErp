@@ -1,4 +1,8 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
 using ModelModul.Models;
 using ModelModul.MVVM;
 using ModelModul.Repositories;
@@ -25,13 +29,41 @@ namespace CounterpartyModul.ViewModels
 
         public ShowCounterpartiesViewModel(IDialogService dialogService) : base(dialogService, "ShowCounterparty", "Удалить контрагента?", "Контрагент удален.")
         {
-            LoadAsync();
         }
 
-        public async void LoadAsync()
+        protected override async void LoadAsync()
         {
-            IRepository<PaymentType> paymentTypeRepository = new SqlPaymentTypeRepository();
-            PaymentTypesList = new ObservableCollection<PaymentType>(await paymentTypeRepository.GetListAsync());
+            CancelTokenSource?.Cancel();
+            CancellationTokenSource newCts = new CancellationTokenSource();
+            CancelTokenSource = newCts;
+
+            try
+            {
+                IRepository<Counterparty> counterpartyRepository = new SqlCounterpartyRepository();
+                IRepository<PaymentType> paymentTypeRepository = new SqlPaymentTypeRepository();
+
+                var counterpartyLoad = Task.Run(() => counterpartyRepository.GetListAsync(CancelTokenSource.Token), CancelTokenSource.Token);
+                var paymentTypeLoad = Task.Run(() => paymentTypeRepository.GetListAsync(CancelTokenSource.Token), CancelTokenSource.Token);
+
+                await Task.WhenAll(counterpartyLoad, paymentTypeLoad);
+
+                EntitiesList = new ObservableCollection<Counterparty>(counterpartyLoad.Result);
+                PaymentTypesList = new ObservableCollection<PaymentType>(paymentTypeLoad.Result);
+
+                if (EntitiesList != null)
+                    foreach (var entity in EntitiesList)
+                    {
+                        entity.PropertyChanged += (o, e) => RaisePropertyChanged("EntitiesList");
+                    }
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            if (CancelTokenSource == newCts)
+                CancelTokenSource = null;
         }
     }
 }

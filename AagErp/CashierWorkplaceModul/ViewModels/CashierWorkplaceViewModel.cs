@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -27,6 +28,7 @@ namespace CashierWorkplaceModul.ViewModels
         private int _errorPostCount = 0;
         private string _barcode;
         private string _serialNumber;
+        private CancellationTokenSource _cancelTokenSource;
 
         private MovementGoods _salesGood = new MovementGoods();
         public MovementGoods SalesGood
@@ -65,12 +67,16 @@ namespace CashierWorkplaceModul.ViewModels
             }
         }
 
+        #endregion
+
+        #region Command
 
         public DelegateCommand AddProductCommand { get; }
         public DelegateCommand PostCommand { get; }
         public DelegateCommand<Collection<object>> DeleteProductCommand { get; }
         public DelegateCommand<KeyEventArgs> ListenKeyboardCommand { get; }
         public DelegateCommand<KeyEventArgs> ListenKeyboardSerialNumbersCommand { get; }
+
         #endregion
 
         public CashierWorkplaceViewModel(IDialogService dialogService) : base(dialogService)
@@ -176,16 +182,23 @@ if (sender is MovementGoodsInfo movement && e.PropertyName == "Count")
 
         private async void Load()
         {
+            _cancelTokenSource?.Cancel();
+            CancellationTokenSource newCts = new CancellationTokenSource();
+            _cancelTokenSource = newCts;
+
             try
             {
                 IRepository<Store> storeRepository = new SqlStoreRepository();
 
-                StoresList = new ObservableCollection<Store>(await storeRepository.GetListAsync());
+                StoresList = new ObservableCollection<Store>(await storeRepository.GetListAsync(newCts.Token));
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+
+            if (_cancelTokenSource == newCts)
+                _cancelTokenSource = null;
         }
 
         private async void NewMovementGood()
@@ -194,9 +207,17 @@ if (sender is MovementGoodsInfo movement && e.PropertyName == "Count")
             SalesGood = new MovementGoods { MovementGoodsInfosCollection = new ObservableCollection<MovementGoodsInfo>() };
             SalesGood.PropertyChanged += (o, e) => RaisePropertyChanged("IsValidate");
 
+            _cancelTokenSource?.Cancel();
+            CancellationTokenSource newCts = new CancellationTokenSource();
+            _cancelTokenSource = newCts;
+
             IRepository<MovmentGoodType> movmentGoodTypeRepository = new SqlMovmentGoodTypeRepository();
-            _salesGood.MovmentGoodType = await movmentGoodTypeRepository.GetItemAsync(MovmentGoodTypeSpecification.GetMovmentGoodTypeByCode("sale"));
+            _salesGood.MovmentGoodType = await movmentGoodTypeRepository.GetItemAsync(_cancelTokenSource.Token,
+                MovmentGoodTypeSpecification.GetMovmentGoodTypeByCode("sale"));
             _salesGood.IdType = _salesGood.MovmentGoodType.Id;
+
+            if (_cancelTokenSource == newCts)
+                _cancelTokenSource = null;
 
             SalesGoodsList.CollectionChanged += OnSalesGoodsListCollectionChanged;
             RaisePropertyChanged("SalesGoodsList");

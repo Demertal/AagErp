@@ -1,16 +1,20 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using ModelModul.Specifications.BasisSpecifications;
 
 namespace ModelModul.Models
 {
-    public class Category : ModelBase
+    public class Category : ModelBase<Category>
     {
         public Category()
         {
             ChildCategoriesCollection = new ObservableCollection<Category>();
             ProductsCollection = new ObservableCollection<Product>();
             PropertyNamesCollection = new ObservableCollection<PropertyName>();
+            ValidationRules = new ExpressionSpecification<Category>(
+                new ExpressionSpecification<Category>(c => !string.IsNullOrEmpty(c.Title))
+                    .And(new ExpressionSpecification<Category>(c => !c.HasErrors)).IsSatisfiedBy());
         }
 
         private int _id;
@@ -25,13 +29,14 @@ namespace ModelModul.Models
         }
 
         private string _title;
-        public string Title
+        public virtual string Title
         {
             get => _title;
             set
             {
                 _title = value;
                 OnPropertyChanged("Title");
+                OnPropertyChanged("IsValid");
             }
         }
 
@@ -111,11 +116,11 @@ namespace ModelModul.Models
             }
         }
 
-        public override bool IsValidate => !string.IsNullOrEmpty(Title);
-
         public override object Clone()
         {
-            return new Category {Id = Id, Title = Title, IdParent = IdParent, Parent = (Category) Parent?.Clone()};
+            return new Category {Id = Id, Title = Title, IdParent = IdParent};
         }
+
+        public override bool IsValid => ValidationRules.IsSatisfiedBy().Compile().Invoke(this);
     }
 }

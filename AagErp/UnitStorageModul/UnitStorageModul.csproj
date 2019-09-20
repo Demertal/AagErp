@@ -67,7 +67,6 @@
     <Compile Include="UnitStorageModul.cs" />
     <Compile Include="ViewModels\ShowUnitStoragesViewModel.cs" />
     <Compile Include="ViewModels\ShowUnitStorageViewModel.cs" />
-    <Compile Include="ViewModels\UnitStorageViewModel.cs" />
     <Compile Include="Views\ShowUnitStorage.xaml.cs">
       <DependentUpon>ShowUnitStorage.xaml</DependentUpon>
     </Compile>

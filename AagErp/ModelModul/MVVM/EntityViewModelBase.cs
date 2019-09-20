@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Windows;
 using ModelModul.Models;
 using ModelModul.Repositories;
@@ -8,20 +9,20 @@ using Prism.Services.Dialogs;
 namespace ModelModul.MVVM
 {
     public abstract class EntityViewModelBase<TEntity, TEntityViewModel, TRepository> : DialogViewModelBase, IEntityViewModelBase<TEntity, TEntityViewModel, TRepository>
-        where TEntity : ModelBase
+        where TEntity : ModelBase<TEntity>
         where TEntityViewModel : TEntity, new()
         where TRepository : IRepository<TEntity>, new()
 
     {
         #region Properties
 
-        protected TEntity Backup;
-
-        private TEntityViewModel _entity = new TEntityViewModel();
-
         private readonly string _messageAdd;
         private readonly string _messageUpdate;
+        
+        protected TEntity Backup;
+        protected CancellationTokenSource CancelTokenSource;
 
+        private TEntityViewModel _entity = new TEntityViewModel();
         public TEntityViewModel Entity
         {
             get => _entity;
@@ -40,6 +41,11 @@ namespace ModelModul.MVVM
             set => SetProperty(ref _isAdd, value);
         }
 
+
+        #endregion
+
+        #region Command
+
         public DelegateCommand AcceptCommand { get; }
 
         #endregion
@@ -48,7 +54,7 @@ namespace ModelModul.MVVM
         {
             _messageAdd = messageAdd;
             _messageUpdate = messageUpdate;
-            AcceptCommand = new DelegateCommand(AcceptAsync).ObservesCanExecute(() => Entity.IsValidate);
+            AcceptCommand = new DelegateCommand(AcceptAsync).ObservesCanExecute(() => Entity.IsValid);
         }
 
         private async void AcceptAsync()

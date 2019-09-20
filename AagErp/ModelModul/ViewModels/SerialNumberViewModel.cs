@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
+using System.Threading;
+using System.Windows;
 using ModelModul.Models;
 using ModelModul.Repositories;
 
 namespace ModelModul.ViewModels
 {
-    public class SerialNumberViewModel : SerialNumber, INotifyDataErrorInfo
+    public class SerialNumberViewModel : SerialNumber
     {
-        private readonly Dictionary<string, ICollection<string>>
-            _validationErrors = new Dictionary<string, ICollection<string>>();
+        #region Properties
+
+        private CancellationTokenSource _cancelTokenSource;
 
         private int? _idStore;
         public int? IdStore
@@ -35,66 +37,61 @@ namespace ModelModul.ViewModels
             }
         }
 
-        #region INotifyDataErrorInfo members
-
-        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
-        private void RaiseErrorsChanged(string propertyName)
-        {
-            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
-        }
-
-        public System.Collections.IEnumerable GetErrors(string propertyName)
-        {
-            if (string.IsNullOrEmpty(propertyName)
-                || !_validationErrors.ContainsKey(propertyName))
-                return null;
-
-            return _validationErrors[propertyName];
-        }
-
-        public bool HasErrors => _validationErrors.Count > 0;
-
         #endregion
 
         private async void ValidateValue()
         {
+            _cancelTokenSource?.Cancel();
+            CancellationTokenSource newCts = new CancellationTokenSource();
+            _cancelTokenSource = newCts;
+
             const string propertyKey = "Value";
-            IRepository<SerialNumber> serialNumberRepository = new SqlSerialNumberRepository();
-            if(IdStore != null)
+
+            try
             {
-                int freeSerialNumbers =
-                (await ((SqlSerialNumberRepository) serialNumberRepository).GetFreeSerialNumbers(IdProduct, Value,
-                    IdStore.Value)).Count;
-                if (freeSerialNumbers != 0 && Product != null)
+               
+                IRepository<SerialNumber> serialNumberRepository = new SqlSerialNumberRepository();
+                if(IdStore != null)
                 {
-                    if (freeSerialNumbers - Product.SerialNumbersCollection.Count(s => s.Value == Value) < 0)
+                    int freeSerialNumbers =
+                    (await ((SqlSerialNumberRepository) serialNumberRepository).GetFreeSerialNumbers(IdProduct, Value,
+                        IdStore.Value, newCts.Token)).Count;
+                    if (freeSerialNumbers != 0 && Product != null)
                     {
-                        _validationErrors[propertyKey] = new List<string> {"Нет доступных серийных номеров"};
-                        RaiseErrorsChanged(propertyKey);
+                        if (freeSerialNumbers - Product.SerialNumbersCollection.Count(s => s.Value == Value) < 0)
+                        {
+                            ValidationErrors[propertyKey] = new List<string> {"Нет доступных серийных номеров"};
+                        }
+                        else if (ValidationErrors.ContainsKey(propertyKey))
+                        {
+                            ValidationErrors.Remove(propertyKey);
+                        }
                     }
-                    else
+                    else if (freeSerialNumbers == 0)
                     {
-                        if (!_validationErrors.ContainsKey(propertyKey)) return;
-                        _validationErrors.Remove(propertyKey);
-                        RaiseErrorsChanged(propertyKey);
+                        ValidationErrors[propertyKey] = new List<string> {"Серийный номер не найден"};
+                    }
+                    else if (ValidationErrors.ContainsKey(propertyKey))
+                    {
+                        ValidationErrors.Remove(propertyKey);
                     }
                 }
-                else if (freeSerialNumbers == 0)
+                else if (ValidationErrors.ContainsKey(propertyKey))
                 {
-                    _validationErrors[propertyKey] = new List<string> {"Серийный номер не найден"};
-                    RaiseErrorsChanged(propertyKey);
-                }
-                else if (_validationErrors.ContainsKey(propertyKey))
-                {
-                    _validationErrors.Remove(propertyKey);
-                    RaiseErrorsChanged(propertyKey);
+                    ValidationErrors.Remove(propertyKey);
                 }
             }
-            else if (_validationErrors.ContainsKey(propertyKey))
+            catch (OperationCanceledException) { }
+            catch (Exception e)
             {
-                _validationErrors.Remove(propertyKey);
-                RaiseErrorsChanged(propertyKey);
+                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+
+            RaiseErrorsChanged(propertyKey);
+            OnPropertyChanged("IsValid");
+
+            if (_cancelTokenSource == newCts)
+                _cancelTokenSource = null;
         }
     }
 }

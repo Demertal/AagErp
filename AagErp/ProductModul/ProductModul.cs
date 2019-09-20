@@ -1,11 +1,10 @@
 ﻿using CategoryModul.ViewModels;
+using CategoryModul.Views;
 using Prism.Ioc;
 using Prism.Modularity;
 using ProductModul.ViewModels;
 using ProductModul.Views;
-using AddCategory = CategoryModul.Views.AddCategory;
 using DialogWindow = ModelModul.MVVM.DialogWindow;
-using RenameCategory = CategoryModul.Views.RenameCategory;
 
 namespace ProductModul
 {
@@ -20,8 +19,7 @@ namespace ProductModul
             containerRegistry.RegisterDialogWindow<DialogWindow>();
             containerRegistry.RegisterForNavigation<Catalog>();
             containerRegistry.RegisterForNavigation<ShowNomenclature>();
-            containerRegistry.RegisterDialog<AddCategory, AddCategoryViewModel>();
-            containerRegistry.RegisterDialog<RenameCategory, RenameCategoryViewModel>();
+            containerRegistry.RegisterDialog<ShowCategory, ShowCategoryViewModel>();
             containerRegistry.RegisterDialog<ShowProduct, ShowProductViewModel>();
         }
     }

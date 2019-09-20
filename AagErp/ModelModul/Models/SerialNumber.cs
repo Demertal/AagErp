@@ -1,15 +1,19 @@
 using System;
 using System.Collections.Generic;
+using ModelModul.Specifications.BasisSpecifications;
 
 namespace ModelModul.Models
 {
-    public class SerialNumber : ModelBase
+    public class SerialNumber : ModelBase<SerialNumber>
     {
         public SerialNumber()
         {
             SerialNumberLogsCollection = new List<SerialNumberLog>();
             WarrantiesCollection = new List<Warranty>();
             ChangesCollection = new List<Warranty>();
+            ValidationRules = new ExpressionSpecification<SerialNumber>(
+                new ExpressionSpecification<SerialNumber>(s => !string.IsNullOrEmpty(s.Value))
+                    .And(new ExpressionSpecification<SerialNumber>(s => !s.HasErrors)).IsSatisfiedBy());
         }
 
         private long _id;
@@ -31,6 +35,7 @@ namespace ModelModul.Models
             {
                 _value = value;
                 OnPropertyChanged("Value");
+                OnPropertyChanged("IsValid");
             }
         }
 
@@ -115,7 +120,7 @@ namespace ModelModul.Models
 
                         break;
                 }
-                Error = error;
+
                 return error;
             }
         }
@@ -130,5 +135,7 @@ namespace ModelModul.Models
                 DateCreated = DateCreated
             };
         }
+
+        public override bool IsValid => ValidationRules.IsSatisfiedBy().Compile().Invoke(this);
     }
 }

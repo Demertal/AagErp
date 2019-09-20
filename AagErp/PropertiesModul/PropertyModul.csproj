@@ -68,8 +68,6 @@
   <ItemGroup>
     <Compile Include="PropertyModul.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ViewModels\PropertyNameViewModel.cs" />
-    <Compile Include="ViewModels\PropertyValueViewModel.cs" />
     <Compile Include="ViewModels\ShowPropertiesViewModel.cs" />
     <Compile Include="ViewModels\ShowPropertyValueViewModel.cs" />
     <Compile Include="ViewModels\ShowPropertyViewModel.cs" />

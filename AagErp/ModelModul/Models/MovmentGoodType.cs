@@ -2,7 +2,7 @@
 
 namespace ModelModul.Models
 {
-    public class MovmentGoodType : ModelBase
+    public class MovmentGoodType : ModelBase<MovmentGoodType>
     {
          public MovmentGoodType()
         {
@@ -52,5 +52,7 @@ namespace ModelModul.Models
                 OnPropertyChanged("MovementGoodsCollection");
             }
         }
+
+        public override bool IsValid => true;
     }
 }

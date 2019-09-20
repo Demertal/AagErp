@@ -1,13 +1,18 @@
 using System.Collections.Generic;
+using ModelModul.Specifications.BasisSpecifications;
 
 namespace ModelModul.Models
 {
-    public class Currency : ModelBase
+    public class Currency : ModelBase<Currency>
     {
         public Currency()
         {
             MovementGoodsCollection = new List<MovementGoods>();
             MovementGoodsEquivalentCollection = new List<MovementGoods>();
+            ValidationRules = new ExpressionSpecification<Currency>(
+                new ExpressionSpecification<Currency>(c => !string.IsNullOrEmpty(c.Title))
+                    .And(new ExpressionSpecification<Currency>(c => c.Cost > 0))
+                    .And(new ExpressionSpecification<Currency>(c => !c.HasErrors)).IsSatisfiedBy());
         }
 
         private int _id;
@@ -30,7 +35,7 @@ namespace ModelModul.Models
             {
                 _title = value;
                 OnPropertyChanged("Title");
-                OnPropertyChanged("IsValidate");
+                OnPropertyChanged("IsValid");
             }
         }
 
@@ -42,7 +47,7 @@ namespace ModelModul.Models
             {
                 _cost = value;
                 OnPropertyChanged("Cost");
-                OnPropertyChanged("IsValidate");
+                OnPropertyChanged("IsValid");
             }
         }
 
@@ -108,12 +113,11 @@ namespace ModelModul.Models
             }
         }
 
-        public override bool IsValidate => !string.IsNullOrEmpty(Title) &&
-                                  Cost > 0;
-
         public override object Clone()
         {
             return new Currency {Id = Id, Title = Title, IsDefault = IsDefault, Cost = Cost};
         }
+
+        public override bool IsValid => ValidationRules.IsSatisfiedBy().Compile().Invoke(this);
     }
 }

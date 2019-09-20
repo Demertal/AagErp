@@ -1,12 +1,16 @@
 using System.Collections.Generic;
+using ModelModul.Specifications.BasisSpecifications;
 
 namespace ModelModul.Models
 {
-    public class WarrantyPeriod : ModelBase
+    public class WarrantyPeriod : ModelBase<WarrantyPeriod>
     {
         public WarrantyPeriod()
         {
             ProductsCollection = new HashSet<Product>();
+            ValidationRules = new ExpressionSpecification<WarrantyPeriod>(
+                new ExpressionSpecification<WarrantyPeriod>(w => !string.IsNullOrEmpty(w.Period))
+                    .And(new ExpressionSpecification<WarrantyPeriod>(w => !w.HasErrors)).IsSatisfiedBy());
         }
 
         private int _id;
@@ -28,7 +32,7 @@ namespace ModelModul.Models
             {
                 _period = value;
                 OnPropertyChanged("Period");
-                OnPropertyChanged("IsValidate");
+                OnPropertyChanged("IsValid");
             }
         }
 
@@ -64,11 +68,11 @@ namespace ModelModul.Models
             }
         }
 
-        public override bool IsValidate => !string.IsNullOrEmpty(Period);
-
         public override object Clone()
         {
             return new WarrantyPeriod {Id = Id, Period = Period};
         }
+
+        public override bool IsValid => ValidationRules.IsSatisfiedBy().Compile().Invoke(this);
     }
 }

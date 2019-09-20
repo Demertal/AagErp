@@ -11,7 +11,7 @@ namespace ModelModul.Configurations
             builder.ToTable("propertyValues");
             builder.HasKey(p => p.Id);
             builder.Property(p => p.Value).IsRequired().HasMaxLength(50);
-            builder.Ignore(p => p.Error);
+            builder.Ignore(c => c.ValidationRules);
             builder.HasMany(p => p.PropertyProductsCollection).WithOne(p => p.PropertyValue)
                 .HasForeignKey(p => p.IdPropertyValue);
         }

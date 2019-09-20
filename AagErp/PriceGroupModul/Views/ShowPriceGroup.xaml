@@ -4,8 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mvvm="http://prismlibrary.com/"
+             xmlns:converters="clr-namespace:PriceGroupModul.Converters"
              mc:Ignorable="d"
              mvvm:ViewModelLocator.AutoWireViewModel="True" Padding="0,0,10,5">
+
+    <UserControl.Resources>
+        <converters:MarkupConverter x:Key="MarkupConverter"/>
+    </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -17,7 +22,8 @@
             <ColumnDefinition Width="Auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <TextBlock Text="Наценка" Grid.Row="0" Grid.Column="0"/>
-        <TextBox Text="{Binding Entity.Markup,  UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, ValidatesOnExceptions=True, StringFormat=F2}"  Grid.Row="0" Grid.Column="1"/>
+        <TextBox Grid.Row="0" Grid.Column="1"
+                 Text="{Binding Entity.Markup, Converter={StaticResource MarkupConverter}, ConverterCulture=En-en,  UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, ValidatesOnExceptions=True}"/>
         <Button Content="ОК" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Width="110" Command="{Binding AcceptCommand}" IsDefault="True"/>
     </Grid>
 </UserControl>

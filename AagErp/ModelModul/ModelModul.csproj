@@ -38,6 +38,9 @@
     <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.2.0.4\lib\net45\CommonServiceLocator.dll</HintPath>
     </Reference>
+    <Reference Include="GongSolutions.WPF.DragDrop, Version=2.0.0.0, Culture=neutral, PublicKeyToken=91f1945125b7a587, processorArchitecture=MSIL">
+      <HintPath>..\packages\gong-wpf-dragdrop.2.0.6\lib\net47\GongSolutions.WPF.DragDrop.dll</HintPath>
+    </Reference>
     <Reference Include="linq2db, Version=2.8.0.0, Culture=neutral, PublicKeyToken=e41013125f9e410a, processorArchitecture=MSIL">
       <HintPath>..\packages\linq2db.2.8.0\lib\net46\linq2db.dll</HintPath>
     </Reference>
@@ -205,6 +208,7 @@
     <Compile Include="MVVM\DialogWindow.xaml.cs">
       <DependentUpon>DialogWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MVVM\EntitiesViewModelBaseCategory.cs" />
     <Compile Include="MVVM\IEntitiesViewModelBase.cs" />
     <Compile Include="MVVM\IEntityViewModelBase.cs" />
     <Compile Include="MVVM\ViewModelBase.cs" />
@@ -280,7 +284,17 @@
     <Compile Include="Models\WarrantyPeriod.cs" />
     <Compile Include="MVVM\EntitiesViewModelBase.cs" />
     <Compile Include="MVVM\EntityViewModelBase.cs" />
+    <Compile Include="ViewModels\CategoryViewModel.cs" />
+    <Compile Include="ViewModels\CounterpartyViewModel.cs" />
+    <Compile Include="ViewModels\CurrencyViewModel.cs" />
+    <Compile Include="ViewModels\PriceGroupViewModel.cs" />
+    <Compile Include="ViewModels\ProductViewModel.cs" />
+    <Compile Include="ViewModels\PropertyNameViewModel.cs" />
+    <Compile Include="ViewModels\PropertyValueViewModel.cs" />
     <Compile Include="ViewModels\SerialNumberViewModel.cs" />
+    <Compile Include="ViewModels\StoreViewModel.cs" />
+    <Compile Include="ViewModels\UnitStorageViewModel.cs" />
+    <Compile Include="ViewModels\WarrantyPeriodViewModel.cs" />
     <Compile Include="WarrantyViewModel.cs" />
   </ItemGroup>
   <ItemGroup>

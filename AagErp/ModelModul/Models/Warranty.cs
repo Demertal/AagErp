@@ -2,7 +2,7 @@ using System;
 
 namespace ModelModul.Models
 {
-    public class Warranty : ModelBase
+    public class Warranty : ModelBase<Warranty>
     {
         private int _id;
         public int Id
@@ -113,5 +113,7 @@ namespace ModelModul.Models
                 OnPropertyChanged("SerialNumberÑhange");
             }
         }
+
+        public override bool IsValid => true;
     }
 }

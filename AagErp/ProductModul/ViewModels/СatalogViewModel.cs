@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using ModelModul.Models;
@@ -15,6 +16,8 @@ namespace ProductModul.ViewModels
 {
     public class СatalogViewModel : ViewModelBase, IDialogAware
     {
+        private CancellationTokenSource _cancelTokenSource;
+
         #region Purchase
 
         private bool _isAddPurchase;
@@ -25,6 +28,8 @@ namespace ProductModul.ViewModels
         }
 
         #endregion
+
+        #region DirectoryProperties
 
         private ObservableCollection<Category> _categoriesList = new ObservableCollection<Category>();
 
@@ -48,7 +53,16 @@ namespace ProductModul.ViewModels
             set => SetProperty(ref _unitStorages, value);
         }
 
-        #region ProductProperties
+        private ObservableCollection<PropertyProduct> _propertyProductsList;
+        public ObservableCollection<PropertyProduct> PropertyProductsList
+        {
+            get => _propertyProductsList;
+            set => SetProperty(ref _propertyProductsList, value);
+        }
+
+        #endregion
+
+        #region FilterProperties
 
         private Category _selectedCategory;
         public Category SelectedCategory
@@ -74,25 +88,25 @@ namespace ProductModul.ViewModels
             }
         }
 
-        private ObservableCollection<PropertyProduct> _propertyProductsList;
-        public ObservableCollection<PropertyProduct> PropertyProductsList
-        {
-            get => _propertyProductsList;
-            set => SetProperty(ref _propertyProductsList, value);
-        }
+        #endregion
 
+        #region ProductProperties
+        
         private ObservableCollection<Product> _productsList = new ObservableCollection<Product>();
         public ObservableCollection<Product> ProductsList
         {
             get => _productsList;
             set => SetProperty(ref _productsList, value);
         }
-        
+
+        #endregion
+
+        #region Delegate
+
         public DelegateCommand<Product> SelectedProductCommand { get; }
 
         public DelegateCommand ResetCommand { get; }
 
-        public bool IsEnabledAddProduct => SelectedCategory != null;
         #endregion
 
         public СatalogViewModel(IDialogService dialogService) : base(dialogService)
@@ -102,27 +116,24 @@ namespace ProductModul.ViewModels
             ResetCommand = new DelegateCommand(Reset);
         }
 
-        
-
         #region CategoryCommands
 
-        private void PreLoadAsync()
+        private async void PreLoadAsync()
         {
             try
             {
-                IRepository<Category> saCategoryRepository = new SqlCategoryRepository();
-                IRepository<UnitStorage> sqlUnitStorageRepository = new SqlUnitStorageRepository();
-                IRepository<WarrantyPeriod> sqlWarrantyPeriodRepository = new SqlWarrantyPeriodRepository();
+                IRepository<Category> categoryRepository = new SqlCategoryRepository();
+                IRepository<UnitStorage> unitStorageRepository = new SqlUnitStorageRepository();
+                IRepository<WarrantyPeriod> warrantyPeriodRepository = new SqlWarrantyPeriodRepository();
 
-                var loadUnitStorage = Task.Run(() => sqlUnitStorageRepository.GetListAsync());
-                var loadWarrantyPeriod = Task.Run(() => sqlWarrantyPeriodRepository.GetListAsync());
-                var loadCategory = Task.Run(() => saCategoryRepository.GetListAsync(include: c => c.ChildCategoriesCollection));
+                var loadUnitStorage = Task.Run(() => unitStorageRepository.GetListAsync());
+                var loadWarrantyPeriod = Task.Run(() => warrantyPeriodRepository.GetListAsync());
+                var loadCategory = Task.Run(() => categoryRepository.GetListAsync(include: c => c.ChildCategoriesCollection));
 
-                Task.WaitAll(loadUnitStorage, loadWarrantyPeriod, loadCategory);
-
-                CategoriesList = new ObservableCollection<Category>(loadCategory.Result.Where(CategorySpecification.GetCategoriesByIdParent().IsSatisfiedBy().Compile()));
-                UnitStoragesList = new ObservableCollection<UnitStorage>(loadUnitStorage.Result);
-                WarrantyPeriodsList = new ObservableCollection<WarrantyPeriod>(loadWarrantyPeriod.Result);
+                await Task.WhenAll(loadUnitStorage, loadWarrantyPeriod, loadCategory);
+                CategoriesList = new ObservableCollection<Category>((await loadCategory).Where(CategorySpecification.GetCategoriesByIdParent().IsSatisfiedBy().Compile()));
+                UnitStoragesList = new ObservableCollection<UnitStorage>(await loadUnitStorage);
+                WarrantyPeriodsList = new ObservableCollection<WarrantyPeriod>(await loadWarrantyPeriod);
                 LoadPropertyAsync();
             }
             catch (Exception e)
@@ -140,7 +151,6 @@ namespace ProductModul.ViewModels
             try
             {
                 SqlProductRepository productRepository = new SqlProductRepository();
-
                 PropertyProductsList = new ObservableCollection<PropertyProduct>(
                     await productRepository.GetPropertyForProduct(SelectedCategory?.Id));
                 foreach (var propertyProduct in PropertyProductsList)
@@ -156,19 +166,26 @@ namespace ProductModul.ViewModels
 
         private async void LoadAsync()
         {
+            _cancelTokenSource?.Cancel();
+            CancellationTokenSource newCts = new CancellationTokenSource();
+            _cancelTokenSource = newCts;
+
             try
             {
                 SqlProductRepository sqlProductRepository = new SqlProductRepository();
-
+                
                 ProductsList = new ObservableCollection<Product>(
-                    await sqlProductRepository.GetProductsWithCountAndPrice(
+                    await sqlProductRepository.GetProductsWithCountAndPrice(_cancelTokenSource.Token,
                         ProductSpecification.GetProductsByIdGroupOrFindStringOrProperty(SelectedCategory?.Id,
                             FindString, PropertyProductsList), null, 0, -1, p => p.UnitStorage, p => p.Category));
             }
+            catch (OperationCanceledException) {}
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+            if (_cancelTokenSource == newCts)
+                _cancelTokenSource = null;
         }
 
         private void SelectedProduct(Product obj)

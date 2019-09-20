@@ -1,5 +1,4 @@
-﻿using ModelModul.Models;
-using ModelModul.MVVM;
+﻿using ModelModul.MVVM;
 using Prism.Commands;
 using Prism.Regions;
 using Prism.Services.Dialogs;

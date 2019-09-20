@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -85,6 +86,12 @@ namespace PurchaseGoodModul.ViewModels
                     p.Product.SerialNumbersCollection.Any(s => string.IsNullOrEmpty(s.Value)));
             }
         }
+
+        private CancellationTokenSource _cancelTokenSource;
+
+        #endregion
+
+        #region Command
 
         public DelegateCommand AddProductCommand { get; }
         public DelegateCommand PostCommand { get; }
@@ -183,19 +190,29 @@ namespace PurchaseGoodModul.ViewModels
 
         #endregion
 
-        private void Load()
+        private async void LoadAsync()
         {
+            _cancelTokenSource?.Cancel();
+            CancellationTokenSource newCts = new CancellationTokenSource();
+            _cancelTokenSource = newCts;
+
             try
             {
                 IRepository<Store> storeRepository = new SqlStoreRepository();
                 IRepository<Currency> currencyRepository = new SqlCurrencyRepository();
                 IRepository<Counterparty> counterpartyRepository = new SqlCounterpartyRepository();
 
-                var loadStore = Task.Run(() => storeRepository.GetListAsync());
-                var loadCurrency = Task.Run(() => currencyRepository.GetListAsync());
-                var loadCounterparty = Task.Run(() => counterpartyRepository.GetListAsync(CounterpartySpecification.GetCounterpartiesByType(ETypeCounterparties.Suppliers)));
+                var loadStore = Task.Run(() => storeRepository.GetListAsync(_cancelTokenSource.Token),
+                    _cancelTokenSource.Token);
+                var loadCurrency = Task.Run(() => currencyRepository.GetListAsync(_cancelTokenSource.Token),
+                    _cancelTokenSource.Token);
+                var loadCounterparty =
+                    Task.Run(
+                        () => counterpartyRepository.GetListAsync(_cancelTokenSource.Token,
+                            CounterpartySpecification.GetCounterpartiesByType(ETypeCounterparties.Suppliers)),
+                        _cancelTokenSource.Token);
 
-                Task.WaitAll(loadStore, loadCurrency, loadCounterparty);
+                await Task.WhenAll(loadStore, loadCurrency, loadCounterparty);
 
                 StoresList = new ObservableCollection<Store>(loadStore.Result);
                 CurrenciesList = new ObservableCollection<Currency>(loadCurrency.Result);
@@ -206,11 +223,15 @@ namespace PurchaseGoodModul.ViewModels
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+
+            if (_cancelTokenSource == newCts)
+                _cancelTokenSource = null;
+
         }
 
         private async void NewMovementGood()
         {
-            Load();
+            LoadAsync();
             PurchaseGood = new MovementGoods { MovementGoodsInfosCollection = new ObservableCollection<MovementGoodsInfo>() };
             PurchaseGood.PropertyChanged += (o, e) =>
             {
@@ -223,9 +244,17 @@ namespace PurchaseGoodModul.ViewModels
                 RaisePropertyChanged("IsValidate");
             };
 
+            _cancelTokenSource?.Cancel();
+            CancellationTokenSource newCts = new CancellationTokenSource();
+            _cancelTokenSource = newCts;
+
             IRepository<MovmentGoodType> movmentGoodTypeRepository = new SqlMovmentGoodTypeRepository();
-            PurchaseGood.MovmentGoodType = await movmentGoodTypeRepository.GetItemAsync(MovmentGoodTypeSpecification.GetMovmentGoodTypeByCode("purchase"));
+            PurchaseGood.MovmentGoodType = await movmentGoodTypeRepository.GetItemAsync(_cancelTokenSource.Token,
+                MovmentGoodTypeSpecification.GetMovmentGoodTypeByCode("purchase"));
             PurchaseGood.IdType = _purchaseGood.MovmentGoodType.Id;
+
+            if (_cancelTokenSource == newCts)
+                _cancelTokenSource = null;
 
             PurchaseGoodsList.CollectionChanged += OnPurchaseGoodsCollectionChanged;
             RaisePropertyChanged("PurchaseGood");

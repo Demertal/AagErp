@@ -1,12 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using ModelModul.Annotations;
+using ModelModul.Specifications.BasisSpecifications;
 
 namespace ModelModul.Models
 {
-    public abstract class ModelBase: INotifyPropertyChanged, IDataErrorInfo, ICloneable
+    public abstract class ModelBase<TEntity> : INotifyPropertyChanged, IDataErrorInfo, INotifyDataErrorInfo, ICloneable
+        where TEntity : ModelBase<TEntity>
     {
+
+        #region INotifyPropertyChanged
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
@@ -15,22 +21,62 @@ namespace ModelModul.Models
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        protected ModelBase() {}
+        #endregion
 
-        protected ModelBase(ModelBase obj) { }
+        #region IDataErrorInfo
 
         public virtual string this[string columnName] => throw new NotImplementedException();
 
-        public string Error
+        public string Error { get; }
+
+        #endregion
+
+        #region INotifyDataErrorInfo
+
+        protected readonly Dictionary<string, ICollection<string>>
+            ValidationErrors = new Dictionary<string, ICollection<string>>();
+
+
+        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+        protected void RaiseErrorsChanged(string propertyName)
         {
-            get;
-            protected set;
+            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
         }
 
-        public virtual bool IsValidate => true;
+        public System.Collections.IEnumerable GetErrors(string propertyName)
+        {
+            if (string.IsNullOrEmpty(propertyName)
+                || !ValidationErrors.ContainsKey(propertyName))
+                return null;
+
+            return ValidationErrors[propertyName];
+        }
+
+        public bool HasErrors => ValidationErrors.Count > 0;
+
+        #endregion
+
+        #region ICloneable
+
         public virtual object Clone()
         {
             throw new NotImplementedException();
         }
+
+        #endregion
+
+        private ExpressionSpecification<TEntity> _validationRules;
+        public ExpressionSpecification<TEntity> ValidationRules
+        {
+            get => _validationRules;
+            set
+            {
+                _validationRules = value;
+                OnPropertyChanged("ValidationRules");
+            }
+        }
+
+        public abstract bool IsValid { get; }
+
     }
 }

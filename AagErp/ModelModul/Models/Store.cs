@@ -1,13 +1,17 @@
 using System.Collections.Generic;
+using ModelModul.Specifications.BasisSpecifications;
 
 namespace ModelModul.Models
 {
-    public class Store : ModelBase
+    public class Store : ModelBase<Store>
     {
         public Store()
         {
             ArrivalMovementGoodsCollection = new List<MovementGoods>();
             DisposalMovementGoodsCollection = new List<MovementGoods>();
+            ValidationRules = new ExpressionSpecification<Store>(
+                new ExpressionSpecification<Store>(s => !string.IsNullOrEmpty(s.Title))
+                    .And(new ExpressionSpecification<Store>(s => !s.HasErrors)).IsSatisfiedBy());
         }
 
         private int _id;
@@ -29,6 +33,7 @@ namespace ModelModul.Models
             {
                 _title = value;
                 OnPropertyChanged("Title");
+                OnPropertyChanged("IsValid");
             }
         }
 
@@ -75,11 +80,11 @@ namespace ModelModul.Models
             }
         }
 
-        public override bool IsValidate => !string.IsNullOrEmpty(Title);
-
         public override object Clone()
         {
             return new Store { Id = Id, Title = Title};
         }
+
+        public override bool IsValid => ValidationRules.IsSatisfiedBy().Compile().Invoke(this);
     }
 }

@@ -8,8 +8,10 @@
 
     <UserControl.Resources>
         <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
-            <Setter Property="customControlLibrary:DataGridRowSelectedBehavior.Command"
+            <Setter Property="customControlLibrary:MouseDoubleClickCommandBehavior.Command"
                     Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.SelectedEntityCommand}" />
+            <Setter Property="customControlLibrary:MouseDoubleClickCommandBehavior.CommandParameter"
+                    Value="{Binding}" />
         </Style>
     </UserControl.Resources>
 

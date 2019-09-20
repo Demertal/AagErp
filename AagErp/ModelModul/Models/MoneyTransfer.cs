@@ -2,7 +2,7 @@ using System;
 
 namespace ModelModul.Models
 {
-    public class MoneyTransfer : ModelBase
+    public class MoneyTransfer : ModelBase<MoneyTransfer>
     {
         private long _id;
         public long Id
@@ -102,5 +102,7 @@ namespace ModelModul.Models
                 OnPropertyChanged("MoneyTransferType");
             }
         }
+
+        public override bool IsValid => true;
     }
 }

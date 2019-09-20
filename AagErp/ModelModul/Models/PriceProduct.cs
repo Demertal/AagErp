@@ -1,7 +1,16 @@
+using ModelModul.Specifications.BasisSpecifications;
+
 namespace ModelModul.Models
 {
-    public class PriceProduct : ModelBase
+    public class PriceProduct : ModelBase<PriceProduct>
     {
+        public PriceProduct()
+        {
+            ValidationRules = new ExpressionSpecification<PriceProduct>(
+                new ExpressionSpecification<PriceProduct>(p => p.Price > 0)
+                    .And(new ExpressionSpecification<PriceProduct>(p => !p.HasErrors)).IsSatisfiedBy());
+        }
+
         private long _id;
         public long Id
         {
@@ -43,7 +52,7 @@ namespace ModelModul.Models
             {
                 _price = value;
                 OnPropertyChanged("Price");
-                OnPropertyChanged("IsValidate");
+                OnPropertyChanged("IsValid");
             }
         }
 
@@ -79,7 +88,7 @@ namespace ModelModul.Models
                     case "Price":
                         if (Price <= 0)
                         {
-                            error = "Цена не может быть меньше и равной 0";
+                            error = "Цена не может быть меньше или равной 0";
                         }
                         break;
                 }
@@ -87,11 +96,11 @@ namespace ModelModul.Models
             }
         }
 
-        public override bool IsValidate => Price > 0;
-
         public override object Clone()
         {
             return new PriceProduct{Id = Id, IdProduct = IdProduct, IdRevaluation = IdRevaluation, Price = Price};
         }
+
+        public override bool IsValid => ValidationRules.IsSatisfiedBy().Compile().Invoke(this);
     }
 }

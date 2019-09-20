@@ -7,7 +7,7 @@
              xmlns:local="clr-namespace:PropertyModul.Views"
              xmlns:dd="urn:gong-wpf-dragdrop"
              xmlns:models="clr-namespace:ModelModul.Models;assembly=ModelModul"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:customControlLibrary="clr-namespace:CustomControlLibrary;assembly=CustomControlLibrary"
              interactivity:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" >
 
@@ -91,8 +91,8 @@
             </Setter>
         </Style>
         <ContextMenu x:Key="TreeViewContex">
-            <MenuItem Header="Добавить параметр" Command="{Binding DataContext.AddPropertyNameCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowProperties}}}"/>
-            <MenuItem Header="Добавить категорию" Command="{Binding DataContext.AddCategoryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowProperties}}}"/>
+            <MenuItem Header="Добавить параметр" Command="{Binding DataContext.AddEntityBaseCategoryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowProperties}}}"/>
+            <MenuItem Header="Добавить категорию" Command="{Binding DataContext.AddEntityCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowProperties}}}"/>
         </ContextMenu>
         <Style TargetType="{x:Type TreeView}" BasedOn="{StaticResource {x:Type TreeView}}">
             <Setter Property="ContextMenu" Value="{StaticResource TreeViewContex}"/>
@@ -124,7 +124,7 @@
                                         </Grid.ColumnDefinitions>
                                         <Border Style="{StaticResource BorderHeader}" Grid.Column="0">
                                             <Grid>
-                                                <TextBlock Text="Наименование"/>
+                                                <TextBlock Text="Наименование параметров"/>
                                             </Grid>
                                         </Border>
                                     </Grid>
@@ -137,14 +137,7 @@
                                             </Grid.RowDefinitions>
                                             <ItemsPresenter Grid.Row="0"/>
                                             <ListView x:Name="PropertyData" Grid.Row="1" ItemsSource="{Binding Path=DataContext.PropertyNamesList, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowProperties}}}"
-                                                      dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding Path=DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
-                                                <i:Interaction.Triggers>
-                                                    <i:EventTrigger EventName="MouseDoubleClick">
-                                                        <interactivity:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.SelectedPropertyNameCommand}"
-                                                                                          CommandParameter="{Binding ElementName=PropertyData, Path=SelectedItem}"/>
-                                                    </i:EventTrigger>
-                                                </i:Interaction.Triggers>
-                                            </ListView>
+                                                      dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding Path=DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"/>
                                         </Grid>
                                     </ScrollViewer>
                                 </Grid>
@@ -155,10 +148,10 @@
             </Setter>
         </Style>
         <ContextMenu x:Key="CategoryContextMenu">
-            <MenuItem Header="Добавить параметр" Command="{Binding DataContext.AddPropertyNameCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowProperties}}}" CommandParameter="{Binding}"/>
-            <MenuItem Header="Добавить категорию" Command="{Binding DataContext.AddCategoryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowProperties}}}" CommandParameter="{Binding}"/>
-            <MenuItem Header="Переименовать" Command="{Binding DataContext.RenameCategoryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowProperties}}}" CommandParameter="{Binding}"/>
-            <MenuItem Header="Удалить" Command="{Binding DataContext.DeleteCategoryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowProperties}}}" CommandParameter="{Binding}"/>
+            <MenuItem Header="Добавить параметр" Command="{Binding DataContext.AddEntityBaseCategoryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowProperties}}}" CommandParameter="{Binding}"/>
+            <MenuItem Header="Добавить категорию" Command="{Binding DataContext.AddEntityCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowProperties}}}" CommandParameter="{Binding}"/>
+            <MenuItem Header="Переименовать категорию" Command="{Binding DataContext.SelectedEntityCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowProperties}}}" CommandParameter="{Binding}"/>
+            <MenuItem Header="Удалить" Command="{Binding DataContext.DeleteEntityCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowProperties}}}" CommandParameter="{Binding}"/>
         </ContextMenu>
         <Style TargetType="TreeViewItem">
             <Setter Property="OverridesDefaultStyle" Value="true" />
@@ -167,17 +160,14 @@
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate>
-                        <Border x:Name="Bd" BorderThickness="1" CornerRadius="10" Background="{TemplateBinding Background}" Margin="0,3,0,3">
-                            <Border.BorderBrush >
-                                <SolidColorBrush Color="{DynamicResource BorderColor}"/>
-                            </Border.BorderBrush>
+                    <ControlTemplate TargetType="{x:Type TreeViewItem}">
+                        <Grid>
                             <VisualStateManager.VisualStateGroups>
                                 <VisualStateGroup x:Name="SelectionStates">
                                     <VisualState x:Name="Selected">
                                         <Storyboard>
                                             <ColorAnimationUsingKeyFrames Storyboard.TargetName="Bd" 
-                                                                     Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
+                                                                             Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
                                                 <EasingColorKeyFrame KeyTime="0" Value="{DynamicResource SelectedBackgroundColor}" />
                                             </ColorAnimationUsingKeyFrames>
                                         </Storyboard>
@@ -186,16 +176,41 @@
                                     <VisualState x:Name="SelectedInactive">
                                         <Storyboard>
                                             <ColorAnimationUsingKeyFrames Storyboard.TargetName="Bd" 
-                                                                     Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
+                                                                             Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
                                                 <EasingColorKeyFrame KeyTime="0" Value="{DynamicResource SelectedUnfocusedColor}" />
                                             </ColorAnimationUsingKeyFrames>
                                         </Storyboard>
                                     </VisualState>
                                 </VisualStateGroup>
+                                <VisualStateGroup x:Name="ExpansionStates">
+                                    <VisualState x:Name="Expanded">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ItemsHost"
+                                                                              Storyboard.TargetProperty="(UIElement.Visibility)">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Collapsed" />
+                                </VisualStateGroup>
                             </VisualStateManager.VisualStateGroups>
-                            <Expander>
-                                <Expander.Header>
-                                    <Border BorderThickness="0" CornerRadius="10">
+                            <Border x:Name="Bd" BorderThickness="1" CornerRadius="10" Background="{TemplateBinding Background}" Margin="0,2,0,2" Padding="2" Focusable="False">
+                                <Border.BorderBrush >
+                                    <SolidColorBrush Color="{DynamicResource BorderColor}"/>
+                                </Border.BorderBrush>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition MinWidth="19" Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <ToggleButton x:Name="Expander" Style="{DynamicResource ExpandCollapseToggleStyle}" ClickMode="Press" Grid.Column="0" Grid.Row="0"
+                                              IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" Margin="2,0,0,0" HorizontalAlignment="Stretch"/>
+                                    <Border x:Name="PART_Header" BorderThickness="0" CornerRadius="10" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Center">
                                         <Border.Background>
                                             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                                 <GradientStop Color="{DynamicResource ControlLightColor}" Offset="0" />
@@ -203,37 +218,52 @@
                                                 <GradientStop Color="{DynamicResource ControlLightColor}" Offset="1" />
                                             </LinearGradientBrush>
                                         </Border.Background>
-                                        <TextBlock Text="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Left" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Left" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
                                     </Border>
-                                </Expander.Header>
-                                <Expander.Content>
-                                    <StackPanel>
-                                        <ItemsPresenter />
-                                        <ListView x:Name="PropertyData" ItemsSource="{Binding PropertyNamesCollection, UpdateSourceTrigger=PropertyChanged}" Margin="2"  dd:DragDrop.IsDragSource="True" SelectionMode="Single"
-                                                          dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding Path=DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
-                                            <i:Interaction.Triggers>
-                                                <i:EventTrigger EventName="MouseDoubleClick">
-                                                    <interactivity:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.SelectedPropertyNameCommand}"
-                                                                                      CommandParameter="{Binding ElementName=PropertyData, Path=SelectedItem}"/>
-                                                </i:EventTrigger>
-                                            </i:Interaction.Triggers>
-                                        </ListView>
-                                    </StackPanel>
-                                </Expander.Content>
-                            </Expander>
-                        </Border>
+                                    <Grid x:Name="ItemsHost"  Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Visibility="Collapsed">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+                                        <ItemsPresenter Grid.Row="0"/>
+                                        <ListView Grid.Row="1" x:Name="PropertyData" ItemsSource="{Binding PropertyNamesCollection, UpdateSourceTrigger=PropertyChanged}" Margin="2"  dd:DragDrop.IsDragSource="True" SelectionMode="Single"
+                                                  dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding Path=DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="HasHeader" Value="false" />
+                                    <Condition Property="Width" Value="Auto" />
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="PART_Header" Property="MinWidth" Value="75" />
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="HasHeader" Value="false" />
+                                    <Condition Property="Height" Value="Auto" />
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="PART_Header" Property="MinHeight" Value="19" />
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
         <ContextMenu x:Key="PropertyContextMenu">
-            <MenuItem Header="Удалить" Command="{Binding DataContext.DeletePropertyNameCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowProperties}}}" CommandParameter="{Binding}"/>
+            <MenuItem Header="Удалить" Command="{Binding DataContext.DeleteEntityBaseCategoryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowProperties}}}" CommandParameter="{Binding}"/>
         </ContextMenu>
         <Style TargetType="{x:Type ListViewItem}">
             <Setter Property="SnapsToDevicePixels" Value="true"/>
             <Setter Property="OverridesDefaultStyle" Value="true"/>
             <Setter Property="ContextMenu" Value="{StaticResource PropertyContextMenu}"/>
             <Setter Property="AllowDrop" Value="True"/>
+            <Setter Property="customControlLibrary:MouseDoubleClickCommandBehavior.Command"
+                    Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.SelectedEntityBaseCategoryCommand}" />
+            <Setter Property="customControlLibrary:MouseDoubleClickCommandBehavior.CommandParameter"
+                    Value="{Binding}" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ListViewItem}">
@@ -289,6 +319,6 @@
     </UserControl.Resources>
 
     <Grid>
-        <TreeView ItemsSource="{Binding CategoriesList, UpdateSourceTrigger=PropertyChanged}" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}"/>
+        <TreeView ItemsSource="{Binding EntitiesList, UpdateSourceTrigger=PropertyChanged}" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}"/>
     </Grid>
 </UserControl>

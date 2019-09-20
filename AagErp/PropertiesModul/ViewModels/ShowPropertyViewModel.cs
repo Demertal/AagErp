@@ -5,7 +5,9 @@ using ModelModul.Specifications;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Threading;
 using System.Windows;
+using ModelModul.ViewModels;
 using Prism.Commands;
 using Prism.Services.Dialogs;
 
@@ -13,6 +15,12 @@ namespace PropertyModul.ViewModels
 {
     public class ShowPropertyViewModel : EntityViewModelBase<PropertyName, PropertyNameViewModel, SqlPropertyNameRepository>, IEntitiesViewModelBase<PropertyValue, SqlPropertyValueRepository>
     {
+        #region Properties
+
+        public IDialogService DialogService { get; set; }
+
+        private CancellationTokenSource _cancelTokenSource;
+
         public ObservableCollection<PropertyValue> EntitiesList
         {
             get => Entity.PropertyValuesCollection as ObservableCollection<PropertyValue>;
@@ -25,15 +33,21 @@ namespace PropertyModul.ViewModels
                         PropertyValuesCollectionChanged;
             }
         }
-        public IDialogService DialogService { get; set; }
-        public DelegateCommand AddEntityCommand { get; }
+
+        #endregion
+
+        #region DelegateCommand
+
+        public DelegateCommand<PropertyValue> AddEntityCommand { get; }
         public DelegateCommand<PropertyValue> SelectedEntityCommand { get; }
         public DelegateCommand<PropertyValue> DeleteEntityCommand { get; }
+
+        #endregion
 
         public ShowPropertyViewModel(IDialogService dialogService) : base("Параметр добавлен", "Параметр изменен")
         {
             DialogService = dialogService;
-            AddEntityCommand = new DelegateCommand(AddEntity);
+            AddEntityCommand = new DelegateCommand<PropertyValue>(AddEntity);
             SelectedEntityCommand = new DelegateCommand<PropertyValue>(SelectedEntity);
             DeleteEntityCommand = new DelegateCommand<PropertyValue>(DeleteEntity);
         }
@@ -48,23 +62,32 @@ namespace PropertyModul.ViewModels
 
         private async void LoadAsync()
         {
+            _cancelTokenSource?.Cancel();
+            CancellationTokenSource newCts = new CancellationTokenSource();
+            _cancelTokenSource = newCts;
+
             try
             {
                 IRepository<PropertyValue> propertyValueRepository = new SqlPropertyValueRepository();
                 EntitiesList = new ObservableCollection<PropertyValue>(
-                    await propertyValueRepository.GetListAsync(
+                    await propertyValueRepository.GetListAsync(_cancelTokenSource.Token,
                         PropertyValueSpecification.GetPropertyValuesByIdPropertyName(Entity.Id)));
                 if (EntitiesList != null)
-                    EntitiesList.CollectionChanged += PropertyValuesCollectionChanged;
-                foreach (var propertyValue in EntitiesList)
                 {
-                    propertyValue.PropertyChanged += (o, e) => RaisePropertyChanged("EntitiesList");
+                    EntitiesList.CollectionChanged += PropertyValuesCollectionChanged;
+                    foreach (var propertyValue in EntitiesList)
+                    {
+                        propertyValue.PropertyChanged += (o, e) => RaisePropertyChanged("EntitiesList");
+                    }
                 }
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+
+            if (_cancelTokenSource == newCts)
+                _cancelTokenSource = null;
         }
 
         private void PropertyValuesCollectionChanged(object sender, NotifyCollectionChangedEventArgs ea)
@@ -92,7 +115,7 @@ namespace PropertyModul.ViewModels
             RaisePropertyChanged("EntitiesList");
         }
 
-        private void AddEntity()
+        private void AddEntity(PropertyValue obj)
         {
             DialogService.ShowDialog("ShowPropertyValue", new DialogParameters { { "propertyName", Entity.Id } }, CallbackProperty);
         }

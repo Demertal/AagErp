@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using GenerationBarcodeLibrary;
@@ -8,14 +8,15 @@ using ModelModul.Models;
 using ModelModul.MVVM;
 using ModelModul.Repositories;
 using ModelModul.Specifications;
+using ModelModul.ViewModels;
 using Prism.Commands;
 using Prism.Services.Dialogs;
 
 namespace ProductModul.ViewModels
 {
-    class ShowProductViewModel : DialogViewModelBase, IEditableObject
+    class ShowProductViewModel : EntityViewModelBase<Product, ProductViewModel, SqlProductRepository>
     {
-        #region ProductProperties
+        #region Properties
 
         private ObservableCollection<WarrantyPeriod> _warrantyPeriodsList = new ObservableCollection<WarrantyPeriod>();
         public ObservableCollection<WarrantyPeriod> WarrantyPeriodsList
@@ -45,42 +46,25 @@ namespace ProductModul.ViewModels
             set => SetProperty(ref _propertyProductsList, value);
         }
 
-        private Product _product = new Product();
-        public Product Product
-        {
-            get => _product;
-            set
-            {
-                SetProperty(ref _product, value);
-                _product.PropertyChanged += (o, e) => { RaisePropertyChanged(e.PropertyName); };
-                RaisePropertyChanged("CanEdit");
-            }
-        }
+        #endregion
 
-        private bool _isAdd;
-        public bool IsAdd
-        {
-            get => _isAdd;
-            set => SetProperty(ref _isAdd, value);
-        }
+        #region Command
 
-        public DelegateCommand UpdateProductCommand { get; }
         public DelegateCommand GenerateBarcodeCommand { get; }
-        public DelegateCommand ResetCommand { get; }
-        public DelegateCommand OkCommand { get; }
 
         #endregion
 
-        public ShowProductViewModel()
+        public ShowProductViewModel() : base("Товар добавлен", "Товар изменен")
         {
-            UpdateProductCommand = new DelegateCommand(BeginEdit);
             GenerateBarcodeCommand = new DelegateCommand(GenerateBarcode);
-            ResetCommand = new DelegateCommand(CancelEdit);
-            OkCommand = new DelegateCommand(EndEdit).ObservesCanExecute(() => Product.IsValidate);
         }
 
-        private void LoadAsync()
+        private async void LoadAsync()
         {
+            CancelTokenSource?.Cancel();
+            CancellationTokenSource newCts = new CancellationTokenSource();
+            CancelTokenSource = newCts;
+
             try
             {
                 IRepository<UnitStorage> unitStorageRepository = new SqlUnitStorageRepository();
@@ -89,28 +73,40 @@ namespace ProductModul.ViewModels
                 SqlProductRepository productForCountRepository = new SqlProductRepository();
                 SqlProductRepository productForPropertyRepository = new SqlProductRepository();
 
-                var loadUnitStorage = Task.Run(() => unitStorageRepository.GetListAsync());
-                var loadWarrantyPeriod = Task.Run(() => warrantyPeriodRepository.GetListAsync());
-                var priceGroupsLoad = Task.Run(() => priceGroupRepository.GetListAsync());
-                var loadCount = Task.Run(() => productForCountRepository.GetCountsProduct(Product.Id));
-                var loadProperty = Task.Run(() => productForPropertyRepository.GetPropertyForProduct(Product));
+                var loadUnitStorage = Task.Run(() => unitStorageRepository.GetListAsync(CancelTokenSource.Token),
+                    CancelTokenSource.Token);
+                var loadWarrantyPeriod = Task.Run(() => warrantyPeriodRepository.GetListAsync(CancelTokenSource.Token),
+                    CancelTokenSource.Token);
+                var priceGroupsLoad = Task.Run(() => priceGroupRepository.GetListAsync(CancelTokenSource.Token),
+                    CancelTokenSource.Token);
+                var loadCount =
+                    Task.Run(() => productForCountRepository.GetCountsProduct(Entity.Id, CancelTokenSource.Token),
+                        CancelTokenSource.Token);
+                var loadProperty =
+                    Task.Run(() => productForPropertyRepository.GetPropertyForProduct(Entity, CancelTokenSource.Token),
+                        CancelTokenSource.Token);
 
-                Task.WaitAll(loadUnitStorage, loadWarrantyPeriod, priceGroupsLoad, loadCount, loadProperty);
+                await Task.WhenAll(loadUnitStorage, loadWarrantyPeriod, priceGroupsLoad, loadCount, loadProperty);
 
                 UnitStoragesList = new ObservableCollection<UnitStorage>(loadUnitStorage.Result);
                 WarrantyPeriodsList = new ObservableCollection<WarrantyPeriod>(loadWarrantyPeriod.Result);
                 PriceGroupsList = new ObservableCollection<PriceGroup>(priceGroupsLoad.Result);
-                Product.CountsProductCollection = new ObservableCollection<CountsProduct>(loadCount.Result);
-                Product.PropertyProductsCollection = new ObservableCollection<PropertyProduct>(loadProperty.Result);
-                foreach (var propertyProduct in Product.PropertyProductsCollection)
-                {
-                    propertyProduct.IdProduct = Product.Id;
-                }
+                Entity.CountsProductCollection = new ObservableCollection<CountsProduct>(loadCount.Result);
+                Entity.PropertyProductsCollection = new ObservableCollection<PropertyProduct>(loadProperty.Result);
+                if(Entity.PriceProductsCollection != null)
+                    foreach (var propertyProduct in Entity.PropertyProductsCollection)
+                    {
+                        propertyProduct.IdProduct = Entity.Id;
+                    }
             }
-            catch (Exception ex)
+            catch (OperationCanceledException) { }
+            catch (Exception e)
             {
-                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+
+            if (CancelTokenSource == newCts)
+                CancelTokenSource = null;
         }
 
         private async void GenerateBarcode()
@@ -122,114 +118,64 @@ namespace ProductModul.ViewModels
                 do
                 {
                     temp = GenerationBarcode.GenerateBarcode();
-                } while (await sqlProductRepository.AnyAsync(ProductSpecification.GetProductsByBarcode(temp)));
+                } while (await sqlProductRepository.AnyAsync(new CancellationToken(), ProductSpecification.GetProductsByBarcode(temp)));
 
-                Product.Barcode = temp;
+                Entity.Barcode = temp;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        public override void PropertiesTransfer(Product fromEntity, Product toEntity)
+        {
+            toEntity.Id = fromEntity.Id;
+            toEntity.Title = fromEntity.Title;
+            toEntity.VendorCode = fromEntity.VendorCode;
+            toEntity.Barcode = fromEntity.Barcode;
+            toEntity.IdCategory = fromEntity.IdCategory;
+            toEntity.Description = fromEntity.Description;
+            toEntity.IdPriceGroup = fromEntity.IdPriceGroup;
+            toEntity.IdUnitStorage = fromEntity.IdUnitStorage;
+            toEntity.IdWarrantyPeriod = fromEntity.IdWarrantyPeriod;
+            toEntity.KeepTrackSerialNumbers = fromEntity.KeepTrackSerialNumbers;
+            toEntity.Category = fromEntity.Category;
+            toEntity.PriceGroup = fromEntity.PriceGroup;
+            toEntity.UnitStorage = fromEntity.UnitStorage;
+            toEntity.Count = fromEntity.Count;
+            toEntity.CountsProductCollection = fromEntity.CountsProductCollection;
+            toEntity.Price = fromEntity.Price;
+            toEntity.WarrantyPeriod = fromEntity.WarrantyPeriod;
+            toEntity.PropertyProductsCollection = fromEntity.PropertyProductsCollection;
         }
 
         public override void OnDialogOpened(IDialogParameters parameters)
         {
             try
             {
-                _backup = parameters.GetValue<Product>("product");
-                IsAdd = IsEdit = false;
-                if (_backup != null)
+                Backup = parameters.GetValue<Product>("entity");
+                Entity = new ProductViewModel();
+                if (Backup == null)
                 {
-                    Product = (Product) _backup.Clone();
-                    Title = Product.Title;
+                    Title = "Добавить";
+                    Entity.Category = parameters.GetValue<Category>("category");
+                    Entity.IdCategory = Entity.Category.Id;
+                    IsAdd = true;
                 }
                 else
                 {
-                    Title = "Добавить товар";
-                    Product = new Product { Category = parameters.GetValue<Category>("category") };
-                    Product.IdCategory = Product.Category.Id;
-                    IsAdd = IsEdit = true;
+                    Title = "Изменить";
+                    IsAdd = false;
+                    PropertiesTransfer(Backup, Entity);
+                    LoadAsync();
                 }
-                LoadAsync();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                RaiseRequestClose(new DialogResult(ButtonResult.Abort));
             }
         }
-
-        #region EditableObject
-
-        private Product _backup = new Product();
-
-        private bool _isEdit;
-        public bool IsEdit
-        {
-            get => _isEdit;
-            set => SetProperty(ref _isEdit, value);
-        }
-
-        public void BeginEdit()
-        {
-            IsEdit = true;
-            RaisePropertyChanged("Product");
-        }
-
-        public async void EndEdit()
-        {
-            try
-            {
-                string message = "Товар изменен";
-                Product temp = (Product) Product.Clone();
-                temp.Category = null;
-                IRepository<Product> sqlProductRepository = new SqlProductRepository();
-                if (Product.Id == 0)
-                {
-                    await sqlProductRepository.CreateAsync(temp);
-                    Product.Id = temp.Id;
-                    message = "Товар добавлен";
-                }
-                else
-                {
-                    await sqlProductRepository.UpdateAsync(Product);
-                    _backup.Barcode = Product.Barcode;
-                    _backup.IdCategory = Product.IdCategory;
-                    _backup.IdPriceGroup = Product.IdPriceGroup;
-                    _backup.IdUnitStorage = Product.IdUnitStorage;
-                    _backup.IdWarrantyPeriod = Product.IdWarrantyPeriod;
-                    _backup.KeepTrackSerialNumbers = Product.KeepTrackSerialNumbers;
-                    _backup.Title = Product.Title;
-                    _backup.VendorCode = Product.VendorCode;
-                    _backup.Description = Product.Description;
-                    IsEdit = false;
-                }
-                //SqlPropertyProductRepository sqlProperty = new SqlPropertyProductRepository();
-                //sqlProperty.UpdateAsync(PropertyProductsList.ToList());
-                MessageBox.Show(message, "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                if(IsAdd)
-                    RaiseRequestClose(new DialogResult(ButtonResult.OK, new DialogParameters { { "product", Product } }));
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        public void CancelEdit()
-        {
-            Product.Barcode = _backup.Barcode;
-            Product.IdCategory = _backup.IdCategory;
-            Product.IdPriceGroup = _backup.IdPriceGroup;
-            Product.IdUnitStorage = _backup.IdUnitStorage;
-            Product.IdWarrantyPeriod = _backup.IdWarrantyPeriod;
-            Product.KeepTrackSerialNumbers = _backup.KeepTrackSerialNumbers;
-            Product.Title = _backup.Title;
-            Product.VendorCode = _backup.VendorCode;
-            Product.Description = _backup.Description;
-            IsEdit = false;
-        }
-
-        #endregion
     }
 }

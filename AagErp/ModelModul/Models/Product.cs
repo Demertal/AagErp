@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using ModelModul.Specifications.BasisSpecifications;
 
 namespace ModelModul.Models
 {
-    public class Product : ModelBase
+    public class Product : ModelBase<Product>
     {
         public Product()
         {
@@ -13,6 +14,15 @@ namespace ModelModul.Models
             PriceProductsCollection = new List<PriceProduct>();
             PropertyProductsCollection = new List<PropertyProduct>();
             SerialNumbersCollection = new List<SerialNumber>();
+            ValidationRules = new ExpressionSpecification<Product>(
+                new ExpressionSpecification<Product>(p => !string.IsNullOrEmpty(p.Title))
+                    .And(new ExpressionSpecification<Product>(p => !string.IsNullOrEmpty(p.Barcode)))
+                    .And(new ExpressionSpecification<Product>(p => p.IdUnitStorage <= 0))
+                    .And(new ExpressionSpecification<Product>(p => p.IdWarrantyPeriod <= 0))
+                    .And(new ExpressionSpecification<Product>(p => p.IdPriceGroup <= 0))
+                    .And(new ExpressionSpecification<Product>(p => p.IdCategory <= 0))
+                    .And(new ExpressionSpecification<Product>(p => !p.HasErrors)).IsSatisfiedBy());
+
         }
 
         private long _id;
@@ -27,14 +37,14 @@ namespace ModelModul.Models
         }
 
         private string _title;
-        public string Title
+        public virtual string Title
         {
             get => _title;
             set
             {
                 _title = value;
                 OnPropertyChanged("Title");
-                OnPropertyChanged("IsValidate");
+                OnPropertyChanged("IsValid");
             }
         }
 
@@ -50,14 +60,14 @@ namespace ModelModul.Models
         }
 
         private string _barcode;
-        public string Barcode
+        public virtual string Barcode
         {
             get => _barcode;
             set
             {
                 _barcode = value;
                 OnPropertyChanged("Barcode");
-                OnPropertyChanged("IsValidate");
+                OnPropertyChanged("IsValid");
             }
         }
 
@@ -80,7 +90,7 @@ namespace ModelModul.Models
             {
                 _idWarrantyPeriod = value;
                 OnPropertyChanged("IdWarrantyPeriod");
-                OnPropertyChanged("IsValidate");
+                OnPropertyChanged("IsValid");
             }
         }
 
@@ -92,7 +102,7 @@ namespace ModelModul.Models
             {
                 _idCategory = value;
                 OnPropertyChanged("IdCategory");
-                OnPropertyChanged("IsValidate");
+                OnPropertyChanged("IsValid");
             }
         }
 
@@ -104,6 +114,7 @@ namespace ModelModul.Models
             {
                 _idPriceGroup = value;
                 OnPropertyChanged("IdPriceGroup");
+                OnPropertyChanged("IsValid");
             }
         }
 
@@ -115,7 +126,7 @@ namespace ModelModul.Models
             {
                 _idUnitStorage = value;
                 OnPropertyChanged("IdUnitStorage");
-                OnPropertyChanged("IsValidate");
+                OnPropertyChanged("IsValid");
             }
         }
 
@@ -298,7 +309,7 @@ namespace ModelModul.Models
                         break;
 
                     case "IdUnitStorage":
-                        if (IdUnitStorage == 0 )
+                        if (IdUnitStorage <= 0)
                         {
                             error = "Ед. хр. должна быть указана";
                         }
@@ -306,7 +317,7 @@ namespace ModelModul.Models
                         break;
 
                     case "IdWarrantyPeriod":
-                        if (IdWarrantyPeriod == 0)
+                        if (IdWarrantyPeriod <= 0)
                         {
                             error = "Гарантийный период должен быть указан";
                         }
@@ -314,7 +325,7 @@ namespace ModelModul.Models
                         break;
 
                     case "IdPriceGroup":
-                        if (IdPriceGroup == 0)
+                        if (IdPriceGroup <= 0)
                         {
                             error = "Ценовая группа должна быть указана";
                         }
@@ -322,7 +333,7 @@ namespace ModelModul.Models
                         break;
 
                     case "IdCategory":
-                        if (IdCategory == 0)
+                        if (IdCategory <= 0)
                         {
                             error = "Категория должна быть указана";
                         }
@@ -333,10 +344,6 @@ namespace ModelModul.Models
                 return error;
             }
         }
-
-        public override bool IsValidate => !string.IsNullOrEmpty(Title) &&
-                                  !string.IsNullOrEmpty(Barcode) &&
-                                  IdUnitStorage != 0 && IdWarrantyPeriod != 0 && IdPriceGroup != 0 && IdCategory != 0;
 
         public override object Clone()
         {
@@ -353,11 +360,12 @@ namespace ModelModul.Models
                 IdUnitStorage = IdUnitStorage,
                 IdWarrantyPeriod = IdWarrantyPeriod,
                 KeepTrackSerialNumbers = KeepTrackSerialNumbers,
-                Category = (Category) Category?.Clone(),
                 UnitStorage = (UnitStorage) UnitStorage?.Clone(),
                 WarrantyPeriod = (WarrantyPeriod) WarrantyPeriod?.Clone(),
                 SerialNumbersCollection = SerialNumbersCollection == null? null : new List<SerialNumber>(SerialNumbersCollection.Select(s => (SerialNumber)s.Clone()))
             };
         }
+
+        public override bool IsValid => ValidationRules.IsSatisfiedBy().Compile().Invoke(this);
     }
 }

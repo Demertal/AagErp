@@ -9,7 +9,7 @@ namespace ModelModul.Configurations
         public void Configure(EntityTypeBuilder<Invoice> builder)
         {
             builder.ToTable("invoices");
-            builder.Ignore(i => i.Error);
+            builder.Ignore(c => c.ValidationRules);
             builder.HasKey(c => c.Id);
             builder.HasMany(i => i.InvoiceInfosCollection).WithOne(i => i.Invoice).HasForeignKey(i => i.IdInvoice).IsRequired();
         }

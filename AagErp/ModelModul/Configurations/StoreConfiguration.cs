@@ -11,7 +11,7 @@ namespace ModelModul.Configurations
             builder.ToTable("stores");
             builder.HasKey(s => s.Id);
             builder.Property(s => s.Title).IsRequired().HasMaxLength(50);
-            builder.Ignore(s => s.Error);
+            builder.Ignore(c => c.ValidationRules);
             builder.HasMany(s => s.ArrivalMovementGoodsCollection).WithOne(m => m.ArrivalStore).HasForeignKey(m => m.IdArrivalStore);
             builder.HasMany(s => s.DisposalMovementGoodsCollection).WithOne(m => m.DisposalStore).HasForeignKey(m => m.IdDisposalStore);
         }

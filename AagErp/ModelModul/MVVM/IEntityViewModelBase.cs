@@ -5,7 +5,7 @@ using Prism.Commands;
 namespace ModelModul.MVVM
 {
     interface IEntityViewModelBase<in TEntity, TEntityViewModel, TRepository>
-        where TEntity : ModelBase
+        where TEntity : ModelBase<TEntity>
         where TEntityViewModel : TEntity, new()
         where TRepository : IRepository<TEntity>, new()
     {
@@ -14,6 +14,10 @@ namespace ModelModul.MVVM
         TEntityViewModel Entity { get; set; }
 
         bool IsAdd { get; set; }
+
+        #endregion
+
+        #region Command
 
         DelegateCommand AcceptCommand { get; }
 

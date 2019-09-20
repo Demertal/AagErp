@@ -372,23 +372,23 @@
 		<table name="propertyProducts" >
 			<column name="id" type="bigint" jt="-5" mandatory="y" autoincrement="y" />
 			<column name="idProduct" type="bigint" jt="-5" mandatory="y" />
-			<column name="idPropertyName" type="int" jt="4" />
+			<column name="idPropertyName" type="int" jt="4" mandatory="y" />
 			<column name="idPropertyValue" type="int" length="10" decimal="0" jt="4" />
 			<index name="PK_propertyProducts" unique="PRIMARY_KEY" >
 				<column name="id" />
-			</index>
-			<index name="UQ_propertyProducts_idProduct_idPropertyName" unique="UNIQUE" >
-				<column name="idProduct" />
-				<column name="idPropertyName" />
-			</index>
-			<index name="ind_propertyProducts_idPropertyName" unique="NORMAL" >
-				<column name="idPropertyName" />
 			</index>
 			<index name="ind_propertyProducts_idProduct" unique="NORMAL" >
 				<column name="idProduct" />
 			</index>
 			<index name="ind_propertyProducts_idPropertyValue" unique="NORMAL" >
 				<column name="idPropertyValue" />
+			</index>
+			<index name="ind_propertyProducts_idPropertyName" unique="NORMAL" >
+				<column name="idPropertyName" />
+			</index>
+			<index name="UQ_propertyProducts_idProduct_idPropertyName" unique="UNIQUE" >
+				<column name="idPropertyName" />
+				<column name="idProduct" />
 			</index>
 			<fk name="FK_propertyProducts_idProduct_products" to_schema="dbo" to_table="products" delete_action="cascade" >
 				<fk_column name="idProduct" pk="id" />
@@ -541,15 +541,6 @@
 		<view name="productsWithCountAndPrice" >
 			<view_script><![CDATA[SELECT 
 	p.id id,
-	p.title title,
-	p.vendorCode vendorCode,
-	p.barcode barcode,
-	p.idUnitStorage unitStorageId,
-	p.idWarrantyPeriod warrantyPeriodId,
-	p.idCategory categoryId,
-	p.idPriceGroup priceGroupId,	
-	p.keepTrackSerialNumbers keepTrackSerialNumbers,
-	p.description [description],
 	isnull((SELECT TOP 1 pp.price FROM dbo.priceProducts pp
 			INNER JOIN dbo.revaluationProducts rp ON ( pp.idRevaluation = rp.id )
 		WHERE pp.idProduct = p.id
@@ -558,17 +549,8 @@
 FROM dbo.products p
 ]]></view_script>
 			<column name="id" type="bigint" />
-			<column name="title" type="nvarchar" />
-			<column name="vendorCode" type="nvarchar" />
-			<column name="barcode" type="nvarchar" />
-			<column name="keepTrackSerialNumbers" type="bit" />
-			<column name="description" type="nvarchar(max)" />
 			<column name="price" type="money" />
 			<column name="count" type="decimal" />
-			<column name="unitStorageId" type="int" />
-			<column name="warrantyPeriodId" type="int" />
-			<column name="categoryId" type="int" />
-			<column name="priceGroupId" type="int" />
 		</view>
 		<procedure name="goods_issued" id="Procedure_49492f8" isSystem="false" params_known="n" >
 			<string><![CDATA[CREATE PROCEDURE goods_issued
@@ -852,43 +834,14 @@ WHERE sn.value = @value AND
 RETURN
 END]]></string>
 		</function>
-		<function name="getPropertyForProduct" id="Function_29d0f43" isSystem="false" params_known="n" >
-			<string><![CDATA[
-CREATE FUNCTION [dbo].[getPropertyForProduct](@idProduct bigint, @idCategory INT)
-RETURNS @result TABLE (nameID INT, [name] NVARCHAR(20), valueID INT, [value] NVARCHAR(50))
-AS
-BEGIN
-	WITH hierarchyCategories (id, idParent)
-	AS
-	(
-		SELECT c.id, c.idParent     
-		FROM dbo.categories c
-		WHERE c.id = @idCategory
-		UNION ALL
-		SELECT c.id, c.idParent   
-		FROM dbo.categories c    
-			INNER JOIN hierarchyCategories hc ON ( c.id = hc.idParent )
-	)
-	INSERT INTO @result(nameID, [name], valueID, [value])
-	SELECT pm.id nameID, pm.title [name], pv.id valueID, pv.value [value]
-	FROM dbo.PropertyProducts pp
-		INNER JOIN dbo.PropertyValues pv ON ( pp.idPropertyValue = pv.id )
-		RIGHT JOIN dbo.PropertyNames pm ON ( pp.idPropertyName = pm.id )
-			INNER JOIN hierarchyCategories hc ON ( pm.idCategory = hc.id )
-	WHERE pp.idProduct = @idProduct
-RETURN
-END]]></string>
-		</function>
 	</schema>
 	<connector name="SqlServer" database="SqlServer" driver_class="com.microsoft.sqlserver.jdbc.SQLServerDriver" driver_jar="mssql-jdbc-7.0.0.jre10.jar" driver_desc="Native Driver - Windows Authentication, Current User" host="DESKTOP-KC53E2S" port="1433" instance="AutomationAccountingGoods" user="ws" passwd="c2xvdzIzc3dpbTQ1QA==" />
 	<layout name="aag" id="Layout_9f7fe7" show_relation="columns" >
 		<entity schema="dbo" name="invoices" color="F4DDBE" x="1696" y="368" />
 		<entity schema="dbo" name="priceGroups" color="F4DDBE" x="1232" y="368" />
-		<entity schema="dbo" name="propertyValues" color="BEBEF4" x="2096" y="272" />
 		<entity schema="dbo" name="warranties" color="BED3F4" x="736" y="288" />
 		<entity schema="dbo" name="moneyTransferTypes" color="C7F4BE" x="1408" y="704" />
 		<entity schema="dbo" name="invoiceInfos" color="F4DDBE" x="1504" y="368" />
-		<entity schema="dbo" name="propertyProducts" color="BEBEF4" x="2320" y="80" />
 		<entity schema="dbo" name="paymentTypes" color="C7F4BE" x="1200" y="944" />
 		<entity schema="dbo" name="counterparties" color="C7F4BE" x="1008" y="704" />
 		<entity schema="dbo" name="warrantyPeriods" color="F4DDBE" x="1024" y="192" />
@@ -903,10 +856,12 @@ END]]></string>
 		<entity schema="dbo" name="serialNumbers" color="BED3F4" x="528" y="80" />
 		<entity schema="dbo" name="movementGoods" color="BED3F4" x="272" y="80" />
 		<entity schema="dbo" name="movmentGoodTypes" color="C1D8EE" x="48" y="256" />
-		<entity schema="dbo" name="products" color="F4DDBE" x="1232" y="80" />
-		<entity schema="dbo" name="productsWithCountAndPrice" color="3986C1" x="1936" y="592" />
-		<entity schema="dbo" name="propertyNames" color="BEBEF4" x="2112" y="80" />
 		<entity schema="dbo" name="categories" color="BEBEF4" x="1936" y="80" />
+		<entity schema="dbo" name="products" color="F4DDBE" x="1232" y="80" />
+		<entity schema="dbo" name="propertyNames" color="BEBEF4" x="2112" y="80" />
+		<entity schema="dbo" name="propertyValues" color="BEBEF4" x="2096" y="272" />
+		<entity schema="dbo" name="propertyProducts" color="BEBEF4" x="2320" y="80" />
+		<entity schema="dbo" name="productsWithCountAndPrice" color="3986C1" x="1936" y="592" />
 		<group name="counterparties" color="EEF7EC" >
 			<entity schema="dbo" name="counterparties" />
 			<entity schema="dbo" name="moneyTransfers" />

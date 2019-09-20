@@ -65,7 +65,6 @@
   <ItemGroup>
     <Compile Include="ViewModels\ShowWarrantyPeriodsViewModel.cs" />
     <Compile Include="ViewModels\ShowWarrantyPeriodViewModel.cs" />
-    <Compile Include="ViewModels\WarrantyPeriodViewModel.cs" />
     <Compile Include="Views\ShowWarrantyPeriod.xaml.cs">
       <DependentUpon>ShowWarrantyPeriod.xaml</DependentUpon>
     </Compile>

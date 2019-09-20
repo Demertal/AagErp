@@ -1,12 +1,16 @@
 using System.Collections.Generic;
+using ModelModul.Specifications.BasisSpecifications;
 
 namespace ModelModul.Models
 {
-    public class UnitStorage : ModelBase
+    public class UnitStorage : ModelBase<UnitStorage>
     {
         public UnitStorage()
         {
             ProductsCollection = new List<Product>();
+            ValidationRules = new ExpressionSpecification<UnitStorage>(
+                new ExpressionSpecification<UnitStorage>(u => !string.IsNullOrEmpty(u.Title))
+                    .And(new ExpressionSpecification<UnitStorage>(u => !u.HasErrors)).IsSatisfiedBy());
         }
 
         private int _id;
@@ -28,6 +32,7 @@ namespace ModelModul.Models
             {
                 _title = value;
                 OnPropertyChanged("Title");
+                OnPropertyChanged("IsValid");
             }
         }
 
@@ -74,11 +79,11 @@ namespace ModelModul.Models
             }
         }
 
-        public override bool IsValidate => !string.IsNullOrEmpty(Title);
-
         public override object Clone()
         {
             return new UnitStorage {Id = Id, Title = Title, IsWeightGoods = IsWeightGoods};
         }
+
+        public override bool IsValid => ValidationRules.IsSatisfiedBy().Compile().Invoke(this);
     }
 }

@@ -1,10 +1,23 @@
 using System;
 using System.Globalization;
+using ModelModul.Specifications.BasisSpecifications;
 
 namespace ModelModul.Models
 {
-    public class MovementGoodsInfo : ModelBase
+    public class MovementGoodsInfo : ModelBase<MovementGoodsInfo>
     {
+        public MovementGoodsInfo()
+        {
+            ValidationRules = new ExpressionSpecification<MovementGoodsInfo>(
+                new ExpressionSpecification<MovementGoodsInfo>(m => m.Price != null && m.Price <= 0)
+                    .And(new ExpressionSpecification<MovementGoodsInfo>(m => m.Count > 0))
+                    .And(new ExpressionSpecification<MovementGoodsInfo>(
+                        new ExpressionSpecification<MovementGoodsInfo>(m => m.Product == null || m.Product.UnitStorage == null).Or(
+                            new ExpressionSpecification<MovementGoodsInfo>(m => !m.Product.UnitStorage.IsWeightGoods).Or(
+                                new ExpressionSpecification<MovementGoodsInfo>(m => m.Count.ToString(CultureInfo.InvariantCulture).IndexOfAny(new[] { '.', ',' }) == -1))).IsSatisfiedBy()))
+                    .And(new ExpressionSpecification<MovementGoodsInfo>(c => !c.HasErrors)).IsSatisfiedBy());
+        }
+
         private long _id;
         public long Id
         {
@@ -24,6 +37,7 @@ namespace ModelModul.Models
             {
                 _count = value;
                 OnPropertyChanged("Count");
+                OnPropertyChanged("IsValid");
             }
         }
 
@@ -46,6 +60,7 @@ namespace ModelModul.Models
             {
                 _price = value;
                 OnPropertyChanged("Price");
+                OnPropertyChanged("IsValid");
             }
         }
 
@@ -90,6 +105,7 @@ namespace ModelModul.Models
             {
                 _product = value;
                 OnPropertyChanged("Product");
+                OnPropertyChanged("IsValid");
             }
         }
 
@@ -146,5 +162,7 @@ namespace ModelModul.Models
                 Product = (Product)Product?.Clone()
             };
         }
+
+        public override bool IsValid => ValidationRules.IsSatisfiedBy().Compile().Invoke(this);
     }
 }

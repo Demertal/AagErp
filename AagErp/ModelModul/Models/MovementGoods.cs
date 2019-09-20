@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ModelModul.Specifications.BasisSpecifications;
 
 namespace ModelModul.Models
 {
-    public class MovementGoods : ModelBase
+    public class MovementGoods : ModelBase<MovementGoods>
     {
         public MovementGoods()
         {
@@ -12,6 +13,21 @@ namespace ModelModul.Models
             SerialNumberLogsCollection = new List<SerialNumberLog>();
             MoneyTransfersCollection = new List<MoneyTransfer>();
             MovementGoodsCollection = new List<MovementGoods>();
+            ValidationRules = new ExpressionSpecification<MovementGoods>(
+                new ExpressionSpecification<MovementGoods>(m => m.MovmentGoodType != null)
+                    .And(new ExpressionSpecification<MovementGoods>(
+                        new ExpressionSpecification<MovementGoods>(m => m.MovmentGoodType.Code == "purchase")
+                            .And(new ExpressionSpecification<MovementGoods>(m => m.Rate == null || m.Rate <= 0))
+                            .And(new ExpressionSpecification<MovementGoods>(m =>
+                                m.EquivalentRate == null || m.EquivalentRate <= 0))
+                            .And(new ExpressionSpecification<MovementGoods>(m =>
+                                m.IdArrivalStore == null || m.IdArrivalStore <= 0))
+                            .And(new ExpressionSpecification<MovementGoods>(m =>
+                                m.IdCurrency == null || m.IdCurrency <= 0))
+                            .And(new ExpressionSpecification<MovementGoods>(m =>
+                                m.IdEquivalentCurrency == null || m.IdEquivalentCurrency <= 0)).IsSatisfiedBy()))
+                    .And(new ExpressionSpecification<MovementGoods>(m => !m.HasErrors))
+                    .IsSatisfiedBy());
         }
 
         private Guid _id;
@@ -44,6 +60,7 @@ namespace ModelModul.Models
             {
                 _rate = value;
                 OnPropertyChanged("Rate");
+                OnPropertyChanged("IsValid");
             }
         }
 
@@ -55,6 +72,7 @@ namespace ModelModul.Models
             {
                 _equivalentRate = value;
                 OnPropertyChanged("EquivalentRate");
+                OnPropertyChanged("IsValid");
             }
         }
 
@@ -77,6 +95,7 @@ namespace ModelModul.Models
             {
                 _idArrivalStore = value;
                 OnPropertyChanged("IdArrivalStore");
+                OnPropertyChanged("IsValid");
             }
         }
 
@@ -88,6 +107,7 @@ namespace ModelModul.Models
             {
                 _idDisposalStore = value;
                 OnPropertyChanged("IdDisposalStore");
+                OnPropertyChanged("IsValid");
             }
         }
 
@@ -99,6 +119,7 @@ namespace ModelModul.Models
             {
                 _idCounterparty = value;
                 OnPropertyChanged("IdCounterparty");
+                OnPropertyChanged("IsValid");
             }
         }
 
@@ -110,6 +131,7 @@ namespace ModelModul.Models
             {
                 _idCurrency = value;
                 OnPropertyChanged("IdCurrency");
+                OnPropertyChanged("IsValid");
             }
         }
 
@@ -121,6 +143,7 @@ namespace ModelModul.Models
             {
                 _idEquivalentCurrency = value;
                 OnPropertyChanged("IdEquivalentCurrency");
+                OnPropertyChanged("IsValid");
             }
         }
 
@@ -231,6 +254,7 @@ namespace ModelModul.Models
             {
                 _movmentGoodType = value;
                 OnPropertyChanged("MovmentGoodType");
+                OnPropertyChanged("IsValid");
             }
         }
 
@@ -303,42 +327,42 @@ namespace ModelModul.Models
                             switch (columnName)
                             {
                                 case "Rate":
-                                    if (Rate == null || Rate < 0)
+                                    if (Rate == null || Rate <= 0)
                                     {
                                         error = "Курс не может быть отрицательным";
                                     }
 
                                     break;
                                 case "EquivalentRate":
-                                    if (EquivalentRate == null || Rate < 0)
+                                    if (EquivalentRate == null || Rate <= 0)
                                     {
                                         error = "Курс не может быть отрицательным";
                                     }
 
                                     break;
                                 case "IdArrivalStore":
-                                    if (IdArrivalStore == null || IdArrivalStore < 0)
+                                    if (IdArrivalStore == null || IdArrivalStore <= 0)
                                     {
                                         error = "Требуется указать склад";
                                     }
 
                                     break;
                                 case "IdCounterparty":
-                                    if (IdCounterparty == null || IdCounterparty < 0)
+                                    if (IdCounterparty == null || IdCounterparty <= 0)
                                     {
                                         error = "Требуется указать поставщика";
                                     }
 
                                     break;
                                 case "IdCurrency":
-                                    if (IdCurrency == null || IdCurrency < 0)
+                                    if (IdCurrency == null || IdCurrency <= 0)
                                     {
                                         error = "Требуется указать валюту закупки";
                                     }
 
                                     break;
                                 case "IdEquivalentCurrency":
-                                    if (IdEquivalentCurrency == null || IdEquivalentCurrency < 0)
+                                    if (IdEquivalentCurrency == null || IdEquivalentCurrency <= 0)
                                     {
                                         error = "Требуется указать валюту эквивалента";
                                     }
@@ -348,7 +372,6 @@ namespace ModelModul.Models
                         break;
                     }
 
-                Error = error;
                 return error;
             }
         }
@@ -374,5 +397,7 @@ namespace ModelModul.Models
                     new List<MovementGoodsInfo>(MovementGoodsInfosCollection.Select(m => (MovementGoodsInfo) m.Clone()))
             };
         }
+
+        public override bool IsValid => ValidationRules.IsSatisfiedBy().Compile().Invoke(this);
     }
 }

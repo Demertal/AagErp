@@ -1,6 +1,7 @@
 ﻿using ModelModul.Models;
 using ModelModul.MVVM;
 using ModelModul.Repositories;
+using ModelModul.ViewModels;
 
 namespace StoreModul.ViewModels
 {

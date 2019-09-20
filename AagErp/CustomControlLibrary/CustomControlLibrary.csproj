@@ -162,7 +162,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="CustomControl\WatermarkTextBox.cs" />
-    <Compile Include="DataGridRowSelectedBehavior.cs" />
+    <Compile Include="MouseDoubleClickCommandBehavior.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

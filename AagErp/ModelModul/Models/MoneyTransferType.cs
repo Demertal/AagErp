@@ -2,7 +2,7 @@
 
 namespace ModelModul.Models
 {
-    public class MoneyTransferType : ModelBase
+    public class MoneyTransferType : ModelBase<MoneyTransferType>
     {
         public MoneyTransferType()
         {
@@ -52,5 +52,7 @@ namespace ModelModul.Models
                 OnPropertyChanged("MoneyTransfersCollection");
             }
         }
+
+        public override bool IsValid => true;
     }
 }

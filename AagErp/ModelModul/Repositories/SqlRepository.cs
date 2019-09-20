@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ModelModul.Specifications.BasisSpecifications;
@@ -19,69 +20,81 @@ namespace ModelModul.Repositories
             Db = new AutomationAccountingGoodsContext(ConnectionTools.ConnectionString);
         }
 
-        public async Task<int> GetCountAsync(ISpecification<TEntity> where = null, Dictionary<string, SortingTypes> order = null, int skip = 0, int take = -1)
+        public async Task<int> GetCountAsync(CancellationToken cts = new CancellationToken(), ISpecification<TEntity> where = null, Dictionary<string, SortingTypes> order = null, int skip = 0, int take = -1)
         {
-            var query = Db.Set<TEntity>().AsQueryable();
-            if (where != null) query = query.Where(where.IsSatisfiedBy());
-            if (order != null) query = query.OrderUsingSortExpression(order);
-            if (skip != 0) query = query.Skip(skip);
-            if (take != -1) query = query.Take(take);
-            return await query.CountAsync();
+            return await Task.Run(() =>
+            {
+                var query = Db.Set<TEntity>().AsQueryable();
+                if (where != null) query = query.Where(where.IsSatisfiedBy());
+                if (order != null) query = query.OrderUsingSortExpression(order);
+                if (skip != 0) query = query.Skip(skip);
+                if (take != -1) query = query.Take(take);
+                return query.CountAsync(cts);
+            }, cts);
         }
 
-        public async Task<bool> AnyAsync(ISpecification<TEntity> where = null, Dictionary<string, SortingTypes> order = null, int skip = 0, int take = -1)
+        public async Task<bool> AnyAsync(CancellationToken cts = new CancellationToken(), ISpecification<TEntity> where = null, Dictionary<string, SortingTypes> order = null, int skip = 0, int take = -1)
         {
-            var query = Db.Set<TEntity>().AsQueryable();
-            if (where != null) query = query.Where(where.IsSatisfiedBy());
-            if (order != null) query = query.OrderUsingSortExpression(order);
-            if (skip != 0) query = query.Skip(skip);
-            if (take != -1) query = query.Take(take);
-            return await query.AnyAsync();
+            return await Task.Run(() =>
+            {
+                var query = Db.Set<TEntity>().AsQueryable();
+                if (where != null) query = query.Where(where.IsSatisfiedBy());
+                if (order != null) query = query.OrderUsingSortExpression(order);
+                if (skip != 0) query = query.Skip(skip);
+                if (take != -1) query = query.Take(take);
+                return query.AnyAsync(cts);
+            }, cts);
         }
 
-        public async Task<IEnumerable<TEntity>> GetListAsync(ISpecification<TEntity> where = null, Dictionary<string, SortingTypes> order = null, int skip = 0, int take = -1, params Expression<Func<TEntity, Object>>[] include)
+        public async Task<IEnumerable<TEntity>> GetListAsync(CancellationToken cts = new CancellationToken(), ISpecification<TEntity> where = null, Dictionary<string, SortingTypes> order = null, int skip = 0, int take = -1, params Expression<Func<TEntity, Object>>[] include)
         {
-            var query = Db.Set<TEntity>().AsQueryable();
-            if (where != null) query = query.Where(where.IsSatisfiedBy());
-            if (order != null) query = query.OrderUsingSortExpression(order);
-            if (skip != 0) query = query.Skip(skip);
-            if (take != -1) query = query.Take(take);
-            if (include != null) query = query.ToLoad(include);
-            return await query.AsNoTracking().ToListAsync();
+            return await Task.Run(() =>
+            {
+                var query = Db.Set<TEntity>().AsQueryable();
+                if (where != null) query = query.Where(where.IsSatisfiedBy());
+                if (order != null) query = query.OrderUsingSortExpression(order);
+                if (skip != 0) query = query.Skip(skip);
+                if (take != -1) query = query.Take(take);
+                if (include != null) query = query.ToLoad(include);
+                return query.AsNoTracking().ToListAsync(cts);
+            }, cts);
         }
 
-        public async Task<TEntity> GetItemAsync(ISpecification<TEntity> where = null, Dictionary<string, SortingTypes> order = null, int skip = 0)
+        public async Task<TEntity> GetItemAsync(CancellationToken cts = new CancellationToken(), ISpecification<TEntity> where = null, Dictionary<string, SortingTypes> order = null, int skip = 0)
         {
-            var query = Db.Set<TEntity>().AsQueryable();
-            if (where != null) query = query.Where(where.IsSatisfiedBy());
-            if (order != null) query = query.OrderUsingSortExpression(order);
-            if (skip != 0) query = query.Skip(skip);
-            return await query.AsNoTracking().FirstOrDefaultAsync();
+            return await Task.Run(() =>
+            {
+                var query = Db.Set<TEntity>().AsQueryable();
+                if (where != null) query = query.Where(where.IsSatisfiedBy());
+                if (order != null) query = query.OrderUsingSortExpression(order);
+                if (skip != 0) query = query.Skip(skip);
+                return query.AsNoTracking().FirstOrDefaultAsync(cts);
+            }, cts);
         }
 
-        public async Task<TEntity> GetItemAsync(int id)
+        public async Task<TEntity> GetItemAsync(int id, CancellationToken cts = new CancellationToken())
         {
-            return await Db.Set<TEntity>().FindAsync(id);
+            return await Task.Run(() => Db.Set<TEntity>().FindAsync(id, cts), cts);
         }
 
-        public async Task<TEntity> GetItemAsync(long id)
+        public async Task<TEntity> GetItemAsync(long id, CancellationToken cts = new CancellationToken())
         {
-            return await Db.Set<TEntity>().FindAsync(id);
+            return await Task.Run(() => Db.Set<TEntity>().FindAsync(id, cts), cts);
         }
 
-        public virtual async Task<TEntity> GetItemAsync(Guid id)
+        public virtual async Task<TEntity> GetItemAsync(Guid id, CancellationToken cts = new CancellationToken())
         {
-            return await Db.Set<TEntity>().FindAsync(id);
+            return await Task.Run(() => Db.Set<TEntity>().FindAsync(id, cts), cts);
         }
 
-        public async Task CreateAsync(TEntity item)
+        public async Task CreateAsync(TEntity item, CancellationToken cts = new CancellationToken())
         {
             using (var transaction = Db.Database.BeginTransaction())
             {
                 try
                 {
                     Db.Set<TEntity>().Add(item);
-                    await Db.SaveChangesAsync();
+                    await Db.SaveChangesAsync(cts);
                     transaction.Commit();
                 }
                 catch (Exception)
@@ -92,14 +105,14 @@ namespace ModelModul.Repositories
             }
         }
 
-        public async Task UpdateAsync(TEntity item)
+        public async Task UpdateAsync(TEntity item, CancellationToken cts = new CancellationToken())
         {
             using (var transaction = Db.Database.BeginTransaction())
             {
                 try
                 {
                     Db.Set<TEntity>().Update(item);
-                    await Db.SaveChangesAsync();
+                    await Db.SaveChangesAsync(cts);
                     transaction.Commit();
                 }
                 catch (Exception)
@@ -110,16 +123,14 @@ namespace ModelModul.Repositories
             }
         }
 
-        public async Task DeleteAsync(TEntity item)
+        public async Task DeleteAsync(TEntity item, CancellationToken cts = new CancellationToken())
         {
             using (var transaction = Db.Database.BeginTransaction())
             {
                 try
                 {
-                    //var counterparty = await GetItemAsync(item.Id);
-                    //if (counterparty == null) throw new Exception("Контрагент не найден");
                     Db.Entry(item).State = EntityState.Deleted;
-                    await Db.SaveChangesAsync();
+                    await Db.SaveChangesAsync(cts);
                     transaction.Commit();
                 }
                 catch (Exception)

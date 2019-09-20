@@ -15,11 +15,10 @@ namespace ModelModul.Configurations
             builder.Property(p => p.Barcode).HasMaxLength(13);
             builder.Property(p => p.Description).HasColumnType("nvarchar(max)");
             builder.Ignore(p => p.CountsProductCollection);
-            builder.Ignore(p => p.IsValidate);
             builder.Ignore(p => p.EquivalentCostForExistingProductsCollection);
             builder.Ignore(p => p.Count);
             builder.Ignore(p => p.Price);
-            builder.Ignore(p => p.Error);
+            builder.Ignore(c => c.ValidationRules);
             builder.HasMany(p => p.PropertyProductsCollection).WithOne(p => p.Product).HasForeignKey(p => p.IdProduct)
                 .IsRequired();
             builder.HasMany(p => p.InvoiceInfosCollection).WithOne(i => i.Product).HasForeignKey(i => i.IdProduct).IsRequired();

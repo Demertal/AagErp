@@ -66,5 +66,18 @@ namespace ModelModul.Specifications
 
             return temp;
         }
+
+        public static ExpressionSpecification<Product> GetProductsById([Annotations.NotNull]params long[] idCollection)
+        {
+            var temp = new ExpressionSpecification<Product>(p => p.Id == idCollection[0]);
+            for (int i = 1; i < idCollection.Length; i++)
+            {
+                temp = new ExpressionSpecification<Product>(temp
+                    .Or(new ExpressionSpecification<Product>(p => p.Id == idCollection[i]))
+                    .IsSatisfiedBy());
+            }
+
+            return temp;
+        }
     }
 }

@@ -3,6 +3,7 @@ using System.Windows;
 using ModelModul.Models;
 using ModelModul.MVVM;
 using ModelModul.Repositories;
+using ModelModul.ViewModels;
 using Prism.Services.Dialogs;
 
 namespace PropertyModul.ViewModels

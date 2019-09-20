@@ -1,6 +1,6 @@
 namespace ModelModul.Models
 {
-    public class InvoiceInfo : ModelBase
+    public class InvoiceInfo : ModelBase<InvoiceInfo>
     {
         private int _id;
         public int Id
@@ -67,5 +67,7 @@ namespace ModelModul.Models
                 OnPropertyChanged("Product");
             }
         }
+
+        public override bool IsValid => true;
     }
 }

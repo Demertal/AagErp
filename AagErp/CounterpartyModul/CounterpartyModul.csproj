@@ -65,7 +65,6 @@
   <ItemGroup>
     <Compile Include="CounterpartyModul.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ViewModels\CounterpartyViewModel.cs" />
     <Compile Include="ViewModels\ShowCounterpartyViewModel.cs" />
     <Compile Include="ViewModels\ShowCounterpartiesViewModel.cs" />
     <Compile Include="Views\ShowCounterparty.xaml.cs">

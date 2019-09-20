@@ -3,11 +3,11 @@
 namespace CategoryModul.Views
 {
     /// <summary>
-    /// Логика взаимодействия для RenameCategory.xaml
+    /// Логика взаимодействия для ShowCategory.xaml
     /// </summary>
-    public partial class RenameCategory : UserControl
+    public partial class ShowCategory : UserControl
     {
-        public RenameCategory()
+        public ShowCategory()
         {
             InitializeComponent();
         }

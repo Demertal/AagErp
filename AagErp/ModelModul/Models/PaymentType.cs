@@ -2,7 +2,7 @@
 
 namespace ModelModul.Models
 {
-    public class PaymentType : ModelBase
+    public class PaymentType : ModelBase<PaymentType>
     {
         public PaymentType()
         {
@@ -52,5 +52,7 @@ namespace ModelModul.Models
                 OnPropertyChanged("CounterpartiesCollection");
             }
         }
+
+        public override bool IsValid => true;
     }
 }

@@ -84,6 +84,7 @@
                                             <ColumnDefinition Width="Auto" SharedSizeGroup="PurchaseCurrencyGroup"/>
                                             <ColumnDefinition Width="Auto" SharedSizeGroup="SalePriceGroup"/>
                                             <ColumnDefinition Width="Auto" SharedSizeGroup="RevaluationPriceGroup"/>
+                                            <ColumnDefinition Width="Auto" SharedSizeGroup="DefaultCurrencyGroup"/>
                                         </Grid.ColumnDefinitions>
                                         <Border Style="{StaticResource BorderHeader}" Grid.Column="0">
                                             <Grid>
@@ -122,7 +123,13 @@
                                             </Grid>
                                         </Border>
                                         <Border Style="{StaticResource BorderHeader}" Grid.Column="6">
-                                            <TextBlock Text="Переоцененная"/>
+                                            <Grid>
+                                                <TextBlock Text="Переоцененная"/>
+                                                <Rectangle Style="{StaticResource RectangleHeader}"/>
+                                            </Grid>
+                                        </Border>
+                                        <Border Style="{StaticResource BorderHeader}" Grid.Column="7">
+                                            <TextBlock Text="Основная валюта"/>
                                         </Border>
                                     </Grid>
                                     <Rectangle Style="{StaticResource RectangleHeader}" HorizontalAlignment="Stretch" VerticalAlignment="Center" Width="Auto" Grid.Row="1" Margin="-2,0"/>
@@ -167,6 +174,7 @@
                             <ColumnDefinition Width="Auto" SharedSizeGroup="PurchaseCurrencyGroup"/>
                             <ColumnDefinition Width="Auto" SharedSizeGroup="SalePriceGroup"/>
                             <ColumnDefinition Width="Auto" SharedSizeGroup="RevaluationPriceGroup"/>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="DefaultCurrencyGroup"/>
                         </Grid.ColumnDefinitions>
                         <Grid Grid.Column="0" Margin="6,0,0,0">
                             <Rectangle Style="{StaticResource RectangleRow}"/>
@@ -174,8 +182,7 @@
                         </Grid>
                         <Grid Grid.Column="1" Margin="6,0,0,0">
                             <Rectangle Style="{StaticResource RectangleRow}"/>
-                            <ComboBox DisplayMemberPath="Title" SelectedValuePath="Id" SelectedValue="{Binding  Product.IdUnitStorage, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False"
-                                      ItemsSource="{Binding DataContext.UnitStoragesList, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:RevaluationGood}}, UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBlock Text="{Binding Product.UnitStorage.Title, UpdateSourceTrigger=PropertyChanged}"/>
                         </Grid>
                         <Grid Grid.Column="2" Margin="6,0,0,0">
                             <Rectangle Style="{StaticResource RectangleRow}"/>
@@ -199,8 +206,8 @@
                                 <TextBlock.Text>
                                     <MultiBinding Converter="{StaticResource SelectedPurchasePriceConverter}" UpdateSourceTrigger="PropertyChanged" StringFormat="F2">
                                         <MultiBinding.Bindings>
-                                            <Binding Path="Product.EquivalentCostForExistingProductsCollection" UpdateSourceTrigger="PropertyChanged"/>
-                                            <Binding Path="DataContext.CurrenciesList" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type local:RevaluationGood}}" UpdateSourceTrigger="PropertyChanged"/>
+                                            <Binding Path="Product.EquivalentCostForExistingProductsCollection" UpdateSourceTrigger="PropertyChanged" Mode="OneWay"/>
+                                            <Binding Path="DataContext.CurrenciesList" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type local:RevaluationGood}}" UpdateSourceTrigger="PropertyChanged" Mode="OneWay"/>
                                         </MultiBinding.Bindings>
                                     </MultiBinding>
                                 </TextBlock.Text>
@@ -213,8 +220,8 @@
                                 <ComboBox.SelectedValue>
                                     <MultiBinding Converter="{StaticResource SelectedPurchaseCurrencyConverter}" UpdateSourceTrigger="PropertyChanged">
                                         <MultiBinding.Bindings>
-                                            <Binding Path="Product.EquivalentCostForExistingProductsCollection" UpdateSourceTrigger="PropertyChanged"/>
-                                            <Binding Path="DataContext.CurrenciesList" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type local:RevaluationGood}}" UpdateSourceTrigger="PropertyChanged"/>
+                                            <Binding Path="Product.EquivalentCostForExistingProductsCollection" UpdateSourceTrigger="PropertyChanged" Mode="OneWay"/>
+                                            <Binding Path="DataContext.CurrenciesList" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type local:RevaluationGood}}" UpdateSourceTrigger="PropertyChanged" Mode="OneWay"/>
                                         </MultiBinding.Bindings>
                                     </MultiBinding>
                                 </ComboBox.SelectedValue>
@@ -228,6 +235,10 @@
                             <Rectangle Style="{StaticResource RectangleRow}"/>
                             <TextBlock Text="{Binding Path=Price, UpdateSourceTrigger=PropertyChanged, StringFormat=F2, ValidatesOnDataErrors=True}"/>
                         </Grid>
+                        <Grid Grid.Column="7" Margin="6,0,0,0">
+                            <Rectangle Style="{StaticResource RectangleRow}"/>
+                            <TextBlock Text="{Binding Path=DataContext.DefaultCurrency.Title, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:RevaluationGood}}, UpdateSourceTrigger=PropertyChanged}"/>
+                        </Grid>
                     </Grid>
                 </HierarchicalDataTemplate>
                 <DataTemplate DataType="{x:Type models:EquivalentCostForExistingProduct}">
@@ -240,6 +251,7 @@
                             <ColumnDefinition Width="Auto" SharedSizeGroup="PurchaseCurrencyGroup"/>
                             <ColumnDefinition Width="Auto" SharedSizeGroup="SalePriceGroup"/>
                             <ColumnDefinition Width="Auto" SharedSizeGroup="RevaluationPriceGroup"/>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="DefaultCurrencyGroup"/>
                         </Grid.ColumnDefinitions>
                         <Grid Grid.Column="0" Margin="10,0,0,0"/>
                         <Grid Grid.Column="1" Margin="10,0,0,0"/>
@@ -260,6 +272,7 @@
                             <Rectangle Style="{StaticResource RectangleRow}"/>
                         </Grid>
                         <Grid Grid.Column="6"/>
+                        <Grid Grid.Column="7"/>
                     </Grid>
                 </DataTemplate>
             </TreeView.Resources>

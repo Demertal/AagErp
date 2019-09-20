@@ -11,7 +11,7 @@ namespace ModelModul.Configurations
             builder.ToTable("unitStorages");
             builder.HasKey(u => u.Id);
             builder.Property(u => u.Title).IsRequired().HasMaxLength(20);
-            builder.Ignore(u => u.Error);
+            builder.Ignore(c => c.ValidationRules);
             builder.HasMany(u => u.ProductsCollection).WithOne(p => p.UnitStorage).HasForeignKey(p => p.IdUnitStorage)
                 .IsRequired();
         }

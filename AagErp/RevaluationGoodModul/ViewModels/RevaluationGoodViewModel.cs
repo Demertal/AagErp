@@ -4,12 +4,13 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 using ModelModul.Models;
 using ModelModul.MVVM;
 using ModelModul.Repositories;
+using ModelModul.Specifications;
 using Prism.Commands;
 using Prism.Regions;
 using Prism.Services.Dialogs;
@@ -19,6 +20,8 @@ namespace RevaluationGoodModul.ViewModels
 {
     public class RevaluationGoodViewModel : ViewModelBase
     {
+        private CancellationTokenSource _cancelTokenSource;
+
         #region Properties
 
         //private string _barcode;
@@ -29,7 +32,11 @@ namespace RevaluationGoodModul.ViewModels
             get => _revaluationProduct.PriceProductsCollection as ObservableCollection<PriceProduct>;
             set
             {
+                if (_revaluationProduct.PriceProductsCollection != null)
+                    RevaluationPriceProductsList.CollectionChanged -= OnRevaluationPriceProductsCollectionChanged;
                 _revaluationProduct.PriceProductsCollection = value;
+                if(_revaluationProduct.PriceProductsCollection != null)
+                    RevaluationPriceProductsList.CollectionChanged += OnRevaluationPriceProductsCollectionChanged;
                 RaisePropertyChanged("RevaluationPriceProductsList");
             }
         }
@@ -52,7 +59,14 @@ namespace RevaluationGoodModul.ViewModels
             }
         }
 
-        public bool IsValidate => RevaluationPriceProductsList.Count != 0 && RevaluationPriceProductsList.All(p => p.IsValidate);
+        private Currency _defaultCurrency;
+        public Currency DefaultCurrency
+        {
+            get => _defaultCurrency;
+            set => SetProperty(ref _defaultCurrency, value);
+        }
+
+        public bool IsValidate => RevaluationPriceProductsList.Count != 0 && RevaluationPriceProductsList.All(p => p.IsValid);
 
         public DelegateCommand AddProductCommand { get; }
         public DelegateCommand PostCommand { get; }
@@ -113,8 +127,6 @@ namespace RevaluationGoodModul.ViewModels
             //_barcode = "";
             _revaluationProduct = new RevaluationProduct();
             RevaluationPriceProductsList = new ObservableCollection<PriceProduct>();
-            RevaluationPriceProductsList.CollectionChanged += OnRevaluationPriceProductsCollectionChanged;
-            LoadAsync();
             RaisePropertyChanged("IsValidate");
             RaisePropertyChanged("RevaluationPriceProductsList");
         }
@@ -133,26 +145,91 @@ namespace RevaluationGoodModul.ViewModels
             else priceProduct.Price = 0;
         }
 
-        private void LoadAsync()
+        private async void LoadAsync()
         {
+            _cancelTokenSource?.Cancel();
+            CancellationTokenSource newCts = new CancellationTokenSource();
+            _cancelTokenSource = newCts;
+
             try
             {
                 IRepository<Currency> currencyRepository = new SqlCurrencyRepository();
                 IRepository<UnitStorage> unitStorageRepository = new SqlUnitStorageRepository();
 
-                var loadUnitStorage = Task.Run(() => unitStorageRepository.GetListAsync());
-                var loadCurrency = Task.Run(() => currencyRepository.GetListAsync());
+                var loadUnitStorage = Task.Run(() => unitStorageRepository.GetListAsync(_cancelTokenSource.Token),
+                    _cancelTokenSource.Token);
+                var loadCurrency = Task.Run(() => currencyRepository.GetListAsync(_cancelTokenSource.Token),
+                    _cancelTokenSource.Token);
 
-                Task.WaitAll(loadUnitStorage, loadCurrency);
+                await Task.WhenAll(loadUnitStorage, loadCurrency);
 
 
                 UnitStoragesList = new ObservableCollection<UnitStorage>(loadUnitStorage.Result);
                 CurrenciesList = new ObservableCollection<Currency>(loadCurrency.Result);
+                Currency temp = CurrenciesList.FirstOrDefault(c => c.IsDefault);
+                DefaultCurrency = temp ?? new Currency();
             }
+            catch (OperationCanceledException) { }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+
+            if (_cancelTokenSource == newCts)
+                _cancelTokenSource = null;
+        }
+
+        private async void RelodAsync()
+        {
+            LoadAsync();
+
+            if (RevaluationPriceProductsList.Count == 0) return;
+
+            _cancelTokenSource?.Cancel();
+            CancellationTokenSource newCts = new CancellationTokenSource();
+            _cancelTokenSource = newCts;
+
+            try
+            {
+                SqlProductRepository productRepository = new SqlProductRepository();
+
+                long[] idarray = RevaluationPriceProductsList.Select(r => r.Product.Id).ToArray();
+
+                List<Product> products = (await productRepository.GetProductsWithCountAndPrice(_cancelTokenSource.Token,
+                        ProductSpecification.GetProductsById(idarray), null, 0, -1, p => p.PriceGroup,
+                        p => p.UnitStorage))
+                    .ToList();
+
+                Task<(long id, Task<IEnumerable<EquivalentCostForExistingProduct>> equivalentCosts)>[] tasksEquivalentCost = products.Select(p => Task.Run(() =>
+                {
+                    SqlProductRepository productRepositoryEquivalentCost = new SqlProductRepository();
+                    return (p.Id, productRepositoryEquivalentCost.GetEquivalentCostsForЕxistingProduct(p.Id, _cancelTokenSource.Token));
+                }, _cancelTokenSource.Token)).ToArray();
+
+                await Task.WhenAll(tasksEquivalentCost);
+
+                List<(long id, Task<IEnumerable<EquivalentCostForExistingProduct>> equivalentCosts)> resultTask =
+                    tasksEquivalentCost.Select(t => t.Result).ToList();
+
+                RevaluationPriceProductsList = new ObservableCollection<PriceProduct>();
+
+                foreach (var product in products)
+                {
+                    product.EquivalentCostForExistingProductsCollection =
+                        new ObservableCollection<EquivalentCostForExistingProduct>(resultTask
+                            .First(r => r.id == product.Id).equivalentCosts.Result);
+                    product.Count = product.EquivalentCostForExistingProductsCollection.Sum(e => e.Count);
+                    RevaluationPriceProductsList.Add(new PriceProduct { IdProduct = product.Id, Product = product });
+                }
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            if (_cancelTokenSource == newCts)
+                _cancelTokenSource = null;
         }
 
         #region DelegateCommand
@@ -235,7 +312,7 @@ namespace RevaluationGoodModul.ViewModels
         //    }
         //}
 
-        private void InsertProduct(Product product)
+        private async void InsertProduct(Product product)
         {
             try
             {
@@ -252,7 +329,7 @@ namespace RevaluationGoodModul.ViewModels
                 var equivalentCostLoad = Task.Run(() =>
                     productRepositoryEquivalentCost.GetEquivalentCostsForЕxistingProduct(product.Id));
 
-                Task.WaitAll(currentPriceLoad, equivalentCostLoad);
+                await Task.WhenAll(currentPriceLoad, equivalentCostLoad);
 
                 product.Price = currentPriceLoad.Result;
                 product.EquivalentCostForExistingProductsCollection =
@@ -283,6 +360,8 @@ namespace RevaluationGoodModul.ViewModels
             //    InsertProduct(product);
             //}
 
+            RelodAsync();
+
             RaisePropertyChanged("RevaluationProductsInfos");
             RaisePropertyChanged("IsValidate");
         }
@@ -294,6 +373,8 @@ namespace RevaluationGoodModul.ViewModels
 
         public override void OnNavigatedFrom(NavigationContext navigationContext)
         {
+            _cancelTokenSource?.Cancel();
+            _cancelTokenSource = null;
         }
 
         #endregion

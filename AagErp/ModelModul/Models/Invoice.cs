@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace ModelModul.Models
 {
-    public class Invoice : ModelBase
+    public class Invoice : ModelBase<Invoice>
     {
         public Invoice()
         {
@@ -30,5 +30,7 @@ namespace ModelModul.Models
                 OnPropertyChanged("InvoiceInfosCollection");
             }
         }
+
+        public override bool IsValid => true;
     }
 }

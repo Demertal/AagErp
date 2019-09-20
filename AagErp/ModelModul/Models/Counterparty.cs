@@ -1,13 +1,18 @@
 using System.Collections.Generic;
+using ModelModul.Specifications.BasisSpecifications;
 
 namespace ModelModul.Models
 {
-    public class Counterparty : ModelBase
+    public class Counterparty : ModelBase<Counterparty>
     {
         public Counterparty()
         {
             MoneyTransfersCollection = new List<MoneyTransfer>();
             MovementGoodsCollection = new List<MovementGoods>();
+            ValidationRules = new ExpressionSpecification<Counterparty>(
+                new ExpressionSpecification<Counterparty>(c => !string.IsNullOrEmpty(c.Title))
+                    .And(new ExpressionSpecification<Counterparty>(c => c.IdPaymentType > 0))
+                    .And(new ExpressionSpecification<Counterparty>(c => !c.HasErrors)).IsSatisfiedBy());
         }
 
         private int _id;
@@ -29,7 +34,7 @@ namespace ModelModul.Models
             {
                 _title = value;
                 OnPropertyChanged("Title");
-                OnPropertyChanged("IsValidate");
+                OnPropertyChanged("IsValid");
             }
         }
 
@@ -96,7 +101,7 @@ namespace ModelModul.Models
             {
                 _idPaymentType = value;
                 OnPropertyChanged("IdPaymentType");
-                OnPropertyChanged("IsValidate");
+                OnPropertyChanged("IsValid");
             }
         }
 
@@ -162,8 +167,6 @@ namespace ModelModul.Models
             }
         }
 
-        public override bool IsValidate => !string.IsNullOrEmpty(Title) && IdPaymentType != 0;
-
         public override object Clone()
         {
             return new Counterparty
@@ -178,5 +181,7 @@ namespace ModelModul.Models
                 WhoIsIt = WhoIsIt
             };
         }
+
+        public override bool IsValid => ValidationRules.IsSatisfiedBy().Compile().Invoke(this);
     }
 }

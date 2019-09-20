@@ -12,7 +12,7 @@ namespace ModelModul.Configurations
             builder.HasKey(s => s.Id);
             builder.Property(s => s.Value).IsRequired().HasMaxLength(20).IsUnicode(false);
             builder.Property(s => s.DateCreated).HasColumnType("datetime").HasDefaultValueSql("getdate()");
-            builder.Ignore(s => s.Error);
+            builder.Ignore(c => c.ValidationRules);
             builder.HasMany(s => s.SerialNumberLogsCollection).WithOne(s => s.SerialNumber).HasForeignKey(s => s.IdSerialNumber)
                 .IsRequired();
             builder.HasMany(s => s.WarrantiesCollection).WithOne(w => w.SerialNumber).HasForeignKey(w => w.IdSerialNumber)

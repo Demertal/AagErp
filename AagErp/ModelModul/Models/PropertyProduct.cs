@@ -1,6 +1,6 @@
 namespace ModelModul.Models
 {
-    public class PropertyProduct : ModelBase
+    public class PropertyProduct : ModelBase<PropertyProduct>
     {
         private long _id;
         public long Id
@@ -78,5 +78,7 @@ namespace ModelModul.Models
                 OnPropertyChanged("PropertyValue");
             }
         }
+
+        public override bool IsValid => true;
     }
 }

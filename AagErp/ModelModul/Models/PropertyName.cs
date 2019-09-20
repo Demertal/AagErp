@@ -1,15 +1,19 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using ModelModul.Specifications.BasisSpecifications;
 
 namespace ModelModul.Models
 {
-    public class PropertyName : ModelBase
+    public class PropertyName : ModelBase<PropertyName>
     {
         public PropertyName()
         {
             PropertyProductsCollection = new ObservableCollection<PropertyProduct>();
             PropertyValuesCollection = new ObservableCollection<PropertyValue>();
+            ValidationRules = new ExpressionSpecification<PropertyName>(
+                new ExpressionSpecification<PropertyName>(p => !string.IsNullOrEmpty(p.Title))
+                    .And(new ExpressionSpecification<PropertyName>(p => !p.HasErrors)).IsSatisfiedBy());
         }
 
         private int _id;
@@ -31,11 +35,12 @@ namespace ModelModul.Models
             {
                 _title = value;
                 OnPropertyChanged("Title");
+                OnPropertyChanged("IsValid");
             }
         }
 
         private int? _idCategory;
-        public int? IdCategory
+        public virtual int? IdCategory
         {
             get => _idCategory;
             set
@@ -99,7 +104,6 @@ namespace ModelModul.Models
             }
         }
 
-        public override bool IsValidate => !string.IsNullOrEmpty(Title);
         public override object Clone()
         {
             return new PropertyName
@@ -112,5 +116,7 @@ namespace ModelModul.Models
                     : new List<PropertyValue>(PropertyValuesCollection.Select(p => (PropertyValue) p.Clone()))
             };
         }
+
+        public override bool IsValid => ValidationRules.IsSatisfiedBy().Compile().Invoke(this);
     }
 }

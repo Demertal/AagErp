@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace ModelModul.Models
 {
-    public class RevaluationProduct : ModelBase
+    public class RevaluationProduct : ModelBase<RevaluationProduct>
     {
         public RevaluationProduct()
         {
@@ -54,5 +54,7 @@ namespace ModelModul.Models
                 PriceProductsCollection = new List<PriceProduct>(PriceProductsCollection.Select(pp => (PriceProduct) pp.Clone()).ToList())
             };
         }
+
+        public override bool IsValid => true;
     }
 }

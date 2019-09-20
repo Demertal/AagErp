@@ -11,7 +11,7 @@ namespace ModelModul.Configurations
             builder.ToTable("warrantyPeriods");
             builder.HasKey(w => w.Id);
             builder.Property(w => w.Period).IsRequired().HasMaxLength(20);
-            builder.Ignore(w => w.Error);
+            builder.Ignore(c => c.ValidationRules);
             builder.HasMany(w => w.ProductsCollection).WithOne(p => p.WarrantyPeriod).HasForeignKey(p => p.IdWarrantyPeriod).IsRequired();
         }
     }
