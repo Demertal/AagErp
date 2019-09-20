@@ -9,7 +9,7 @@ namespace ModelModul.Models
         public MovementGoodsInfo()
         {
             ValidationRules = new ExpressionSpecification<MovementGoodsInfo>(
-                new ExpressionSpecification<MovementGoodsInfo>(m => m.Price != null && m.Price <= 0)
+                new ExpressionSpecification<MovementGoodsInfo>(m => m.Price != null && m.Price > 0)
                     .And(new ExpressionSpecification<MovementGoodsInfo>(m => m.Count > 0))
                     .And(new ExpressionSpecification<MovementGoodsInfo>(
                         new ExpressionSpecification<MovementGoodsInfo>(m => m.Product == null || m.Product.UnitStorage == null).Or(

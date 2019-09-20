@@ -16,7 +16,8 @@ namespace ProductModul.ViewModels
 {
     public class СatalogViewModel : ViewModelBase, IDialogAware
     {
-        private CancellationTokenSource _cancelTokenSource;
+        private CancellationTokenSource _cancelTokenProduct;
+        private CancellationTokenSource _cancelTokenProperty;
 
         #region Purchase
 
@@ -148,34 +149,43 @@ namespace ProductModul.ViewModels
 
         private async void LoadPropertyAsync()
         {
+            _cancelTokenProperty?.Cancel();
+            CancellationTokenSource newCts = new CancellationTokenSource();
+            _cancelTokenProperty = newCts;
+
             try
             {
                 SqlProductRepository productRepository = new SqlProductRepository();
                 PropertyProductsList = new ObservableCollection<PropertyProduct>(
-                    await productRepository.GetPropertyForProduct(SelectedCategory?.Id));
+                    await productRepository.GetPropertyForProduct(SelectedCategory?.Id, cts: _cancelTokenProperty.Token));
+
                 foreach (var propertyProduct in PropertyProductsList)
                 {
                     propertyProduct.PropertyChanged += (o, e) => { LoadAsync(); };
                 }
             }
+            catch (OperationCanceledException) { }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+
+            if (_cancelTokenProperty == newCts)
+                _cancelTokenProperty = null;
         }
 
         private async void LoadAsync()
         {
-            _cancelTokenSource?.Cancel();
+            _cancelTokenProduct?.Cancel();
             CancellationTokenSource newCts = new CancellationTokenSource();
-            _cancelTokenSource = newCts;
+            _cancelTokenProduct = newCts;
 
             try
             {
                 SqlProductRepository sqlProductRepository = new SqlProductRepository();
                 
                 ProductsList = new ObservableCollection<Product>(
-                    await sqlProductRepository.GetProductsWithCountAndPrice(_cancelTokenSource.Token,
+                    await sqlProductRepository.GetProductsWithCountAndPrice(_cancelTokenProduct.Token,
                         ProductSpecification.GetProductsByIdGroupOrFindStringOrProperty(SelectedCategory?.Id,
                             FindString, PropertyProductsList), null, 0, -1, p => p.UnitStorage, p => p.Category));
             }
@@ -184,8 +194,8 @@ namespace ProductModul.ViewModels
             {
                 MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            if (_cancelTokenSource == newCts)
-                _cancelTokenSource = null;
+            if (_cancelTokenProduct == newCts)
+                _cancelTokenProduct = null;
         }
 
         private void SelectedProduct(Product obj)
@@ -193,7 +203,7 @@ namespace ProductModul.ViewModels
             if (IsAddPurchase)
                 RaiseRequestClose(new DialogResult(ButtonResult.OK, new DialogParameters { { "product", obj } }));
             else
-                DialogService.Show("ShowProduct", new DialogParameters { { "product", obj } }, null);
+                DialogService.Show("ShowProduct", new DialogParameters { { "entity", obj }, { "isCatalog", true } }, null);
         }
 
         #endregion

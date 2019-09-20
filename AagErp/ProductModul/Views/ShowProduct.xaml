@@ -6,7 +6,6 @@
              xmlns:interactivity="http://prismlibrary.com/"
              xmlns:models="clr-namespace:ModelModul.Models;assembly=ModelModul"
              xmlns:converters="clr-namespace:CustomControlLibrary.Converters;assembly=CustomControlLibrary"
-             xmlns:views="clr-namespace:ProductModul.Views"
              interactivity:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d">
 
@@ -17,35 +16,24 @@
         <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
             <Setter Property="MaxWidth" Value="300"/>
             <Style.Triggers>
-                <DataTrigger Binding="{Binding Path=IsEdit, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                <DataTrigger Binding="{Binding Path=IsCatalog, UpdateSourceTrigger=PropertyChanged}" Value="True">
                     <Setter Property="IsReadOnly" Value="True"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>
 
-        <Style x:Key="TextBlockInAdd" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+        <Style x:Key="TextBlockIsCatalog" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
             <Style.Triggers>
-                <DataTrigger Binding="{Binding Path=IsAdd, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                <DataTrigger Binding="{Binding Path=IsCatalog, UpdateSourceTrigger=PropertyChanged}" Value="False">
                     <Setter Property="Visibility" Value="Collapsed"></Setter>
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-
-        <Style x:Key="ButtonStartEdit" TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding Path=IsEdit, UpdateSourceTrigger=PropertyChanged}" Value="True">
-                    <Setter Property="Visibility" Value="Collapsed"/>
-                </DataTrigger>
-            </Style.Triggers>
+        
+        <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
+            <Setter Property="IsEnabled" Value="{Binding Path=IsCatalog, Converter={StaticResource InverseBoolConverter}, UpdateSourceTrigger=PropertyChanged}"/>
         </Style>
 
-        <Style x:Key="ButtonInEdit" TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding Path=IsEdit, UpdateSourceTrigger=PropertyChanged}" Value="False">
-                    <Setter Property="Visibility" Value="Collapsed"/>
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -68,18 +56,18 @@
             <ColumnDefinition Width="Auto" MinWidth="200"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <TextBlock Text="Категория" Grid.Row="0" Grid.Column="0"/>
+        <TextBlock Text="Категория" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left"/>
         <TextBlock Text="{Binding Path=Entity.Category.Title}" Grid.Row="0" Grid.Column="2"/>
-        <TextBlock Text="Наименование товара" Grid.Row="1" Grid.Column="0"/>
+        <TextBlock Text="Наименование товара" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left"/>
         <TextBox x:Name="TextBoxTitle" Text="{Binding Entity.Title,  UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True}" Grid.Row="1" Grid.Column="2"/>
-        <TextBlock Text="Артикул товара" Grid.Row="2" Grid.Column="0"/>
+        <TextBlock Text="Артикул товара" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left"/>
         <TextBox Text="{Binding Entity.VendorCode,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="2"/>
-        <TextBlock Text="Штрих код" Grid.Row="3" Grid.Column="0"/>
+        <TextBlock Text="Штрих код" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Left"/>
         <Button Grid.Row="3" Grid.Column="1" Command="{Binding GenerateBarcodeCommand}">
             <Button.Style>
                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource ReloadImageButton}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Path=IsEdit, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                        <DataTrigger Binding="{Binding Path=IsCatalog, UpdateSourceTrigger=PropertyChanged}" Value="True">
                             <Setter Property="Visibility" Value="Collapsed"/>
                         </DataTrigger>
                     </Style.Triggers>
@@ -87,21 +75,21 @@
             </Button.Style>
         </Button>
         <TextBox Text="{Binding Entity.Barcode,  UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True}" Grid.Row="3" Grid.Column="2"/>
-        <TextBlock Text="Гарантия" Grid.Row="4" Grid.Column="0"/>
+        <TextBlock Text="Гарантия" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Left"/>
         <ComboBox ItemsSource="{Binding WarrantyPeriodsList, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Id" IsSynchronizedWithCurrentItem="True"
                       SelectedValue="{Binding Entity.IdWarrantyPeriod, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" DisplayMemberPath="Period" Grid.Column="2" 
-                      Grid.Row="4" IsEnabled="{Binding Path=IsEdit, UpdateSourceTrigger=PropertyChanged}"/>
-        <TextBlock Text="Ед. хр." Grid.Row="5" Grid.Column="0"/>
+                      Grid.Row="4"/>
+        <TextBlock Text="Ед. хр." Grid.Row="5" Grid.Column="0" HorizontalAlignment="Left"/>
         <ComboBox ItemsSource="{Binding UnitStoragesList, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Id" IsSynchronizedWithCurrentItem="True"
                       SelectedValue="{Binding Entity.IdUnitStorage, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
-                      DisplayMemberPath="Title" Grid.Column="2" Grid.Row="5" IsEnabled="{Binding Path=IsEdit, UpdateSourceTrigger=PropertyChanged}"/>
-        <TextBlock Text="Ценовая группа" Grid.Row="6" Grid.Column="0"/>
+                      DisplayMemberPath="Title" Grid.Column="2" Grid.Row="5"/>
+        <TextBlock Text="Ценовая группа" Grid.Row="6" Grid.Column="0" HorizontalAlignment="Left"/>
         <ComboBox ItemsSource="{Binding PriceGroupsList, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True" SelectedValuePath="Id"
                       SelectedValue="{Binding Entity.IdPriceGroup, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" DisplayMemberPath="Markup" ItemStringFormat="P2"
-                      Grid.Column="2" Grid.Row="6" IsEnabled="{Binding Path=IsEdit, UpdateSourceTrigger=PropertyChanged}"/>
-        <TextBlock Text="Цена" Grid.Row="7" Grid.Column="0" Style="{StaticResource TextBlockInAdd}"/>
-        <TextBlock Text="{Binding Path=Entity.Price, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}" Grid.Row="7" Grid.Column="2" Style="{StaticResource TextBlockInAdd}"/>
-        <TextBlock Text="Остаток" Grid.Row="8" Grid.Column="0" Style="{StaticResource TextBlockInAdd}"/>
+                      Grid.Column="2" Grid.Row="6"/>
+        <TextBlock Text="Цена" Grid.Row="7" Grid.Column="0" Style="{StaticResource TextBlockIsCatalog}" HorizontalAlignment="Left"/>
+        <TextBlock Text="{Binding Path=Entity.Price, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}" Grid.Row="7" Grid.Column="2" Style="{StaticResource TextBlockIsCatalog}"/>
+        <TextBlock Text="Остаток" Grid.Row="8" Grid.Column="0" Style="{StaticResource TextBlockIsCatalog}" HorizontalAlignment="Left"/>
         <ListBox ItemsSource="{Binding Path=Entity.CountsProductCollection}" Grid.Row="8" Grid.Column="2" MinHeight="50" Focusable="False">
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="models:CountsProduct">
@@ -118,7 +106,7 @@
             <ListBox.Style>
                 <Style TargetType="{x:Type ListBox}" BasedOn="{StaticResource {x:Type ListBox}}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Path=IsAdd, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                        <DataTrigger Binding="{Binding Path=IsCatalog, UpdateSourceTrigger=PropertyChanged}" Value="False">
                             <Setter Property="Visibility" Value="Collapsed"/>
                         </DataTrigger>
                     </Style.Triggers>
@@ -127,41 +115,25 @@
         </ListBox>
         <CheckBox Content="Вести учет по серийным номерам?" Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="3" HorizontalContentAlignment="Stretch"
                   VerticalContentAlignment="Center" IsChecked="{Binding Entity.KeepTrackSerialNumbers}" HorizontalAlignment="Right" IsEnabled="{Binding Path=IsAdd, UpdateSourceTrigger=PropertyChanged}"/>
-        <TextBlock Text="Описание" Grid.Row="10" Grid.Column="0"/>
+        <TextBlock Text="Описание" Grid.Row="10" Grid.Column="0" HorizontalAlignment="Left"/>
         <TextBox Text="{Binding Path=Entity.Description,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="10" Grid.Column="2"
                      MinHeight="80" MaxHeight="120" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
-        <Button Content="Ок" Grid.Row="11" Width="75" Command="{Binding OkCommand}" HorizontalAlignment="Center">
+
+        <Button Content="ОК" Grid.Column="2" Grid.Row="11" VerticalAlignment="Center" Width="110" Command="{Binding AcceptCommand}" IsDefault="True">
             <Button.Style>
-                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource ButtonInEdit}">
+                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Path=IsAdd, UpdateSourceTrigger=PropertyChanged}" Value="True">
-                            <Setter Property="Grid.Column" Value="2"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Path=IsAdd, UpdateSourceTrigger=PropertyChanged}" Value="Fals">
-                            <Setter Property="Grid.Column" Value="0"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Button.Style>
-        </Button>
-        <Button Grid.Column="2" Content="Отмена" Grid.Row="11" Width="75" Command="{Binding ResetCommand}" HorizontalAlignment="Center">
-            <Button.Style>
-                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource ButtonInEdit}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Path=IsAdd, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                        <DataTrigger Binding="{Binding Path=IsCatalog, UpdateSourceTrigger=PropertyChanged}" Value="True">
                             <Setter Property="Visibility" Value="Collapsed"/>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </Button.Style>
         </Button>
-        <Button Grid.Column="2" Content="Редактировать" Grid.Row="11" Command="{Binding UpdateProductCommand}" HorizontalAlignment="Center" Style="{StaticResource ButtonStartEdit}"/>
 
         <DataGrid ItemsSource="{Binding Path=Entity.PropertyProductsCollection, UpdateSourceTrigger=PropertyChanged}" MaxWidth="300" MinWidth="100"
-                  IsSynchronizedWithCurrentItem="True" MaxHeight="310"  SelectionMode="Single" HeadersVisibility="None" GridLinesVisibility="None" Grid.Row="1" Grid.Column="3" Grid.RowSpan="9">
-            <DataGrid.IsReadOnly>
-                <Binding Converter="{StaticResource InverseBoolConverter}" UpdateSourceTrigger="PropertyChanged" Path="DataContext.IsEdit" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type views:ShowProduct}}"/>
-            </DataGrid.IsReadOnly>
+                  IsSynchronizedWithCurrentItem="True" MaxHeight="310"  SelectionMode="Single" HeadersVisibility="None" GridLinesVisibility="None" Grid.Row="1" Grid.Column="3" Grid.RowSpan="9"
+                  IsReadOnly="{Binding IsCatalog, UpdateSourceTrigger=PropertyChanged}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Параметр"  Binding="{Binding Path=PropertyName.Title, UpdateSourceTrigger=PropertyChanged}" ElementStyle="{StaticResource {x:Type TextBlock}}" IsReadOnly="True"/>
                 <DataGridComboBoxColumn Header="Значение" SelectedValuePath="Id" DisplayMemberPath="Value" SelectedValueBinding="{Binding Path=IdPropertyValue, UpdateSourceTrigger=PropertyChanged}">

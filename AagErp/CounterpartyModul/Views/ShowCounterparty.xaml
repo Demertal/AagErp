@@ -21,21 +21,21 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <TextBlock Text="Контрагент" Grid.Row="0" Grid.Column="0"/>
+        <TextBlock Text="Контрагент" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left"/>
         <TextBox Text="{Binding Entity.Title,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1"/>
-        <TextBlock Text="Контактное лицо" Grid.Row="1" Grid.Column="0"/>
+        <TextBlock Text="Контактное лицо" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left"/>
         <TextBox Text="{Binding Entity.ContactPerson,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1"/>
-        <TextBlock Text="Контактный телефон" Grid.Row="2" Grid.Column="0"/>
+        <TextBlock Text="Контактный телефон" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left"/>
         <TextBox Text="{Binding Entity.ContactPhone,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="1"/>
-        <TextBlock Text="Реквизит" Grid.Row="3" Grid.Column="0"/>
+        <TextBlock Text="Реквизит" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Left"/>
         <TextBox Text="{Binding Entity.Props,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Grid.Column="1"/>
-        <TextBlock Text="Адрес" Grid.Row="4" Grid.Column="0"/>
+        <TextBlock Text="Адрес" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Left"/>
         <TextBox Text="{Binding Entity.Address,  UpdateSourceTrigger=PropertyChanged}" Grid.Row="4" Grid.Column="1"/>
-        <TextBlock Text="Тип оплаты" Grid.Row="5" Grid.Column="0"/>
+        <TextBlock Text="Тип оплаты" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Left"/>
         <ComboBox ItemsSource="{Binding PaymentTypesList, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True" SelectedValuePath="Id"
                   SelectedValue="{Binding Entity.IdPaymentType, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Description" Grid.Column="1" 
                   Grid.Row="5"/>
-        <TextBlock Text="Тип" Grid.Row="6" Grid.Column="0"/>
+        <TextBlock Text="Тип" Grid.Row="6" Grid.Column="0" HorizontalAlignment="Left"/>
         <ComboBox ItemsSource="{Binding CounterpartyTypesList, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True" SelectedValuePath="Id"
                   SelectedValue="{Binding Entity.WhoIsIt, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Description" Grid.Column="1" 
                   Grid.Row="6" IsEnabled="{Binding Path=IsAdd, UpdateSourceTrigger=PropertyChanged}"/>

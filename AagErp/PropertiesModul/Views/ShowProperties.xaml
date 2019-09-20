@@ -307,7 +307,7 @@
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <Border Style="{StaticResource CellStyle}" Grid.Column="0" Margin="0,-1,0,0">
-                                        <TextBlock Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}"/>
+                                        <TextBlock Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left"/>
                                     </Border>
                                 </Grid>
                             </Border>

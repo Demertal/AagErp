@@ -81,6 +81,7 @@ namespace PropertyModul.ViewModels
                     }
                 }
             }
+            catch (OperationCanceledException) { }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);

@@ -3,6 +3,7 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/CustomControlLibrary;component/Themes/BaseStyles/ControlStyle.xaml"/>
+        <ResourceDictionary Source="/CustomControlLibrary;component/Themes/BaseStyles/TextBlockStyle.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
     <!--Menu Style-->
@@ -150,7 +151,11 @@
                         </Path.Stroke>
                     </Path>
                 </Border>
-                <ContentPresenter x:Name="HeaderHost" Grid.Column="1" ContentSource="Header" RecognizesAccessKey="True" />
+                <ContentPresenter x:Name="HeaderHost" Grid.Column="1" ContentSource="Header" RecognizesAccessKey="True">
+                    <ContentPresenter.Resources>
+                        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TextBlockInControl}"/>
+                    </ContentPresenter.Resources>
+                </ContentPresenter>
                 <TextBlock x:Name="InputGestureText" Grid.Column="2" Text="{TemplateBinding InputGestureText}" Margin="5,2,0,2" DockPanel.Dock="Right" />
             </Grid>
         </Border>

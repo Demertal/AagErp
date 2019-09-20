@@ -3,6 +3,7 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/CustomControlLibrary;component/Themes/BaseStyles/ControlStyle.xaml"/>
+        <ResourceDictionary Source="/CustomControlLibrary;component/Themes/BaseStyles/TextBlockStyle.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="{x:Type TreeView}" TargetType="TreeView"  BasedOn="{StaticResource {x:Type Control}}">
@@ -139,7 +140,11 @@
                                 </Grid.RowDefinitions>
                                 <ToggleButton x:Name="Expander" Style="{StaticResource ExpandCollapseToggleStyle}" ClickMode="Press" Grid.Column="0" Grid.Row="0"
                                               IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" Margin="2,0,0,0" HorizontalAlignment="Stretch"/>
-                                <ContentPresenter x:Name="PART_Header" ContentSource="Header" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"  Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"/>
+                                <ContentPresenter x:Name="PART_Header" ContentSource="Header" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2">
+                                    <ContentPresenter.Resources>
+                                        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TextBlockInControl}"/>
+                                    </ContentPresenter.Resources>
+                                </ContentPresenter>
                                 <ItemsPresenter x:Name="ItemsHost" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Visibility="Collapsed" />
                             </Grid>
                         </Border>

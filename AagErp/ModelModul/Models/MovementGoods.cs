@@ -17,15 +17,15 @@ namespace ModelModul.Models
                 new ExpressionSpecification<MovementGoods>(m => m.MovmentGoodType != null)
                     .And(new ExpressionSpecification<MovementGoods>(
                         new ExpressionSpecification<MovementGoods>(m => m.MovmentGoodType.Code == "purchase")
-                            .And(new ExpressionSpecification<MovementGoods>(m => m.Rate == null || m.Rate <= 0))
+                            .And(new ExpressionSpecification<MovementGoods>(m => m.Rate != null && m.Rate > 0))
                             .And(new ExpressionSpecification<MovementGoods>(m =>
-                                m.EquivalentRate == null || m.EquivalentRate <= 0))
+                                m.EquivalentRate != null && m.EquivalentRate > 0))
                             .And(new ExpressionSpecification<MovementGoods>(m =>
-                                m.IdArrivalStore == null || m.IdArrivalStore <= 0))
+                                m.IdArrivalStore != null && m.IdArrivalStore > 0))
                             .And(new ExpressionSpecification<MovementGoods>(m =>
-                                m.IdCurrency == null || m.IdCurrency <= 0))
+                                m.IdCurrency != null && m.IdCurrency > 0))
                             .And(new ExpressionSpecification<MovementGoods>(m =>
-                                m.IdEquivalentCurrency == null || m.IdEquivalentCurrency <= 0)).IsSatisfiedBy()))
+                                m.IdEquivalentCurrency != null && m.IdEquivalentCurrency > 0)).IsSatisfiedBy()))
                     .And(new ExpressionSpecification<MovementGoods>(m => !m.HasErrors))
                     .IsSatisfiedBy());
         }

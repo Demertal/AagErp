@@ -29,6 +29,7 @@ namespace ModelModul.Repositories
                 if (order != null) query = query.OrderUsingSortExpression(order);
                 if (skip != 0) query = query.Skip(skip);
                 if (take != -1) query = query.Take(take);
+                cts.ThrowIfCancellationRequested();
                 return query.CountAsync(cts);
             }, cts);
         }
@@ -42,6 +43,7 @@ namespace ModelModul.Repositories
                 if (order != null) query = query.OrderUsingSortExpression(order);
                 if (skip != 0) query = query.Skip(skip);
                 if (take != -1) query = query.Take(take);
+                cts.ThrowIfCancellationRequested();
                 return query.AnyAsync(cts);
             }, cts);
         }
@@ -56,6 +58,7 @@ namespace ModelModul.Repositories
                 if (skip != 0) query = query.Skip(skip);
                 if (take != -1) query = query.Take(take);
                 if (include != null) query = query.ToLoad(include);
+                cts.ThrowIfCancellationRequested();
                 return query.AsNoTracking().ToListAsync(cts);
             }, cts);
         }
@@ -68,23 +71,36 @@ namespace ModelModul.Repositories
                 if (where != null) query = query.Where(where.IsSatisfiedBy());
                 if (order != null) query = query.OrderUsingSortExpression(order);
                 if (skip != 0) query = query.Skip(skip);
+                cts.ThrowIfCancellationRequested();
                 return query.AsNoTracking().FirstOrDefaultAsync(cts);
             }, cts);
         }
 
         public async Task<TEntity> GetItemAsync(int id, CancellationToken cts = new CancellationToken())
         {
-            return await Task.Run(() => Db.Set<TEntity>().FindAsync(id, cts), cts);
+            return await Task.Run(() =>
+            {
+                cts.ThrowIfCancellationRequested();
+                return Db.Set<TEntity>().FindAsync(id, cts);
+            }, cts);
         }
 
         public async Task<TEntity> GetItemAsync(long id, CancellationToken cts = new CancellationToken())
         {
-            return await Task.Run(() => Db.Set<TEntity>().FindAsync(id, cts), cts);
+            return await Task.Run(() =>
+            {
+                cts.ThrowIfCancellationRequested();
+                return Db.Set<TEntity>().FindAsync(id, cts);
+            }, cts);
         }
 
         public virtual async Task<TEntity> GetItemAsync(Guid id, CancellationToken cts = new CancellationToken())
         {
-            return await Task.Run(() => Db.Set<TEntity>().FindAsync(id, cts), cts);
+            return await Task.Run(() =>
+            {
+                cts.ThrowIfCancellationRequested();
+                return Db.Set<TEntity>().FindAsync(id, cts);
+            }, cts);
         }
 
         public async Task CreateAsync(TEntity item, CancellationToken cts = new CancellationToken())

@@ -4,10 +4,10 @@
     <Style TargetType="{x:Type TextBlock}">
         <Setter Property="FontSize" Value="14" />
         <Setter Property="FontFamily" Value="Bahnschrift Light"/>
-        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="VerticalAlignment" Value="Stretch"/>
-        <Setter Property="TextAlignment" Value="Left"/>
-        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="TextAlignment" Value="Center"/>
+        <Setter Property="TextWrapping" Value="NoWrap"/>
         <Setter Property="Margin" Value="5"/>
         <Setter Property="Validation.ErrorTemplate">
             <Setter.Value>
@@ -23,6 +23,11 @@
                 <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" />
             </Trigger>
         </Style.Triggers>
+    </Style>
+
+    <Style x:Key="TextBlockInControl"  TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="TextAlignment" Value="Left"/>
     </Style>
 
 </ResourceDictionary>

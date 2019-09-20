@@ -46,6 +46,13 @@ namespace ProductModul.ViewModels
             set => SetProperty(ref _propertyProductsList, value);
         }
 
+        private bool _isCatalog;
+        public bool IsCatalog
+        {
+            get => _isCatalog;
+            set => SetProperty(ref _isCatalog, value);
+        }
+
         #endregion
 
         #region Command
@@ -165,11 +172,13 @@ namespace ProductModul.ViewModels
                 }
                 else
                 {
-                    Title = "Изменить";
+                    bool? temp = parameters.GetValue<bool?>("isCatalog");
+                    IsCatalog = temp ?? false;
+                    Title = IsCatalog ? Backup.Title : "Изменить";
                     IsAdd = false;
                     PropertiesTransfer(Backup, Entity);
-                    LoadAsync();
                 }
+                LoadAsync();
             }
             catch (Exception ex)
             {

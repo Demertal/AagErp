@@ -14,7 +14,7 @@ namespace ModelModul.Models
                     .And(new ExpressionSpecification<PropertyValue>(
                         new ExpressionSpecification<PropertyValue>(p => p.PropertyName == null)
                             .Or(new ExpressionSpecification<PropertyValue>(p =>
-                                PropertyName.PropertyValuesCollection.Any(pp => pp.Value == p.Value))).IsSatisfiedBy()))
+                                PropertyName.PropertyValuesCollection.All(pp => pp.Value != p.Value))).IsSatisfiedBy()))
                     .And(new ExpressionSpecification<PropertyValue>(p => !p.HasErrors)).IsSatisfiedBy());
         }
 

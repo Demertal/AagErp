@@ -79,6 +79,17 @@ namespace ModelModul.Models
             }
         }
 
+        public override object Clone()
+        {
+            return new PropertyProduct
+            {
+                Id = Id,
+                IdProduct = IdProduct,
+                IdPropertyName = IdPropertyName,
+                IdPropertyValue = IdPropertyValue
+            };
+        } 
+
         public override bool IsValid => true;
     }
 }

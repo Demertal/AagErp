@@ -17,10 +17,10 @@ namespace ModelModul.Models
             ValidationRules = new ExpressionSpecification<Product>(
                 new ExpressionSpecification<Product>(p => !string.IsNullOrEmpty(p.Title))
                     .And(new ExpressionSpecification<Product>(p => !string.IsNullOrEmpty(p.Barcode)))
-                    .And(new ExpressionSpecification<Product>(p => p.IdUnitStorage <= 0))
-                    .And(new ExpressionSpecification<Product>(p => p.IdWarrantyPeriod <= 0))
-                    .And(new ExpressionSpecification<Product>(p => p.IdPriceGroup <= 0))
-                    .And(new ExpressionSpecification<Product>(p => p.IdCategory <= 0))
+                    .And(new ExpressionSpecification<Product>(p => p.IdUnitStorage > 0))
+                    .And(new ExpressionSpecification<Product>(p => p.IdWarrantyPeriod > 0))
+                    .And(new ExpressionSpecification<Product>(p => p.IdPriceGroup > 0))
+                    .And(new ExpressionSpecification<Product>(p => p.IdCategory > 0))
                     .And(new ExpressionSpecification<Product>(p => !p.HasErrors)).IsSatisfiedBy());
 
         }
@@ -362,6 +362,7 @@ namespace ModelModul.Models
                 KeepTrackSerialNumbers = KeepTrackSerialNumbers,
                 UnitStorage = (UnitStorage) UnitStorage?.Clone(),
                 WarrantyPeriod = (WarrantyPeriod) WarrantyPeriod?.Clone(),
+                PropertyProductsCollection = PropertyProductsCollection == null ? null : new List<PropertyProduct>(PropertyProductsCollection.Select(s => (PropertyProduct)s.Clone())),
                 SerialNumbersCollection = SerialNumbersCollection == null? null : new List<SerialNumber>(SerialNumbersCollection.Select(s => (SerialNumber)s.Clone()))
             };
         }

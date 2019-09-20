@@ -10,9 +10,13 @@ namespace ModelModul.Repositories
     {
         public async Task<bool> CheckProperty(int idProperty, int? idCategory, string title, CancellationToken cts = new CancellationToken())
         {
-           return await Db.MovmentGoodTypes.Take(1)
-                .Select(p => AutomationAccountingGoodsContext.CheckProperty(idProperty, idCategory, title))
-                .SingleOrDefaultAsync(cts);
+            return await Task.Run(() =>
+            {
+                cts.ThrowIfCancellationRequested();
+                return Db.MovmentGoodTypes.Take(1)
+                    .Select(p => AutomationAccountingGoodsContext.CheckProperty(idProperty, idCategory, title))
+                    .SingleOrDefaultAsync(cts);
+            }, cts);
         }
     }
 }
