@@ -22,7 +22,7 @@ namespace ModelModul.ViewModels
             set
             {
                 _title = value;
-                OnPropertyChanged("Title");
+                OnPropertyChanged();
                 ValidateTitle();
             }
         }
@@ -34,7 +34,7 @@ namespace ModelModul.ViewModels
             set
             {
                 _barcode = value;
-                OnPropertyChanged("Barcode");
+                OnPropertyChanged();
                 ValidateBarcode();
             }
         }
@@ -95,7 +95,7 @@ namespace ModelModul.ViewModels
             }
 
             RaiseErrorsChanged(propertyKey);
-            OnPropertyChanged("IsValid");
+            OnPropertyChanged(nameof(IsValid));
 
             if (_cancelTokenTitle == newCts)
                 _cancelTokenTitle = null;
@@ -131,7 +131,7 @@ namespace ModelModul.ViewModels
             }
 
             RaiseErrorsChanged(propertyKey);
-            OnPropertyChanged("IsValid");
+            OnPropertyChanged(nameof(IsValid));
 
             if (_cancelTokenBarcode == newCts)
                 _cancelTokenBarcode = null;

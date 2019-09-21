@@ -30,7 +30,7 @@ namespace ModelModul.MVVM
             {
                 SetProperty(ref _entity, value);
                 if (Entity != null)
-                    Entity.PropertyChanged += (o, e) => { RaisePropertyChanged("Entity"); };
+                    Entity.PropertyChanged += (o, e) => { RaisePropertyChanged(); };
             }
         }
 

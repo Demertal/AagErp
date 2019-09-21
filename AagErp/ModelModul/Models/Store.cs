@@ -9,9 +9,6 @@ namespace ModelModul.Models
         {
             ArrivalMovementGoodsCollection = new List<MovementGoods>();
             DisposalMovementGoodsCollection = new List<MovementGoods>();
-            ValidationRules = new ExpressionSpecification<Store>(
-                new ExpressionSpecification<Store>(s => !string.IsNullOrEmpty(s.Title))
-                    .And(new ExpressionSpecification<Store>(s => !s.HasErrors)).IsSatisfiedBy());
         }
 
         private int _id;
@@ -21,7 +18,7 @@ namespace ModelModul.Models
             set
             {
                 _id = value;
-                OnPropertyChanged("Id");
+                OnPropertyChanged();
             }
         }
 
@@ -32,8 +29,8 @@ namespace ModelModul.Models
             set
             {
                 _title = value;
-                OnPropertyChanged("Title");
-                OnPropertyChanged("IsValid");
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsValid));
             }
         }
 
@@ -44,7 +41,7 @@ namespace ModelModul.Models
             set
             {
                 _arrivalMovementGoodsCollection = value;
-                OnPropertyChanged("ArrivalMovementGoodsCollection");
+                OnPropertyChanged();
             }
         }
 
@@ -55,7 +52,7 @@ namespace ModelModul.Models
             set
             {
                 _disposalMovementGoodsCollection = value;
-                OnPropertyChanged("DisposalMovementGoodsCollection");
+                OnPropertyChanged();
             }
         }
 
@@ -85,6 +82,6 @@ namespace ModelModul.Models
             return new Store { Id = Id, Title = Title};
         }
 
-        public override bool IsValid => ValidationRules.IsSatisfiedBy().Compile().Invoke(this);
+        public override bool IsValid => !string.IsNullOrEmpty(Title) && !HasErrors;
     }
 }

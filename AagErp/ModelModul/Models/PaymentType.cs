@@ -16,7 +16,7 @@ namespace ModelModul.Models
             set
             {
                 _id = value;
-                OnPropertyChanged("Id");
+                OnPropertyChanged();
             }
         }
 
@@ -27,7 +27,7 @@ namespace ModelModul.Models
             set
             {
                 _code = value;
-                OnPropertyChanged("Code");
+                OnPropertyChanged();
             }
         }
 
@@ -38,7 +38,7 @@ namespace ModelModul.Models
             set
             {
                 _description = value;
-                OnPropertyChanged("Description");
+                OnPropertyChanged();
             }
         }
 
@@ -49,7 +49,7 @@ namespace ModelModul.Models
             set
             {
                 _counterpartiesCollection = value;
-                OnPropertyChanged("CounterpartiesCollection");
+                OnPropertyChanged();
             }
         }
 

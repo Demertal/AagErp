@@ -11,7 +11,6 @@ namespace ModelModul.Configurations
             builder.ToTable("moneyTransfers");
             builder.HasKey(m => m.Id);
             builder.Property(m => m.MoneyAmount).HasColumnType("money");
-            builder.Ignore(c => c.ValidationRules);
         }
     }
 }

@@ -851,31 +851,31 @@ END]]></string>
 	</schema>
 	<connector name="SqlServer" database="SqlServer" driver_class="com.microsoft.sqlserver.jdbc.SQLServerDriver" driver_jar="mssql-jdbc-7.0.0.jre10.jar" driver_desc="Native Driver - Windows Authentication, Current User" host="DESKTOP-KC53E2S" port="1433" instance="AutomationAccountingGoods" user="ws" passwd="c2xvdzIzc3dpbTQ1QA==" />
 	<layout name="aag" id="Layout_9f7fe7" show_relation="columns" >
-		<entity schema="dbo" name="invoices" color="F4DDBE" x="1696" y="368" />
-		<entity schema="dbo" name="priceGroups" color="F4DDBE" x="1232" y="368" />
-		<entity schema="dbo" name="warranties" color="BED3F4" x="736" y="288" />
-		<entity schema="dbo" name="moneyTransferTypes" color="C7F4BE" x="1408" y="704" />
-		<entity schema="dbo" name="invoiceInfos" color="F4DDBE" x="1504" y="368" />
-		<entity schema="dbo" name="paymentTypes" color="C7F4BE" x="1200" y="944" />
-		<entity schema="dbo" name="counterparties" color="C7F4BE" x="1008" y="704" />
-		<entity schema="dbo" name="warrantyPeriods" color="F4DDBE" x="1024" y="192" />
-		<entity schema="dbo" name="stores" color="BED3F4" x="528" y="448" />
-		<entity schema="dbo" name="priceProducts" color="F4DDBE" x="1504" y="80" />
-		<entity schema="dbo" name="currencies" color="BED3F4" x="80" y="448" />
-		<entity schema="dbo" name="revaluationProducts" color="F4DDBE" x="1712" y="80" />
-		<entity schema="dbo" name="unitStorages" color="F4DDBE" x="1008" y="368" />
+		<entity schema="dbo" name="invoices" color="F4DDBE" x="1696" y="384" />
+		<entity schema="dbo" name="priceGroups" color="F4DDBE" x="1232" y="384" />
+		<entity schema="dbo" name="warranties" color="BED3F4" x="736" y="304" />
+		<entity schema="dbo" name="moneyTransferTypes" color="C7F4BE" x="1408" y="720" />
+		<entity schema="dbo" name="invoiceInfos" color="F4DDBE" x="1504" y="384" />
+		<entity schema="dbo" name="paymentTypes" color="C7F4BE" x="1200" y="960" />
+		<entity schema="dbo" name="counterparties" color="C7F4BE" x="1008" y="720" />
+		<entity schema="dbo" name="warrantyPeriods" color="F4DDBE" x="1024" y="208" />
+		<entity schema="dbo" name="stores" color="BED3F4" x="528" y="464" />
+		<entity schema="dbo" name="priceProducts" color="F4DDBE" x="1504" y="96" />
+		<entity schema="dbo" name="currencies" color="BED3F4" x="80" y="464" />
+		<entity schema="dbo" name="revaluationProducts" color="F4DDBE" x="1712" y="96" />
+		<entity schema="dbo" name="unitStorages" color="F4DDBE" x="1008" y="384" />
+		<entity schema="dbo" name="moneyTransfers" color="C7F4BE" x="1200" y="720" />
+		<entity schema="dbo" name="movementGoodsInfos" color="BED3F4" x="272" y="464" />
+		<entity schema="dbo" name="categories" color="BEBEF4" x="1936" y="96" />
+		<entity schema="dbo" name="products" color="F4DDBE" x="1232" y="96" />
+		<entity schema="dbo" name="propertyValues" color="BEBEF4" x="2096" y="288" />
+		<entity schema="dbo" name="propertyProducts" color="BEBEF4" x="2320" y="96" />
+		<entity schema="dbo" name="productsWithCountAndPrice" color="3986C1" x="1936" y="608" />
+		<entity schema="dbo" name="propertyNames" color="BEBEF4" x="2112" y="96" />
+		<entity schema="dbo" name="movementGoods" color="BED3F4" x="272" y="96" />
+		<entity schema="dbo" name="movmentGoodTypes" color="C1D8EE" x="48" y="272" />
 		<entity schema="dbo" name="serialNumberLogs" color="BED3F4" x="736" y="80" />
-		<entity schema="dbo" name="moneyTransfers" color="C7F4BE" x="1200" y="704" />
-		<entity schema="dbo" name="movementGoodsInfos" color="BED3F4" x="272" y="448" />
-		<entity schema="dbo" name="serialNumbers" color="BED3F4" x="528" y="80" />
-		<entity schema="dbo" name="movementGoods" color="BED3F4" x="272" y="80" />
-		<entity schema="dbo" name="movmentGoodTypes" color="C1D8EE" x="48" y="256" />
-		<entity schema="dbo" name="categories" color="BEBEF4" x="1936" y="80" />
-		<entity schema="dbo" name="products" color="F4DDBE" x="1232" y="80" />
-		<entity schema="dbo" name="propertyNames" color="BEBEF4" x="2112" y="80" />
-		<entity schema="dbo" name="propertyValues" color="BEBEF4" x="2096" y="272" />
-		<entity schema="dbo" name="propertyProducts" color="BEBEF4" x="2320" y="80" />
-		<entity schema="dbo" name="productsWithCountAndPrice" color="3986C1" x="1936" y="592" />
+		<entity schema="dbo" name="serialNumbers" color="BED3F4" x="528" y="96" />
 		<group name="counterparties" color="EEF7EC" >
 			<entity schema="dbo" name="counterparties" />
 			<entity schema="dbo" name="moneyTransfers" />
@@ -920,6 +920,11 @@ FROM
 			<string><![CDATA[SELECT * 
 FROM
 	dbo.movmentGoodTypes s;]]></string>
+		</script>
+		<script name="propertyNames" id="Editor_249e032" language="SQL" >
+			<string><![CDATA[SELECT * 
+FROM
+	dbo.propertyNames s;]]></string>
 		</script>
 	</layout>
 </project>

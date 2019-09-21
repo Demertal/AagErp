@@ -27,7 +27,7 @@ namespace PropertyModul.ViewModels
             set
             {
                 Entity.PropertyValuesCollection = value;
-                RaisePropertyChanged("EntitiesList");
+                RaisePropertyChanged();
                 if (Entity.PropertyValuesCollection != null)
                     ((ObservableCollection<PropertyValue>) Entity.PropertyValuesCollection).CollectionChanged +=
                         PropertyValuesCollectionChanged;

@@ -1,287 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
 using ModelModul.Models;
 using ModelModul.MVVM;
 using ModelModul.Repositories;
 using ModelModul.Specifications;
-using Prism.Commands;
-using Prism.Regions;
+using ModelModul.ViewModels;
 using Prism.Services.Dialogs;
 
 namespace PurchaseGoodModul.ViewModels
 {
-    public class PurchaseGoodViewModel : ViewModelBase
+    public class PurchaseGoodViewModel : ViewModelBaseMovementGoods<PurchaseMovementGoodsInfoViewModel>
     {
-        #region Properties
-
-        private string _barcode;
-
-        private MovementGoods _purchaseGood = new MovementGoods();
-        public MovementGoods PurchaseGood
+        public PurchaseGoodViewModel(IDialogService dialogService) : base(dialogService, "purchase", "Вы уверены, что хотите провести отчет о закупке товара?")
         {
-            get => _purchaseGood;
-            set => SetProperty(ref _purchaseGood, value);
         }
 
-        public ObservableCollection<MovementGoodsInfo> PurchaseGoodsList
+        protected override async Task<MovementGoods> PreparingReport()
         {
-            get => _purchaseGood.MovementGoodsInfosCollection as ObservableCollection<MovementGoodsInfo>;
-            set
+            return await Task.Run(() =>
             {
-                _purchaseGood.MovementGoodsInfosCollection = value;
-                RaisePropertyChanged("PurchaseGoodsList");
-            }
-        }
-
-        private ObservableCollection<Store> _storesList = new ObservableCollection<Store>();
-        public ObservableCollection<Store> StoresList
-        {
-            get => _storesList;
-            set => SetProperty(ref _storesList, value);
-        }
-
-        private ObservableCollection<Counterparty> _counterpartiesList = new ObservableCollection<Counterparty>();
-        public ObservableCollection<Counterparty> CounterpartiesList
-        {
-            get => _counterpartiesList;
-            set => SetProperty(ref _counterpartiesList, value);
-        }
-
-        private ObservableCollection<Currency> _currenciesList = new ObservableCollection<Currency>();
-        public ObservableCollection<Currency> CurrenciesList
-        {
-            get => _currenciesList;
-            set => SetProperty(ref _currenciesList, value);
-        }
-
-        private ObservableCollection<Currency> _equivalentCurrenciesList = new ObservableCollection<Currency>();
-        public ObservableCollection<Currency> EquivalentCurrenciesList
-        {
-            get => _equivalentCurrenciesList;
-            set => SetProperty(ref _equivalentCurrenciesList, value);
-        }
-
-        public bool IsValidate
-        {
-            get
-            {
-                if(!string.IsNullOrEmpty(PurchaseGood.Error)) return false;
-                if (PurchaseGood.EquivalentRate == null || PurchaseGood.EquivalentRate <= 0 ||
-                    PurchaseGood.Rate == null || PurchaseGood.Rate <= 0 || PurchaseGood.IdEquivalentCurrency == null ||
-                    PurchaseGood.IdEquivalentCurrency == 0 || PurchaseGood.IdCurrency == null ||
-                    PurchaseGood.IdCurrency == 0 || PurchaseGood.IdArrivalStore == null ||
-                    PurchaseGood.IdArrivalStore == 0 || PurchaseGood.IdCounterparty == null ||
-                    PurchaseGood.IdCounterparty == 0) return false;
-                if (PurchaseGoodsList.Count == 0) return false;
-                if (PurchaseGoodsList.Any(p => p.Price <= 0 || p.Count <= 0)) return false;
-                return !PurchaseGoodsList.Where(p => p.Product.KeepTrackSerialNumbers).Any(p =>
-                    p.Product.SerialNumbersCollection.Any(s => string.IsNullOrEmpty(s.Value)));
-            }
-        }
-
-        private CancellationTokenSource _cancelTokenSource;
-
-        #endregion
-
-        #region Command
-
-        public DelegateCommand AddProductCommand { get; }
-        public DelegateCommand PostCommand { get; }
-        public DelegateCommand<Collection<object>> DeleteProductCommand { get; }
-        public DelegateCommand<KeyEventArgs> ListenKeyboardCommand { get; }
-
-        #endregion
-
-        public PurchaseGoodViewModel(IDialogService dialogService) : base(dialogService)
-        {
-            PostCommand = new DelegateCommand(Post).ObservesCanExecute(() => IsValidate);
-            AddProductCommand = new DelegateCommand(AddProduct);
-            DeleteProductCommand = new DelegateCommand<Collection<object>>(DeleteProduct);
-            ListenKeyboardCommand = new DelegateCommand<KeyEventArgs>(ListenKeyboard);
-            NewMovementGood();
-        }
-
-        #region PropertyChanged
-
-        private void OnPurchaseGoodsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (MovementGoodsInfo item in e.OldItems)
-                    {
-                        //Removed items
-                        item.PropertyChanged -= PurchaseInfosViewModelPropertyChanged;
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Add:
-                    foreach (MovementGoodsInfo item in e.NewItems)
-                    {
-                        //Added items
-                        item.PropertyChanged += PurchaseInfosViewModelPropertyChanged;
-                        if (item.Product.KeepTrackSerialNumbers)
-                        {
-                            item.Product.SerialNumbersCollection = new ObservableCollection<SerialNumber>();
-                            ((ObservableCollection<SerialNumber>)item.Product.SerialNumbersCollection).CollectionChanged += OnSerialNumbersCollectionChanged;
-                        }
-                    }
-                    break;
-            }
-            RaisePropertyChanged("PurchaseGoodsList");
-            RaisePropertyChanged("IsValidate");
-        }
-
-        private void OnSerialNumbersCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (SerialNumber item in e.OldItems)
-                    {
-                        //Removed items
-                        item.PropertyChanged -= PurchaseInfosViewModelPropertyChanged;
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Add:
-                    foreach (SerialNumber item in e.NewItems)
-                    {
-                        //Added items
-                        item.PropertyChanged += PurchaseInfosViewModelPropertyChanged;
-                    }
-                    break;
-            }
-            RaisePropertyChanged("IsValidate");
-        }
-
-        private void PurchaseInfosViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (sender is MovementGoodsInfo movement && e.PropertyName == "Count")
-            {
-                if(movement.Product.KeepTrackSerialNumbers)
-                {
-                    int count = (int) movement.Count - movement.Product.SerialNumbersCollection.Count;
-                    if (count > 0)
-                    {
-                        for (int i = 0; i < count; i++)
-                            movement.Product.SerialNumbersCollection.Add(new SerialNumber());
-                    }
-                    else if (count < 0)
-                    {
-                        for (int i = 0; i > count; i--)
-                        {
-                            var temp = movement.Product.SerialNumbersCollection.FirstOrDefault(s =>
-                                string.IsNullOrEmpty(s.Value));
-                            movement.Product.SerialNumbersCollection.Remove(temp ?? movement.Product.SerialNumbersCollection.Last());
-                        }
-                    }
-                }
-            }
-            RaisePropertyChanged("PurchaseGoodsList");
-            RaisePropertyChanged("IsValidate");
-        }
-
-        #endregion
-
-        private async void LoadAsync()
-        {
-            _cancelTokenSource?.Cancel();
-            CancellationTokenSource newCts = new CancellationTokenSource();
-            _cancelTokenSource = newCts;
-
-            try
-            {
-                IRepository<Store> storeRepository = new SqlStoreRepository();
-                IRepository<Currency> currencyRepository = new SqlCurrencyRepository();
-                IRepository<Counterparty> counterpartyRepository = new SqlCounterpartyRepository();
-
-                var loadStore = Task.Run(() => storeRepository.GetListAsync(_cancelTokenSource.Token),
-                    _cancelTokenSource.Token);
-                var loadCurrency = Task.Run(() => currencyRepository.GetListAsync(_cancelTokenSource.Token),
-                    _cancelTokenSource.Token);
-                var loadCounterparty =
-                    Task.Run(
-                        () => counterpartyRepository.GetListAsync(_cancelTokenSource.Token,
-                            CounterpartySpecification.GetCounterpartiesByType(ETypeCounterparties.Suppliers)),
-                        _cancelTokenSource.Token);
-
-                await Task.WhenAll(loadStore, loadCurrency, loadCounterparty);
-
-                StoresList = new ObservableCollection<Store>(loadStore.Result);
-                CurrenciesList = new ObservableCollection<Currency>(loadCurrency.Result);
-                EquivalentCurrenciesList = new ObservableCollection<Currency>(loadCurrency.Result);
-                CounterpartiesList = new ObservableCollection<Counterparty>(loadCounterparty.Result);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-
-            if (_cancelTokenSource == newCts)
-                _cancelTokenSource = null;
-
-        }
-
-        private async void NewMovementGood()
-        {
-            LoadAsync();
-            PurchaseGood = new MovementGoods { MovementGoodsInfosCollection = new ObservableCollection<MovementGoodsInfo>() };
-            PurchaseGood.PropertyChanged += (o, e) =>
-            {
-                if (e.PropertyName == "IdCurrency" && CurrenciesList != null)
-                    PurchaseGood.Rate = CurrenciesList.First(c => c.Id == PurchaseGood.IdCurrency).Cost;
-
-                if ((e.PropertyName == "IdCurrency" || e.PropertyName == "IdEquivalentCurrency") && PurchaseGood.IdCurrency == PurchaseGood.IdEquivalentCurrency)
-                    PurchaseGood.EquivalentRate = 1;
-
-                RaisePropertyChanged("IsValidate");
-            };
-
-            _cancelTokenSource?.Cancel();
-            CancellationTokenSource newCts = new CancellationTokenSource();
-            _cancelTokenSource = newCts;
-
-            IRepository<MovmentGoodType> movmentGoodTypeRepository = new SqlMovmentGoodTypeRepository();
-            PurchaseGood.MovmentGoodType = await movmentGoodTypeRepository.GetItemAsync(_cancelTokenSource.Token,
-                MovmentGoodTypeSpecification.GetMovmentGoodTypeByCode("purchase"));
-            PurchaseGood.IdType = _purchaseGood.MovmentGoodType.Id;
-
-            if (_cancelTokenSource == newCts)
-                _cancelTokenSource = null;
-
-            PurchaseGoodsList.CollectionChanged += OnPurchaseGoodsCollectionChanged;
-            RaisePropertyChanged("PurchaseGood");
-            RaisePropertyChanged("PurchaseGoodsList");
-            RaisePropertyChanged("IsValidate");
-        }
-
-        private void Navigate(List<Product> revaluationProducts)
-        {
-            //NavigationParameters navigationParameters =
-            //    new NavigationParameters { { "RevaluationProducts", revaluationProducts } };
-            //_regionManager.RequestNavigate("ContentRegion", "RevaluationProductsView", navigationParameters);
-        }
-
-        #region DelegateCommand
-
-        private async void Post()
-        {
-            if (MessageBox.Show(
-                    "Вы уверены, что хотите провести отчет о закупке товара? Этот отчет невозможно будет изменить после.",
-                    "Проведение закупки", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
-                MessageBoxResult.Yes) return;
-            try
-            {
-                MovementGoods temp = (MovementGoods)PurchaseGood.Clone();
-                temp.DateClose = null;
-                temp.DateCreate = null;
+                MovementGoods temp = (MovementGoods) MovementGoodsReport.Clone();
                 foreach (var movementGoodsInfo in temp.MovementGoodsInfosCollection)
                 {
                     movementGoodsInfo.EquivalentCost = movementGoodsInfo.Price / temp.EquivalentRate;
@@ -289,144 +29,101 @@ namespace PurchaseGoodModul.ViewModels
                     {
                         serialNumber.DateCreated = null;
                         serialNumber.IdProduct = movementGoodsInfo.Product.Id;
-                        temp.SerialNumberLogsCollection.Add(new SerialNumberLog{SerialNumber = serialNumber });
+                        temp.SerialNumberLogsCollection.Add(new SerialNumberLog {SerialNumber = serialNumber});
                     }
+
                     movementGoodsInfo.Product = null;
                 }
 
-                IRepository<MovementGoods> movementGoodsRepository = new SqlMovementGoodsRepository();
-                await movementGoodsRepository.CreateAsync(temp);
-                MessageBox.Show("Отчет о закупке добавлен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                NewMovementGood();
-
-                //_report.PurchaseInfos = new List<PurchaseInfos>();
-                //foreach (var purchaseInfo in PurchaseInfos)
-                //{
-                //    _report.PurchaseInfos.AddAsync(purchaseInfo.PurchaseInfo);
-                //}
-                //SqlMovementGoodsRepository dbSet = new SqlMovementGoodsRepository();
-                //dbSet.AddAsync((PurchaseReports)_report.Clone());
-                //MessageBox.Show("Отчет о закупке добавлен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                //if (PurchaseInfos.FirstOrDefault(objPr =>
-                //        objPr.Product.SalesPrice == 0 ||
-                //        Math.Abs(objPr.PurchasePrice - objPr.PurchasePriceOld) > (decimal)0.01 ||
-                //        objPr.Currency.Id != objPr.ExchangeRateOld.Id) != null)
-                //{
-                //    if (MessageBox.Show(
-                //            "Есть товар на который изменилась цена закупки. Вы хотите переоценить этот товар?",
-                //            "Вопрос", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
-                //        MessageBoxResult.Yes)
-                //    {
-                //        NewMovementGood();
-                //        return;
-                //    }
-                //    List<Product> revaluationProducts = PurchaseInfos
-                //        .Where(objPr =>
-                //            Math.Abs(objPr.PurchasePrice - objPr.PurchasePriceOld) > (decimal)0.01 ||
-                //            objPr.Currency.Id != objPr.ExchangeRateOld.Id).Select(objPr => objPr.Product).ToList();
-                //    Navigate(revaluationProducts);
-                //}
-                //NewMovementGood();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+                return temp;
+            });
         }
 
-        private void AddProduct()
+
+        protected override void MovementGoodsReportOnPropertyChanged(object sender, PropertyChangedEventArgs ea)
         {
-            DialogService.ShowDialog("Catalog", new DialogParameters(), Callback);
+            if (ea.PropertyName == "IdCurrency" && CurrenciesList != null)
+                MovementGoodsReport.Rate = CurrenciesList.First(c => c.Id == MovementGoodsReport.IdCurrency).Cost;
+
+            if ((ea.PropertyName == "IdCurrency" || ea.PropertyName == "IdEquivalentCurrency") && MovementGoodsReport.IdCurrency == MovementGoodsReport.IdEquivalentCurrency)
+                MovementGoodsReport.EquivalentRate = 1;
+            if(ea.PropertyName == "MovementGoodsInfosCollection")
+                RaisePropertyChanged(nameof(MovementGoodsInfosList));
+            RaisePropertyChanged(nameof(MovementGoodsReport));
         }
 
-        private void Callback(IDialogResult dialogResult)
+        protected override async Task InLoad()
         {
-            _barcode = "";
-            Product temp = dialogResult.Parameters.GetValue<Product>("product");
-            if (temp != null) InsertProduct(temp);
+            IRepository<Store> storeRepository = new SqlStoreRepository();
+            IRepository<Currency> currencyRepository = new SqlCurrencyRepository();
+            IRepository<Counterparty> counterpartyRepository = new SqlCounterpartyRepository();
+
+            var loadStore = Task.Run(() => storeRepository.GetListAsync(CancelTokenLoad.Token),
+                CancelTokenLoad.Token);
+            var loadCurrency = Task.Run(() => currencyRepository.GetListAsync(CancelTokenLoad.Token),
+                CancelTokenLoad.Token);
+            var loadCounterparty =
+                Task.Run(
+                    () => counterpartyRepository.GetListAsync(CancelTokenLoad.Token,
+                        CounterpartySpecification.GetCounterpartiesByType(ETypeCounterparties.Suppliers)),
+                    CancelTokenLoad.Token);
+
+            await Task.WhenAll(loadStore, loadCurrency, loadCounterparty);
+
+            ArrivalStoresList = new ObservableCollection<Store>(loadStore.Result);
+            CurrenciesList = new ObservableCollection<Currency>(loadCurrency.Result);
+            EquivalentCurrenciesList = new ObservableCollection<Currency>(loadCurrency.Result);
+            CounterpartiesList = new ObservableCollection<Counterparty>(loadCounterparty.Result);
         }
 
-        private void DeleteProduct(Collection<object> obj)
+        protected override async Task<PurchaseMovementGoodsInfoViewModel> CreateMovementGoodInfoAsync(Product product)
         {
-            _barcode = "";
-            List<MovementGoodsInfo> list = obj.Cast<MovementGoodsInfo>().ToList();
-            list.ForEach(item => PurchaseGoodsList.Remove(item));
+            return await Task.Run(() =>
+                new PurchaseMovementGoodsInfoViewModel { Count = 0, IdProduct = product.Id, Price = 0, Product = product });
         }
 
-        private void ListenKeyboard(KeyEventArgs obj)
-        {
-            //if (obj.Key >= Key.D0 && obj.Key <= Key.D9)
-            //{
-            //    _barcode += obj.Key.ToString()[1].ToString();
-            //}
-            //else if (obj.Key >= Key.A && obj.Key <= Key.Z)
-            //{
-            //    _barcode += obj.Key.ToString();
-            //}
-            //else if (obj.Key == Key.Enter)
-            //{
-            //    try
-            //    {
-            //        if (string.IsNullOrEmpty(_barcode) || _barcode.Length < 8 || _barcode.Length > 13)
-            //        {
-            //            _barcode = "";
-            //            return;
-            //        }
-            //        SqlProductRepository dbSetProducts = new SqlProductRepository();
-            //        Product product = dbSetProducts.FindProductByBarcode(_barcode);
-            //        if (product == null) throw new Exception("Товар не найден");
-            //        AddProduct(product);
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        _barcode = "";
-            //        MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-            //    }
-            //    _barcode = "";
-            //}
-            //else
-            //{
-            //    _barcode = "";
-            //}
-        }
+        //private void Navigate(List<Product> revaluationProducts)
+        //{
+        //    //NavigationParameters navigationParameters =
+        //    //    new NavigationParameters { { "RevaluationProducts", revaluationProducts } };
+        //    //_regionManager.RequestNavigate("ContentRegion", "RevaluationProductsView", navigationParameters);
+        //}
 
-        private void InsertProduct(Product product)
-        {
-            try
-            {
-                if (PurchaseGoodsList.Any(objRev => objRev.Product.Id == product.Id))
-                {
-                    _barcode = "";
-                    return;
-                }
-
-                PurchaseGoodsList.Add(new MovementGoodsInfo{Count = 0, IdProduct = product.Id, Price = 0, Product = product});
-                RaisePropertyChanged("PurchaseGoodsList");
-                RaisePropertyChanged("IsValidate");
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        #endregion
-
-        #region INavigationAware
-
-        public override void OnNavigatedTo(NavigationContext navigationContext)
-        {
-        }
-
-        public override bool IsNavigationTarget(NavigationContext navigationContext)
-        {
-            return true;
-        }
-
-        public override void OnNavigatedFrom(NavigationContext navigationContext)
-        {
-        }
-
-        #endregion
+        //private void ListenKeyboard(KeyEventArgs obj)
+        //{
+        //    //if (obj.Key >= Key.D0 && obj.Key <= Key.D9)
+        //    //{
+        //    //    _barcode += obj.Key.ToString()[1].ToString();
+        //    //}
+        //    //else if (obj.Key >= Key.A && obj.Key <= Key.Z)
+        //    //{
+        //    //    _barcode += obj.Key.ToString();
+        //    //}
+        //    //else if (obj.Key == Key.Enter)
+        //    //{
+        //    //    try
+        //    //    {
+        //    //        if (string.IsNullOrEmpty(_barcode) || _barcode.Length < 8 || _barcode.Length > 13)
+        //    //        {
+        //    //            _barcode = "";
+        //    //            return;
+        //    //        }
+        //    //        SqlProductRepository dbSetProducts = new SqlProductRepository();
+        //    //        Product product = dbSetProducts.FindProductByBarcode(_barcode);
+        //    //        if (product == null) throw new Exception("Товар не найден");
+        //    //        AddProduct(product);
+        //    //    }
+        //    //    catch (Exception ex)
+        //    //    {
+        //    //        _barcode = "";
+        //    //        MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+        //    //    }
+        //    //    _barcode = "";
+        //    //}
+        //    //else
+        //    //{
+        //    //    _barcode = "";
+        //    //}
+        //}
     }
 }

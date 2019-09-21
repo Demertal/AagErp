@@ -1,23 +1,12 @@
 using System;
+using System.ComponentModel;
 using System.Globalization;
-using ModelModul.Specifications.BasisSpecifications;
+using System.Linq;
 
 namespace ModelModul.Models
 {
     public class MovementGoodsInfo : ModelBase<MovementGoodsInfo>
     {
-        public MovementGoodsInfo()
-        {
-            ValidationRules = new ExpressionSpecification<MovementGoodsInfo>(
-                new ExpressionSpecification<MovementGoodsInfo>(m => m.Price != null && m.Price > 0)
-                    .And(new ExpressionSpecification<MovementGoodsInfo>(m => m.Count > 0))
-                    .And(new ExpressionSpecification<MovementGoodsInfo>(
-                        new ExpressionSpecification<MovementGoodsInfo>(m => m.Product == null || m.Product.UnitStorage == null).Or(
-                            new ExpressionSpecification<MovementGoodsInfo>(m => !m.Product.UnitStorage.IsWeightGoods).Or(
-                                new ExpressionSpecification<MovementGoodsInfo>(m => m.Count.ToString(CultureInfo.InvariantCulture).IndexOfAny(new[] { '.', ',' }) == -1))).IsSatisfiedBy()))
-                    .And(new ExpressionSpecification<MovementGoodsInfo>(c => !c.HasErrors)).IsSatisfiedBy());
-        }
-
         private long _id;
         public long Id
         {
@@ -25,7 +14,7 @@ namespace ModelModul.Models
             set
             {
                 _id = value;
-                OnPropertyChanged("Id");
+                OnPropertyChanged();
             }
         }
 
@@ -36,8 +25,8 @@ namespace ModelModul.Models
             set
             {
                 _count = value;
-                OnPropertyChanged("Count");
-                OnPropertyChanged("IsValid");
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsValid));
             }
         }
 
@@ -48,7 +37,7 @@ namespace ModelModul.Models
             set
             {
                 _balance = value;
-                OnPropertyChanged("Balance");
+                OnPropertyChanged();
             }
         }
 
@@ -59,8 +48,8 @@ namespace ModelModul.Models
             set
             {
                 _price = value;
-                OnPropertyChanged("Price");
-                OnPropertyChanged("IsValid");
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsValid));
             }
         }
 
@@ -71,7 +60,7 @@ namespace ModelModul.Models
             set
             {
                 _equivalentCost = value;
-                OnPropertyChanged("EquivalentCost");
+                OnPropertyChanged();
             }
         }
 
@@ -82,7 +71,7 @@ namespace ModelModul.Models
             set
             {
                 _idReport = value;
-                OnPropertyChanged("IdReport");
+                OnPropertyChanged();
             }
         }
 
@@ -93,7 +82,7 @@ namespace ModelModul.Models
             set
             {
                 _idProduct = value;
-                OnPropertyChanged("IdProduct");
+                OnPropertyChanged();
             }
         }
 
@@ -103,9 +92,13 @@ namespace ModelModul.Models
             get => _product;
             set
             {
+                if(_product != null)
+                    _product.PropertyChanged -= ProductOnPropertyChanged;
                 _product = value;
-                OnPropertyChanged("Product");
-                OnPropertyChanged("IsValid");
+                if (_product != null)
+                    _product.PropertyChanged += ProductOnPropertyChanged;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsValid));
             }
         }
 
@@ -116,7 +109,7 @@ namespace ModelModul.Models
             set
             {
                 _movementGoods = value;
-                OnPropertyChanged("MovementGoods");
+                OnPropertyChanged();
             }
         }
 
@@ -163,6 +156,15 @@ namespace ModelModul.Models
             };
         }
 
-        public override bool IsValid => ValidationRules.IsSatisfiedBy().Compile().Invoke(this);
+        private void ProductOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            OnPropertyChanged(nameof(Product));
+            OnPropertyChanged(nameof(IsValid));
+        }
+
+        public override bool IsValid => !HasErrors && Price != null && Price > 0 && Count > 0 &&
+                                        Product?.UnitStorage != null && Product.SerialNumbersCollection != null &&
+                                        (Product.UnitStorage.IsWeightGoods || Count.ToString(CultureInfo.InvariantCulture).IndexOfAny(new[] {'.', ','}) == -1) &&
+                                        (!Product.KeepTrackSerialNumbers || Product.SerialNumbersCollection.All(s => s.IsValid));
     }
 }

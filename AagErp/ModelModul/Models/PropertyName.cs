@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using ModelModul.Specifications.BasisSpecifications;
 
 namespace ModelModul.Models
 {
@@ -11,9 +10,6 @@ namespace ModelModul.Models
         {
             PropertyProductsCollection = new ObservableCollection<PropertyProduct>();
             PropertyValuesCollection = new ObservableCollection<PropertyValue>();
-            ValidationRules = new ExpressionSpecification<PropertyName>(
-                new ExpressionSpecification<PropertyName>(p => !string.IsNullOrEmpty(p.Title))
-                    .And(new ExpressionSpecification<PropertyName>(p => !p.HasErrors)).IsSatisfiedBy());
         }
 
         private int _id;
@@ -23,7 +19,7 @@ namespace ModelModul.Models
             set
             {
                 _id = value;
-                OnPropertyChanged("Id");
+                OnPropertyChanged();
             }
         }
 
@@ -34,8 +30,8 @@ namespace ModelModul.Models
             set
             {
                 _title = value;
-                OnPropertyChanged("Title");
-                OnPropertyChanged("IsValid");
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsValid));
             }
         }
 
@@ -46,7 +42,7 @@ namespace ModelModul.Models
             set
             {
                 _idCategory = value;
-                OnPropertyChanged("IdCategory");
+                OnPropertyChanged();
             }
         }
 
@@ -57,7 +53,7 @@ namespace ModelModul.Models
             set
             {
                 _category = value;
-                OnPropertyChanged("Category");
+                OnPropertyChanged();
             }
         }
 
@@ -68,7 +64,7 @@ namespace ModelModul.Models
             set
             {
                 _propertyProductsCollection = value;
-                OnPropertyChanged("PropertyProductsCollection");
+                OnPropertyChanged();
             }
         }
 
@@ -79,7 +75,7 @@ namespace ModelModul.Models
             set
             {
                 _propertyValuesCollection = value;
-                OnPropertyChanged("PropertyValuesCollection");
+                OnPropertyChanged();
             }
         }
 
@@ -117,6 +113,6 @@ namespace ModelModul.Models
             };
         }
 
-        public override bool IsValid => ValidationRules.IsSatisfiedBy().Compile().Invoke(this);
+        public override bool IsValid => !string.IsNullOrEmpty(Title) && !HasErrors;
     }
 }

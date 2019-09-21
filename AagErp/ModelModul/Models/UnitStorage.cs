@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using ModelModul.Specifications.BasisSpecifications;
 
 namespace ModelModul.Models
 {
@@ -8,9 +7,6 @@ namespace ModelModul.Models
         public UnitStorage()
         {
             ProductsCollection = new List<Product>();
-            ValidationRules = new ExpressionSpecification<UnitStorage>(
-                new ExpressionSpecification<UnitStorage>(u => !string.IsNullOrEmpty(u.Title))
-                    .And(new ExpressionSpecification<UnitStorage>(u => !u.HasErrors)).IsSatisfiedBy());
         }
 
         private int _id;
@@ -20,7 +16,7 @@ namespace ModelModul.Models
             set
             {
                 _id = value;
-                OnPropertyChanged("Id");
+                OnPropertyChanged();
             }
         }
 
@@ -31,8 +27,8 @@ namespace ModelModul.Models
             set
             {
                 _title = value;
-                OnPropertyChanged("Title");
-                OnPropertyChanged("IsValid");
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsValid));
             }
         }
 
@@ -43,7 +39,7 @@ namespace ModelModul.Models
             set
             {
                 _isWeightGoods = value;
-                OnPropertyChanged("IsWeightGoods");
+                OnPropertyChanged();
             }
         }
 
@@ -54,7 +50,7 @@ namespace ModelModul.Models
             set
             {
                 _productsCollection = value;
-                OnPropertyChanged("ProductsCollection");
+                OnPropertyChanged();
             }
         }
 
@@ -84,6 +80,6 @@ namespace ModelModul.Models
             return new UnitStorage {Id = Id, Title = Title, IsWeightGoods = IsWeightGoods};
         }
 
-        public override bool IsValid => ValidationRules.IsSatisfiedBy().Compile().Invoke(this);
+        public override bool IsValid => !string.IsNullOrEmpty(Title) && !HasErrors;
     }
 }

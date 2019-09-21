@@ -187,7 +187,7 @@ namespace ProductModul.ViewModels
                 ProductsList = new ObservableCollection<Product>(
                     await sqlProductRepository.GetProductsWithCountAndPrice(_cancelTokenProduct.Token,
                         ProductSpecification.GetProductsByIdGroupOrFindStringOrProperty(SelectedCategory?.Id,
-                            FindString, PropertyProductsList), null, 0, -1, p => p.UnitStorage, p => p.Category));
+                            FindString, PropertyProductsList)));
             }
             catch (OperationCanceledException) {}
             catch (Exception e)

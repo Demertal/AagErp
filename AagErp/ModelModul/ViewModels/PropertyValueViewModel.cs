@@ -21,7 +21,7 @@ namespace ModelModul.ViewModels
             set
             {
                 _value = value;
-                OnPropertyChanged("Value");
+                OnPropertyChanged();
                 ValidateValue();
             }
         }
@@ -67,7 +67,7 @@ namespace ModelModul.ViewModels
             }
 
             RaiseErrorsChanged(propertyKey);
-            OnPropertyChanged("IsValid");
+            OnPropertyChanged(nameof(IsValid));
 
             if (_cancelTokenSource == newCts)
                 _cancelTokenSource = null;

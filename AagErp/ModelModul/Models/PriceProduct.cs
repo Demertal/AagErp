@@ -1,16 +1,7 @@
-using ModelModul.Specifications.BasisSpecifications;
-
 namespace ModelModul.Models
 {
     public class PriceProduct : ModelBase<PriceProduct>
     {
-        public PriceProduct()
-        {
-            ValidationRules = new ExpressionSpecification<PriceProduct>(
-                new ExpressionSpecification<PriceProduct>(p => p.Price > 0)
-                    .And(new ExpressionSpecification<PriceProduct>(p => !p.HasErrors)).IsSatisfiedBy());
-        }
-
         private long _id;
         public long Id
         {
@@ -18,7 +9,7 @@ namespace ModelModul.Models
             set
             {
                 _id = value;
-                OnPropertyChanged("Id");
+                OnPropertyChanged();
             }
         }
 
@@ -29,7 +20,7 @@ namespace ModelModul.Models
             set
             {
                 _idProduct = value;
-                OnPropertyChanged("IdProduct");
+                OnPropertyChanged();
             }
         }
 
@@ -40,7 +31,7 @@ namespace ModelModul.Models
             set
             {
                 _idRevaluation = value;
-                OnPropertyChanged("IdRevaluation");
+                OnPropertyChanged();
             }
         }
 
@@ -51,8 +42,8 @@ namespace ModelModul.Models
             set
             {
                 _price = value;
-                OnPropertyChanged("Price");
-                OnPropertyChanged("IsValid");
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsValid));
             }
         }
 
@@ -63,7 +54,7 @@ namespace ModelModul.Models
             set
             {
                 _product = value;
-                OnPropertyChanged("Product");
+                OnPropertyChanged();
             }
         }
 
@@ -74,7 +65,7 @@ namespace ModelModul.Models
             set
             {
                 _revaluationProduct = value;
-                OnPropertyChanged("RevaluationProduct");
+                OnPropertyChanged();
             }
         }
 
@@ -101,6 +92,6 @@ namespace ModelModul.Models
             return new PriceProduct{Id = Id, IdProduct = IdProduct, IdRevaluation = IdRevaluation, Price = Price};
         }
 
-        public override bool IsValid => ValidationRules.IsSatisfiedBy().Compile().Invoke(this);
+        public override bool IsValid => Price > 0 && !HasErrors;
     }
 }

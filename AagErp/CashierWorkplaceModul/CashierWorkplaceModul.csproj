@@ -133,7 +133,6 @@
     <Compile Include="CashierWorkplaceModul.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\CashierWorkplaceViewModel.cs" />
-    <Compile Include="ViewModels\MovementGoodsInfoViewModel.cs" />
     <Compile Include="Views\CashierWorkplace.xaml.cs">
       <DependentUpon>CashierWorkplace.xaml</DependentUpon>
     </Compile>

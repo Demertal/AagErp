@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using ModelModul.Specifications.BasisSpecifications;
 
 namespace ModelModul.Models
 {
@@ -9,10 +8,6 @@ namespace ModelModul.Models
         {
             MoneyTransfersCollection = new List<MoneyTransfer>();
             MovementGoodsCollection = new List<MovementGoods>();
-            ValidationRules = new ExpressionSpecification<Counterparty>(
-                new ExpressionSpecification<Counterparty>(c => !string.IsNullOrEmpty(c.Title))
-                    .And(new ExpressionSpecification<Counterparty>(c => c.IdPaymentType > 0))
-                    .And(new ExpressionSpecification<Counterparty>(c => !c.HasErrors)).IsSatisfiedBy());
         }
 
         private int _id;
@@ -22,7 +17,7 @@ namespace ModelModul.Models
             set
             {
                 _id = value;
-                OnPropertyChanged("Id");
+                OnPropertyChanged();
             }
         }
 
@@ -33,8 +28,8 @@ namespace ModelModul.Models
             set
             {
                 _title = value;
-                OnPropertyChanged("Title");
-                OnPropertyChanged("IsValid");
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsValid));
             }
         }
 
@@ -45,7 +40,7 @@ namespace ModelModul.Models
             set
             {
                 _contactPerson = value;
-                OnPropertyChanged("ContactPerson");
+                OnPropertyChanged();
             }
         }
 
@@ -56,7 +51,7 @@ namespace ModelModul.Models
             set
             {
                 _contactPhone = value;
-                OnPropertyChanged("ContactPhone");
+                OnPropertyChanged();
             }
         }
 
@@ -67,7 +62,7 @@ namespace ModelModul.Models
             set
             {
                 _props = value;
-                OnPropertyChanged("Props");
+                OnPropertyChanged();
             }
         }
 
@@ -78,7 +73,7 @@ namespace ModelModul.Models
             set
             {
                 _address = value;
-                OnPropertyChanged("Address");
+                OnPropertyChanged();
             }
         }
 
@@ -89,7 +84,7 @@ namespace ModelModul.Models
             set
             {
                 _whoIsIt = value;
-                OnPropertyChanged("WhoIsIt");
+                OnPropertyChanged();
             }
         }
 
@@ -100,8 +95,8 @@ namespace ModelModul.Models
             set
             {
                 _idPaymentType = value;
-                OnPropertyChanged("IdPaymentType");
-                OnPropertyChanged("IsValid");
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsValid));
             }
         }
 
@@ -112,7 +107,7 @@ namespace ModelModul.Models
             set
             {
                 _paymentType = value;
-                OnPropertyChanged("PaymentType");
+                OnPropertyChanged();
             }
         }
 
@@ -123,7 +118,7 @@ namespace ModelModul.Models
             set
             {
                 _moneyTransfersCollection = value;
-                OnPropertyChanged("MoneyTransfersCollection");
+                OnPropertyChanged();
             }
         }
 
@@ -134,7 +129,7 @@ namespace ModelModul.Models
             set
             {
                 _movementGoodsCollection = value;
-                OnPropertyChanged("MovementGoodsCollection");
+                OnPropertyChanged();
             }
         }
 
@@ -182,6 +177,6 @@ namespace ModelModul.Models
             };
         }
 
-        public override bool IsValid => ValidationRules.IsSatisfiedBy().Compile().Invoke(this);
+        public override bool IsValid => !string.IsNullOrEmpty(Title) && IdPaymentType > 0 && !HasErrors;
     }
 }

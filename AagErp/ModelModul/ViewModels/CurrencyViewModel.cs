@@ -21,7 +21,7 @@ namespace ModelModul.ViewModels
             set
             {
                 _title = value;
-                OnPropertyChanged("Title");
+                OnPropertyChanged();
                 ValidateTitle();
             }
         }
@@ -34,7 +34,7 @@ namespace ModelModul.ViewModels
             {
                 _isDefault = value;
                 if (_isDefault) Cost = 1;
-                OnPropertyChanged("IsDefault");
+                OnPropertyChanged();
             }
         }
 
@@ -79,7 +79,7 @@ namespace ModelModul.ViewModels
             }
 
             RaiseErrorsChanged(propertyKey);
-            OnPropertyChanged("IsValid");
+            OnPropertyChanged(nameof(IsValid));
 
             if (_cancelTokenSource == newCts)
                 _cancelTokenSource = null;

@@ -10,8 +10,8 @@ namespace CustomControlLibrary.Converters
 
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            Type type = values[0].GetType();
-            if (values.Any(value => type != value.GetType())) return null;
+            Type type = values[0]?.GetType();
+            if (type == null || values.Any(value => value == null || type != value.GetType())) return null;
             if (type == typeof(int))
             {
                 int i = (int) values[0];

@@ -24,8 +24,6 @@ namespace RevaluationGoodModul.ViewModels
 
         #region Properties
 
-        //private string _barcode;
-
         private RevaluationProduct _revaluationProduct = new RevaluationProduct();
         public ObservableCollection<PriceProduct> RevaluationPriceProductsList
         {
@@ -37,7 +35,7 @@ namespace RevaluationGoodModul.ViewModels
                 _revaluationProduct.PriceProductsCollection = value;
                 if(_revaluationProduct.PriceProductsCollection != null)
                     RevaluationPriceProductsList.CollectionChanged += OnRevaluationPriceProductsCollectionChanged;
-                RaisePropertyChanged("RevaluationPriceProductsList");
+                RaisePropertyChanged();
             }
         }
 
@@ -55,7 +53,7 @@ namespace RevaluationGoodModul.ViewModels
             set
             {
                 _currenciesList = value;
-                RaisePropertyChanged("CurrenciesList");
+                RaisePropertyChanged();
             }
         }
 
@@ -124,7 +122,6 @@ namespace RevaluationGoodModul.ViewModels
 
         private void NewRevaluationProduct()
         {
-            //_barcode = "";
             _revaluationProduct = new RevaluationProduct();
             RevaluationPriceProductsList = new ObservableCollection<PriceProduct>();
             RaisePropertyChanged("IsValidate");
@@ -193,12 +190,10 @@ namespace RevaluationGoodModul.ViewModels
             {
                 SqlProductRepository productRepository = new SqlProductRepository();
 
-                long[] idarray = RevaluationPriceProductsList.Select(r => r.Product.Id).ToArray();
+                long[] idArray = RevaluationPriceProductsList.Select(r => r.Product.Id).ToArray();
 
                 List<Product> products = (await productRepository.GetProductsWithCountAndPrice(_cancelTokenSource.Token,
-                        ProductSpecification.GetProductsById(idarray), null, 0, -1, p => p.PriceGroup,
-                        p => p.UnitStorage))
-                    .ToList();
+                        ProductSpecification.GetProductsById(idArray))).ToList();
 
                 Task<(long id, Task<IEnumerable<EquivalentCostForExistingProduct>> equivalentCosts)>[] tasksEquivalentCost = products.Select(p => Task.Run(() =>
                 {

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using ModelModul.Specifications.BasisSpecifications;
 
 namespace ModelModul.Models
 {
@@ -9,10 +8,6 @@ namespace ModelModul.Models
         {
             MovementGoodsCollection = new List<MovementGoods>();
             MovementGoodsEquivalentCollection = new List<MovementGoods>();
-            ValidationRules = new ExpressionSpecification<Currency>(
-                new ExpressionSpecification<Currency>(c => !string.IsNullOrEmpty(c.Title))
-                    .And(new ExpressionSpecification<Currency>(c => c.Cost > 0))
-                    .And(new ExpressionSpecification<Currency>(c => !c.HasErrors)).IsSatisfiedBy());
         }
 
         private int _id;
@@ -23,7 +18,7 @@ namespace ModelModul.Models
             set
             {
                 _id = value;
-                OnPropertyChanged("Id");
+                OnPropertyChanged();
             }
         }
 
@@ -34,8 +29,8 @@ namespace ModelModul.Models
             set
             {
                 _title = value;
-                OnPropertyChanged("Title");
-                OnPropertyChanged("IsValid");
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsValid));
             }
         }
 
@@ -46,8 +41,8 @@ namespace ModelModul.Models
             set
             {
                 _cost = value;
-                OnPropertyChanged("Cost");
-                OnPropertyChanged("IsValid");
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsValid));
             }
         }
 
@@ -58,7 +53,7 @@ namespace ModelModul.Models
             set
             {
                 _isDefault = value;
-                OnPropertyChanged("IsDefault");
+                OnPropertyChanged();
             }
         }
 
@@ -69,7 +64,7 @@ namespace ModelModul.Models
             set
             {
                 _movementGoodsCollection = value;
-                OnPropertyChanged("MovementGoodsCollection");
+                OnPropertyChanged();
             }
         }
 
@@ -80,7 +75,7 @@ namespace ModelModul.Models
             set
             {
                 _movementGoodsEquivalentCollection = value;
-                OnPropertyChanged("MovementGoodsEquivalentCollection");
+                OnPropertyChanged();
             }
         }
 
@@ -118,6 +113,6 @@ namespace ModelModul.Models
             return new Currency {Id = Id, Title = Title, IsDefault = IsDefault, Cost = Cost};
         }
 
-        public override bool IsValid => ValidationRules.IsSatisfiedBy().Compile().Invoke(this);
+        public override bool IsValid => !string.IsNullOrEmpty(Title) && Cost > 0 && !HasErrors;
     }
 }

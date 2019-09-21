@@ -19,7 +19,7 @@ namespace ModelModul.Models
             set
             {
                 _id = value;
-                OnPropertyChanged("Id");
+                OnPropertyChanged();
             }
         }
 
@@ -30,7 +30,7 @@ namespace ModelModul.Models
             set
             {
                 _dateRevaluation = value;
-                OnPropertyChanged("DateRevaluation");
+                OnPropertyChanged();
             }
         }
 
@@ -41,7 +41,7 @@ namespace ModelModul.Models
             set
             {
                 _priceProductsCollection = value;
-                OnPropertyChanged("PriceProductsCollection");
+                OnPropertyChanged();
             }
         }
 

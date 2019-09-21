@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Data;
+using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -22,6 +25,27 @@ namespace CustomControlLibrary
             });
         }
 
+        protected override void OnCanExecuteBeginEdit(CanExecuteRoutedEventArgs e)
+        {
+            var hasCellValidationError = false;
+            var hasRowValidationError = false;
+            const BindingFlags bindingFlags =
+                BindingFlags.FlattenHierarchy | BindingFlags.NonPublic | BindingFlags.Instance;
+            var memberInfo = GetType().BaseType;
+            if (memberInfo != null)
+            {
+                var cellErrorInfo = memberInfo.GetProperty("HasCellValidationError", bindingFlags);
+                var rowErrorInfo = memberInfo.GetProperty("HasRowValidationError", bindingFlags);
+                if (cellErrorInfo != null) hasCellValidationError = (bool)cellErrorInfo.GetValue(this, null);
+                if (rowErrorInfo != null) hasRowValidationError = (bool)rowErrorInfo.GetValue(this, null);
+            }
+
+            base.OnCanExecuteBeginEdit(e);
+            if ((e.CanExecute || !hasCellValidationError) && (e.CanExecute || !hasRowValidationError)) return;
+            e.CanExecute = true;
+            e.Handled = true;
+        }
+
         protected override void OnMouseRightButtonDown(MouseButtonEventArgs e)
         {
             var obj = (DependencyObject)e.OriginalSource;
@@ -41,8 +65,6 @@ namespace CustomControlLibrary
 
             base.OnMouseRightButtonDown(e);
         }
-
-
 
         public DelegateCommand<int?> CmHeaderCommand { get; }
     }

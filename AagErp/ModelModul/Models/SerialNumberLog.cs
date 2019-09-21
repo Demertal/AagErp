@@ -11,7 +11,7 @@ namespace ModelModul.Models
             set
             {
                 _id = value;
-                OnPropertyChanged("Id");
+                OnPropertyChanged();
             }
         }
 
@@ -22,7 +22,7 @@ namespace ModelModul.Models
             set
             {
                 _idSerialNumber = value;
-                OnPropertyChanged("IdSerialNumber");
+                OnPropertyChanged();
             }
         }
 
@@ -33,7 +33,7 @@ namespace ModelModul.Models
             set
             {
                 _idMovmentGood = value;
-                OnPropertyChanged("IdMovmentGood");
+                OnPropertyChanged();
             }
         }
 
@@ -44,7 +44,7 @@ namespace ModelModul.Models
             set
             {
                 _movementGood = value;
-                OnPropertyChanged("MovementGood");
+                OnPropertyChanged();
             }
         }
 
@@ -55,7 +55,7 @@ namespace ModelModul.Models
             set
             {
                 _serialNumber = value;
-                OnPropertyChanged("SerialNumber");
+                OnPropertyChanged();
             }
         }
 

@@ -65,17 +65,6 @@ namespace ModelModul.Models
 
         #endregion
 
-        private ExpressionSpecification<TEntity> _validationRules;
-        public ExpressionSpecification<TEntity> ValidationRules
-        {
-            get => _validationRules;
-            set
-            {
-                _validationRules = value;
-                OnPropertyChanged("ValidationRules");
-            }
-        }
-
         public abstract bool IsValid { get; }
 
     }

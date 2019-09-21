@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using ModelModul.Specifications.BasisSpecifications;
 
 namespace ModelModul.Models
 {
@@ -8,9 +7,6 @@ namespace ModelModul.Models
         public PriceGroup()
         {
             ProductsCollection = new HashSet<Product>();
-            ValidationRules = new ExpressionSpecification<PriceGroup>(
-                new ExpressionSpecification<PriceGroup>(p => p.Markup > 0)
-                    .And(new ExpressionSpecification<PriceGroup>(p => !p.HasErrors)).IsSatisfiedBy());
         }
 
         private int _id;
@@ -20,7 +16,7 @@ namespace ModelModul.Models
             set
             {
                 _id = value;
-                OnPropertyChanged("Id");
+                OnPropertyChanged();
             }
         }
 
@@ -31,8 +27,8 @@ namespace ModelModul.Models
             set
             {
                 _markup = value;
-                OnPropertyChanged("Markup");
-                OnPropertyChanged("IsValid");
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsValid));
             }
         }
 
@@ -43,7 +39,7 @@ namespace ModelModul.Models
             set
             {
                 _productsCollection = value;
-                OnPropertyChanged("ProductsCollection");
+                OnPropertyChanged();
             }
         }
 
@@ -72,6 +68,6 @@ namespace ModelModul.Models
             return new PriceGroup { Id = Id, Markup = Markup };
         }
 
-        public override bool IsValid => ValidationRules.IsSatisfiedBy().Compile().Invoke(this);
+        public override bool IsValid => Markup > 0 && !HasErrors;
     }
 }

@@ -21,7 +21,7 @@ namespace ModelModul.ViewModels
             set
             {
                 _markup = value;
-                OnPropertyChanged("Markup");
+                OnPropertyChanged();
                 ValidateMarkup();
             }
         }
@@ -65,7 +65,7 @@ namespace ModelModul.ViewModels
             }
 
             RaiseErrorsChanged(propertyKey);
-            OnPropertyChanged("IsValid");
+            OnPropertyChanged(nameof(IsValid));
 
             if (_cancelTokenSource == newCts)
                 _cancelTokenSource = null;

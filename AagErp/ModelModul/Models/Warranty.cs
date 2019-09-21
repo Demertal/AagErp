@@ -11,7 +11,7 @@ namespace ModelModul.Models
             set
             {
                 _id = value;
-                OnPropertyChanged("Id");
+                OnPropertyChanged();
             }
         }
 
@@ -22,7 +22,7 @@ namespace ModelModul.Models
             set
             {
                 _malfunction = value;
-                OnPropertyChanged("Malfunction");
+                OnPropertyChanged();
             }
         }
 
@@ -33,7 +33,7 @@ namespace ModelModul.Models
             set
             {
                 _dateReceipt = value;
-                OnPropertyChanged("DateReceipt");
+                OnPropertyChanged();
             }
         }
 
@@ -44,7 +44,7 @@ namespace ModelModul.Models
             set
             {
                 _dateDeparture = value;
-                OnPropertyChanged("DateDeparture");
+                OnPropertyChanged();
             }
         }
 
@@ -55,7 +55,7 @@ namespace ModelModul.Models
             set
             {
                 _dateIssue = value;
-                OnPropertyChanged("DateIssue");
+                OnPropertyChanged();
             }
         }
 
@@ -66,7 +66,7 @@ namespace ModelModul.Models
             set
             {
                 _info = value;
-                OnPropertyChanged("Info");
+                OnPropertyChanged();
             }
         }
 
@@ -77,7 +77,7 @@ namespace ModelModul.Models
             set
             {
                 _idSerialNumber = value;
-                OnPropertyChanged("IdSerialNumber");
+                OnPropertyChanged();
             }
         }
 
@@ -88,7 +88,7 @@ namespace ModelModul.Models
             set
             {
                 _idSerialNumber—hange = value;
-                OnPropertyChanged("IdSerialNumber—hange");
+                OnPropertyChanged();
             }
         }
 
@@ -99,7 +99,7 @@ namespace ModelModul.Models
             set
             {
                 _serialNumber = value;
-                OnPropertyChanged("SerialNumber");
+                OnPropertyChanged();
             }
         }
 
@@ -110,7 +110,7 @@ namespace ModelModul.Models
             set
             {
                 _serialNumber—hange = value;
-                OnPropertyChanged("SerialNumber—hange");
+                OnPropertyChanged();
             }
         }
 

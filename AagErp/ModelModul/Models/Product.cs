@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
-using ModelModul.Specifications.BasisSpecifications;
 
 namespace ModelModul.Models
 {
@@ -9,20 +11,11 @@ namespace ModelModul.Models
     {
         public Product()
         {
-            InvoiceInfosCollection = new List<InvoiceInfo>();
-            MovementGoodsInfosCollection = new List<MovementGoodsInfo>();
-            PriceProductsCollection = new List<PriceProduct>();
-            PropertyProductsCollection = new List<PropertyProduct>();
-            SerialNumbersCollection = new List<SerialNumber>();
-            ValidationRules = new ExpressionSpecification<Product>(
-                new ExpressionSpecification<Product>(p => !string.IsNullOrEmpty(p.Title))
-                    .And(new ExpressionSpecification<Product>(p => !string.IsNullOrEmpty(p.Barcode)))
-                    .And(new ExpressionSpecification<Product>(p => p.IdUnitStorage > 0))
-                    .And(new ExpressionSpecification<Product>(p => p.IdWarrantyPeriod > 0))
-                    .And(new ExpressionSpecification<Product>(p => p.IdPriceGroup > 0))
-                    .And(new ExpressionSpecification<Product>(p => p.IdCategory > 0))
-                    .And(new ExpressionSpecification<Product>(p => !p.HasErrors)).IsSatisfiedBy());
-
+            InvoiceInfosCollection = new ObservableCollection<InvoiceInfo>();
+            MovementGoodsInfosCollection = new ObservableCollection<MovementGoodsInfo>();
+            PriceProductsCollection = new ObservableCollection<PriceProduct>();
+            PropertyProductsCollection = new ObservableCollection<PropertyProduct>();
+            SerialNumbersCollection = new ObservableCollection<SerialNumber>();
         }
 
         private long _id;
@@ -32,7 +25,7 @@ namespace ModelModul.Models
             set
             {
                 _id = value;
-                OnPropertyChanged("Id");
+                OnPropertyChanged();
             }
         }
 
@@ -43,8 +36,8 @@ namespace ModelModul.Models
             set
             {
                 _title = value;
-                OnPropertyChanged("Title");
-                OnPropertyChanged("IsValid");
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsValid));
             }
         }
 
@@ -55,7 +48,7 @@ namespace ModelModul.Models
             set
             {
                 _vendorCode = value;
-                OnPropertyChanged("VendorCode");
+                OnPropertyChanged();
             }
         }
 
@@ -66,8 +59,8 @@ namespace ModelModul.Models
             set
             {
                 _barcode = value;
-                OnPropertyChanged("Barcode");
-                OnPropertyChanged("IsValid");
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsValid));
             }
         }
 
@@ -78,7 +71,7 @@ namespace ModelModul.Models
             set
             {
                 _description = value;
-                OnPropertyChanged("Description");
+                OnPropertyChanged();
             }
         }
 
@@ -89,8 +82,8 @@ namespace ModelModul.Models
             set
             {
                 _idWarrantyPeriod = value;
-                OnPropertyChanged("IdWarrantyPeriod");
-                OnPropertyChanged("IsValid");
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsValid));
             }
         }
 
@@ -101,8 +94,8 @@ namespace ModelModul.Models
             set
             {
                 _idCategory = value;
-                OnPropertyChanged("IdCategory");
-                OnPropertyChanged("IsValid");
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsValid));
             }
         }
 
@@ -113,8 +106,8 @@ namespace ModelModul.Models
             set
             {
                 _idPriceGroup = value;
-                OnPropertyChanged("IdPriceGroup");
-                OnPropertyChanged("IsValid");
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsValid));
             }
         }
 
@@ -125,8 +118,8 @@ namespace ModelModul.Models
             set
             {
                 _idUnitStorage = value;
-                OnPropertyChanged("IdUnitStorage");
-                OnPropertyChanged("IsValid");
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsValid));
             }
         }
 
@@ -137,7 +130,7 @@ namespace ModelModul.Models
             set
             {
                 _keepTrackSerialNumbers = value;
-                OnPropertyChanged("KeepTrackSerialNumbers");
+                OnPropertyChanged();
             }
         }
 
@@ -148,7 +141,7 @@ namespace ModelModul.Models
             set
             {
                 _count = value;
-                OnPropertyChanged("Count");
+                OnPropertyChanged();
             }
         }
 
@@ -159,7 +152,7 @@ namespace ModelModul.Models
             set
             {
                 _price = value;
-                OnPropertyChanged("Price");
+                OnPropertyChanged();
             }
         }
 
@@ -170,7 +163,7 @@ namespace ModelModul.Models
             set
             {
                 _category = value;
-                OnPropertyChanged("Category");
+                OnPropertyChanged();
             }
         }
 
@@ -181,7 +174,7 @@ namespace ModelModul.Models
             set
             {
                 _priceGroup = value;
-                OnPropertyChanged("PriceGroup");
+                OnPropertyChanged();
             }
         }
 
@@ -192,7 +185,7 @@ namespace ModelModul.Models
             set
             {
                 _unitStorage = value;
-                OnPropertyChanged("UnitStorage");
+                OnPropertyChanged();
             }
         }
 
@@ -203,7 +196,7 @@ namespace ModelModul.Models
             set
             {
                 _warrantyPeriod = value;
-                OnPropertyChanged("WarrantyPeriod");
+                OnPropertyChanged();
             }
         }
 
@@ -214,73 +207,77 @@ namespace ModelModul.Models
             set
             {
                 _countsProductCollection = value;
-                OnPropertyChanged("CountsProductCollection");
+                OnPropertyChanged();
             }
         }
 
         private ICollection<InvoiceInfo> _invoiceInfosCollection;
-        public virtual ICollection<InvoiceInfo> InvoiceInfosCollection
+        public ICollection<InvoiceInfo> InvoiceInfosCollection
         {
             get => _invoiceInfosCollection;
             set
             {
                 _invoiceInfosCollection = value;
-                OnPropertyChanged("InvoiceInfosCollection");
+                OnPropertyChanged();
             }
         }
 
         private ICollection<MovementGoodsInfo> _movementGoodsInfosCollection;
-        public virtual ICollection<MovementGoodsInfo> MovementGoodsInfosCollection
+        public ICollection<MovementGoodsInfo> MovementGoodsInfosCollection
         {
             get => _movementGoodsInfosCollection;
             set
             {
                 _movementGoodsInfosCollection = value;
-                OnPropertyChanged("MovementGoodsInfosCollection");
+                OnPropertyChanged();
             }
         }
 
         private ICollection<PriceProduct> _priceProductsCollection;
-        public virtual ICollection<PriceProduct> PriceProductsCollection
+        public ICollection<PriceProduct> PriceProductsCollection
         {
             get => _priceProductsCollection;
             set
             {
                 _priceProductsCollection = value;
-                OnPropertyChanged("PriceProductsCollection");
+                OnPropertyChanged();
             }
         }
 
         private ICollection<PropertyProduct> _propertyProductsCollection;
-        public virtual ICollection<PropertyProduct> PropertyProductsCollection
+        public ICollection<PropertyProduct> PropertyProductsCollection
         {
             get => _propertyProductsCollection;
             set
             {
                 _propertyProductsCollection = value;
-                OnPropertyChanged("PropertyProductsCollection");
+                OnPropertyChanged();
             }
         }
 
         private ICollection<SerialNumber> _serialNumbersCollection;
-        public virtual ICollection<SerialNumber> SerialNumbersCollection
+        public ICollection<SerialNumber> SerialNumbersCollection
         {
             get => _serialNumbersCollection;
             set
             {
+                if (_serialNumbersCollection is ObservableCollection<SerialNumber>)
+                    (_serialNumbersCollection as ObservableCollection<SerialNumber>).CollectionChanged -= OnSerialNumbersCollectionChanged;
                 _serialNumbersCollection = value;
-                OnPropertyChanged("SerialNumbersCollection");
+                if (_serialNumbersCollection is ObservableCollection<SerialNumber>)
+                    (_serialNumbersCollection as ObservableCollection<SerialNumber>).CollectionChanged += OnSerialNumbersCollectionChanged;
+                OnPropertyChanged();
             }
         }
 
         private ObservableCollection<EquivalentCostForExistingProduct> _equivalentCostForExistingProductsCollection;
-        public virtual ObservableCollection<EquivalentCostForExistingProduct> EquivalentCostForExistingProductsCollection
+        public ObservableCollection<EquivalentCostForExistingProduct> EquivalentCostForExistingProductsCollection
         {
             get => _equivalentCostForExistingProductsCollection;
             set
             {
                 _equivalentCostForExistingProductsCollection = value;
-                OnPropertyChanged("EquivalentCostForExistingProductsCollection");
+                OnPropertyChanged();
             }
         }
 
@@ -345,6 +342,10 @@ namespace ModelModul.Models
             }
         }
 
+        public override bool IsValid => !string.IsNullOrEmpty(Title) && !string.IsNullOrEmpty(Barcode) &&
+                                        IdUnitStorage > 0 && IdWarrantyPeriod > 0 && IdPriceGroup > 0 &&
+                                        IdCategory > 0 && !HasErrors;
+
         public override object Clone()
         {
             return new Product
@@ -360,13 +361,39 @@ namespace ModelModul.Models
                 IdUnitStorage = IdUnitStorage,
                 IdWarrantyPeriod = IdWarrantyPeriod,
                 KeepTrackSerialNumbers = KeepTrackSerialNumbers,
-                UnitStorage = (UnitStorage) UnitStorage?.Clone(),
-                WarrantyPeriod = (WarrantyPeriod) WarrantyPeriod?.Clone(),
+                UnitStorage = (UnitStorage)UnitStorage?.Clone(),
+                WarrantyPeriod = (WarrantyPeriod)WarrantyPeriod?.Clone(),
                 PropertyProductsCollection = PropertyProductsCollection == null ? null : new List<PropertyProduct>(PropertyProductsCollection.Select(s => (PropertyProduct)s.Clone())),
-                SerialNumbersCollection = SerialNumbersCollection == null? null : new List<SerialNumber>(SerialNumbersCollection.Select(s => (SerialNumber)s.Clone()))
+                SerialNumbersCollection = SerialNumbersCollection == null ? null : new List<SerialNumber>(SerialNumbersCollection.Select(s => (SerialNumber)s.Clone()))
             };
         }
 
-        public override bool IsValid => ValidationRules.IsSatisfiedBy().Compile().Invoke(this);
+        private void OnSerialNumbersCollectionChanged(object sender, NotifyCollectionChangedEventArgs ea)
+        {
+            switch (ea.Action)
+            {
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (SerialNumber item in ea.OldItems)
+                    {
+                        //Removed items
+                        item.PropertyChanged -= SerialNumberOnPropertyChanged;
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Add:
+                    foreach (SerialNumber item in ea.NewItems)
+                    {
+                        //Added items
+                        item.PropertyChanged += SerialNumberOnPropertyChanged;
+                    }
+                    break;
+            }
+            OnPropertyChanged(nameof(IsValid));
+        }
+
+        private void SerialNumberOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            OnPropertyChanged(nameof(SerialNumbersCollection));
+            OnPropertyChanged(nameof(IsValid));
+        }
     }
 }

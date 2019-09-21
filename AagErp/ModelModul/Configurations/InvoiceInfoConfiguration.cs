@@ -10,7 +10,6 @@ namespace ModelModul.Configurations
         {
             builder.ToTable("invoiceInfos");
             builder.HasKey(i => i.Id);
-            builder.Ignore(c => c.ValidationRules);
         }
     }
 }

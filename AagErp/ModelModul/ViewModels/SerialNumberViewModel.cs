@@ -32,7 +32,7 @@ namespace ModelModul.ViewModels
             set
             {
                 _value = value;
-                OnPropertyChanged("Value");
+                OnPropertyChanged();
                 ValidateValue();
             }
         }
@@ -41,21 +41,20 @@ namespace ModelModul.ViewModels
 
         private async void ValidateValue()
         {
-            _cancelTokenSource?.Cancel();
-            CancellationTokenSource newCts = new CancellationTokenSource();
-            _cancelTokenSource = newCts;
+            //_cancelTokenSource?.Cancel();
+            //CancellationTokenSource newCts = new CancellationTokenSource();
+            //_cancelTokenSource = newCts;
 
             const string propertyKey = "Value";
 
             try
             {
-               
-                IRepository<SerialNumber> serialNumberRepository = new SqlSerialNumberRepository();
+
+                SqlSerialNumberRepository serialNumberRepository = new SqlSerialNumberRepository();
                 if(IdStore != null)
                 {
                     int freeSerialNumbers =
-                    (await ((SqlSerialNumberRepository) serialNumberRepository).GetFreeSerialNumbers(IdProduct, Value,
-                        IdStore.Value, newCts.Token)).Count;
+                    (await serialNumberRepository.GetFreeSerialNumbers(IdProduct, Value, IdStore.Value)).Count;
                     if (freeSerialNumbers != 0 && Product != null)
                     {
                         if (freeSerialNumbers - Product.SerialNumbersCollection.Count(s => s.Value == Value) < 0)
@@ -81,17 +80,17 @@ namespace ModelModul.ViewModels
                     ValidationErrors.Remove(propertyKey);
                 }
             }
-            catch (OperationCanceledException) { }
+            //catch (OperationCanceledException) { }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
             RaiseErrorsChanged(propertyKey);
-            OnPropertyChanged("IsValid");
+            OnPropertyChanged(nameof(IsValid));
 
-            if (_cancelTokenSource == newCts)
-                _cancelTokenSource = null;
+            //if (_cancelTokenSource == newCts)
+            //    _cancelTokenSource = null;
         }
     }
 }

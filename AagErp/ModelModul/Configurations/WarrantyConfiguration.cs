@@ -14,7 +14,6 @@ namespace ModelModul.Configurations
             builder.Property(w => w.DateReceipt).HasColumnType("date");
             builder.Property(w => w.DateDeparture).HasColumnType("date");
             builder.Property(w => w.DateIssue).HasColumnType("date");
-            builder.Ignore(c => c.ValidationRules);
             builder.HasKey(w => w.Id);
         }
     }

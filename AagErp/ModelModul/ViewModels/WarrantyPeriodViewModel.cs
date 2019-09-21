@@ -21,7 +21,7 @@ namespace ModelModul.ViewModels
             set
             {
                 _period = value;
-                OnPropertyChanged("Period");
+                OnPropertyChanged();
                 ValidatePeriod();
             }
         }
@@ -65,7 +65,7 @@ namespace ModelModul.ViewModels
             }
 
             RaiseErrorsChanged(propertyKey);
-            OnPropertyChanged("IsValid");
+            OnPropertyChanged(nameof(IsValid));
 
             if (_cancelTokenSource == newCts)
                 _cancelTokenSource = null;

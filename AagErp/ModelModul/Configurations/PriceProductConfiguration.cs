@@ -11,7 +11,6 @@ namespace ModelModul.Configurations
             builder.ToTable("priceProducts");
             builder.HasKey(p => p.Id);
             builder.Property(p => p.Price).HasColumnType("money");
-            builder.Ignore(c => c.ValidationRules);
             builder.HasOne(p => p.Product).WithMany(p => p.PriceProductsCollection).HasForeignKey(p => p.IdProduct).IsRequired();
         }
     }

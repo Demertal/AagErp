@@ -16,7 +16,7 @@ namespace ModelModul.Models
             set
             {
                 _id = value;
-                OnPropertyChanged("Id");
+                OnPropertyChanged();
             }
         }
 
@@ -27,7 +27,7 @@ namespace ModelModul.Models
             set
             {
                 _invoiceInfosCollection = value;
-                OnPropertyChanged("InvoiceInfosCollection");
+                OnPropertyChanged();
             }
         }
 

@@ -11,7 +11,7 @@ namespace ModelModul.Models
             set
             {
                 _id = value;
-                OnPropertyChanged("Id");
+                OnPropertyChanged();
             }
         }
 
@@ -22,7 +22,7 @@ namespace ModelModul.Models
             set
             {
                 _date = value;
-                OnPropertyChanged("Date");
+                OnPropertyChanged();
             }
         }
 
@@ -33,7 +33,7 @@ namespace ModelModul.Models
             set
             {
                 _idCounterparty = value;
-                OnPropertyChanged("IdCounterparty");
+                OnPropertyChanged();
             }
         }
 
@@ -44,7 +44,7 @@ namespace ModelModul.Models
             set
             {
                 _moneyAmount = value;
-                OnPropertyChanged("MoneyAmount");
+                OnPropertyChanged();
             }
         }
 
@@ -55,7 +55,7 @@ namespace ModelModul.Models
             set
             {
                 _idType = value;
-                OnPropertyChanged("IdType");
+                OnPropertyChanged();
             }
         }
 
@@ -66,7 +66,7 @@ namespace ModelModul.Models
             set
             {
                 _idMovementGoods = value;
-                OnPropertyChanged("IdMovementGoods");
+                OnPropertyChanged();
             }
         }
 
@@ -77,7 +77,7 @@ namespace ModelModul.Models
             set
             {
                 _ñounterparty = value;
-                OnPropertyChanged("Counterparty");
+                OnPropertyChanged();
             }
         }
 
@@ -88,7 +88,7 @@ namespace ModelModul.Models
             set
             {
                 _movementGoods = value;
-                OnPropertyChanged("MovementGoods");
+                OnPropertyChanged();
             }
         }
 
@@ -99,7 +99,7 @@ namespace ModelModul.Models
             set
             {
                 _moneyTransferType = value;
-                OnPropertyChanged("MoneyTransferType");
+                OnPropertyChanged();
             }
         }
 

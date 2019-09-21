@@ -14,7 +14,6 @@ namespace ModelModul.Configurations
             builder.Property(m => m.EquivalentCost).HasColumnType("money");
             builder.Property(m => m.Count).HasColumnType("decimal(7, 2");
             builder.Property(m => m.Balance).HasColumnType("decimal(7, 2");
-            builder.Ignore(c => c.ValidationRules);
         }
     }
 }

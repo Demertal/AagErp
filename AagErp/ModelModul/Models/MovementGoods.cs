@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
-using ModelModul.Specifications.BasisSpecifications;
 
 namespace ModelModul.Models
 {
@@ -13,21 +15,6 @@ namespace ModelModul.Models
             SerialNumberLogsCollection = new List<SerialNumberLog>();
             MoneyTransfersCollection = new List<MoneyTransfer>();
             MovementGoodsCollection = new List<MovementGoods>();
-            ValidationRules = new ExpressionSpecification<MovementGoods>(
-                new ExpressionSpecification<MovementGoods>(m => m.MovmentGoodType != null)
-                    .And(new ExpressionSpecification<MovementGoods>(
-                        new ExpressionSpecification<MovementGoods>(m => m.MovmentGoodType.Code == "purchase")
-                            .And(new ExpressionSpecification<MovementGoods>(m => m.Rate != null && m.Rate > 0))
-                            .And(new ExpressionSpecification<MovementGoods>(m =>
-                                m.EquivalentRate != null && m.EquivalentRate > 0))
-                            .And(new ExpressionSpecification<MovementGoods>(m =>
-                                m.IdArrivalStore != null && m.IdArrivalStore > 0))
-                            .And(new ExpressionSpecification<MovementGoods>(m =>
-                                m.IdCurrency != null && m.IdCurrency > 0))
-                            .And(new ExpressionSpecification<MovementGoods>(m =>
-                                m.IdEquivalentCurrency != null && m.IdEquivalentCurrency > 0)).IsSatisfiedBy()))
-                    .And(new ExpressionSpecification<MovementGoods>(m => !m.HasErrors))
-                    .IsSatisfiedBy());
         }
 
         private Guid _id;
@@ -37,7 +24,7 @@ namespace ModelModul.Models
             set
             {
                 _id = value;
-                OnPropertyChanged("Id");
+                OnPropertyChanged();
             }
         }
 
@@ -48,7 +35,7 @@ namespace ModelModul.Models
             set
             {
                 _dateCreate = value;
-                OnPropertyChanged("DateCreate");
+                OnPropertyChanged();
             }
         }
 
@@ -59,8 +46,8 @@ namespace ModelModul.Models
             set
             {
                 _rate = value;
-                OnPropertyChanged("Rate");
-                OnPropertyChanged("IsValid");
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsValid));
             }
         }
 
@@ -71,8 +58,8 @@ namespace ModelModul.Models
             set
             {
                 _equivalentRate = value;
-                OnPropertyChanged("EquivalentRate");
-                OnPropertyChanged("IsValid");
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsValid));
             }
         }
 
@@ -83,7 +70,7 @@ namespace ModelModul.Models
             set
             {
                 _textInfo = value;
-                OnPropertyChanged("TextInfo");
+                OnPropertyChanged();
             }
         }
 
@@ -94,8 +81,8 @@ namespace ModelModul.Models
             set
             {
                 _idArrivalStore = value;
-                OnPropertyChanged("IdArrivalStore");
-                OnPropertyChanged("IsValid");
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsValid));
             }
         }
 
@@ -106,8 +93,8 @@ namespace ModelModul.Models
             set
             {
                 _idDisposalStore = value;
-                OnPropertyChanged("IdDisposalStore");
-                OnPropertyChanged("IsValid");
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsValid));
             }
         }
 
@@ -118,8 +105,8 @@ namespace ModelModul.Models
             set
             {
                 _idCounterparty = value;
-                OnPropertyChanged("IdCounterparty");
-                OnPropertyChanged("IsValid");
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsValid));
             }
         }
 
@@ -130,8 +117,8 @@ namespace ModelModul.Models
             set
             {
                 _idCurrency = value;
-                OnPropertyChanged("IdCurrency");
-                OnPropertyChanged("IsValid");
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsValid));
             }
         }
 
@@ -142,8 +129,8 @@ namespace ModelModul.Models
             set
             {
                 _idEquivalentCurrency = value;
-                OnPropertyChanged("IdEquivalentCurrency");
-                OnPropertyChanged("IsValid");
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsValid));
             }
         }
 
@@ -154,7 +141,7 @@ namespace ModelModul.Models
             set
             {
                 _dateClose = value;
-                OnPropertyChanged("DateClose");
+                OnPropertyChanged();
             }
         }
 
@@ -165,7 +152,7 @@ namespace ModelModul.Models
             set
             {
                 _isGoodsIssued = value;
-                OnPropertyChanged("IsGoodsIssued");
+                OnPropertyChanged();
             }
         }
 
@@ -176,7 +163,7 @@ namespace ModelModul.Models
             set
             {
                 _idType = value;
-                OnPropertyChanged("IdType");
+                OnPropertyChanged();
             }
         }
 
@@ -187,7 +174,7 @@ namespace ModelModul.Models
             set
             {
                 _idMovementGood = value;
-                OnPropertyChanged("IdMovementGood");
+                OnPropertyChanged();
             }
         }
 
@@ -198,7 +185,7 @@ namespace ModelModul.Models
             set
             {
                 _counterparty = value;
-                OnPropertyChanged("Counterparty");
+                OnPropertyChanged();
             }
         }
 
@@ -209,7 +196,7 @@ namespace ModelModul.Models
             set
             {
                 _equivalentcurrency = value;
-                OnPropertyChanged("EquivalentCurrency");
+                OnPropertyChanged();
             }
         }
 
@@ -220,7 +207,7 @@ namespace ModelModul.Models
             set
             {
                 _currency = value;
-                OnPropertyChanged("Currency");
+                OnPropertyChanged();
             }
         }
 
@@ -231,7 +218,7 @@ namespace ModelModul.Models
             set
             {
                 _arrivalStore = value;
-                OnPropertyChanged("ArrivalStore");
+                OnPropertyChanged();
             }
         }
 
@@ -242,7 +229,7 @@ namespace ModelModul.Models
             set
             {
                 _disposalStore = value;
-                OnPropertyChanged("DisposalStore");
+                OnPropertyChanged();
             }
         }
 
@@ -253,8 +240,8 @@ namespace ModelModul.Models
             set
             {
                 _movmentGoodType = value;
-                OnPropertyChanged("MovmentGoodType");
-                OnPropertyChanged("IsValid");
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsValid));
             }
         }
 
@@ -265,7 +252,7 @@ namespace ModelModul.Models
             set
             {
                 _movementGood = value;
-                OnPropertyChanged("MovementGood");
+                OnPropertyChanged();
             }
         }
 
@@ -275,8 +262,12 @@ namespace ModelModul.Models
             get => _movementGoodsInfosCollection;
             set
             {
+                if (_movementGoodsInfosCollection is ObservableCollection<MovementGoodsInfo> infos)
+                    infos.CollectionChanged -= OnMovementGoodsInfosCollectionChanged;
                 _movementGoodsInfosCollection = value;
-                OnPropertyChanged("MovementGoodsInfosCollection");
+                if (_movementGoodsInfosCollection is ObservableCollection<MovementGoodsInfo> collection)
+                    collection.CollectionChanged += OnMovementGoodsInfosCollectionChanged;
+                OnPropertyChanged();
             }
         }
 
@@ -287,7 +278,7 @@ namespace ModelModul.Models
             set
             {
                 _serialNumberLogsCollection = value;
-                OnPropertyChanged("SerialNumberLogsCollection");
+                OnPropertyChanged();
             }
         }
 
@@ -298,7 +289,7 @@ namespace ModelModul.Models
             set
             {
                 _movementGoodsCollection = value;
-                OnPropertyChanged("MovementGoods");
+                OnPropertyChanged();
             }
         }
 
@@ -309,7 +300,7 @@ namespace ModelModul.Models
             set
             {
                 _moneyTransfersCollection = value;
-                OnPropertyChanged("MoneyTransfersCollection");
+                OnPropertyChanged();
             }
         }
 
@@ -398,6 +389,58 @@ namespace ModelModul.Models
             };
         }
 
-        public override bool IsValid => ValidationRules.IsSatisfiedBy().Compile().Invoke(this);
+        private void OnMovementGoodsInfosCollectionChanged(object sender, NotifyCollectionChangedEventArgs ea)
+        {
+            switch (ea.Action)
+            {
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (MovementGoodsInfo item in ea.OldItems)
+                    {
+                        //Removed items
+                        item.PropertyChanged -= MovementGoodsInfoOnPropertyChanged;
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Add:
+                    foreach (MovementGoodsInfo item in ea.NewItems)
+                    {
+                        //Added items
+                        item.PropertyChanged += MovementGoodsInfoOnPropertyChanged;
+                    }
+                    break;
+            }
+            OnPropertyChanged(nameof(IsValid));
+        }
+
+        private void MovementGoodsInfoOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            OnMovementGoodsInfoPropertyChanged(sender, e);
+            OnPropertyChanged(nameof(MovementGoodsInfosCollection));
+            OnPropertyChanged(nameof(IsValid));
+        }
+
+        protected virtual void OnMovementGoodsInfoPropertyChanged(object sender, PropertyChangedEventArgs e) { }
+
+        public override bool IsValid
+        {
+            get
+            {
+                if (HasErrors || MovmentGoodType == null || MovementGoodsInfosCollection == null ||
+                    MovementGoodsInfosCollection.Count == 0 ||
+                    MovementGoodsInfosCollection.Any(mi => !mi.IsValid)) return false;
+                if (MovmentGoodType.Code == "purchase")
+                {
+                    return Rate != null && Rate > 0 && EquivalentRate != null && EquivalentRate > 0 &&
+                           IdArrivalStore != null && IdArrivalStore > 0 && IdCurrency != null && IdCurrency > 0 &&
+                           IdEquivalentCurrency != null && IdEquivalentCurrency > 0 && IdCounterparty != null &&
+                           IdCounterparty > 0;
+                }
+                if (MovmentGoodType.Code == "sale")
+                {
+                    return IdDisposalStore != null && IdDisposalStore > 0;
+                }
+
+                return true;
+            }
+        }
     }
 }

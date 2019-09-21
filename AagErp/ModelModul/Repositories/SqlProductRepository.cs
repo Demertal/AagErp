@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using LinqToDB;
@@ -22,7 +20,7 @@ namespace ModelModul.Repositories
 
     public class SqlProductRepository : SqlRepository<Product>
     {
-        public async Task<IEnumerable<Product>> GetProductsWithCountAndPrice(CancellationToken cts = new CancellationToken(), ISpecification<Product> where = null, Dictionary<string, SortingTypes> order = null, int skip = 0, int take = -1, params Expression<Func<Product, Object>>[] include)
+        public async Task<IEnumerable<Product>> GetProductsWithCountAndPrice(CancellationToken cts = new CancellationToken(), ISpecification<Product> where = null, Dictionary<string, SortingTypes> order = null, int skip = 0, int take = -1)
         {
             return await Task.Run(() =>
             {
@@ -35,7 +33,6 @@ namespace ModelModul.Repositories
                 if (order != null) query = query.OrderUsingSortExpression(order).AsQueryable();
                 if (skip != 0) query = query.Skip(skip).AsQueryable();
                 if (take != -1) query = query.Take(take).AsQueryable();
-                if (include != null) query = query.ToLoad(include).AsQueryable();
 
                 cts.ThrowIfCancellationRequested();
 
@@ -55,17 +52,9 @@ namespace ModelModul.Repositories
                         Price = pwcap.Price,
                         Count = pwcap.Count,
                         Category = q.Category,
-                        PriceGroup = q.PriceGroup,
                         UnitStorage = q.UnitStorage,
                         VendorCode = q.VendorCode,
-                        WarrantyPeriod = q.WarrantyPeriod,
-                        PropertyProductsCollection = q.PropertyProductsCollection,
-                        PriceProductsCollection = q.PriceProductsCollection,
-                        MovementGoodsInfosCollection = q.MovementGoodsInfosCollection,
-                        InvoiceInfosCollection = q.InvoiceInfosCollection,
-                        SerialNumbersCollection = q.SerialNumbersCollection,
-                        CountsProductCollection = q.CountsProductCollection,
-                        EquivalentCostForExistingProductsCollection = q.EquivalentCostForExistingProductsCollection
+                        PriceGroup = q.PriceGroup
                     };
 
                 cts.ThrowIfCancellationRequested();

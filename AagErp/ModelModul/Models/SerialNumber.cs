@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using ModelModul.Specifications.BasisSpecifications;
 
 namespace ModelModul.Models
 {
@@ -11,9 +10,6 @@ namespace ModelModul.Models
             SerialNumberLogsCollection = new List<SerialNumberLog>();
             WarrantiesCollection = new List<Warranty>();
             ChangesCollection = new List<Warranty>();
-            ValidationRules = new ExpressionSpecification<SerialNumber>(
-                new ExpressionSpecification<SerialNumber>(s => !string.IsNullOrEmpty(s.Value))
-                    .And(new ExpressionSpecification<SerialNumber>(s => !s.HasErrors)).IsSatisfiedBy());
         }
 
         private long _id;
@@ -23,7 +19,7 @@ namespace ModelModul.Models
             set
             {
                 _id = value;
-                OnPropertyChanged("Id");
+                OnPropertyChanged();
             }
         }
 
@@ -34,8 +30,8 @@ namespace ModelModul.Models
             set
             {
                 _value = value;
-                OnPropertyChanged("Value");
-                OnPropertyChanged("IsValid");
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsValid));
             }
         }
 
@@ -46,7 +42,7 @@ namespace ModelModul.Models
             set
             {
                 _idProduct = value;
-                OnPropertyChanged("IdProduct");
+                OnPropertyChanged();
             }
         }
 
@@ -57,7 +53,7 @@ namespace ModelModul.Models
             set
             {
                 _dateCreated = value;
-                OnPropertyChanged("DateCreated");
+                OnPropertyChanged();
             }
         }
 
@@ -68,7 +64,7 @@ namespace ModelModul.Models
             set
             {
                 _product = value;
-                OnPropertyChanged("Product");
+                OnPropertyChanged();
             }
         }
 
@@ -79,7 +75,7 @@ namespace ModelModul.Models
             set
             {
                 _serialNumberLogsCollection = value;
-                OnPropertyChanged("SerialNumberLogsCollection");
+                OnPropertyChanged();
             }
         }
 
@@ -90,7 +86,7 @@ namespace ModelModul.Models
             set
             {
                 _warrantiesCollection = value;
-                OnPropertyChanged("WarrantiesCollection");
+                OnPropertyChanged();
             }
         }
 
@@ -101,7 +97,7 @@ namespace ModelModul.Models
             set
             {
                 _changesCollection = value;
-                OnPropertyChanged("ChangesCollection");
+                OnPropertyChanged();
             }
         }
 
@@ -136,6 +132,6 @@ namespace ModelModul.Models
             };
         }
 
-        public override bool IsValid => ValidationRules.IsSatisfiedBy().Compile().Invoke(this);
+        public override bool IsValid => !string.IsNullOrEmpty(Value) && !HasErrors;
     }
 }

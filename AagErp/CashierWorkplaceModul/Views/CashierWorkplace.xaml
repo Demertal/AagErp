@@ -4,18 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:interactivity="http://prismlibrary.com/"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:modelModul="clr-namespace:ModelModul;assembly=ModelModul"
              xmlns:customControlLibrary="clr-namespace:CustomControlLibrary;assembly=CustomControlLibrary"
              xmlns:converters="clr-namespace:ModelModul.Converters;assembly=ModelModul"
              interactivity:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d">
-    <i:Interaction.Triggers>
-        <i:EventTrigger EventName="KeyDown">
-            <interactivity:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}},
-                                                                Path=DataContext.ListenKeyboardCommand}"/>
-        </i:EventTrigger>
-    </i:Interaction.Triggers>
 
     <UserControl.Resources>
         <ContextMenu  x:Key="RowMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
@@ -27,35 +20,38 @@
         <converters:ConvertCount x:Key="ConvertCount"/>
     </UserControl.Resources>
 
-    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-        <StackPanel>
-            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                <TextBlock Text="Cклад: " Margin="5" VerticalAlignment="Center"/>
-                <ComboBox  ItemsSource="{Binding StoresList, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True" DisplayMemberPath="Title" SelectedValuePath="Id"
-                           SelectedValue="{Binding SalesGood.IdDisposalStore, UpdateSourceTrigger=PropertyChanged}"/>
-            </StackPanel>
-        </StackPanel>
-        <ScrollViewer VerticalScrollBarVisibility="Auto">
-            <DockPanel VerticalAlignment="Center">
-                <DataGrid x:Name="Goods" ItemsSource="{Binding SalesGoodsList, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True" MinHeight="200" MaxHeight="600" VerticalAlignment="Center">
-                    <DataGrid.RowStyle>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <customControlLibrary:ExtendedDataGrid x:Name="Goods" ItemsSource="{Binding MovementGoodsInfosList, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True"
+                                                       MinHeight="200" MaxHeight="600" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="0">
+                    <customControlLibrary:ExtendedDataGrid.RowStyle>
                         <Style TargetType="{x:Type DataGridRow}" BasedOn="{StaticResource {x:Type DataGridRow}}">
                             <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
                         </Style>
-                    </DataGrid.RowStyle>
-                    <DataGrid.Resources>
+                    </customControlLibrary:ExtendedDataGrid.RowStyle>
+                    <customControlLibrary:ExtendedDataGrid.Resources>
                         <customControlLibrary:BindingProxy x:Key="Proxy" Data="{Binding ElementName=Goods, Path=SelectedItem}"/>
-                    </DataGrid.Resources>
-                    <DataGrid.Columns>
+                    </customControlLibrary:ExtendedDataGrid.Resources>
+                    <customControlLibrary:ExtendedDataGrid.Columns>
                         <DataGridTextColumn Header="Наименование" Binding="{Binding Product.Title, UpdateSourceTrigger=PropertyChanged}" MinWidth="200"
-                                            ElementStyle="{StaticResource {x:Type TextBlock}}"/>
+                                            ElementStyle="{DynamicResource TextBlockInControl}"/>
                         <DataGridTextColumn Header="Артикул" Binding="{Binding Product.VendorCode, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Visibility="Collapsed" 
-                                                        ElementStyle="{StaticResource {x:Type TextBlock}}"/>
+                                                        ElementStyle="{DynamicResource TextBlockInControl}"/>
                         <DataGridTextColumn Header="Штрихкод" Binding="{Binding Product.Barcode, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True" Visibility="Collapsed" 
-                                                        ElementStyle="{StaticResource {x:Type TextBlock}}"/>
+                                                        ElementStyle="{DynamicResource TextBlockInControl}"/>
                         <DataGridTextColumn Header="Ед. хр." Binding="{Binding Product.UnitStorage.Title, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True"
-                                            ElementStyle="{StaticResource {x:Type TextBlock}}"/>
-                        <DataGridTextColumn Header="Кол-во" ElementStyle="{StaticResource {x:Type TextBlock}}" EditingElementStyle="{DynamicResource TextBoxByDataGrid}">
+                                            ElementStyle="{DynamicResource TextBlockInControl}"/>
+                        <DataGridTextColumn Header="Кол-во" ElementStyle="{DynamicResource TextBlockInControl}" EditingElementStyle="{DynamicResource TextBoxByDataGrid}">
                             <DataGridTextColumn.Binding>
                                 <MultiBinding UpdateSourceTrigger="PropertyChanged" Converter="{StaticResource ConvertCount}" ValidatesOnExceptions="True" NotifyOnValidationError="True" ValidatesOnNotifyDataErrors="True">
                                     <Binding  Path="Count">
@@ -75,9 +71,9 @@
                                 </MultiBinding>
                             </DataGridTextColumn.Binding>
                         </DataGridTextColumn>
-                        <DataGridTextColumn Header="Цена" ElementStyle="{StaticResource {x:Type TextBlock}}" IsReadOnly="True"
+                        <DataGridTextColumn Header="Цена" ElementStyle="{DynamicResource TextBlockInControl}" IsReadOnly="True"
                                             Binding="{Binding Path=Price, UpdateSourceTrigger=PropertyChanged, StringFormat=F2, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}"/>
-                        <DataGridTextColumn Header="Сумма" ElementStyle="{StaticResource {x:Type TextBlock}}" IsReadOnly="True">
+                        <DataGridTextColumn Header="Сумма" ElementStyle="{DynamicResource TextBlockInControl}" IsReadOnly="True">
                             <DataGridTextColumn.Binding>
                                 <MultiBinding StringFormat="F2" Converter="{StaticResource CalculationSum}">
                                     <Binding Path="Price"/>
@@ -85,23 +81,24 @@
                                 </MultiBinding>
                             </DataGridTextColumn.Binding>
                         </DataGridTextColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
-                <DataGrid ItemsSource="{Binding SelectedItem.Product.SerialNumbersCollection, ElementName=Goods}" IsSynchronizedWithCurrentItem="True" Height="200" Margin="5"
-                          DockPanel.Dock="Right" HorizontalAlignment="Left" VerticalAlignment="Top">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Серийные номера" MinWidth="200" ElementStyle="{StaticResource {x:Type TextBlock}}" EditingElementStyle="{DynamicResource TextBoxByDataGrid}"
+                    </customControlLibrary:ExtendedDataGrid.Columns>
+                </customControlLibrary:ExtendedDataGrid>
+
+                <customControlLibrary:ExtendedDataGrid ItemsSource="{Binding SelectedItem.Product.SerialNumbersCollection, ElementName=Goods}" IsSynchronizedWithCurrentItem="True" Height="200" Margin="5"
+                          VerticalAlignment="Top" Grid.Column="1">
+                    <customControlLibrary:ExtendedDataGrid.Columns>
+                        <DataGridTextColumn Header="Серийные номера" MinWidth="200" ElementStyle="{DynamicResource TextBlockInControl}" EditingElementStyle="{DynamicResource TextBoxByDataGrid}"
                                             Binding="{Binding Path=Value, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnExceptions=True, ValidatesOnNotifyDataErrors=True}"/>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </DockPanel>
+                    </customControlLibrary:ExtendedDataGrid.Columns>
+                </customControlLibrary:ExtendedDataGrid>
+            </Grid>
         </ScrollViewer>
-        <DockPanel>
+        <DockPanel Grid.Row="1">
             <Button Content="Добавить товар" Command="{Binding AddProductCommand}"/>
             <Button Content="Провести" Command="{Binding PostCommand}" DockPanel.Dock="Right"/>
-            <TextBlock Text="{Binding SalesGoodsList, Converter={StaticResource CalculationTotal}, StringFormat=Итого {0:F2}}"/>
+            <TextBlock Text="{Binding MovementGoodsInfosList, Converter={StaticResource CalculationTotal}, StringFormat=Итого {0:F2}}"/>
         </DockPanel>
-    </StackPanel>
+    </Grid>
 </UserControl>
 
 

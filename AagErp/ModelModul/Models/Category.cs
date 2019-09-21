@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using ModelModul.Specifications.BasisSpecifications;
 
 namespace ModelModul.Models
 {
@@ -12,9 +11,6 @@ namespace ModelModul.Models
             ChildCategoriesCollection = new ObservableCollection<Category>();
             ProductsCollection = new ObservableCollection<Product>();
             PropertyNamesCollection = new ObservableCollection<PropertyName>();
-            ValidationRules = new ExpressionSpecification<Category>(
-                new ExpressionSpecification<Category>(c => !string.IsNullOrEmpty(c.Title))
-                    .And(new ExpressionSpecification<Category>(c => !c.HasErrors)).IsSatisfiedBy());
         }
 
         private int _id;
@@ -24,7 +20,7 @@ namespace ModelModul.Models
             set
             {
                 _id = value;
-                OnPropertyChanged("Id");
+                OnPropertyChanged();
             }
         }
 
@@ -35,8 +31,8 @@ namespace ModelModul.Models
             set
             {
                 _title = value;
-                OnPropertyChanged("Title");
-                OnPropertyChanged("IsValid");
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsValid));
             }
         }
 
@@ -47,7 +43,7 @@ namespace ModelModul.Models
             set
             {
                 _idParent = value;
-                OnPropertyChanged("IdParent");
+                OnPropertyChanged();
             }
         }
 
@@ -58,7 +54,7 @@ namespace ModelModul.Models
             set
             {
                 _parent = value;
-                OnPropertyChanged("Parent");
+                OnPropertyChanged();
             }
         }
 
@@ -69,7 +65,7 @@ namespace ModelModul.Models
             set
             {
                 _childCategoriesCollection = value;
-                OnPropertyChanged("ChildCategoriesCollection");
+                OnPropertyChanged();
             }
         }
 
@@ -80,7 +76,7 @@ namespace ModelModul.Models
             set
             {
                 _productsCollection = value;
-                OnPropertyChanged("ProductsCollection");
+                OnPropertyChanged();
             }
         }
 
@@ -91,7 +87,7 @@ namespace ModelModul.Models
             set
             {
                 _propertyNamesCollection = value;
-                OnPropertyChanged("PropertyNamesCollection");
+                OnPropertyChanged();
             }
         }
 
@@ -121,6 +117,6 @@ namespace ModelModul.Models
             return new Category {Id = Id, Title = Title, IdParent = IdParent};
         }
 
-        public override bool IsValid => ValidationRules.IsSatisfiedBy().Compile().Invoke(this);
+        public override bool IsValid => !string.IsNullOrEmpty(Title) && !HasErrors;
     }
 }

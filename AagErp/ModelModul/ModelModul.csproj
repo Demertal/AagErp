@@ -212,6 +212,7 @@
     <Compile Include="MVVM\IEntitiesViewModelBase.cs" />
     <Compile Include="MVVM\IEntityViewModelBase.cs" />
     <Compile Include="MVVM\ViewModelBase.cs" />
+    <Compile Include="MVVM\ViewModelBaseMovementGoods.cs" />
     <Compile Include="Repositories\SqlMovmentGoodTypeRepository.cs" />
     <Compile Include="Repositories\SqlCurrencyRepository.cs" />
     <Compile Include="Repositories\SqlCategoryRepository.cs" />
@@ -287,6 +288,8 @@
     <Compile Include="ViewModels\CategoryViewModel.cs" />
     <Compile Include="ViewModels\CounterpartyViewModel.cs" />
     <Compile Include="ViewModels\CurrencyViewModel.cs" />
+    <Compile Include="ViewModels\PurchaseMovementGoodsInfoViewModel.cs" />
+    <Compile Include="ViewModels\SaleMovementGoodsInfoViewModel.cs" />
     <Compile Include="ViewModels\PriceGroupViewModel.cs" />
     <Compile Include="ViewModels\ProductViewModel.cs" />
     <Compile Include="ViewModels\PropertyNameViewModel.cs" />

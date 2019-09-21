@@ -263,7 +263,7 @@
 		</table>
 		<table name="priceGroups" >
 			<column name="id" type="int" length="10" decimal="0" jt="4" mandatory="y" autoincrement="y" />
-			<column name="markup" type="decimal" length="5" decimal="2" jt="3" />
+			<column name="markup" type="decimal" length="7" decimal="4" jt="3" />
 			<index name="PK_priceGroups" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
@@ -597,6 +597,19 @@ BEGIN
 END
 ]]></string>
 		</trigger>
+		<trigger name="currencies_update_insert" table="currencies" id="Trigger_3a6034" isSystem="false" >
+			<string><![CDATA[CREATE TRIGGER dbo.currencies_update_insert ON dbo.currencies
+AFTER UPDATE, INSERT
+AS
+BEGIN
+	DECLARE @count INT
+	SELECT @count = COUNT(*) FROM dbo.currencies c WHERE c.isDefault = 1
+	IF (@count IS NOT NULL AND @count > 1) BEGIN
+			RAISERROR ('Основная валюта может быть только одна', 16, 1)
+			ROLLBACK TRANSACTION;
+	END
+END]]></string>
+		</trigger>
 		<trigger name="movementGoodsInfos_insert" table="movementGoodsInfos" id="Trigger_4cf068a" isSystem="false" >
 			<string><![CDATA[CREATE TRIGGER [dbo].[movementGoodsInfos_insert] ON [dbo].[movementGoodsInfos]
 AFTER INSERT
@@ -656,11 +669,12 @@ BEGIN
 END]]></string>
 		</trigger>
 		<trigger name="propertyNames_delete" table="propertyNames" id="Trigger_29b9e93" isSystem="false" >
-			<string><![CDATA[CREATE TRIGGER propertyNames_delete ON propertyNames
+			<string><![CDATA[CREATE TRIGGER [dbo].[propertyNames_delete] ON [dbo].[propertyNames]
 INSTEAD OF DELETE
 AS
 BEGIN
 	DELETE FROM propertyValues WHERE idPropertyName in (SELECT d.id FROM deleted d)
+	DELETE FROM propertyProducts WHERE idPropertyName in (SELECT d.id FROM deleted d)
 	DELETE FROM propertyNames WHERE id in (SELECT d.id FROM deleted d)
 END
 ]]></string>

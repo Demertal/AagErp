@@ -12,7 +12,6 @@ namespace ModelModul.Configurations
             builder.HasKey(p => p.Id);
             builder.Property(p => p.Code).IsRequired().HasMaxLength(20);
             builder.Property(p => p.Description).IsRequired().HasMaxLength(50);
-            builder.Ignore(c => c.ValidationRules);
             builder.HasMany(p => p.CounterpartiesCollection).WithOne(c => c.PaymentType).HasForeignKey(c => c.IdPaymentType).IsRequired();
         }
     }

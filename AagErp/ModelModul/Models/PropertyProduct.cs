@@ -9,7 +9,7 @@ namespace ModelModul.Models
             set
             {
                 _id = value;
-                OnPropertyChanged("Id");
+                OnPropertyChanged();
             }
         }
 
@@ -20,7 +20,7 @@ namespace ModelModul.Models
             set
             {
                 _idProduct = value;
-                OnPropertyChanged("IdProduct");
+                OnPropertyChanged();
             }
         }
 
@@ -31,7 +31,7 @@ namespace ModelModul.Models
             set
             {
                 _idPropertyName = value;
-                OnPropertyChanged("IdPropertyName");
+                OnPropertyChanged();
             }
         }
 
@@ -42,7 +42,7 @@ namespace ModelModul.Models
             set
             {
                 _idPropertyValue = value;
-                OnPropertyChanged("IdPropertyValue");
+                OnPropertyChanged();
             }
         }
 
@@ -53,7 +53,7 @@ namespace ModelModul.Models
             set
             {
                 _product = value;
-                OnPropertyChanged("Product");
+                OnPropertyChanged();
             }
         }
 
@@ -64,7 +64,7 @@ namespace ModelModul.Models
             set
             {
                 _propertyName = value;
-                OnPropertyChanged("PropertyName");
+                OnPropertyChanged();
             }
         }
 
@@ -75,7 +75,7 @@ namespace ModelModul.Models
             set
             {
                 _propertyValue = value;
-                OnPropertyChanged("PropertyValue");
+                OnPropertyChanged();
             }
         }
 

@@ -18,7 +18,6 @@ namespace ModelModul.Configurations
             builder.Ignore(p => p.EquivalentCostForExistingProductsCollection);
             builder.Ignore(p => p.Count);
             builder.Ignore(p => p.Price);
-            builder.Ignore(c => c.ValidationRules);
             builder.HasMany(p => p.PropertyProductsCollection).WithOne(p => p.Product).HasForeignKey(p => p.IdProduct)
                 .IsRequired();
             builder.HasMany(p => p.InvoiceInfosCollection).WithOne(i => i.Product).HasForeignKey(i => i.IdProduct).IsRequired();
