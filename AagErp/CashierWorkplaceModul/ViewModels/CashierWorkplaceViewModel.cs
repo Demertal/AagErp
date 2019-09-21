@@ -12,7 +12,7 @@ using Prism.Services.Dialogs;
 
 namespace CashierWorkplaceModul.ViewModels
 {
-    class CashierWorkplaceViewModel : ViewModelBaseMovementGoods<SaleMovementGoodsInfoViewModel>
+    class CashierWorkplaceViewModel : ViewModelBaseMovementGoods<TransportationMovementGoodsInfoViewModel>
     {
         public CashierWorkplaceViewModel(IDialogService dialogService) : base(dialogService, "sale", "Вы уверены, что хотите провести продажу?")
         {
@@ -110,11 +110,11 @@ namespace CashierWorkplaceModul.ViewModels
             MovementGoodsReport.IdDisposalStore = DisposalStoresList.FirstOrDefault()?.Id;
         }
 
-        protected override async Task<SaleMovementGoodsInfoViewModel> CreateMovementGoodInfoAsync(Product product)
+        protected override async Task<TransportationMovementGoodsInfoViewModel> CreateMovementGoodInfoAsync(Product product)
         {
             SqlProductRepository productRepository = new SqlProductRepository();
 
-            return new SaleMovementGoodsInfoViewModel
+            return new TransportationMovementGoodsInfoViewModel
             {
                 IdProduct = product.Id,
                 Price = await productRepository.GetCurrentPrice(product.Id),

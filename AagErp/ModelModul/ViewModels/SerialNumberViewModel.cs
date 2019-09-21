@@ -39,7 +39,7 @@ namespace ModelModul.ViewModels
 
         #endregion
 
-        private async void ValidateValue()
+        public async void ValidateValue()
         {
             //_cancelTokenSource?.Cancel();
             //CancellationTokenSource newCts = new CancellationTokenSource();

@@ -162,9 +162,12 @@ namespace ModelModul.Models
             OnPropertyChanged(nameof(IsValid));
         }
 
-        public override bool IsValid => !HasErrors && Price != null && Price > 0 && Count > 0 &&
+        public override bool IsValid => !HasErrors && MovementGoods?.MovmentGoodType != null &&
+                                        (MovementGoods.MovmentGoodType.Code == "moving" || Price != null && Price > 0) && Count > 0 &&
                                         Product?.UnitStorage != null && Product.SerialNumbersCollection != null &&
-                                        (Product.UnitStorage.IsWeightGoods || Count.ToString(CultureInfo.InvariantCulture).IndexOfAny(new[] {'.', ','}) == -1) &&
-                                        (!Product.KeepTrackSerialNumbers || Product.SerialNumbersCollection.All(s => s.IsValid));
+                                        (Product.UnitStorage.IsWeightGoods ||
+                                         Count.ToString(CultureInfo.InvariantCulture).IndexOfAny(new[] {'.', ','}) == -1) &&
+                                        (!Product.KeepTrackSerialNumbers ||
+                                         Product.SerialNumbersCollection.All(s => s.IsValid));
     }
 }

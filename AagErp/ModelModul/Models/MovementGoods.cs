@@ -360,7 +360,40 @@ namespace ModelModul.Models
 
                                     break;
                             }
-                        break;
+
+                            break;
+                        case "sale":
+                            switch (columnName)
+                            {
+                                case "IdDisposalStore":
+                                    if (IdDisposalStore == null || IdDisposalStore <= 0)
+                                    {
+                                        error = "Требуется указать склад";
+                                    }
+
+                                    break;
+                            }
+
+                            break;
+                        case "moving":
+                            switch (columnName)
+                            {
+                                case "IdArrivalStore":
+                                    if (IdArrivalStore == null || IdArrivalStore <= 0)
+                                    {
+                                        error = "Требуется указать склад";
+                                    }
+                                    break;
+                                case "IdDisposalStore":
+                                    if (IdDisposalStore == null || IdDisposalStore <= 0)
+                                    {
+                                        error = "Требуется указать склад";
+                                    }
+
+                                    break;
+                            }
+
+                            break;
                     }
 
                 return error;
@@ -388,6 +421,8 @@ namespace ModelModul.Models
                     new List<MovementGoodsInfo>(MovementGoodsInfosCollection.Select(m => (MovementGoodsInfo) m.Clone()))
             };
         }
+
+        #region PropertyChanged
 
         private void OnMovementGoodsInfosCollectionChanged(object sender, NotifyCollectionChangedEventArgs ea)
         {
@@ -420,6 +455,8 @@ namespace ModelModul.Models
 
         protected virtual void OnMovementGoodsInfoPropertyChanged(object sender, PropertyChangedEventArgs e) { }
 
+        #endregion
+        
         public override bool IsValid
         {
             get
@@ -437,6 +474,10 @@ namespace ModelModul.Models
                 if (MovmentGoodType.Code == "sale")
                 {
                     return IdDisposalStore != null && IdDisposalStore > 0;
+                }
+                if (MovmentGoodType.Code == "moving")
+                {
+                    return IdArrivalStore != null && IdArrivalStore > 0 && IdDisposalStore != null && IdDisposalStore > 0 && IdArrivalStore != IdDisposalStore;
                 }
 
                 return true;

@@ -288,6 +288,10 @@
       <Project>{93E9F3C6-7BC5-4DA2-8C89-C7E96FD22B90}</Project>
       <Name>StoreModul</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TransportationGoods\TransportationGoods.csproj">
+      <Project>{2BE94609-1AE3-484D-A2C9-D4991008D0E3}</Project>
+      <Name>TransportationGoods</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UnitStorageModul\UnitStorageModul.csproj">
       <Project>{B4B52FF1-550A-4B6C-A4F8-DC0AAD7C2DAC}</Project>
       <Name>UnitStorageModul</Name>

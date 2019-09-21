@@ -8,7 +8,7 @@ using ModelModul.Repositories;
 
 namespace ModelModul.ViewModels
 {
-    public class SaleMovementGoodsInfoViewModel : MovementGoodsInfo
+    public class TransportationMovementGoodsInfoViewModel : MovementGoodsInfo
     {
         #region Properties
 
@@ -51,7 +51,7 @@ namespace ModelModul.ViewModels
             }
         }
 
-        private async void ValidateCount()
+        public async void ValidateCount()
         {
             _cancelTokenSource?.Cancel();
             CancellationTokenSource newCts = new CancellationTokenSource();

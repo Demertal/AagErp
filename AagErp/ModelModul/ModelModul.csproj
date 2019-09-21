@@ -289,7 +289,7 @@
     <Compile Include="ViewModels\CounterpartyViewModel.cs" />
     <Compile Include="ViewModels\CurrencyViewModel.cs" />
     <Compile Include="ViewModels\PurchaseMovementGoodsInfoViewModel.cs" />
-    <Compile Include="ViewModels\SaleMovementGoodsInfoViewModel.cs" />
+    <Compile Include="ViewModels\TransportationMovementGoodsInfoViewModel.cs" />
     <Compile Include="ViewModels\PriceGroupViewModel.cs" />
     <Compile Include="ViewModels\ProductViewModel.cs" />
     <Compile Include="ViewModels\PropertyNameViewModel.cs" />

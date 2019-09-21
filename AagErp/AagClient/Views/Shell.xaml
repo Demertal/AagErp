@@ -22,6 +22,7 @@
             <MenuItem Header="Действия с товаром">
                 <MenuItem Header="Переоценка товара" Command="{Binding NavigateCommand}" CommandParameter="RevaluationGood"/>
                 <MenuItem Header="Приход товара" Command="{Binding NavigateCommand}" CommandParameter="PurchaseGood"/>
+                <MenuItem Header="Перемещение товара" Command="{Binding NavigateCommand}" CommandParameter="TransportationGoods"/>
             </MenuItem>
             <MenuItem Header="Справочники">
                 <MenuItem Header="Номенклатура" Command="{Binding NavigateCommand}" CommandParameter="ShowNomenclature"/>
