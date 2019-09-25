@@ -11,8 +11,15 @@ namespace ModelModul.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(value is ICollection<MovementGoodsInfo> movementGoods)) return 0;
-            return movementGoods.Sum(m => m.Price * m.Count);
+            switch (value)
+            {
+                case ICollection<MovementGoodsInfo> movementGoods:
+                    return movementGoods.Sum(m => m.Price * m.Count);
+                case ICollection<ProfitStatement> profitStatements:
+                    return profitStatements.Sum(p => p.Summa);
+            }
+
+            return 0;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

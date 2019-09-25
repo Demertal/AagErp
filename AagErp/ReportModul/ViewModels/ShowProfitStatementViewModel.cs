@@ -1,67 +1,91 @@
-﻿//using System;
-//using System.Windows;
-//using ModelModul.MVVM;
-//using ModelModul.Report;
-//using Prism.Services.Dialogs;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Windows;
+using ModelModul.Models;
+using ModelModul.MVVM;
+using ModelModul.Repositories;
+using ModelModul.Specifications.BasisSpecifications;
+using Prism.Regions;
+using Prism.Services.Dialogs;
 
-//namespace ReportModul.ViewModels
-//{
-//    class ShowProfitStatementViewModel : EntitiyReportsViewModel<>
-//    {
-//        #region Property
+namespace ReportModul.ViewModels
+{
+    class ShowProfitStatementViewModel : ViewModelBase
+    {
+        #region Property
 
-//        private DateTime _startDate;
-//        public DateTime StartDate
-//        {
-//            get => _startDate;
-//            set
-//            {
-//                SetProperty(ref _startDate, value);
-//                LoadAsync();
-//            }
-//        }
+        private DateTime _from;
+        public DateTime From
+        {
+            get => _from;
+            set
+            {
+                SetProperty(ref _from, value);
+                LoadAsync();
+            }
+        }
 
-//        private DateTime _endDate;
-//        public DateTime EndDate
-//        {
-//            get => _endDate;
-//            set
-//            {
-//                SetProperty(ref _endDate, value);
-//                LoadAsync();
-//            }
-//        }
+        private DateTime _to;
+        public DateTime To
+        {
+            get => _to;
+            set
+            {
+                SetProperty(ref _to, value);
+                LoadAsync();
+            }
+        }
 
-//        //public string FinalSum
-//        //{
-//        //    get { return "Итого прибыль: " + ReportList.Sum(obj => obj.FinalSum).ToString("C", new CultureInfo("UA-ua")); }
-//        //}
+        private ObservableCollection<ProfitStatement> _reportList;
+        public ObservableCollection<ProfitStatement> ReportList
+        {
+            get => _reportList;
+            set => SetProperty(ref _reportList, value);
+        }
 
-//        #endregion
+        private Currency _currency;
+        public Currency Currency
+        {
+            get => _currency;
+            set => SetProperty(ref _currency, value);
+        }
 
-//        public ShowProfitStatementViewModel(IDialogService dialogService) : base(dialogService)
-//        {
-//            EndDate = DateTime.Today;
-//            StartDate = DateTime.Today;
-//        }
+        #endregion
 
-//        private void Load()
-//        {
-//            try
-//            {
-//                DbSetReports dbSet = new DbSetReports();
-//                //ReportList = dbSet.GetFinalReport(StartDate, EndDate);
-//            }
-//            catch (Exception e)
-//            {
-//                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-//            }
-//            RaisePropertyChanged("FinalSum");
-//        }
+        public ShowProfitStatementViewModel(IDialogService dialogService) : base(dialogService)
+        {
+            From = DateTime.Today;
+            To = DateTime.Today;
+        }
 
-//        protected override void LoadAsync()
-//        {
-//            throw new NotImplementedException();
-//        }
-//    }
-//}
+        private async void LoadAsync()
+        {
+            try
+            {
+                SqlProfitStatementRepository profitStatementRepository = new SqlProfitStatementRepository();
+                ReportList = new ObservableCollection<ProfitStatement>(await profitStatementRepository.GetProfitStatement(From, To));
+                IRepository<Currency> currencyRepository = new SqlCurrencyRepository();
+                Currency = await currencyRepository.GetItemAsync(
+                    where: new ExpressionSpecification<Currency>(c => c.IsDefault));
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        public override void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            LoadAsync();
+        }
+
+        public override bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return false;
+        }
+
+        public override void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+        }
+    }
+}

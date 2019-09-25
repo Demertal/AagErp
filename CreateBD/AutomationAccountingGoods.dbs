@@ -551,6 +551,42 @@ FROM dbo.products p
 			<column name="price" type="money" />
 			<column name="count" type="decimal" />
 		</view>
+		<procedure name="calculateBalance" id="Procedure_33abf6f" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE PROCEDURE [dbo].[calculateBalance] @id bigint, @count decimal(7, 2) , @idProduct bigint
+AS
+BEGIN
+	DECLARE @codeMoving INT, @codePurchase INT, @idType INT
+	SELECT @codeMoving = id FROM movmentGoodTypes WHERE code = 'moving'
+	SELECT @codePurchase = id FROM movmentGoodTypes WHERE code = 'purchase';
+	SELECT TOP 1 @idType = mg.idType FROM dbo.movementGoodsInfos mgi INNER JOIN dbo.movementGoods mg ON ( mgi.idReport = mg.id ) WHERE mgi.id = @id
+	IF @idType = @codePurchase BEGIN
+		UPDATE dbo.movementGoodsInfos SET balance -= @count WHERE id = @id
+	END
+	ELSE BEGIN
+		WITH DirectReports(baseIdInfos, id) AS   
+		(  
+			SELECT mgi.baseIdInfos, mgi.id
+			FROM dbo.movementGoodsInfos mgi
+			WHERE mgi.id = @id
+			UNION ALL  
+			SELECT mgi.baseIdInfos, mgi.id
+			FROM dbo.movementGoodsInfos mgi
+				INNER JOIN dbo.movementGoods mg	ON ( mgi.idReport = mg.id )
+				INNER JOIN DirectReports d ON ( mg.id IN 
+					(
+						SELECT dbo.getIdReport(value)
+						FROM STRING_SPLIT (d.baseIdInfos, ';')
+						WHERE RTRIM(value) != ''
+					))
+			WHERE mgi.idProduct = @idProduct AND mgi.balance != 0
+		)
+		UPDATE dbo.movementGoodsInfos SET balance -= @count, baseIdInfos = (SELECT CASE WHEN dbo.getIdReport(value) IN (SELECT d1.id FROM DirectReports d1) THEN cast(dbo.getIdReport(value) as nvarchar) + ' ' + cast(dbo.getCountReport(value) as nvarchar) + ' ' + cast(dbo.getBalanceReport(value) - @count as nvarchar) + ';' ELSE value END FROM STRING_SPLIT (mgi.baseIdInfos, ';') WHERE RTRIM(value) != '' FOR XML PATH (''),TYPE).value('.','NVARCHAR(MAX)')
+			FROM dbo.movementGoodsInfos mgi
+				INNER JOIN DirectReports d ON ( mgi.id = d.id )
+				INNER JOIN dbo.movementGoods mg	ON ( mgi.idReport = mg.id )
+	END
+END]]></string>
+		</procedure>
 		<procedure name="goods_issued" id="Procedure_49492f8" isSystem="false" params_known="n" >
 			<string><![CDATA[CREATE PROCEDURE goods_issued
     @id INT
@@ -655,7 +691,7 @@ BEGIN
 	SELECT @codeSales = id FROM movmentGoodTypes WHERE code = 'sale'
 	UPDATE dbo.movementGoodsInfos SET balance = i.count FROM inserted i
 		INNER JOIN dbo.movementGoods mg ON ( i.idReport = mg.id )
-		WHERE mg.idType = @codePurchase AND i.id = movementGoodsInfos.id
+		WHERE (mg.idType = @codePurchase OR mg.idType = @codeMoving) AND i.id = movementGoodsInfos.id
 	IF (EXISTS 
 		(SELECT 1 FROM inserted i
 			INNER JOIN dbo.movementGoods mg ON ( i.idReport = mg.id AND mg.idType = @codeSales)
@@ -663,43 +699,117 @@ BEGIN
 	BEGIN
 		RAISERROR ('Указанного кол-ва товара нет на складе', 16, 3)
 		ROLLBACK TRANSACTION;
+		RETURN;
 	END
-	DECLARE @iCount decimal(7, 2), @iIdProduct int, @iIdStore int
-	DECLARE insertedProduct CURSOR FOR
-		SELECT i.count, i.idProduct, mg.idDisposalStore
+	DECLARE @count decimal(7, 2), @idProduct bigint, @idArrivalStore int, @id bigint, @idInfo BIGINT, @idReport bigint, @keepTrackSerialNumbers bit
+	DECLARE @baseID NVARCHAR(MAX)
+	-----------------------Перемещение товара------------------------------------------------
+	DECLARE movingProduct CURSOR FOR
+		SELECT i.id, i.count, i.idProduct, mg.idDisposalStore
 		FROM inserted i
 			INNER JOIN dbo.movementGoods mg ON ( i.idReport = mg.id)
-		WHERE mg.idType = @codeSales
-	OPEN insertedProduct
-	FETCH NEXT FROM insertedProduct INTO @iCount, @iIdProduct, @iIdStore;
+			INNER JOIN dbo.products p ON ( i.idProduct = p.id)
+		WHERE mg.idType = @codeMoving AND p.keepTrackSerialNumbers = 0
+	OPEN movingProduct
+	FETCH NEXT FROM movingProduct INTO @id, @count, @idProduct, @idArrivalStore;
 	WHILE @@FETCH_STATUS = 0 BEGIN
-		DECLARE @count decimal(7, 2), @id int
-		DECLARE movementGoodsInfo CURSOR FOR
-		SELECT mgi.balance, mgi.id
-		FROM dbo.movementGoodsInfos mgi
-			INNER JOIN dbo.movementGoods mg ON ( mgi.idReport = mg.id)
-		WHERE mg.idType = @codePurchase AND mg.idArrivalStore = @iIdStore AND mgi.idProduct = @iIdProduct AND mgi.balance != 0
+		SET @baseID = '';
+		DECLARE @balance decimal(7, 2)
+		DECLARE countPurchaseProduct CURSOR FOR
+			SELECT mgi.balance, mg.id, mgi.id
+			FROM dbo.movementGoodsInfos mgi
+				INNER JOIN dbo.movementGoods mg ON ( mgi.idReport = mg.id)
+			WHERE mg.idArrivalStore = @idArrivalStore AND mgi.balance !=0
 			ORDER BY mg.dateCreate ASC
-		OPEN movementGoodsInfo
-		FETCH NEXT FROM movementGoodsInfo INTO @count, @id
-		WHILE @iCount > 0 BEGIN
-			IF @count > @iCount BEGIN
-				UPDATE dbo.movementGoodsInfos SET balance -= @iCount WHERE id = @id
-				SET @iCount = 0
+		OPEN countPurchaseProduct
+		FETCH NEXT FROM countPurchaseProduct INTO @balance, @idReport, @idInfo;
+		WHILE @count != 0 BEGIN
+			
+			IF @balance >= @count BEGIN
+				SET @baseID += CONVERT(NVARCHAR, @idReport) + ' ' + CONVERT(NVARCHAR, @count) + ' ' + CONVERT(NVARCHAR, @count) + ';'
+				SET @count = 0;
 			END
 			ELSE BEGIN
-				UPDATE dbo.movementGoodsInfos SET balance = 0 WHERE id = @id
-				SET @iCount -= @count		
+				SET @baseID += CONVERT(NVARCHAR, @idReport) + ' ' + CONVERT(NVARCHAR, @balance) + ' ' + CONVERT(NVARCHAR, @balance) + ';'
+				SET @count -= @balance
 			END
-			FETCH NEXT FROM movementGoodsInfo INTO @count, @id
-		
-		END		
-		CLOSE movementGoodsInfo;  
-		DEALLOCATE movementGoodsInfo;
-		FETCH NEXT FROM insertedProduct INTO @iCount, @iIdProduct, @iIdStore;
+			FETCH NEXT FROM countPurchaseProduct INTO @balance, @idReport, @idInfo;
+		END
+		CLOSE countPurchaseProduct;  
+		DEALLOCATE countPurchaseProduct;
+		UPDATE movementGoodsInfos SET baseIdInfos = @baseID WHERE id = @id
+		FETCH NEXT FROM movingProduct INTO @id, @count, @idProduct, @idArrivalStore;
 	END
-	CLOSE insertedProduct;  
-	DEALLOCATE insertedProduct;
+	CLOSE movingProduct;  
+	DEALLOCATE movingProduct;
+	-----------------------Продажа товара------------------------------------------------
+	DECLARE saleProduct CURSOR FOR
+		SELECT i.count, i.idProduct, mg.idDisposalStore, i.id, p.keepTrackSerialNumbers, mg.id
+		FROM inserted i
+			INNER JOIN dbo.movementGoods mg ON ( i.idReport = mg.id)
+			INNER JOIN dbo.products p ON ( i.idProduct = p.id)
+		WHERE mg.idType = @codeSales
+	OPEN saleProduct
+	FETCH NEXT FROM saleProduct INTO @count, @idProduct, @idArrivalStore, @id, @keepTrackSerialNumbers, @idReport;
+	WHILE @@FETCH_STATUS = 0 BEGIN
+		IF @keepTrackSerialNumbers = 0 BEGIN
+		SET @baseID = '';
+		DECLARE countProduct CURSOR FOR
+			SELECT CASE mg.idType WHEN @codeMoving THEN mgi.balance WHEN @codePurchase THEN mgi.balance - ISNULL(SUM(mgi2.countReport), 0) END,  mgi.id, mg.id FROM dbo.movementGoodsInfos mgi
+				INNER JOIN dbo.movementGoods mg ON ( mgi.idReport = mg.id)
+				OUTER APPLY (SELECT 
+					(SELECT dbo.getBalanceReport(spl2.value) FROM STRING_SPLIT (mgi1.baseIdInfos, ';') spl2 WHERE RTRIM(spl2.value) != '' AND dbo.getIdReport(spl2.value) = mg.id) countReport
+					FROM dbo.movementGoodsInfos mgi1
+					INNER JOIN dbo.movementGoods mg1 ON ( mgi1.idReport = mg1.id)
+					WHERE mg1.idType = @codeMoving AND mg1.idDisposalStore = @idArrivalStore AND mg.id IN 
+						(SELECT dbo.getIdReport(spl1.value) FROM STRING_SPLIT (mgi1.baseIdInfos, ';') spl1
+							WHERE RTRIM(spl1.value) != '')) mgi2
+			WHERE mgi.idProduct = @idProduct AND mgi.balance != 0 AND mg.idArrivalStore = @idArrivalStore
+			GROUP BY mgi.id, mg.idType, mgi.balance, mg.dateCreate, mg.id
+			HAVING mgi.balance - ISNULL(SUM(mgi2.countReport), 0) != 0
+			ORDER BY mg.dateCreate ASC
+		OPEN countProduct
+		FETCH NEXT FROM countProduct INTO @balance, @idInfo, @idReport;
+		WHILE @count != 0 BEGIN
+			
+			IF @balance >= @count BEGIN
+				SET @baseID += CONVERT(NVARCHAR, @idReport) + ' ' + CONVERT(NVARCHAR, @count) + ';'
+				exec dbo.calculateBalance @idInfo, @count, @idProduct
+				SET @count = 0;
+			END
+			ELSE BEGIN
+				SET @baseID += CONVERT(NVARCHAR, @idReport) + ' ' + CONVERT(NVARCHAR, @balance) + ';'
+				exec dbo.calculateBalance @idInfo, @balance, @idProduct
+				SET @count -= @balance
+			END
+			FETCH NEXT FROM countProduct INTO @balance, @idInfo, @idReport;
+		END
+		UPDATE movementGoodsInfos SET baseIdInfos = @baseID WHERE id = @id
+		CLOSE countProduct;  
+		DEALLOCATE countProduct;
+		END
+		ELSE BEGIN
+			DECLARE serialNumberCursor CURSOR FOR
+				SELECT mgi.id, mgi.balance
+				FROM dbo.movementGoodsInfos mgi
+					INNER JOIN dbo.serialNumberLogs snl ON ( snl.idMovmentGood = mgi.idReport )
+						INNER JOIN dbo.serialNumbers sn ON ( snl.idSerialNumber = sn.id )
+					INNER JOIN dbo.movementGoods mg ON ( mgi.idReport = mg.id )
+				WHERE mgi.idProduct = @idProduct AND mg.idType = @codePurchase AND sn.id IN ( SELECT wsnl.idSerialNumber FROM dbo.serialNumberLogs wsnl WHERE wsnl.idMovmentGood = @idReport)
+			OPEN serialNumberCursor;
+			FETCH NEXT FROM serialNumberCursor INTO @idInfo, @count
+			WHILE @@FETCH_STATUS = 0 BEGIN
+				UPDATE dbo.movementGoodsInfos SET balance -= 1 WHERE id = @idInfo
+				
+				FETCH NEXT FROM serialNumberCursor INTO @idInfo, @count
+			END
+			CLOSE serialNumberCursor;  
+			DEALLOCATE serialNumberCursor;
+		END
+		FETCH NEXT FROM saleProduct INTO @count, @idProduct, @idArrivalStore, @id, @keepTrackSerialNumbers, @idReport;
+	END
+	CLOSE saleProduct;  
+	DEALLOCATE saleProduct;
 END]]></string>
 		</trigger>
 		<trigger name="propertyNames_delete" table="propertyNames" id="Trigger_29b9e93" isSystem="false" >
@@ -794,6 +904,19 @@ BEGIN
 	RETURN @result
 END]]></string>
 		</function>
+		<function name="getBalanceReport" id="Function_43af7c2" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE FUNCTION getBalanceReport (@baseIdInfosItem NVARCHAR(MAX))
+RETURNS decimal(7, 2)
+BEGIN
+	DECLARE @result decimal(7, 2);
+	WITH Cte AS
+	(
+		SELECT rn = ROW_NUMBER() OVER(ORDER BY (SELECT 1)), value FROM STRING_SPLIT (@baseIdInfosItem, ' ') s WHERE RTRIM(value) != ''
+	)
+	SELECT @result = try_cast(value as decimal(7, 2)) FROM Cte WHERE rn = 3
+	RETURN @result
+END]]></string>
+		</function>
 		<function name="getCountProduct" id="Function_249b289" isSystem="false" params_known="n" >
 			<string><![CDATA[CREATE FUNCTION [dbo].[getCountProduct](@idProduct bigint)
 RETURNS TABLE
@@ -813,6 +936,19 @@ RETURN
 			LEFT JOIN dbo.movmentGoodTypes mgt ON ( mg.idType = mgt.id  )
 		GROUP BY s.id
 )]]></string>
+		</function>
+		<function name="getCountReport" id="Function_385e743" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE FUNCTION [dbo].[getCountReport] (@baseIdInfosItem NVARCHAR(MAX))
+RETURNS decimal(7, 2)
+BEGIN
+	DECLARE @result decimal(7, 2);
+	WITH Cte AS
+	(
+		SELECT rn = ROW_NUMBER() OVER(ORDER BY (SELECT 1)), value FROM STRING_SPLIT (@baseIdInfosItem, ' ') s WHERE RTRIM(value) != ''
+	)
+	SELECT @result = try_cast(value as decimal(7, 2)) FROM Cte WHERE rn = 2
+	RETURN @result
+END]]></string>
 		</function>
 		<function name="getCurrentPrice" id="Function_276d590" isSystem="false" params_known="n" >
 			<string><![CDATA[CREATE FUNCTION [dbo].[getCurrentPrice] (@idProduct bigint)
@@ -837,6 +973,45 @@ RETURN (
 	WHERE mgi.idProduct = @idProduct AND mgi.balance != 0 AND mgt.code = 'purchase'
 		GROUP BY mg.idEquivalentCurrency, mgi.equivalentCost)]]></string>
 		</function>
+		<function name="getFreeBalance" id="Function_1a52215" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE FUNCTION [dbo].[getFreeBalance](@idInfo INT, @idArrivalStore INT, @idProduct INT)
+RETURNS decimal(7, 2)
+BEGIN
+	DECLARE @result decimal(7, 2);
+	WITH DirectReports(baseIdInfos, id, balance, idArrivalStore, idDisposalStore) AS   
+		(  
+			SELECT mgi.baseIdInfos, mgi.id, cast(0 as decimal(7, 2)), mg.idArrivalStore, mg.idDisposalStore
+			FROM dbo.movementGoodsInfos mgi
+				INNER JOIN dbo.movementGoods mg	ON ( mgi.idReport = mg.id )
+			WHERE mgi.id = @idInfo
+			UNION ALL  
+			SELECT mgi.baseIdInfos, mgi.id, 
+			(
+				SELECT dbo.getCountReport(spl1.value)
+				FROM STRING_SPLIT (mgi.baseIdInfos, ';') spl1
+				WHERE RTRIM(spl1.value) != ''
+					AND d.id IN  
+					(
+						SELECT dbo.getIdReport(spl2.value)
+						FROM STRING_SPLIT (spl1.value, ';') spl2
+						WHERE RTRIM(spl2.value) != ''
+					)
+			), mg.idArrivalStore, mg.idDisposalStore
+			FROM dbo.movementGoodsInfos mgi
+				INNER JOIN dbo.movementGoods mg	ON ( mgi.idReport = mg.id )
+					INNER JOIN dbo.movmentGoodTypes mgt ON ( mg.idType = mgt.id )
+				INNER JOIN DirectReports d ON ( d.id IN 
+					(
+						SELECT dbo.getIdReport(value)
+						FROM STRING_SPLIT (mgi.baseIdInfos, ';')
+						WHERE RTRIM(value) != ''
+					))
+			WHERE mgt.code = 'moving' AND mgi.idProduct = @idProduct AND mgi.balance != 0
+		)
+	SELECT @result= SUM(case when idArrivalStore = @idArrivalStore then balance else 0 end) FROM DirectReports
+	RETURN @result;
+END]]></string>
+		</function>
 		<function name="getFreeSerialNumbers" id="Function_4a8b736" isSystem="false" params_known="n" >
 			<string><![CDATA[CREATE FUNCTION [dbo].[getFreeSerialNumbers] (@idProduct BIGINT, @value varchar(20), @idStore INT)
 RETURNS @result TABLE (id BIGINT)
@@ -847,40 +1022,55 @@ SELECT sn.id
 FROM dbo.serialNumbers sn 
 WHERE sn.value = @value AND
 	sn.idProduct = @idProduct AND
-	 NOT EXISTS ( 
-	SELECT 1 
-	FROM dbo.serialNumberLogs snl 
-		INNER JOIN dbo.movementGoods mg ON ( snl.idMovmentGood = mg.id  )  
-			INNER JOIN dbo.movmentGoodTypes mgt ON ( mg.idType = mgt.id  )  
-	WHERE sn.id = snl.idSerialNumber  AND
-		mgt.code in ('returnFromBuyer', 'change') ) AND
-	isnull((SELECT TOP 1 mg.dateCreate
+	(SELECT TOP 1 mg.dateCreate
 	FROM dbo.serialNumberLogs snl 
 		INNER JOIN dbo.movementGoods mg ON ( snl.idMovmentGood = mg.id  )  
 			INNER JOIN dbo.movmentGoodTypes mgt ON ( mg.idType = mgt.id  )  
 	WHERE sn.id = snl.idSerialNumber AND mg.idArrivalStore = @idStore AND mgt.code in ('purchase', 'moving')
-		ORDER BY mg.dateCreate DESC), '1990-1-2') > 
+		ORDER BY mg.dateCreate DESC) IS NOT NULL AND
+	(SELECT TOP 1 mg.dateCreate
+	FROM dbo.serialNumberLogs snl 
+		INNER JOIN dbo.movementGoods mg ON ( snl.idMovmentGood = mg.id  )  
+			INNER JOIN dbo.movmentGoodTypes mgt ON ( mg.idType = mgt.id  )  
+	WHERE sn.id = snl.idSerialNumber AND mg.idArrivalStore = @idStore AND mgt.code in ('purchase', 'moving')
+		ORDER BY mg.dateCreate DESC) > 
 	isnull((SELECT TOP 1 mg.dateCreate
 	FROM dbo.serialNumberLogs snl 
 		INNER JOIN dbo.movementGoods mg ON ( snl.idMovmentGood = mg.id  )  
 			INNER JOIN dbo.movmentGoodTypes mgt ON ( mg.idType = mgt.id  )
 	WHERE sn.id = snl.idSerialNumber AND mg.idDisposalStore = @idStore  AND mgt.code = 'moving'
 		ORDER BY mg.dateCreate DESC), '1990-1-1') AND
-	isnull((SELECT TOP 1 mg.dateCreate
+	((SELECT TOP 1 mg.dateCreate
 	FROM dbo.serialNumberLogs snl 
 		INNER JOIN dbo.movementGoods mg ON ( snl.idMovmentGood = mg.id  )  
 			INNER JOIN dbo.movmentGoodTypes mgt ON ( mg.idType = mgt.id  )  
 	WHERE sn.id = snl.idSerialNumber  AND mgt.code = 'sale' 
-		ORDER BY mg.dateCreate DESC), '1990-1-1') < 
+		ORDER BY mg.dateCreate DESC) IS NULL OR	
+		(SELECT TOP 1 mg.dateCreate
+	FROM dbo.serialNumberLogs snl 
+		INNER JOIN dbo.movementGoods mg ON ( snl.idMovmentGood = mg.id  )  
+			INNER JOIN dbo.movmentGoodTypes mgt ON ( mg.idType = mgt.id  )  
+	WHERE sn.id = snl.idSerialNumber  AND mgt.code = 'sale' 
+		ORDER BY mg.dateCreate DESC) < 
 	isnull((SELECT TOP 1 mg.dateCreate
 	FROM dbo.serialNumberLogs snl 
 		INNER JOIN dbo.movementGoods mg ON ( snl.idMovmentGood = mg.id  )  
 			INNER JOIN dbo.movmentGoodTypes mgt ON ( mg.idType = mgt.id  )  
 	WHERE sn.id = snl.idSerialNumber  AND mgt.code = 'returnFromBuyer'
-		ORDER BY mg.dateCreate DESC), '1990-1-2')
+		ORDER BY mg.dateCreate DESC), '1990-1-1'))
 	ORDER BY sn.dateCreated DESC
 RETURN
 END]]></string>
+		</function>
+		<function name="getIdReport" id="Function_559ef8" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE FUNCTION getIdReport (@baseIdInfosItem NVARCHAR(MAX))
+RETURNS BIGINT
+BEGIN
+	DECLARE @result BIGINT
+	SELECT TOP 1 @result = try_cast(value as bigint) FROM STRING_SPLIT (@baseIdInfosItem, ' ') s WHERE RTRIM(value) != ''
+	RETURN @result
+END
+]]></string>
 		</function>
 	</schema>
 	<connector name="SqlServer" database="SqlServer" driver_class="com.microsoft.sqlserver.jdbc.SQLServerDriver" driver_jar="mssql-jdbc-7.0.0.jre10.jar" driver_desc="Native Driver - Windows Authentication, Current User" host="DESKTOP-KC53E2S" port="1433" instance="AutomationAccountingGoods" user="ws" passwd="c2xvdzIzc3dpbTQ1QA==" />
@@ -908,8 +1098,8 @@ END]]></string>
 		<entity schema="dbo" name="serialNumberLogs" color="BED3F4" x="736" y="80" />
 		<entity schema="dbo" name="movementGoodsInfos" color="BED3F4" x="272" y="448" />
 		<entity schema="dbo" name="movmentGoodTypes" color="C1D8EE" x="48" y="256" />
-		<entity schema="dbo" name="movementGoods" color="BED3F4" x="272" y="80" />
 		<entity schema="dbo" name="products" color="F4DDBE" x="1232" y="80" />
+		<entity schema="dbo" name="movementGoods" color="BED3F4" x="272" y="80" />
 		<group name="counterparties" color="EEF7EC" >
 			<entity schema="dbo" name="counterparties" />
 			<entity schema="dbo" name="moneyTransfers" />

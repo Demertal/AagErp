@@ -3,46 +3,63 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:customcontrollibrary="clr-namespace:CustomControlLibrary;assembly=CustomControlLibrary"
              xmlns:interactivity="http://prismlibrary.com/"
+             xmlns:customControlLibrary="clr-namespace:CustomControlLibrary;assembly=CustomControlLibrary"
+             xmlns:converters="clr-namespace:ModelModul.Converters;assembly=ModelModul"
              interactivity:ViewModelLocator.AutoWireViewModel="True"
-             mc:Ignorable="d" 
-             VerticalAlignment="Top" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Padding="10,5,5,10">
-    <StackPanel>
-        <StackPanel Margin="5">
-            <TextBlock Text="Укажите диапозон времени" FontSize="14" VerticalAlignment="Center"/>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="С: " FontSize="14" VerticalAlignment="Center"/>
-                <DatePicker Margin="5,0,0,0" SelectedDate="{Binding Path=StartDate}" SelectedDateFormat="Short" FontSize="14" />
-                <TextBlock Text="По: " FontSize="14" VerticalAlignment="Center"/>
-                <DatePicker Margin="5,0,0,0" SelectedDate="{Binding Path=EndDate}" SelectedDateFormat="Short" FontSize="14" />
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <converters:ConvertCount x:Key="ConvertCount"/>
+        <converters:CalculationTotal x:Key="CalculationTotal"/>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid Margin="5" Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="Выберите диапазон" Grid.Row="0"/>
+            <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
+                <TextBlock Text="С: " VerticalAlignment="Center"/>
+                <DatePicker SelectedDate="{Binding Path=From}" SelectedDateFormat="Short"/>
+                <TextBlock Text="По: " VerticalAlignment="Center"/>
+                <DatePicker SelectedDate="{Binding Path=To}" SelectedDateFormat="Short"/>
             </StackPanel>
-        </StackPanel>
-        <customcontrollibrary:ExtendedDataGrid ItemsSource="{Binding Path=ReportList, UpdateSourceTrigger=PropertyChanged}"
-                    IsSynchronizedWithCurrentItem="True" CanUserResizeRows="False" CanUserAddRows="False" CanUserDeleteRows="False"
-                    CanUserReorderColumns="False" AutoGenerateColumns="False" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Center"
-                    MinHeight="200" MaxHeight="500" SelectionMode="Single" Background="White" IsReadOnly="True" HorizontalAlignment="Left" FontSize="14">
-            <customcontrollibrary:ExtendedDataGrid.CellStyle>
-                <Style TargetType="DataGridCell">
-                    <Setter Property="BorderThickness" Value="0"/>
-                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                </Style>
-            </customcontrollibrary:ExtendedDataGrid.CellStyle>
-            <customcontrollibrary:ExtendedDataGrid.Columns>
-                <DataGridTemplateColumn Header="Наименование">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <TextBox  Text="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}" MaxWidth="200" TextWrapping="Wrap"  IsReadOnly="True"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Артикул"          Binding="{Binding Path=VendorCode, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed"/>
-                <DataGridTextColumn Header="Штрихкод"         Binding="{Binding Path=Barcode, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed"/>
-                <DataGridTextColumn Header="Кол-во прод."     Binding="{Binding Path=Count, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Прибыль"             Binding="{Binding Path=FinalSum, UpdateSourceTrigger=PropertyChanged, StringFormat=C, ConverterCulture='ua-UA'}"/>
-            </customcontrollibrary:ExtendedDataGrid.Columns>
-        </customcontrollibrary:ExtendedDataGrid>
-        <TextBlock Text="{Binding Path=FinalSum, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" FontSize="14" Margin="0,5,0,0"/>
-    </StackPanel>
+        </Grid>
+        <customControlLibrary:ExtendedDataGrid ItemsSource="{Binding Path=ReportList, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1"
+                                               IsReadOnly="True" MinHeight="200" MaxHeight="600" VerticalAlignment="Center" HorizontalAlignment="Center" ColumnWidth="Auto">
+            <customControlLibrary:ExtendedDataGrid.Columns>
+                <DataGridTextColumn Header="Наименование" Binding="{Binding Product.Title, UpdateSourceTrigger=PropertyChanged}" MinWidth="200"
+                                            ElementStyle="{DynamicResource TextBlockInControl}"/>
+                <DataGridTextColumn Header="Артикул" Binding="{Binding Product.VendorCode, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Visibility="Collapsed" 
+                                                        ElementStyle="{DynamicResource TextBlockInControl}"/>
+                <DataGridTextColumn Header="Штрихкод" Binding="{Binding Product.Barcode, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True" Visibility="Collapsed" 
+                                                        ElementStyle="{DynamicResource TextBlockInControl}"/>
+                <DataGridTextColumn Header="Ед. хр." Binding="{Binding Product.UnitStorage.Title, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True"
+                                            ElementStyle="{DynamicResource TextBlockInControl}"/>
+                <DataGridTextColumn Header="Кол-во" ElementStyle="{DynamicResource TextBlockInControl}" EditingElementStyle="{DynamicResource TextBoxByDataGrid}">
+                    <DataGridTextColumn.Binding>
+                        <MultiBinding UpdateSourceTrigger="PropertyChanged" Converter="{StaticResource ConvertCount}" ValidatesOnExceptions="True" NotifyOnValidationError="True" ValidatesOnNotifyDataErrors="True">
+                            <Binding Path="Count" NotifyOnValidationError="True" ValidatesOnNotifyDataErrors="True" ValidatesOnDataErrors="True" UpdateSourceTrigger="PropertyChanged"/>
+                            <Binding Path="Product.UnitStorage.IsWeightGoods" Mode="OneWay"/>
+                        </MultiBinding>
+                    </DataGridTextColumn.Binding>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Прибыль" ElementStyle="{DynamicResource TextBlockInControl}"
+                                    Binding="{Binding Summa, StringFormat=F2}"/>
+                <DataGridTextColumn Header="Валюта" ElementStyle="{DynamicResource TextBlockInControl}"
+                                    Binding="{Binding DataContext.Currency.Title, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"/>
+            </customControlLibrary:ExtendedDataGrid.Columns>
+        </customControlLibrary:ExtendedDataGrid>
+        <TextBlock Text="{Binding Path=ReportList, Converter={StaticResource CalculationTotal}, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Grid.Row="2"/>
+    </Grid>
 </UserControl>
+
+
+

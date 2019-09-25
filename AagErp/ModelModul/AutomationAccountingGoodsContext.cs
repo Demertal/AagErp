@@ -52,6 +52,8 @@ namespace ModelModul
         public virtual DbQuery<EquivalentCostForExistingProduct> EquivalentCostFor≈xistingProducts { get; set; }
         public virtual DbQuery<ProductWithCountAndPrice> ProductWithCountAndPrice { get; set; }
         public virtual DbQuery<PropertyForProduct> PropertyForProduct { get; set; }
+        public virtual DbQuery<ProfitStatement> ProfitStatement { get; set; }
+        
 
         public static decimal GetCurrentPrice(long idProduct) => throw new NotSupportedException();
 
