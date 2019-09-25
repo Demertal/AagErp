@@ -42,7 +42,11 @@ namespace ModelModul.Repositories
         /// <param name="skip">Кол-во записей, которые нужно пропустить</param>
         /// <param name="take">Кол-во записей, которые нужно выбрать</param>
         /// <returns>Коллекция данных</returns>
-        Task<IEnumerable<TEntity>> GetListAsync(CancellationToken cts = new CancellationToken(), ISpecification<TEntity> where = null, Dictionary<string, SortingTypes> order = null, int skip = 0, int take = -1, params Expression<Func<TEntity, Object>>[] include);
+        Task<IEnumerable<TEntity>> GetListAsync(CancellationToken cts = new CancellationToken(),
+            ISpecification<TEntity> where = null, Dictionary<string, SortingTypes> order = null, int skip = 0,
+            int take = -1,
+            params (Expression<Func<TEntity, Object>> include, Expression<Func<Object, Object>>[] thenInclude)[]
+                include);
 
         /// <summary>
         /// Получает объект соответсвующий условию

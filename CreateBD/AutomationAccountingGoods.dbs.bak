@@ -117,7 +117,7 @@
 			<column name="idCounterparty" type="int" length="10" decimal="0" jt="4" mandatory="y" />
 			<column name="moneyAmount" type="money" length="19" decimal="4" jt="3" mandatory="y" />
 			<column name="idType" type="int" length="10" decimal="0" jt="4" mandatory="y" />
-			<column name="idMovementGood" type="uniqueidentifier" jt="1" mandatory="y" />
+			<column name="idMovementGood" type="bigint" jt="-5" />
 			<index name="PK_moneyTransfers" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
@@ -136,14 +136,12 @@
 			<fk name="FK_MoneyTransfers_idType_moneyTransferTypes" to_schema="dbo" to_table="moneyTransferTypes" >
 				<fk_column name="idType" pk="id" />
 			</fk>
-			<fk name="dbo.FK_moneyTransfers_idMovementGood_movementGoods" to_schema="dbo" to_table="movementGoods" >
+			<fk name="FK_moneyTransfers_idMovementGood_movementGoods" to_schema="dbo" to_table="movementGoods" >
 				<fk_column name="idMovementGood" pk="id" />
 			</fk>
 		</table>
 		<table name="movementGoods" generator_rows="1000" >
-			<column name="id" type="uniqueidentifier" jt="1" mandatory="y" regexp="uuid:pattern=[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}" >
-				<defo>newid()</defo>
-			</column>
+			<column name="id" type="bigint" jt="-5" mandatory="y" autoincrement="y" />
 			<column name="dateCreate" type="datetime" jt="93" >
 				<defo>getdate()</defo>
 			</column>
@@ -162,10 +160,7 @@
 			</column>
 			<column name="idEquivalentCurrency" type="int" jt="4" />
 			<column name="equivalentRate" type="money" jt="3" />
-			<column name="idMovementGood" type="uniqueidentifier" jt="1" />
-			<index name="PK_movementGoods" unique="PRIMARY_KEY" >
-				<column name="id" />
-			</index>
+			<column name="idMovementGood" type="bigint" jt="-5" />
 			<index name="ind_movementGoods_idArrivalStore" unique="NORMAL" >
 				<column name="idArrivalStore" />
 			</index>
@@ -180,6 +175,9 @@
 			</index>
 			<index name="ind_movementGoods_idType" unique="NORMAL" >
 				<column name="idType" />
+			</index>
+			<index name="Pk_movementGoods_id" unique="PRIMARY_KEY" >
+				<column name="id" />
 			</index>
 			<constraint name="CK_movementGoods_rate" >
 				<string>[rate]&gt;(0)</string>
@@ -210,18 +208,19 @@
 			<column name="id" type="bigint" jt="-5" mandatory="y" autoincrement="y" />
 			<column name="count" type="decimal" length="7" decimal="2" jt="3" mandatory="y" regexp="double:from=0;to=100;format=####################.;" />
 			<column name="price" type="money" length="19" decimal="4" jt="3" regexp="double:from=0;to=100;format=###############.####;" />
-			<column name="idReport" type="uniqueidentifier" jt="1" mandatory="y" />
 			<column name="idProduct" type="bigint" jt="-5" mandatory="y" />
+			<column name="idReport" type="bigint" jt="-5" mandatory="y" />
 			<column name="equivalentCost" type="money" jt="3" />
 			<column name="balance" type="decimal" length="7" decimal="2" jt="3" />
+			<column name="baseIdInfos" type="nvarchar(max)" jt="12" />
 			<index name="PK_movementGoodsInfos" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
-			<index name="ind_movementGoodsInfos_idReport" unique="NORMAL" >
-				<column name="idReport" />
-			</index>
 			<index name="ind_movementGoodsInfos_idProduct" unique="NORMAL" >
 				<column name="idProduct" />
+			</index>
+			<index name="ind_movementGoodsInfos_idReport" unique="NORMAL" >
+				<column name="idReport" />
 			</index>
 			<constraint name="CK_movementGoodsInfos_price" >
 				<string>[Price]&gt;(0)</string>
@@ -229,11 +228,11 @@
 			<constraint name="CK_movementGoodsInfos_count" >
 				<string>[count]&gt;(0)</string>
 			</constraint>
-			<fk name="FK_movementGoodsInfos_idReport_movementGoods" to_schema="dbo" to_table="movementGoods" >
-				<fk_column name="idReport" pk="id" />
-			</fk>
 			<fk name="FK_movementGoodsInfos_idProduct_products" to_schema="dbo" to_table="products" >
 				<fk_column name="idProduct" pk="id" />
+			</fk>
+			<fk name="FK_movementGoodsInfos_idReport_movementGoods" to_schema="dbo" to_table="movementGoods" >
+				<fk_column name="idReport" pk="id" />
 			</fk>
 		</table>
 		<table name="movmentGoodTypes" >
@@ -430,7 +429,7 @@
 		<table name="serialNumberLogs" >
 			<column name="id" type="bigint" jt="-5" mandatory="y" autoincrement="y" />
 			<column name="idSerialNumber" type="bigint" jt="-5" mandatory="y" />
-			<column name="idMovmentGood" type="uniqueidentifier" jt="1" mandatory="y" />
+			<column name="idMovmentGood" type="bigint" jt="-5" mandatory="y" />
 			<index name="Pk_serialNumberLogs_id" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
@@ -596,6 +595,41 @@ BEGIN
 	DELETE FROM categories WHERE id in (SELECT d.id FROM deleted d)	
 END
 ]]></string>
+		</trigger>
+		<trigger name="categories_update" table="categories" id="Trigger_1bbee8b" isSystem="false" >
+			<string><![CDATA[CREATE TRIGGER [dbo].[categories_update] ON dbo.categories
+AFTER UPDATE
+AS
+BEGIN
+	DECLARE @id INT
+	DECLARE updateCategories CURSOR FOR
+		SELECT i.id FROM inserted i
+			INNER JOIN deleted d ON (i.id = d.id AND isnull(i.idParent, 0) != isnull(d.idParent, 0));
+	OPEN updateCategories
+	FETCH NEXT FROM updateCategories INTO @id
+	WHILE @@FETCH_STATUS = 0  
+	BEGIN  
+		DECLARE @idProperty INT, @idCategyeProperty INT, @titleProperty NVARCHAR(20)
+		DECLARE categoryProperties CURSOR FOR
+			SELECT p.id, p.idCategory, p.title FROM dbo.propertyNames p
+			WHERE p.idCategory = @id;
+		OPEN categoryProperties
+		FETCH NEXT FROM categoryProperties INTO @idProperty, @idCategyeProperty, @titleProperty
+		WHILE @@FETCH_STATUS = 0  
+		BEGIN  
+			IF ((SELECT dbo.checkProperty(@idProperty, @idCategyeProperty, @titleProperty)) = 0) BEGIN
+				RAISERROR ('Не возможно переместить категорию. Нарушается иерархия параметров', 16, 1)
+				ROLLBACK TRANSACTION;
+			END
+			FETCH NEXT FROM categoryProperties INTO @idProperty, @idCategyeProperty, @titleProperty
+		END
+		CLOSE categoryProperties;  
+		DEALLOCATE categoryProperties;  
+		FETCH NEXT FROM updateCategories INTO @id
+	END
+	CLOSE updateCategories;  
+	DEALLOCATE updateCategories;  
+END]]></string>
 		</trigger>
 		<trigger name="currencies_update_insert" table="currencies" id="Trigger_3a6034" isSystem="false" >
 			<string><![CDATA[CREATE TRIGGER dbo.currencies_update_insert ON dbo.currencies
@@ -851,31 +885,31 @@ END]]></string>
 	</schema>
 	<connector name="SqlServer" database="SqlServer" driver_class="com.microsoft.sqlserver.jdbc.SQLServerDriver" driver_jar="mssql-jdbc-7.0.0.jre10.jar" driver_desc="Native Driver - Windows Authentication, Current User" host="DESKTOP-KC53E2S" port="1433" instance="AutomationAccountingGoods" user="ws" passwd="c2xvdzIzc3dpbTQ1QA==" />
 	<layout name="aag" id="Layout_9f7fe7" show_relation="columns" >
-		<entity schema="dbo" name="invoices" color="F4DDBE" x="1696" y="368" />
-		<entity schema="dbo" name="priceGroups" color="F4DDBE" x="1232" y="368" />
+		<entity schema="dbo" name="invoices" color="F4DDBE" x="1696" y="384" />
 		<entity schema="dbo" name="warranties" color="BED3F4" x="736" y="288" />
-		<entity schema="dbo" name="moneyTransferTypes" color="C7F4BE" x="1408" y="704" />
-		<entity schema="dbo" name="invoiceInfos" color="F4DDBE" x="1504" y="368" />
-		<entity schema="dbo" name="paymentTypes" color="C7F4BE" x="1200" y="944" />
-		<entity schema="dbo" name="counterparties" color="C7F4BE" x="1008" y="704" />
-		<entity schema="dbo" name="warrantyPeriods" color="F4DDBE" x="1024" y="192" />
+		<entity schema="dbo" name="moneyTransferTypes" color="C7F4BE" x="1408" y="720" />
+		<entity schema="dbo" name="invoiceInfos" color="F4DDBE" x="1504" y="384" />
+		<entity schema="dbo" name="paymentTypes" color="C7F4BE" x="1200" y="960" />
+		<entity schema="dbo" name="counterparties" color="C7F4BE" x="1008" y="720" />
 		<entity schema="dbo" name="stores" color="BED3F4" x="528" y="448" />
-		<entity schema="dbo" name="priceProducts" color="F4DDBE" x="1504" y="80" />
-		<entity schema="dbo" name="currencies" color="BED3F4" x="80" y="448" />
-		<entity schema="dbo" name="revaluationProducts" color="F4DDBE" x="1712" y="80" />
-		<entity schema="dbo" name="unitStorages" color="F4DDBE" x="1008" y="368" />
-		<entity schema="dbo" name="serialNumberLogs" color="BED3F4" x="736" y="80" />
-		<entity schema="dbo" name="moneyTransfers" color="C7F4BE" x="1200" y="704" />
-		<entity schema="dbo" name="movementGoodsInfos" color="BED3F4" x="272" y="448" />
-		<entity schema="dbo" name="serialNumbers" color="BED3F4" x="528" y="80" />
-		<entity schema="dbo" name="movementGoods" color="BED3F4" x="272" y="80" />
+		<entity schema="dbo" name="productsWithCountAndPrice" color="3986C1" x="1936" y="608" />
 		<entity schema="dbo" name="movmentGoodTypes" color="C1D8EE" x="48" y="256" />
-		<entity schema="dbo" name="categories" color="BEBEF4" x="1936" y="80" />
+		<entity schema="dbo" name="serialNumbers" color="BED3F4" x="528" y="80" />
+		<entity schema="dbo" name="currencies" color="BED3F4" x="80" y="448" />
+		<entity schema="dbo" name="priceProducts" color="F4DDBE" x="1504" y="80" />
+		<entity schema="dbo" name="revaluationProducts" color="F4DDBE" x="1712" y="80" />
 		<entity schema="dbo" name="products" color="F4DDBE" x="1232" y="80" />
-		<entity schema="dbo" name="propertyNames" color="BEBEF4" x="2112" y="80" />
-		<entity schema="dbo" name="propertyValues" color="BEBEF4" x="2096" y="272" />
+		<entity schema="dbo" name="warrantyPeriods" color="F4DDBE" x="1024" y="208" />
+		<entity schema="dbo" name="unitStorages" color="F4DDBE" x="1008" y="384" />
+		<entity schema="dbo" name="priceGroups" color="F4DDBE" x="1232" y="384" />
 		<entity schema="dbo" name="propertyProducts" color="BEBEF4" x="2320" y="80" />
-		<entity schema="dbo" name="productsWithCountAndPrice" color="3986C1" x="1936" y="592" />
+		<entity schema="dbo" name="propertyValues" color="BEBEF4" x="2096" y="272" />
+		<entity schema="dbo" name="propertyNames" color="BEBEF4" x="2112" y="80" />
+		<entity schema="dbo" name="categories" color="BEBEF4" x="1936" y="80" />
+		<entity schema="dbo" name="moneyTransfers" color="C7F4BE" x="1200" y="720" />
+		<entity schema="dbo" name="serialNumberLogs" color="BED3F4" x="736" y="80" />
+		<entity schema="dbo" name="movementGoodsInfos" color="BED3F4" x="272" y="448" />
+		<entity schema="dbo" name="movementGoods" color="BED3F4" x="272" y="80" />
 		<group name="counterparties" color="EEF7EC" >
 			<entity schema="dbo" name="counterparties" />
 			<entity schema="dbo" name="moneyTransfers" />
@@ -920,6 +954,11 @@ FROM
 			<string><![CDATA[SELECT * 
 FROM
 	dbo.movmentGoodTypes s;]]></string>
+		</script>
+		<script name="propertyNames" id="Editor_249e032" language="SQL" >
+			<string><![CDATA[SELECT * 
+FROM
+	dbo.propertyNames s;]]></string>
 		</script>
 	</layout>
 </project>

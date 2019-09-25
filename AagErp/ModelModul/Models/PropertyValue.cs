@@ -82,7 +82,7 @@ namespace ModelModul.Models
 
                         if (PropertyName != null)
                         {
-                            if (PropertyName.PropertyValuesCollection.Any(p => p.Value == Value))
+                            if (PropertyName.PropertyValuesCollection.Any(p => p.Value == Value && p.Id != Id))
                                 error = "“акое значение уже есть в этом параметре";
                         }
 
@@ -99,6 +99,6 @@ namespace ModelModul.Models
         }
 
         public override bool IsValid => !string.IsNullOrEmpty(Value) && PropertyName != null && !HasErrors &&
-                                        PropertyName.PropertyValuesCollection.All(pp => pp.Value != Value);
+                                        !PropertyName.PropertyValuesCollection.Any(pp => pp.Value == Value && pp.Id != Id);
     }
 }

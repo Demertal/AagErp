@@ -56,7 +56,7 @@ namespace ProductModul.ViewModels
                 var loadCategory =
                     Task.Run(
                         () => categoryRepository.GetListAsync(CancelTokenSource.Token, null, null, 0, -1,
-                            c => c.ChildCategoriesCollection, c => c.ProductsCollection), CancelTokenSource.Token);
+                            (c => c.ChildCategoriesCollection, null), (c => c.ProductsCollection, null)), CancelTokenSource.Token);
 
                 await Task.WhenAll(loadUnitStorage, loadWarrantyPeriod, loadCategory);
 

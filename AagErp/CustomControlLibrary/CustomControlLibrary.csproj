@@ -141,8 +141,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BindingProxy.cs" />
-    <Compile Include="Converters\GetProductsTitleFromMovementGoodsInfo.cs" />
-    <Compile Include="Converters\GetProductsTitleFromRevaluaitionInfo.cs" />
     <Compile Include="Converters\InverseBoolConverter.cs" />
     <Compile Include="Converters\CompareObjectConverter.cs" />
     <Compile Include="ExtendedDataGrid.cs" />

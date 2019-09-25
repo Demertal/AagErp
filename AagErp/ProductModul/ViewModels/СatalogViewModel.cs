@@ -129,7 +129,7 @@ namespace ProductModul.ViewModels
 
                 var loadUnitStorage = Task.Run(() => unitStorageRepository.GetListAsync());
                 var loadWarrantyPeriod = Task.Run(() => warrantyPeriodRepository.GetListAsync());
-                var loadCategory = Task.Run(() => categoryRepository.GetListAsync(include: c => c.ChildCategoriesCollection));
+                var loadCategory = Task.Run(() => categoryRepository.GetListAsync(include: (c => c.ChildCategoriesCollection, null)));
 
                 await Task.WhenAll(loadUnitStorage, loadWarrantyPeriod, loadCategory);
                 CategoriesList = new ObservableCollection<Category>((await loadCategory).Where(CategorySpecification.GetCategoriesByIdParent().IsSatisfiedBy().Compile()));

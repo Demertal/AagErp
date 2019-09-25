@@ -1,14 +1,22 @@
 ﻿using System.Collections.ObjectModel;
-using ModelModul;
+using System.Threading;
+using ModelModul.Models;
 using Prism.Commands;
 using Prism.Regions;
+using Prism.Services.Dialogs;
 
-namespace ReportModul.ViewModels
+namespace ModelModul.MVVM
 {
-    public class BufferRead<T>: ViewModelBase
+    public abstract class EntitiyReportsViewModel<TReports> : ViewModelBase
+        where TReports : ModelBase<TReports>
     {
-        private ObservableCollection<T> _reportsList = new ObservableCollection<T>();
-        public ObservableCollection<T> ReportsList
+        #region Properties
+
+        protected int Step, Count;
+        protected CancellationTokenSource CancelTokenSource;
+
+        private ObservableCollection<TReports> _reportsList = new ObservableCollection<TReports>();
+        public ObservableCollection<TReports> ReportsList
         {
             get => _reportsList;
             set => SetProperty(ref _reportsList, value);
@@ -36,17 +44,19 @@ namespace ReportModul.ViewModels
             }
         }
 
-        protected int Step;
-
-        protected int Count;
-
         public bool IsEnabledLeftCommand => Left > 0;
         public bool IsEnabledRightCommand => Right < Count;
+
+        #endregion
+
+        #region Command
 
         public DelegateCommand GoLeftCommand { get; }
         public DelegateCommand GoRightCommand { get; }
 
-        protected BufferRead()
+        #endregion
+
+        protected EntitiyReportsViewModel(IDialogService dialogService) : base(dialogService)
         {
             Step = 10;
             Left = 0;
@@ -55,27 +65,31 @@ namespace ReportModul.ViewModels
             GoRightCommand = new DelegateCommand(GoRight).ObservesCanExecute(() => IsEnabledRightCommand);
         }
 
+        #region CommandMethod
+
         private void GoRight()
         {
             Left += Step;
             Right += Step;
-            Load();
+            LoadAsync();
         }
 
         private void GoLeft()
         {
             Left -= Step;
             Right -= Step;
-            Load();
+            LoadAsync();
         }
 
-        protected virtual void Load(){}
+        #endregion
+
+        protected abstract void LoadAsync();
 
         #region INavigationAware
 
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
-            Load();
+            LoadAsync();
         }
 
         public override bool IsNavigationTarget(NavigationContext navigationContext)
@@ -85,8 +99,10 @@ namespace ReportModul.ViewModels
 
         public override void OnNavigatedFrom(NavigationContext navigationContext)
         {
+            CancelTokenSource?.Cancel();
         }
 
         #endregion
     }
 }
+

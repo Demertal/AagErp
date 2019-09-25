@@ -1,43 +1,36 @@
-﻿//using System;
-//using System.Windows;
-//using ModelModul;
-//using ModelModul.PurchaseGoods;
-//using Prism.Regions;
+﻿using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using ModelModul.Models;
+using ModelModul.MVVM;
+using ModelModul.Repositories;
+using ModelModul.Specifications;
+using Prism.Services.Dialogs;
 
-//namespace ReportModul.ViewModels
-//{
-//    class ShowPurchaseReportsViewModel : BufferRead<PurchaseReports>, INavigationAware
-//    {
-//        #region Properties
+namespace ReportModul.ViewModels
+{
+    class ShowPurchaseReportsViewModel : EntitiyReportsBaseMovementGoodsViewModel
+    {
+        public ShowPurchaseReportsViewModel(IDialogService dialogService) : base(dialogService, "purchase")
+        {
+        }
 
-//        private readonly IRegionManager _regionManager;
+        protected override async Task PreLoadAsync()
+        {
+            IRepository<Store> storeRepository = new SqlStoreRepository();
+            IRepository<Counterparty> counterpartyRepository = new SqlCounterpartyRepository();
 
-//        #endregion
+            var loadStore = Task.Run(() => storeRepository.GetListAsync(CancelTokenSource.Token),
+                CancelTokenSource.Token);
+            var loadCounterparty =
+                Task.Run(
+                    () => counterpartyRepository.GetListAsync(CancelTokenSource.Token,
+                        CounterpartySpecification.GetCounterpartiesByType(ETypeCounterparties.Suppliers)),
+                    CancelTokenSource.Token);
 
-//        public ShowPurchaseReportsViewModel(IRegionManager regionManager)
-//        {
-//            _regionManager = regionManager;
-//            Load();
-//        }
+            await Task.WhenAll(loadStore, loadCounterparty);
 
-//        protected sealed override void Load()
-//        {
-//            try
-//            {
-//                SqlMovementGoodsReportRepository dbSet = new SqlMovementGoodsReportRepository();
-//                Count = dbSet.GetCount();
-//                ReportsList = dbSet.Load(Left, Step);
-//                RaisePropertyChanged("IsEnabledRightCommand");
-//            }
-//            catch (Exception e)
-//            {
-//                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-//            }
-//        }
-
-//        public override void OnNavigatedFrom(NavigationContext navigationContext)
-//        {
-//            _regionManager.Regions.Remove("PurchaseReportInfo");
-//        }
-//    }
-//}
+            ArrivalStoresList = new ObservableCollection<Store>(loadStore.Result);
+            CounterpartiesList = new ObservableCollection<Counterparty>(loadCounterparty.Result);
+        }
+    }
+}

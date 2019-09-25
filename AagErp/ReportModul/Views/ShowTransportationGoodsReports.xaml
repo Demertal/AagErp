@@ -1,16 +1,18 @@
-﻿<UserControl x:Class="ReportModul.Views.ShowRevaluationReports"
+﻿<UserControl x:Class="ReportModul.Views.ShowTransportationGoodsReports"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:interactivity="http://prismlibrary.com/"
              xmlns:customControlLibrary="clr-namespace:CustomControlLibrary;assembly=CustomControlLibrary"
+             xmlns:local="clr-namespace:ReportModul.Views"
              xmlns:converters="clr-namespace:ModelModul.Converters;assembly=ModelModul"
              interactivity:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d">
 
     <UserControl.Resources>
-        <converters:СompileProductsTitleFromRevaluaitionInfo x:Key="СompileProductsTitleFromRevaluaitionInfo"/>
+        <converters:CompileProductsTitleFromMovementGoodsInfo x:Key="CompileProductsTitleFromMovementGoodsInfo"/>
+        <converters:ConvertCount x:Key="ConvertCount"/>
     </UserControl.Resources>
 
     <Grid>
@@ -18,7 +20,6 @@
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition/>
@@ -28,16 +29,36 @@
                                                    IsSynchronizedWithCurrentItem="True" MinHeight="200" MaxHeight="600" VerticalAlignment="Center" HorizontalAlignment="Center"
                                                    ColumnWidth="Auto" Grid.Row="0">
                 <customControlLibrary:ExtendedDataGrid.Columns>
-                    <DataGridTextColumn Header="Дата" Binding="{Binding Path=DateRevaluation, StringFormat=dd.MM.yyyy, UpdateSourceTrigger=PropertyChanged}"
+                    <DataGridTextColumn Header="Дата" Binding="{Binding Path=DateCreate, StringFormat=dd.MM.yyyy, UpdateSourceTrigger=PropertyChanged}"
                                         ElementStyle="{DynamicResource TextBlockInControl}"/>
                     <DataGridTextColumn Header="Номенклатура" 
-                                       Binding="{Binding Converter={StaticResource СompileProductsTitleFromRevaluaitionInfo}, Path=PriceProductsCollection, UpdateSourceTrigger=PropertyChanged}">
+                                       Binding="{Binding Converter={StaticResource CompileProductsTitleFromMovementGoodsInfo}, Path=MovementGoodsInfosCollection, UpdateSourceTrigger=PropertyChanged}">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TextBlockInControl}">
                                 <Setter Property="TextWrapping" Value="Wrap"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
+                    <DataGridComboBoxColumn Header="Со склада" DisplayMemberPath="Title" SelectedValuePath="Id"
+                                            SelectedValueBinding="{Binding IdDisposalStore, RelativeSource={RelativeSource PreviousData}}">
+                        <DataGridComboBoxColumn.ElementStyle>
+                            <Style TargetType="{x:Type ComboBox}">
+                                <Setter Property="ItemsSource" Value="{Binding DataContext.DisposalStoresList, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowTransportationGoodsReports}}}" />
+                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridComboBoxColumn.ElementStyle>
+                    </DataGridComboBoxColumn>
+                    <DataGridComboBoxColumn Header="На склад" DisplayMemberPath="Title" SelectedValuePath="Id"
+                                           SelectedValueBinding="{Binding IdArrivalStore, RelativeSource={RelativeSource PreviousData}}">
+                        <DataGridComboBoxColumn.ElementStyle>
+                            <Style TargetType="{x:Type ComboBox}">
+                                <Setter Property="ItemsSource" Value="{Binding DataContext.ArrivalStoresList, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ShowTransportationGoodsReports}}}" />
+                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridComboBoxColumn.ElementStyle>
+                    </DataGridComboBoxColumn>
                 </customControlLibrary:ExtendedDataGrid.Columns>
             </customControlLibrary:ExtendedDataGrid>
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal" Grid.Row="1">
@@ -68,18 +89,23 @@
             </StackPanel>
         </Grid>
 
-        <customControlLibrary:ExtendedDataGrid ItemsSource="{Binding SelectedItem.PriceProductsCollection, ElementName=Reports}" Grid.Column="1"
+        <customControlLibrary:ExtendedDataGrid ItemsSource="{Binding SelectedItem.MovementGoodsInfosCollection, ElementName=Reports}" Grid.Column="1"
                                                IsSynchronizedWithCurrentItem="True" MinHeight="200" MaxHeight="600" VerticalAlignment="Top" HorizontalAlignment="Center"
                                                IsReadOnly="True">
             <customControlLibrary:ExtendedDataGrid.Columns>
                 <DataGridTextColumn Header="Наименование" Binding="{Binding Path=Product.Title, UpdateSourceTrigger=PropertyChanged}"
                                     ElementStyle="{DynamicResource TextBlockInControl}"/>
-                <DataGridTextColumn Header="Прошлая цена" ElementStyle="{DynamicResource TextBlockInControl}"
-                                    Binding="{Binding Path=Product.Price, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}"/>
-                <DataGridTextColumn Header="Переоцененная цена" ElementStyle="{DynamicResource TextBlockInControl}"
-                                    Binding="{Binding Path=Price, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}"/>
+                <DataGridTextColumn Header="Ед. хр." Binding="{Binding Product.UnitStorage.Title, UpdateSourceTrigger=PropertyChanged}"
+                                    ElementStyle="{DynamicResource TextBlockInControl}"/>
+                <DataGridTextColumn Header="Кол-во" ElementStyle="{DynamicResource TextBlockInControl}" EditingElementStyle="{DynamicResource TextBoxByDataGrid}">
+                    <DataGridTextColumn.Binding>
+                        <MultiBinding UpdateSourceTrigger="PropertyChanged" Converter="{StaticResource ConvertCount}">
+                            <Binding  Path="Count"/>
+                            <Binding Path="Product.UnitStorage.IsWeightGoods" Mode="OneWay"/>
+                        </MultiBinding>
+                    </DataGridTextColumn.Binding>
+                </DataGridTextColumn>
             </customControlLibrary:ExtendedDataGrid.Columns>
         </customControlLibrary:ExtendedDataGrid>
     </Grid>
 </UserControl>
-

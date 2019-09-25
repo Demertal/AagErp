@@ -238,36 +238,56 @@ namespace ModelModul.MVVM
         {
             if (MessageBox.Show(_askPost, "Проведение отчета", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
                 MessageBoxResult.Yes) return;
+
+            SqlMovementGoodsRepository movementGoodsRepository = new SqlMovementGoodsRepository();
             try
             {
-                MovementGoods temp = await PreparingReport();
-
-                temp.DateClose = null;
-                temp.DateCreate = null;
-
-                IRepository<MovementGoods> movementGoodsRepository = new SqlMovementGoodsRepository();
-                await movementGoodsRepository.CreateAsync(temp);
-
-                MessageBox.Show("Отчет добавлен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                NewReport();
-            }
-            catch (DbUpdateException ex)
-            {
-                if (ex.InnerException is SqlException sex && (sex.State == 2 || sex.State == 3))
+                using (var transaction = movementGoodsRepository.Db.Database.BeginTransaction())
                 {
-                    if (MovementGoodsReport.IsValid)
+                    try
                     {
-                        Post();
+                        MovementGoods temp = await PreparingReport();
+
+                        temp.DateClose = null;
+                        temp.DateCreate = null;
+
+                        var t = temp.MovementGoodsInfosCollection;
+                        temp.MovementGoodsInfosCollection = null;
+
+                        await movementGoodsRepository.CreateAsync(temp);
+                        //temp.SerialNumberLogsCollection = null;
+                        temp.MovementGoodsInfosCollection = t;
+                        await movementGoodsRepository.UpdateAsync(temp);
+                        transaction.Commit();
+
+                        MessageBox.Show("Отчет добавлен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                        NewReport();
                     }
-                    else
+                    catch (DbUpdateException ex)
                     {
-                        RaisePropertyChanged("MovementGoodsReport");
-                        MessageBox.Show("Произошла ошибка проверьте данные", "Ошибка", MessageBoxButton.OK,
-                            MessageBoxImage.Error);
+                        transaction.Rollback();
+                        if (ex.InnerException is SqlException sex && (sex.State == 2 || sex.State == 3))
+                        {
+                            if (MovementGoodsReport.IsValid)
+                            {
+                                Post();
+                            }
+                            else
+                            {
+                                RaisePropertyChanged("MovementGoodsReport");
+                                MessageBox.Show("Произошла ошибка проверьте данные", "Ошибка", MessageBoxButton.OK,
+                                    MessageBoxImage.Error);
+                            }
+                            return;
+                        }
+                        MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
-                    return;
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
-                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (Exception ex)
             {

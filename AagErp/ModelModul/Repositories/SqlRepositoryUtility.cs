@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace ModelModul.Repositories
 {
@@ -94,11 +95,16 @@ namespace ModelModul.Repositories
 
         #endregion
 
-        public static IQueryable<TEntity> ToLoad<TEntity>(this IQueryable<TEntity> source, params Expression<Func<TEntity, Object>>[] include) where TEntity : class
+        public static IQueryable<TEntity> ToLoad<TEntity>(this IQueryable<TEntity> source, params (Expression<Func<TEntity, Object>> include, Expression<Func<Object, Object>>[] thenInclude)[]
+            include) where TEntity : class
         {
             foreach (var expression in include)
             {
-                source = source.Include(expression);
+                source = source.Include(expression.include);
+                if (expression.thenInclude == null) continue;
+                source = expression.thenInclude.Aggregate(source,
+                    (current, expression1) =>
+                        ((IIncludableQueryable<TEntity, object>) current).ThenInclude(expression1));
             }
             return source;
         }

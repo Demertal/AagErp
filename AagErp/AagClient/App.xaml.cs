@@ -44,8 +44,8 @@ namespace AagClient
             moduleCatalog.AddModule<CashierWorkplaceModul.CashierWorkplaceModul>();
             moduleCatalog.AddModule<TransportationGoods.TransportationGoodsModul>();
             moduleCatalog.AddModule<PropertyModul.PropertyModul>();
+            moduleCatalog.AddModule<ReportModul.ReportModul>();
             //moduleCatalog.AddModule<WarrantyModul.WarrantyModul>();
-            //moduleCatalog.AddModule<ReportModul.ReportModul>();
         }
     }
 }

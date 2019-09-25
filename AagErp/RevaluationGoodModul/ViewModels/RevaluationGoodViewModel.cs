@@ -69,7 +69,6 @@ namespace RevaluationGoodModul.ViewModels
         public DelegateCommand AddProductCommand { get; }
         public DelegateCommand PostCommand { get; }
         public DelegateCommand<PriceProduct> DeleteProductCommand { get; }
-        //public DelegateCommand<KeyEventArgs> ListenKeyboardCommand { get; }
 
         #endregion
 
@@ -79,7 +78,6 @@ namespace RevaluationGoodModul.ViewModels
             PostCommand = new DelegateCommand(Post).ObservesCanExecute(() => IsValidate);
             AddProductCommand = new DelegateCommand(AddProduct);
             DeleteProductCommand = new DelegateCommand<PriceProduct>(DeleteProduct);
-            //ListenKeyboardCommand = new DelegateCommand<KeyEventArgs>(ListenKeyboard);
             NewRevaluationProduct();
         }
 
@@ -269,44 +267,6 @@ namespace RevaluationGoodModul.ViewModels
             //_barcode = "";
             RevaluationPriceProductsList.Remove(obj);
         }
-
-        //private void ListenKeyboard(KeyEventArgs obj)
-        //{
-        //    if (obj.Key >= Key.D0 && obj.Key <= Key.D9)
-        //    {
-        //        _barcode += obj.Key.ToString()[1].ToString();
-        //    }
-        //    else if (obj.Key >= Key.A && obj.Key <= Key.Z)
-        //    {
-        //        _barcode += obj.Key.ToString();
-        //    }
-        //    else if (obj.Key == Key.Enter)
-        //    {
-        //        try
-        //        {
-        //            if (string.IsNullOrEmpty(_barcode) || _barcode.Length < 8 || _barcode.Length > 13)
-        //            {
-        //                _barcode = "";
-        //                return;
-        //            }
-        //            //SqlProductRepository dbSetProducts = new SqlProductRepository();
-        //            //Product product = dbSetProducts.FindProductByBarcode(_barcode);
-        //            //if (product == null) throw new Exception("Товар не найден");
-        //            //InsertProduct(product);
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            _barcode = "";
-        //            MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-        //        }
-        //        _barcode = "";
-        //    }
-        //    else
-        //    {
-        //        _barcode = "";
-        //    }
-        //}
-
         private async void InsertProduct(Product product)
         {
             try

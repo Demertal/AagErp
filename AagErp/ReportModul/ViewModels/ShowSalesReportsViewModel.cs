@@ -1,41 +1,36 @@
-﻿//using System;
-//using System.Windows;
-//using ModelModul;
-//using Prism.Regions;
+﻿using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using ModelModul.Models;
+using ModelModul.MVVM;
+using ModelModul.Repositories;
+using ModelModul.Specifications;
+using Prism.Services.Dialogs;
 
-//namespace ReportModul.ViewModels
-//{
-//    class ShowSalesReportsViewModel : BufferRead<Purchase>
-//    {
-//        #region Properties
+namespace ReportModul.ViewModels
+{
+    class ShowSalesReportsViewModel : EntitiyReportsBaseMovementGoodsViewModel
+    {
+        public ShowSalesReportsViewModel(IDialogService dialogService) : base(dialogService, "sale")
+        {
+        }
 
-//        private readonly IRegionManager _regionManager;
+        protected override async Task PreLoadAsync()
+        {
+            IRepository<Store> storeRepository = new SqlStoreRepository();
+            IRepository<Counterparty> counterpartyRepository = new SqlCounterpartyRepository();
 
-//        #endregion
+            var loadStore = Task.Run(() => storeRepository.GetListAsync(CancelTokenSource.Token),
+                CancelTokenSource.Token);
+            var loadCounterparty =
+                Task.Run(
+                    () => counterpartyRepository.GetListAsync(CancelTokenSource.Token,
+                        CounterpartySpecification.GetCounterpartiesByType(ETypeCounterparties.Buyers)),
+                    CancelTokenSource.Token);
 
-//        public ShowSalesReportsViewModel(IRegionManager regionManager)
-//        {
-//            _regionManager = regionManager;
-//        }
+            await Task.WhenAll(loadStore, loadCounterparty);
 
-//        protected sealed override void Load()
-//        {
-//            try
-//            {
-//                DbSetSalesGoods dbSet = new DbSetSalesGoods();
-//                Count = dbSet.GetCount();
-//                ReportsList = dbSet.Load(Left, Step);
-//                RaisePropertyChanged("IsEnabledRightCommand");
-//            }
-//            catch (Exception e)
-//            {
-//                MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-//            }
-//        }
-
-//        public override void OnNavigatedFrom(NavigationContext navigationContext)
-//        {
-//            _regionManager.Regions.Remove("SalesReportInfo");
-//        }
-//    }
-//}
+            DisposalStoresList = new ObservableCollection<Store>(loadStore.Result);
+            CounterpartiesList = new ObservableCollection<Counterparty>(loadCounterparty.Result);
+        }
+    }
+}

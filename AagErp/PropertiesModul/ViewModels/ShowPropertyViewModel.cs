@@ -77,6 +77,7 @@ namespace PropertyModul.ViewModels
                     EntitiesList.CollectionChanged += PropertyValuesCollectionChanged;
                     foreach (var propertyValue in EntitiesList)
                     {
+                        propertyValue.PropertyName = Entity;
                         propertyValue.PropertyChanged += (o, e) => RaisePropertyChanged("EntitiesList");
                     }
                 }
@@ -118,7 +119,7 @@ namespace PropertyModul.ViewModels
 
         private void AddEntity(PropertyValue obj)
         {
-            DialogService.ShowDialog("ShowPropertyValue", new DialogParameters { { "propertyName", Entity.Id } }, CallbackProperty);
+            DialogService.ShowDialog("ShowPropertyValue", new DialogParameters { { "propertyName", Entity } }, CallbackProperty);
         }
 
         private void CallbackProperty(IDialogResult dialogResult)

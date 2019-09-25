@@ -43,7 +43,7 @@ namespace PurchaseGoodModul.ViewModels
         protected override void MovementGoodsReportOnPropertyChanged(object sender, PropertyChangedEventArgs ea)
         {
             if (ea.PropertyName == "IdCurrency" && CurrenciesList != null)
-                MovementGoodsReport.Rate = CurrenciesList.First(c => c.Id == MovementGoodsReport.IdCurrency).Cost;
+                MovementGoodsReport.Rate = CurrenciesList.FirstOrDefault(c => c.Id == MovementGoodsReport.IdCurrency)?.Cost;
 
             if ((ea.PropertyName == "IdCurrency" || ea.PropertyName == "IdEquivalentCurrency") && MovementGoodsReport.IdCurrency == MovementGoodsReport.IdEquivalentCurrency)
                 MovementGoodsReport.EquivalentRate = 1;
@@ -79,7 +79,14 @@ namespace PurchaseGoodModul.ViewModels
         protected override async Task<PurchaseMovementGoodsInfoViewModel> CreateMovementGoodInfoAsync(Product product)
         {
             return await Task.Run(() =>
-                new PurchaseMovementGoodsInfoViewModel { Count = 0, IdProduct = product.Id, Price = 0, Product = product });
+                new PurchaseMovementGoodsInfoViewModel
+                {
+                    Count = 0,
+                    IdProduct = product.Id,
+                    Price = 0,
+                    MovementGoods = MovementGoodsReport,
+                    Product = product
+                });
         }
 
         //private void Navigate(List<Product> revaluationProducts)

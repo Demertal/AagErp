@@ -46,7 +46,7 @@
             </DataGrid.Style>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Значения" Binding="{Binding Path=Value, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True}" Width="*"
-                                    ElementStyle="{StaticResource {x:Type TextBlock}}" EditingElementStyle="{StaticResource {x:Type TextBox}}" CanUserResize="False"/>
+                                    ElementStyle="{DynamicResource TextBlockInControl}" CanUserResize="False"/>
                 <DataGridTemplateColumn Width="Auto">
                     <DataGridTemplateColumn.HeaderTemplate>
                         <DataTemplate>

@@ -193,6 +193,8 @@
     <Compile Include="Converters\CalculationSum.cs" />
     <Compile Include="Converters\CalculationTotal.cs" />
     <Compile Include="Converters\ConvertCount.cs" />
+    <Compile Include="Converters\СompileProductsTitleFromRevaluaitionInfo.cs" />
+    <Compile Include="Converters\CompileProductsTitleFromMovementGoodsInfo.cs" />
     <Compile Include="CountValidationRule.cs" />
     <Compile Include="Models\Counterparty.cs" />
     <Compile Include="Models\CountsProduct.cs" />
@@ -204,11 +206,13 @@
     <Compile Include="Models\PropertyForProduct.cs" />
     <Compile Include="Models\SerialNumberLog.cs" />
     <Compile Include="Models\CounterpartyType.cs" />
+    <Compile Include="MVVM\EntitiyReportsBaseMovementGoodsViewModel.cs" />
     <Compile Include="MVVM\DialogViewModelBase.cs" />
     <Compile Include="MVVM\DialogWindow.xaml.cs">
       <DependentUpon>DialogWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\EntitiesViewModelBaseCategory.cs" />
+    <Compile Include="MVVM\EntitiyReportsViewModel.cs" />
     <Compile Include="MVVM\IEntitiesViewModelBase.cs" />
     <Compile Include="MVVM\IEntityViewModelBase.cs" />
     <Compile Include="MVVM\ViewModelBase.cs" />
@@ -302,6 +306,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

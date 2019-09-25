@@ -1,0 +1,297 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="ModelModul.Models.Category">
+    <Position X="17.75" Y="2" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAACQAAAAIAAAEAACAhAQAAQAAAAABAAMAAAAAQAAJQ=</HashCode>
+      <FileName>Models\Category.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModelModul.Models.Counterparty">
+    <Position X="15" Y="6.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AQAGAIAAAIAQQEAADAhQCAAAAAIBAAACgJAAEEMAABA=</HashCode>
+      <FileName>Models\Counterparty.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModelModul.Models.CounterpartyType">
+    <Position X="50.25" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\CounterpartyType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModelModul.Models.CountsProduct">
+    <Position X="52" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAEAQAAAAAAAAAAAAAAQAAAAA=</HashCode>
+      <FileName>Models\CountsProduct.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModelModul.Models.Currency">
+    <Position X="31.75" Y="7.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAACAQAAAKgQAEAACAhAABAAAAAAAAAAABAAAABAgBA=</HashCode>
+      <FileName>Models\Currency.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModelModul.Models.EquivalentCostForExistingProduct" Collapsed="true">
+    <Position X="58.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAAAAAAAQAAAAAAAAAAAAEAAAAQAA=</HashCode>
+      <FileName>Models\EquivalentCostForExistingProduct.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModelModul.Models.Invoice">
+    <Position X="24.75" Y="1.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAhAAAAAAAAAAAABIAAAAAAAAAA=</HashCode>
+      <FileName>Models\Invoice.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModelModul.Models.InvoiceInfo">
+    <Position X="21.25" Y="1.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AIACAACAAAAAAAAAADhAAAQAAAAAAAEAAICAAAAAAQA=</HashCode>
+      <FileName>Models\InvoiceInfo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModelModul.Models.ModelBase&lt;TEntity&gt;">
+    <Position X="24.75" Y="5.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQABKAgAAAAAgAAAAAGIAAAAAAABABA=</HashCode>
+      <FileName>Models\ModelBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ModelModul.Models.MoneyTransfer">
+    <Position X="33.5" Y="7.25" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>QAQCAAAAEAAABEACNAxAAQAAAAAACIABAAAAAAEEAAA=</HashCode>
+      <FileName>Models\MoneyTransfer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModelModul.Models.MoneyTransferType">
+    <Position X="30.25" Y="3" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AQACAAAAAAAgAAAEAAhgAAAAAAAAAAAAAIAAAAAgAAA=</HashCode>
+      <FileName>Models\MoneyTransferType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModelModul.Models.MovementGoods">
+    <Position X="22" Y="8.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>RUQCAAAMeIAwBEAgSCpAEMIAzEAkAQAEgZEAARMEQFE=</HashCode>
+      <FileName>Models\MovementGoods.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModelModul.Models.MovementGoodsInfo">
+    <Position X="18.5" Y="7.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>EgASAACAAQAAQAAAKhhAAIQAAAAACAAAAICEAAAAABA=</HashCode>
+      <FileName>Models\MovementGoodsInfo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModelModul.Models.MovmentGoodType">
+    <Position X="23" Y="1.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAwAAAEAAhgAAAAAAAAAAAAABAAAAAgAAA=</HashCode>
+      <FileName>Models\MovmentGoodType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModelModul.Models.PaymentType">
+    <Position X="25.75" Y="9.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAgAAAEAAhgAAAAAAAAAAAIAAAAAAggAAA=</HashCode>
+      <FileName>Models\PaymentType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModelModul.Models.PriceGroup">
+    <Position X="34.75" Y="4" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAACAhAAgAAAAAAAAAAIAAAAQAAAJA=</HashCode>
+      <FileName>Models\PriceGroup.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModelModul.Models.PriceProduct">
+    <Position X="28.5" Y="2.25" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AgACAACEAQAAAAAACBhgQAAAAIAAAAAAAIAAAAAAABA=</HashCode>
+      <FileName>Models\PriceProduct.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModelModul.Models.Product">
+    <Position X="20.25" Y="8" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>A6ICAACog4ksBUAECCpBGAQQABAAAgCBIAKACkCCKRA=</HashCode>
+      <FileName>Models\Product.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModelModul.Models.ProductWithCountAndPrice">
+    <Position X="52.5" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAQAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\ProductWithCountAndPrice.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModelModul.Models.PropertyForProduct">
+    <Position X="56.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAEAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAABAAAA=</HashCode>
+      <FileName>Models\PropertyForProduct.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModelModul.Models.PropertyName">
+    <Position X="27.75" Y="9.25" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>ACACgAAAAIAIBEAACAhAAAAAAAAAAACAQAAAAAAAKBA=</HashCode>
+      <FileName>Models\PropertyName.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModelModul.Models.PropertyProduct">
+    <Position X="33.25" Y="2.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>EAEDAASACAAAAAAEABhAAAAAAAAAAIAAAIAAAABAABA=</HashCode>
+      <FileName>Models\PropertyProduct.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModelModul.Models.PropertyValue">
+    <Position X="23.75" Y="10" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>EBACAAQAAAAIAAAECAhAAAAAAAAAAACAAAAgAABAABA=</HashCode>
+      <FileName>Models\PropertyValue.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModelModul.Models.RevaluationProduct">
+    <Position X="19.5" Y="2" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAhAAAgIAAAAAAAAAAAAAkAAABA=</HashCode>
+      <FileName>Models\RevaluationProduct.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModelModul.Models.SerialNumber">
+    <Position X="16.75" Y="7" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>ABACAACEAAAgAAAgCBhAEAAAAAAYAAAAAIAkEAAAABA=</HashCode>
+      <FileName>Models\SerialNumber.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModelModul.Models.SerialNumberLog">
+    <Position X="26.75" Y="3" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>EAACAEAAAAAAIAABAAhAAEAAAAEAAAAEAAEAAAAAAAA=</HashCode>
+      <FileName>Models\SerialNumberLog.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModelModul.Models.Store">
+    <Position X="30" Y="8.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAACAgABAIAAAEAACghAAAAAAAAAEAAAAAAAAAAAABA=</HashCode>
+      <FileName>Models\Store.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModelModul.Models.UnitStorage">
+    <Position X="31.75" Y="2.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAIAAAEAACAhAAAAAAAAAAAAAIIAABAAAAJA=</HashCode>
+      <FileName>Models\UnitStorage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModelModul.Models.Warranty">
+    <Position X="36.75" Y="5.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>EAACAEAAAgBACiABIAhEAAAAAAEAAEAAAAAgAMAAABA=</HashCode>
+      <FileName>Models\Warranty.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModelModul.Models.WarrantyPeriod">
+    <Position X="16" Y="3.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAEAAAAACAhAAAAAAAAAAAAAIAAAAAAAAJI=</HashCode>
+      <FileName>Models\WarrantyPeriod.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="ModelModul.Models.ETypeCounterparties" Collapsed="true">
+    <Position X="54.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAIAAAAAQAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Enumerations.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

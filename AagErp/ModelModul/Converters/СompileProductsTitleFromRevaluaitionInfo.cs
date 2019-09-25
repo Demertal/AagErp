@@ -5,23 +5,23 @@ using System.Linq;
 using System.Windows.Data;
 using ModelModul.Models;
 
-namespace CustomControlLibrary.Converters
+namespace ModelModul.Converters
 {
-    public class GetProductsTitleFromMovementGoodsInfo : IValueConverter
+    public class СompileProductsTitleFromRevaluaitionInfo: IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(value is ICollection<MovementGoodsInfo> movementGoodsInfos)) return "";
+            if (!(value is ICollection<PriceProduct> priceProducts)) return "";
             string result = "";
             int count = 0;
-            while (count < movementGoodsInfos.Count && count < 10)
+            while (count < priceProducts.Count && count < 10)
             {
-                result += movementGoodsInfos.ElementAt(count).Product.Title;
-                if (count + 1 < movementGoodsInfos.Count && count + 1 < 10)
+                result += priceProducts.ElementAt(count).Product.Title;
+                if (count + 1 < priceProducts.Count && count + 1 < 10)
                 {
                     result += " , ";
                 }
-                else if (count + 1 < movementGoodsInfos.Count && count + 1 == 10)
+                else if (count + 1 < priceProducts.Count &&  count + 1 == 10)
                 {
                     result += "...";
                 }

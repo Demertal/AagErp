@@ -17,8 +17,8 @@ namespace ModelModul.Models
             MovementGoodsCollection = new List<MovementGoods>();
         }
 
-        private Guid _id;
-        public Guid Id
+        private long _id;
+        public long Id
         {
             get => _id;
             set
@@ -167,8 +167,8 @@ namespace ModelModul.Models
             }
         }
 
-        private Guid? _idMovementGood;
-        public Guid? IdMovementGood
+        private long? _idMovementGood;
+        public long? IdMovementGood
         {
             get => _idMovementGood;
             set

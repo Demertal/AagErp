@@ -13,7 +13,7 @@ namespace ModelModul.Repositories
 
     public abstract class SqlRepository<TEntity> : IRepository<TEntity> where TEntity : class
     {
-        protected readonly AutomationAccountingGoodsContext Db;
+        public readonly AutomationAccountingGoodsContext Db;
 
         protected SqlRepository()
         {
@@ -48,7 +48,7 @@ namespace ModelModul.Repositories
             }, cts);
         }
 
-        public async Task<IEnumerable<TEntity>> GetListAsync(CancellationToken cts = new CancellationToken(), ISpecification<TEntity> where = null, Dictionary<string, SortingTypes> order = null, int skip = 0, int take = -1, params Expression<Func<TEntity, Object>>[] include)
+        public async Task<IEnumerable<TEntity>> GetListAsync(CancellationToken cts = new CancellationToken(), ISpecification<TEntity> where = null, Dictionary<string, SortingTypes> order = null, int skip = 0, int take = -1, params (Expression<Func<TEntity, Object>> include, Expression<Func<Object, Object>>[] thenInclude)[] include)
         {
             return await Task.Run(() =>
             {
@@ -105,37 +105,53 @@ namespace ModelModul.Repositories
 
         public async Task CreateAsync(TEntity item, CancellationToken cts = new CancellationToken())
         {
-            using (var transaction = Db.Database.BeginTransaction())
+            if(Db.Database.CurrentTransaction == null)
             {
-                try
+                using (var transaction = Db.Database.BeginTransaction())
                 {
-                    Db.Set<TEntity>().Add(item);
-                    await Db.SaveChangesAsync(cts);
-                    transaction.Commit();
+                    try
+                    {
+                        Db.Set<TEntity>().Add(item);
+                        await Db.SaveChangesAsync(cts);
+                        transaction.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
+            }
+            else
+            {
+                Db.Set<TEntity>().Add(item);
+                await Db.SaveChangesAsync(cts);
             }
         }
 
         public async Task UpdateAsync(TEntity item, CancellationToken cts = new CancellationToken())
         {
-            using (var transaction = Db.Database.BeginTransaction())
+            if (Db.Database.CurrentTransaction == null)
             {
-                try
+                using (var transaction = Db.Database.BeginTransaction())
                 {
-                    Db.Set<TEntity>().Update(item);
-                    await Db.SaveChangesAsync(cts);
-                    transaction.Commit();
+                    try
+                    {
+                        Db.Set<TEntity>().Update(item);
+                        await Db.SaveChangesAsync(cts);
+                        transaction.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
+            }
+            else
+            {
+                Db.Set<TEntity>().Update(item);
+                await Db.SaveChangesAsync(cts);
             }
         }
 

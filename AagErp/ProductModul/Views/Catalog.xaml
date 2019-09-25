@@ -41,17 +41,11 @@
         <customcontrollibrary:ExtendedDataGrid x:Name="ProductData" ItemsSource="{Binding ProductsList, UpdateSourceTrigger=PropertyChanged}"
                           MinHeight="200" MaxHeight="500" SelectionMode="Single" Grid.Column="1" Grid.Row="1" RowStyle="{StaticResource DataGridRowStyle}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Наименование" Binding="{Binding Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="*">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                            <Setter Property="TextAlignment" Value="Left"/>
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
+                <DataGridTextColumn Header="Наименование" Binding="{Binding Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="*" ElementStyle="{DynamicResource TextBlockInControl}"/>
                 <DataGridTextColumn Header="Артикул" Binding="{Binding VendorCode, UpdateSourceTrigger=PropertyChanged}" MaxWidth="200" IsReadOnly="True" Width="Auto"
-                                        ElementStyle="{StaticResource {x:Type TextBlock}}"  Visibility="Collapsed"/>
+                                    ElementStyle="{DynamicResource TextBlockInControl}"  Visibility="Collapsed"/>
                 <DataGridTextColumn Header="Штрихкод" Binding="{Binding Barcode, UpdateSourceTrigger=PropertyChanged}" MaxWidth="200"  IsReadOnly="True" Width="Auto"
-                                        ElementStyle="{StaticResource {x:Type TextBlock}}" Visibility="Collapsed"/>
+                                    ElementStyle="{DynamicResource TextBlockInControl}" Visibility="Collapsed"/>
                 <DataGridComboBoxColumn Header="Ед. хр." DisplayMemberPath="Title" CanUserResize="False" SelectedValuePath="Id" IsReadOnly="True" Width="Auto"
                                                  SelectedValueBinding="{Binding IdUnitStorage, RelativeSource={RelativeSource PreviousData}}">
                     <DataGridComboBoxColumn.ElementStyle>
@@ -73,9 +67,9 @@
                     </DataGridComboBoxColumn.ElementStyle>
                 </DataGridComboBoxColumn>
                 <DataGridTextColumn Header="Цена" Binding="{Binding Price, StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True" Width="Auto" MinWidth="40"
-                                        ElementStyle="{StaticResource {x:Type TextBlock}}"/>
+                                    ElementStyle="{DynamicResource TextBlockInControl}"/>
                 <DataGridTextColumn Header="Остаток" IsReadOnly="True" MinWidth="50" Width="Auto"
-                                        ElementStyle="{StaticResource {x:Type TextBlock}}">
+                                    ElementStyle="{DynamicResource TextBlockInControl}">
                     <DataGridTextColumn.Binding>
                         <MultiBinding UpdateSourceTrigger="PropertyChanged" Converter="{StaticResource ConvertCount}" ValidatesOnExceptions="False">
                             <Binding  Path="Count" Mode="OneWay" ValidatesOnExceptions="False" ValidatesOnDataErrors="False"/>

@@ -26,8 +26,8 @@ namespace ModelModul.Models
             }
         }
 
-        private Guid _idMovmentGood;
-        public Guid IdMovmentGood
+        private long _idMovmentGood;
+        public long IdMovmentGood
         {
             get => _idMovmentGood;
             set

@@ -64,8 +64,8 @@ namespace ModelModul.Models
             }
         }
 
-        private Guid _idReport;
-        public Guid IdReport
+        private long _idReport;
+        public long IdReport
         {
             get => _idReport;
             set
@@ -82,6 +82,17 @@ namespace ModelModul.Models
             set
             {
                 _idProduct = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _baseIdInfos;
+        public string BaseIdInfos
+        {
+            get => _baseIdInfos;
+            set
+            {
+                _baseIdInfos = value;
                 OnPropertyChanged();
             }
         }

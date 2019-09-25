@@ -61,7 +61,7 @@ namespace PropertyModul.ViewModels
                 var loadCategory =
                     Task.Run(
                         () => categoryRepository.GetListAsync(CancelTokenSource.Token, null, null, 0, -1,
-                            c => c.ChildCategoriesCollection, c => c.PropertyNamesCollection),
+                            (c => c.ChildCategoriesCollection, null), (c => c.PropertyNamesCollection, null)),
                         CancelTokenSource.Token);
                 var loadProperty =
                     Task.Run(

@@ -1,43 +1,40 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading;
 using System.Windows;
 using ModelModul.Models;
+using ModelModul.MVVM;
 using ModelModul.Repositories;
-using Prism.Regions;
+using Prism.Services.Dialogs;
 
 namespace ReportModul.ViewModels
 {
-    class ShowRevaluationReportsViewModel: BufferRead<RevaluationProducts>
+    class ShowRevaluationReportsViewModel : EntitiyReportsViewModel<RevaluationProduct>
     {
-        #region Properties
+        public ShowRevaluationReportsViewModel(IDialogService dialogService) : base(dialogService) {}
 
-        private readonly IRegionManager _regionManager;
-
-        #endregion
-
-        public ShowRevaluationReportsViewModel(IRegionManager regionManager)
+        protected override async void LoadAsync()
         {
-            _regionManager = regionManager;
-            Load();
-        }
+            CancelTokenSource?.Cancel();
+            CancellationTokenSource newCts = new CancellationTokenSource();
+            CancelTokenSource = newCts;
 
-        protected sealed override void Load()
-        {
             try
             {
-                SqlRevaluationProductsReportRepository sql = new SqlRevaluationProductsReportRepository();
-                //Count = sql.GetCount();
-                //ReportsList = sql.Load(Left, Step);
-                RaisePropertyChanged("IsEnabledRightCommand");
+                SqlRevaluationProductRepository repository = new SqlRevaluationProductRepository();
+                ReportsList = new ObservableCollection<RevaluationProduct>(await repository.GetReportRevaluation(
+                    CancelTokenSource.Token));
             }
+            catch (OperationCanceledException) { }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-        }
-
-        public override void OnNavigatedFrom(NavigationContext navigationContext)
-        {
-            _regionManager.Regions.Remove("RevaluationReportInfo");
+            if (CancelTokenSource == newCts)
+                CancelTokenSource = null;
         }
     }
 }

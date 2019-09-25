@@ -19,6 +19,7 @@ namespace PropertyModul.ViewModels
             toEntity.Id = fromEntity.Id;
             toEntity.Value = fromEntity.Value;
             toEntity.IdPropertyName = fromEntity.IdPropertyName;
+            toEntity.PropertyName = fromEntity.PropertyName;
         }
 
         public override void OnDialogOpened(IDialogParameters parameters)
@@ -30,7 +31,8 @@ namespace PropertyModul.ViewModels
                 if (Backup == null)
                 {
                     Title = "Добавить";
-                    Entity.IdPropertyName = parameters.GetValue<int>("propertyName");
+                    Entity.PropertyName = parameters.GetValue<PropertyName>("propertyName");
+                    Entity.IdPropertyName = Entity.PropertyName.Id;
                     IsAdd = true;
                 }
                 else

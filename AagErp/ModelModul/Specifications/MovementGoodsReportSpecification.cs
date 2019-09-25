@@ -5,9 +5,9 @@ namespace ModelModul.Specifications
 {
     public static class MovementGoodsReportSpecification
     {
-        public static ExpressionSpecification<MovementGoods> GetMovementGoodsReportsByType(int type)
+        public static ExpressionSpecification<MovementGoods> GetMovementGoodsReportsByType(string code)
         {
-            return new ExpressionSpecification<MovementGoods>(obj => obj.IdType == type);
+            return new ExpressionSpecification<MovementGoods>(obj => obj.MovmentGoodType.Code == code);
         }
     }
 }

@@ -280,6 +280,10 @@
       <Project>{084660A4-4C9A-417F-890D-5B2607DBA7F7}</Project>
       <Name>PurchaseGoodModul</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ReportModul\ReportModul.csproj">
+      <Project>{1D29DBCB-3D13-4717-A02A-6329107A8031}</Project>
+      <Name>ReportModul</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RevaluationGoodModul\RevaluationGoodModul.csproj">
       <Project>{0BFAA536-F50B-45D5-A01E-7F5B3F5A4BED}</Project>
       <Name>RevaluationGoodModul</Name>
