@@ -165,6 +165,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutomationAccountingGoodsContext.cs" />
+    <Compile Include="Base.cs" />
+    <Compile Include="COMBarcodeScaner.cs" />
     <Compile Include="Configurations\CategoryConfiguration.cs" />
     <Compile Include="Configurations\PropertyProductConfiguration.cs" />
     <Compile Include="Configurations\InvoiceInfoConfiguration.cs" />

@@ -39,6 +39,19 @@ namespace ModelModul.ViewModels
 
         #endregion
 
+        public SerialNumberViewModel() {}
+
+        public SerialNumberViewModel(SerialNumber obj, int? idStore)
+        {
+            Id = obj.Id;
+            IdProduct = obj.IdProduct;
+            Value = obj.Value;
+            Product = obj.Product;
+            DateCreated = obj.DateCreated;
+            SerialNumberLogsCollection = obj.SerialNumberLogsCollection;
+            IdStore = idStore;
+        }
+
         public async void ValidateValue()
         {
             //_cancelTokenSource?.Cancel();

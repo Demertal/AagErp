@@ -48,7 +48,11 @@ namespace ModelModul.Repositories
             }, cts);
         }
 
-        public async Task<IEnumerable<TEntity>> GetListAsync(CancellationToken cts = new CancellationToken(), ISpecification<TEntity> where = null, Dictionary<string, SortingTypes> order = null, int skip = 0, int take = -1, params (Expression<Func<TEntity, Object>> include, Expression<Func<Object, Object>>[] thenInclude)[] include)
+        public async Task<IEnumerable<TEntity>> GetListAsync(CancellationToken cts = new CancellationToken(),
+            ISpecification<TEntity> where = null, Dictionary<string, SortingTypes> order = null, int skip = 0,
+            int take = -1,
+            params (Expression<Func<TEntity, Object>> include, Expression<Func<Object, Object>>[] thenInclude)[]
+                include)
         {
             return await Task.Run(() =>
             {
@@ -63,7 +67,10 @@ namespace ModelModul.Repositories
             }, cts);
         }
 
-        public async Task<TEntity> GetItemAsync(CancellationToken cts = new CancellationToken(), ISpecification<TEntity> where = null, Dictionary<string, SortingTypes> order = null, int skip = 0)
+        public async Task<TEntity> GetItemAsync(CancellationToken cts = new CancellationToken(),
+            ISpecification<TEntity> where = null, Dictionary<string, SortingTypes> order = null, int skip = 0,
+            params (Expression<Func<TEntity, Object>> include, Expression<Func<Object, Object>>[] thenInclude)[]
+                include)
         {
             return await Task.Run(() =>
             {
@@ -71,6 +78,7 @@ namespace ModelModul.Repositories
                 if (where != null) query = query.Where(where.IsSatisfiedBy());
                 if (order != null) query = query.OrderUsingSortExpression(order);
                 if (skip != 0) query = query.Skip(skip);
+                if (include != null) query = query.ToLoad(include);
                 cts.ThrowIfCancellationRequested();
                 return query.AsNoTracking().FirstOrDefaultAsync(cts);
             }, cts);

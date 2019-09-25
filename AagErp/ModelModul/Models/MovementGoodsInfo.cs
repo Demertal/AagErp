@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
@@ -140,7 +139,7 @@ namespace ModelModul.Models
                     case "Count":
                         if (Product?.UnitStorage != null)
                         {
-                            if(!Product.UnitStorage.IsWeightGoods && Count.ToString(CultureInfo.InvariantCulture).IndexOfAny(new []{'.', ','}) != -1)
+                            if (!Product.UnitStorage.IsWeightGoods && Count.ToString(CultureInfo.InvariantCulture).IndexOfAny(new[] { '.', ',' }) != -1)
                                 error = "Кол-во не может быть дробным";
                         }
                         if (Count <= 0)

@@ -1,6 +1,8 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using AagClient.ViewModels;
 using AagClient.Views;
+using ModelModul;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Unity;

@@ -22,8 +22,8 @@ namespace ModelModul.ViewModels
             {
                 _count = value;
                 OnPropertyChanged();
-                OnCountChanged();
                 ValidateCount();
+                OnCountChanged();
             }
         }
 
@@ -32,7 +32,7 @@ namespace ModelModul.ViewModels
         private void OnCountChanged()
         {
             if (Product == null || !Product.KeepTrackSerialNumbers) return;
-            int count = (int)Count - Product.SerialNumbersCollection.Count;
+            int count = (int)_count - Product.SerialNumbersCollection.Count;
             if (count > 0)
             {
                 for (int i = 0; i < count; i++)
@@ -53,9 +53,9 @@ namespace ModelModul.ViewModels
 
         public async void ValidateCount()
         {
-            _cancelTokenSource?.Cancel();
-            CancellationTokenSource newCts = new CancellationTokenSource();
-            _cancelTokenSource = newCts;
+            //_cancelTokenSource?.Cancel();
+            //CancellationTokenSource newCts = new CancellationTokenSource();
+            //_cancelTokenSource = newCts;
 
             const string propertyKey = "Count";
 
@@ -64,7 +64,7 @@ namespace ModelModul.ViewModels
                 SqlProductRepository productRepository = new SqlProductRepository();
                 if(IdProduct != 0 && MovementGoods != null)
                 {
-                    decimal count = (await productRepository.GetCountsProduct(IdProduct, _cancelTokenSource.Token)).First(c => c.StoreId == MovementGoods.IdDisposalStore).Count;
+                    decimal count = (await productRepository.GetCountsProduct(IdProduct)).First(c => c.StoreId == MovementGoods.IdDisposalStore).Count;
                     if (Count > count)
                     {
                        ValidationErrors[propertyKey] =
@@ -83,7 +83,7 @@ namespace ModelModul.ViewModels
                     RaiseErrorsChanged(propertyKey);
                 }
             }
-            catch (OperationCanceledException) { }
+            //catch (OperationCanceledException) { }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -92,8 +92,8 @@ namespace ModelModul.ViewModels
             RaiseErrorsChanged(propertyKey);
             OnPropertyChanged(nameof(IsValid));
 
-            if (_cancelTokenSource == newCts)
-                _cancelTokenSource = null;
+            //if (_cancelTokenSource == newCts)
+            //    _cancelTokenSource = null;
         }
     }
 }

@@ -32,8 +32,8 @@
                     <ColumnDefinition/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <customControlLibrary:ExtendedDataGrid x:Name="Goods" ItemsSource="{Binding MovementGoodsInfosList, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True"
-                                                       MinHeight="200" MaxHeight="600" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="0">
+                <customControlLibrary:ExtendedDataGrid x:Name="Goods" ItemsSource="{Binding MovementGoodsInfosList, UpdateSourceTrigger=PropertyChanged}" MinHeight="200" MaxHeight="600"
+                                                       VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="0">
                     <customControlLibrary:ExtendedDataGrid.RowStyle>
                         <Style TargetType="{x:Type DataGridRow}" BasedOn="{StaticResource {x:Type DataGridRow}}">
                             <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
@@ -54,12 +54,7 @@
                         <DataGridTextColumn Header="Кол-во" ElementStyle="{DynamicResource TextBlockInControl}" EditingElementStyle="{DynamicResource TextBoxByDataGrid}">
                             <DataGridTextColumn.Binding>
                                 <MultiBinding UpdateSourceTrigger="PropertyChanged" Converter="{StaticResource ConvertCount}" ValidatesOnExceptions="True" NotifyOnValidationError="True" ValidatesOnNotifyDataErrors="True">
-                                    <Binding  Path="Count">
-                                        <Binding.ValidationRules>
-                                            <ExceptionValidationRule />
-                                            <DataErrorValidationRule />
-                                        </Binding.ValidationRules>
-                                    </Binding>
+                                    <Binding Path="Count" NotifyOnValidationError="True" ValidatesOnNotifyDataErrors="True" ValidatesOnDataErrors="True" UpdateSourceTrigger="PropertyChanged"/>
                                     <Binding Path="Product.UnitStorage.IsWeightGoods" Mode="OneWay"/>
                                     <MultiBinding.ValidationRules>
                                         <modelModul:CountValidationRule ValidationStep="RawProposedValue">
@@ -84,7 +79,7 @@
                     </customControlLibrary:ExtendedDataGrid.Columns>
                 </customControlLibrary:ExtendedDataGrid>
 
-                <customControlLibrary:ExtendedDataGrid ItemsSource="{Binding SelectedItem.Product.SerialNumbersCollection, ElementName=Goods}" IsSynchronizedWithCurrentItem="True" Height="200" Margin="5"
+                <customControlLibrary:ExtendedDataGrid ItemsSource="{Binding SelectedItem.Product.SerialNumbersCollection, ElementName=Goods}" Height="200" Margin="5"
                           VerticalAlignment="Top" Grid.Column="1">
                     <customControlLibrary:ExtendedDataGrid.Columns>
                         <DataGridTextColumn Header="Серийные номера" MinWidth="200" ElementStyle="{DynamicResource TextBlockInControl}" EditingElementStyle="{DynamicResource TextBoxByDataGrid}"

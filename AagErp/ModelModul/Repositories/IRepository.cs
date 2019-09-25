@@ -55,8 +55,12 @@ namespace ModelModul.Repositories
         /// <param name="where">Фильтр для выборки, если null получает все данные</param>
         /// <param name="order">Список полей для сортировки</param>
         /// <param name="skip">Кол-во записей, которые нужно пропустить</param>
+        /// <param name="include">Список полей для include</param>
         /// <returns>Полученный объект</returns>
-        Task<TEntity> GetItemAsync(CancellationToken cts = new CancellationToken(), ISpecification<TEntity> where = null, Dictionary<string, SortingTypes> order = null, int skip = 0);
+        Task<TEntity> GetItemAsync(CancellationToken cts = new CancellationToken(),
+            ISpecification<TEntity> where = null, Dictionary<string, SortingTypes> order = null, int skip = 0,
+            params (Expression<Func<TEntity, Object>> include, Expression<Func<Object, Object>>[] thenInclude)[]
+                include);
 
         /// <summary>
         /// Получает объект по id

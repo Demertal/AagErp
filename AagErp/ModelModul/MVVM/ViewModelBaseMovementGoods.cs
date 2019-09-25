@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 using Microsoft.EntityFrameworkCore;
 using ModelModul.Models;
 using ModelModul.Repositories;
@@ -23,9 +24,11 @@ namespace ModelModul.MVVM
         #region Properties
 
         private readonly string _movementGoodTypeCode, _askPost;
+        private Dispatcher _dispatcher;
 
         protected CancellationTokenSource CancelTokenLoad;
         protected CancellationTokenSource CancelTokenNewReport;
+        protected COMBarcodeScaner BarcodeScaner;
 
         private MovementGoods _movementGoodsReport = new MovementGoods();
         public MovementGoods MovementGoodsReport
@@ -86,6 +89,9 @@ namespace ModelModul.MVVM
             set => SetProperty(ref _equivalentCurrenciesList, value);
         }
 
+        public bool CanAdd =>
+            MovementGoodsInfosList.All(m => m.Product.SerialNumbersCollection.All(s => !string.IsNullOrEmpty(s.Value)));
+
         #endregion
 
         #region Command
@@ -98,11 +104,12 @@ namespace ModelModul.MVVM
 
         protected ViewModelBaseMovementGoods(IDialogService dialogService, string movementGoodTypeCode, string askPost) : base(dialogService)
         {
+            _dispatcher = Dispatcher.CurrentDispatcher;
             _movementGoodTypeCode = movementGoodTypeCode;
             _askPost = askPost;
             NewReport();
             PostCommand = new DelegateCommand(Post).ObservesCanExecute(() => MovementGoodsReport.IsValid);
-            AddProductCommand = new DelegateCommand(AddProduct);
+            AddProductCommand = new DelegateCommand(AddProduct).ObservesCanExecute(() => CanAdd);
             DeleteProductCommand = new DelegateCommand<Collection<object>>(DeleteProduct);
         }
 
@@ -197,6 +204,13 @@ namespace ModelModul.MVVM
                 CancelTokenLoad = null;
         }
 
+        private void ComOnGetBarcode(string barcode)
+        {
+            _dispatcher.Invoke(() => HandlingBarcode(barcode));
+        }
+
+        protected abstract void HandlingBarcode(string barcode);
+
         #region CommandMetod
 
         private void AddProduct()
@@ -255,7 +269,6 @@ namespace ModelModul.MVVM
                         temp.MovementGoodsInfosCollection = null;
 
                         await movementGoodsRepository.CreateAsync(temp);
-                        //temp.SerialNumberLogsCollection = null;
                         temp.MovementGoodsInfosCollection = t;
                         await movementGoodsRepository.UpdateAsync(temp);
                         transaction.Commit();
@@ -304,6 +317,9 @@ namespace ModelModul.MVVM
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
             ReloadAsync();
+            BarcodeScaner = new COMBarcodeScaner();
+            BarcodeScaner.Connect();
+            BarcodeScaner.GetBarcode += ComOnGetBarcode;
         }
 
         public override bool IsNavigationTarget(NavigationContext navigationContext)
@@ -313,6 +329,8 @@ namespace ModelModul.MVVM
 
         public override void OnNavigatedFrom(NavigationContext navigationContext)
         {
+            BarcodeScaner.GetBarcode -= ComOnGetBarcode;
+            BarcodeScaner.Disconnect();
             CancelTokenLoad?.Cancel();
             CancelTokenNewReport?.Cancel();
         }

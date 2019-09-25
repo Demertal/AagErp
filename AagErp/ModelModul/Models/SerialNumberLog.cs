@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ModelModul.Models
+﻿namespace ModelModul.Models
 {
     public class SerialNumberLog : ModelBase<SerialNumberLog>
     {
