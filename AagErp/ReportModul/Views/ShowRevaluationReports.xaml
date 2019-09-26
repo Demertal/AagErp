@@ -7,7 +7,7 @@
              xmlns:customControlLibrary="clr-namespace:CustomControlLibrary;assembly=CustomControlLibrary"
              xmlns:converters="clr-namespace:ModelModul.Converters;assembly=ModelModul"
              interactivity:ViewModelLocator.AutoWireViewModel="True"
-             mc:Ignorable="d">
+             mc:Ignorable="d" VerticalAlignment="Top">
 
     <UserControl.Resources>
         <converters:СompileProductsTitleFromRevaluaitionInfo x:Key="СompileProductsTitleFromRevaluaitionInfo"/>

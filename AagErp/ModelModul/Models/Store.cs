@@ -55,6 +55,17 @@ namespace ModelModul.Models
             }
         }
 
+        private ICollection<User> _usersCollection;
+        public virtual ICollection<User> UsersCollection
+        {
+            get => _usersCollection;
+            set
+            {
+                _usersCollection = value;
+                OnPropertyChanged();
+            }
+        }
+
         public override string this[string columnName]
         {
             get

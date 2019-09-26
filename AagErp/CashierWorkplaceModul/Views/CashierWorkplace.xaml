@@ -8,7 +8,7 @@
              xmlns:customControlLibrary="clr-namespace:CustomControlLibrary;assembly=CustomControlLibrary"
              xmlns:converters="clr-namespace:ModelModul.Converters;assembly=ModelModul"
              interactivity:ViewModelLocator.AutoWireViewModel="True"
-             mc:Ignorable="d">
+             mc:Ignorable="d" VerticalAlignment="Top">
 
     <UserControl.Resources>
         <ContextMenu  x:Key="RowMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">

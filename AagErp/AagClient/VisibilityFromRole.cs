@@ -19,28 +19,28 @@ namespace AagClient
             }
             switch (role)
             {
-                case Roles.OldestSalesman:
-                    switch (par)
-                    {
-                        case "Catalog":
-                            return Visibility.Collapsed;
-                        case "Directories":
-                            return Visibility.Collapsed;
-                        case "Reports":
-                            return Visibility.Collapsed;
-                    }
+                //case Roles.OldestSalesman:
+                //    switch (par)
+                //    {
+                //        case "Catalog":
+                //            return Visibility.Collapsed;
+                //        case "Directories":
+                //            return Visibility.Collapsed;
+                //        case "Reports":
+                //            return Visibility.Collapsed;
+                //    }
 
-                    break;
-                case Roles.Admin:
-                    switch (par)
-                    {
-                        case "WorkProduct":
-                            return Visibility.Collapsed;
-                        case "ShowWarranties":
-                            return Visibility.Collapsed;
-                    }
+                //    break;
+                //case Roles.Admin:
+                //    switch (par)
+                //    {
+                //        case "WorkProduct":
+                //            return Visibility.Collapsed;
+                //        case "ShowWarranties":
+                //            return Visibility.Collapsed;
+                //    }
 
-                    break;
+                //    break;
             }
 
             return Visibility.Visible;

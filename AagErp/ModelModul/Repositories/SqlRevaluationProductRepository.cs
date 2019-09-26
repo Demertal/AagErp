@@ -54,6 +54,7 @@ namespace ModelModul.Repositories
                     }
                 });
             }
+            reader.Result.Close();
             if (temp != null)
                 result.Add(temp);
             return result;

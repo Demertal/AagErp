@@ -8,7 +8,7 @@
              xmlns:local="clr-namespace:ReportModul.Views"
              xmlns:converters="clr-namespace:ModelModul.Converters;assembly=ModelModul"
              interactivity:ViewModelLocator.AutoWireViewModel="True"
-             mc:Ignorable="d">
+             mc:Ignorable="d" VerticalAlignment="Top">
 
     <UserControl.Resources>
         <converters:CompileProductsTitleFromMovementGoodsInfo x:Key="CompileProductsTitleFromMovementGoodsInfo"/>

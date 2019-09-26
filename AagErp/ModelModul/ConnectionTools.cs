@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Data.SqlClient;
+using ModelModul.Models;
 
 namespace ModelModul
 {
     public static class ConnectionTools
     {
         public static string ConnectionString;
+
+        public static string Login;
+
+        public static User CurrrentUser;
 
         public static void BuildConnectionString(
             string configConnectionStringName,

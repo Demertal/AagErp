@@ -171,6 +171,7 @@
     <Compile Include="Configurations\PropertyProductConfiguration.cs" />
     <Compile Include="Configurations\InvoiceInfoConfiguration.cs" />
     <Compile Include="Configurations\SerialNumberLogConfiguration.cs" />
+    <Compile Include="Configurations\UserConfiguration.cs" />
     <Compile Include="Configurations\WarrantyConfiguration.cs" />
     <Compile Include="Configurations\WarrantyPeriodConfiguration.cs" />
     <Compile Include="Configurations\UnitStorageConfiguration.cs" />
@@ -209,6 +210,7 @@
     <Compile Include="Models\PropertyForProduct.cs" />
     <Compile Include="Models\SerialNumberLog.cs" />
     <Compile Include="Models\CounterpartyType.cs" />
+    <Compile Include="Models\User.cs" />
     <Compile Include="MVVM\EntitiyReportsBaseMovementGoodsViewModel.cs" />
     <Compile Include="MVVM\DialogViewModelBase.cs" />
     <Compile Include="MVVM\DialogWindow.xaml.cs">
@@ -265,6 +267,7 @@
     <Compile Include="Repositories\SqlUnitStorageRepository.cs" />
     <Compile Include="Models\Store.cs" />
     <Compile Include="Models\UnitStorage.cs" />
+    <Compile Include="Repositories\SqlUserRepository.cs" />
     <Compile Include="Specifications\BasisSpecifications\AndSpecification.cs" />
     <Compile Include="Specifications\BasisSpecifications\CompositeSpecification.cs" />
     <Compile Include="Specifications\BasisSpecifications\Utilities\ParameterRebinder.cs" />

@@ -48,12 +48,12 @@ namespace ModelModul
         public virtual DbSet<UnitStorage> UnitStorages { get; set; }
         public virtual DbSet<Warranty> Warranties { get; set; }
         public virtual DbSet<WarrantyPeriod> WarrantyPeriods { get; set; }
+        public virtual DbSet<User> Users { get; set; }
         public virtual DbQuery<CountsProduct> CountsProducts { get; set; }
         public virtual DbQuery<EquivalentCostForExistingProduct> EquivalentCostFor≈xistingProducts { get; set; }
         public virtual DbQuery<ProductWithCountAndPrice> ProductWithCountAndPrice { get; set; }
         public virtual DbQuery<PropertyForProduct> PropertyForProduct { get; set; }
         public virtual DbQuery<ProfitStatement> ProfitStatement { get; set; }
-        
 
         public static decimal GetCurrentPrice(long idProduct) => throw new NotSupportedException();
 
@@ -85,6 +85,7 @@ namespace ModelModul
             modelBuilder.ApplyConfiguration(new UnitStorageConfiguration());
             modelBuilder.ApplyConfiguration(new WarrantyConfiguration());
             modelBuilder.ApplyConfiguration(new WarrantyPeriodConfiguration());
+            modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.HasDbFunction(() => GetCurrentPrice(default(long)));
             modelBuilder.HasDbFunction(() => CheckProperty(default(int), default(int?), default(string)));
             modelBuilder.Query<ProductWithCountAndPrice>().ToView("productsWithCountAndPrice");

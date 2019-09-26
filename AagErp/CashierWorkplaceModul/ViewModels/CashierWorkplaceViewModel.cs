@@ -6,6 +6,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Windows;
+using ModelModul;
 using ModelModul.Models;
 using ModelModul.MVVM;
 using ModelModul.Repositories;
@@ -31,11 +32,7 @@ namespace CashierWorkplaceModul.ViewModels
 
         protected override async Task InLoad()
         {
-            IRepository<Store> storeRepository = new SqlStoreRepository();
-
-            DisposalStoresList = new ObservableCollection<Store>(await storeRepository.GetListAsync(CancelTokenLoad.Token));
-
-            MovementGoodsReport.IdDisposalStore = DisposalStoresList.FirstOrDefault()?.Id;
+            await Task.Run(() => MovementGoodsReport.IdDisposalStore = ConnectionTools.CurrrentUser.IdStore);
         }
 
         protected override async void HandlingBarcode(string barcode)

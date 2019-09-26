@@ -7,7 +7,7 @@
     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
     mvvm:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d"
-    Title="Главное окно" Padding="0,0,10,0" WindowStartupLocation="CenterScreen" WindowState="Maximized"><!--Topmost="True"-->
+    Title="{Binding Title, UpdateSourceTrigger=PropertyChanged}" Padding="0,0,10,0" WindowStartupLocation="CenterScreen" WindowState="{Binding WindowState, UpdateSourceTrigger=PropertyChanged}" SizeToContent="{Binding SizeToContent, UpdateSourceTrigger=PropertyChanged}" Topmost="True"><!--Topmost="True"-->
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
@@ -15,36 +15,9 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
-    <StackPanel>
-        <Menu>
-            <MenuItem Header="Рабочее место кассира" Command="{Binding NavigateCommand}" CommandParameter="CashierWorkplace"/>
-            <MenuItem Header="Каталог товара" Command="{Binding NavigateCommand}" CommandParameter="Catalog"/>
-            <MenuItem Header="Действия с товаром">
-                <MenuItem Header="Переоценка товара" Command="{Binding NavigateCommand}" CommandParameter="RevaluationGood"/>
-                <MenuItem Header="Приход товара" Command="{Binding NavigateCommand}" CommandParameter="PurchaseGood"/>
-                <MenuItem Header="Перемещение товара" Command="{Binding NavigateCommand}" CommandParameter="TransportationGoods"/>
-            </MenuItem>
-            <MenuItem Header="Справочники">
-                <MenuItem Header="Номенклатура" Command="{Binding NavigateCommand}" CommandParameter="ShowNomenclature"/>
-                <MenuItem Header="Параметры товара" Command="{Binding NavigateCommand}" CommandParameter="ShowProperties"/>
-                <MenuItem Header="Ед. хранения" Command="{Binding NavigateCommand}" CommandParameter="ShowUnitStorages"/>
-                <MenuItem Header="Гарантийный период" Command="{Binding NavigateCommand}" CommandParameter="ShowWarrantyPeriods"/>
-                <MenuItem Header="Ценовая группа" Command="{Binding NavigateCommand}" CommandParameter="ShowPriceGroups"/>
-                <MenuItem Header="Контрагенты" Command="{Binding NavigateCommand}" CommandParameter="ShowCounterparties"/>
-                <MenuItem Header="Валюта" Command="{Binding NavigateCommand}" CommandParameter="ShowCurrencies"/>
-                <MenuItem Header="Склады" Command="{Binding NavigateCommand}" CommandParameter="ShowStores"/>
-            </MenuItem>
-            <MenuItem Header="Гарантия" Command="{Binding NavigateCommand}" CommandParameter="ShowWarranties"/>
-            <MenuItem Header="Отчеты">
-                <MenuItem Header="Переоценки" Command="{Binding NavigateCommand}" CommandParameter="ShowRevaluationReports"/>
-                <MenuItem Header="Закупки" Command="{Binding NavigateCommand}" CommandParameter="ShowPurchaseReports"/>
-                <MenuItem Header="Продажи" Command="{Binding NavigateCommand}" CommandParameter="ShowSalesReports"/>
-                <MenuItem Header="Перемещения" Command="{Binding NavigateCommand}" CommandParameter="ShowTransportationGoodsReports"/>
-                <MenuItem Header="Отчет" Command="{Binding NavigateCommand}" CommandParameter="ShowProfitStatement"/>
-            </MenuItem>
-        </Menu>
-        <ContentControl x:Name="ContentRegionMain" mvvm:RegionManager.RegionName="ContentRegion"/>
-    </StackPanel>
+    <Grid>
+        <ContentControl mvvm:RegionManager.RegionName="ContentRegionShell"/>
+    </Grid>
 </Window>
 
 

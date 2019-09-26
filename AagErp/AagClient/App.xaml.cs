@@ -1,8 +1,5 @@
-﻿using System;
-using System.Windows;
-using AagClient.ViewModels;
+﻿using System.Windows;
 using AagClient.Views;
-using ModelModul;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Unity;
@@ -14,22 +11,13 @@ namespace AagClient
     {
         protected override Window CreateShell()
         {
-            Window shell = null;
-            Window loginWindow = new Authorization();
-            ((AuthorizationViewModel)loginWindow.DataContext).LoginCompleted += ev =>
-            {
-                shell = Container.Resolve<Shell>();
-                loginWindow.Hide();
-                loginWindow.Close();
-            };
-            loginWindow.ShowDialog();
-            if (shell != null) return shell;
-            Current.Shutdown();
-            return new Window();
+            return new Shell();
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
+            containerRegistry.RegisterForNavigation<Authorization>();
+            containerRegistry.RegisterForNavigation<Workspace>();
         }
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)

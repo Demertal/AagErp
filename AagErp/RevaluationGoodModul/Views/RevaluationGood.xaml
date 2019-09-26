@@ -7,7 +7,7 @@
              xmlns:models="clr-namespace:ModelModul.Models;assembly=ModelModul"
              xmlns:converters="clr-namespace:RevaluationGoodModul.Converters"
              xmlns:converters1="clr-namespace:ModelModul.Converters;assembly=ModelModul"
-             interactivity:ViewModelLocator.AutoWireViewModel="True" VerticalAlignment="Center">
+             interactivity:ViewModelLocator.AutoWireViewModel="True" VerticalAlignment="Top">
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="KeyDown">

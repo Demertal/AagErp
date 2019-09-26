@@ -6,6 +6,7 @@ using ModelModul.MVVM;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 
@@ -15,8 +16,9 @@ namespace AagClient.ViewModels
     {
         #region Properties
 
-        private string _login;
+        private readonly IEventAggregator _eventAggregator;
 
+        private string _login;
         public string Login
         {
             get => _login;
@@ -31,14 +33,12 @@ namespace AagClient.ViewModels
         }
 
         public DelegateCommand EnterCommand { get; }
-
-        public delegate void LoginEvent(bool completed);
-        public event LoginEvent LoginCompleted;
-
+        
         #endregion
 
-        public AuthorizationViewModel(IDialogService dialogService) : base(dialogService)
+        public AuthorizationViewModel(IDialogService dialogService, IEventAggregator eventAggregator) : base(dialogService)
         {
+            _eventAggregator = eventAggregator;
             EnterCommand = new DelegateCommand(Enter);
         }
 
@@ -55,20 +55,24 @@ namespace AagClient.ViewModels
                     dataSource = сonnectionStrings["Server"].Value<string>();
                 }
 
-                ConnectionTools.BuildConnectionString("AutomationAccountingGoodsContext", dataSource: dataSource);
+                ConnectionTools.Login = Login;
+                ConnectionTools.BuildConnectionString("AutomationAccountingGoodsContext", dataSource: dataSource, userId:Login, password:Password, integratedSecuity: false);
                 AutomationAccountingGoodsContext au = new AutomationAccountingGoodsContext(ConnectionTools.ConnectionString);
                 if (await au.Database.CanConnectAsync())
-                    LoginCompleted?.Invoke(true);
+                    _eventAggregator.GetEvent<EventBool>().Publish(true);
                 else throw new Exception("Ошибка соединения");
             }
             catch (Exception e)
             {
+                ConnectionTools.Login = string.Empty;
                 MessageBox.Show(e.Message, "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
+            ConnectionTools.Login = string.Empty;
+            ConnectionTools.CurrrentUser = null;
         }
 
         public override bool IsNavigationTarget(NavigationContext navigationContext)

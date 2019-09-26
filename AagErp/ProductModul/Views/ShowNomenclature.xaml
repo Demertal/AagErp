@@ -6,11 +6,10 @@
              xmlns:mvvm="http://prismlibrary.com/"
              xmlns:models="clr-namespace:ModelModul.Models;assembly=ModelModul"
              xmlns:local="clr-namespace:ProductModul.Views"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:dd="urn:gong-wpf-dragdrop"
              xmlns:customControlLibrary="clr-namespace:CustomControlLibrary;assembly=CustomControlLibrary"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
-             mc:Ignorable="d">
+             mc:Ignorable="d" VerticalAlignment="Top">
     <UserControl.Resources>
         <Style TargetType="{x:Type Border}" x:Key="CellStyle">
             <Setter Property="BorderBrush" Value="Black"/>

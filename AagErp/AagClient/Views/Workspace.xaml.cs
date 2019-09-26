@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace AagClient.Views
 {
     /// <summary>
-    /// Логика взаимодействия для Authorization.xaml
+    /// Логика взаимодействия для Workspace.xaml
     /// </summary>
-    public partial class Authorization : UserControl
+    public partial class Workspace : UserControl
     {
-        public Authorization()
+        public Workspace()
         {
             InitializeComponent();
         }
