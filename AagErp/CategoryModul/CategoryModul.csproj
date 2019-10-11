@@ -35,6 +35,10 @@
     <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.2.0.4\lib\net47\CommonServiceLocator.dll</HintPath>
     </Reference>
+    <Reference Include="CustomControlLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Project\CustomControlLibrary\CustomControlLibrary\bin\Debug\CustomControlLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="Microsoft.CSharp" />
@@ -71,10 +75,6 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\CustomControlLibrary\CustomControlLibrary.csproj">
-      <Project>{ba906062-87b9-41e7-b1ee-a44007eb8933}</Project>
-      <Name>CustomControlLibrary</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ModelModul\ModelModul.csproj">
       <Project>{c1088933-3223-41a0-a687-8d34c8a1e104}</Project>
       <Name>ModelModul</Name>

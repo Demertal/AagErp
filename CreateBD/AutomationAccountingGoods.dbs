@@ -495,6 +495,17 @@
 				<string>[title]&lt;&gt;&#039;&#039;</string>
 			</constraint>
 		</table>
+		<table name="users" >
+			<column name="id" type="int" jt="4" mandatory="y" autoincrement="y" />
+			<column name="login" type="nvarchar" length="256" jt="12" mandatory="y" />
+			<column name="idStore" type="int" jt="4" />
+			<index name="Pk_users_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="FK_users_idStore_stores" to_schema="dbo" to_table="stores" >
+				<fk_column name="idStore" pk="id" />
+			</fk>
+		</table>
 		<table name="warranties" >
 			<column name="id" type="int" length="10" decimal="0" jt="4" mandatory="y" autoincrement="y" />
 			<column name="malfunction" type="nvarchar" length="256" decimal="0" jt="12" mandatory="y" />
@@ -1096,9 +1107,10 @@ END
 		<entity schema="dbo" name="categories" color="BEBEF4" x="1936" y="80" />
 		<entity schema="dbo" name="moneyTransfers" color="C7F4BE" x="1200" y="720" />
 		<entity schema="dbo" name="serialNumberLogs" color="BED3F4" x="736" y="80" />
-		<entity schema="dbo" name="movementGoodsInfos" color="BED3F4" x="272" y="448" />
 		<entity schema="dbo" name="movmentGoodTypes" color="C1D8EE" x="48" y="256" />
+		<entity schema="dbo" name="movementGoodsInfos" color="BED3F4" x="272" y="448" />
 		<entity schema="dbo" name="products" color="F4DDBE" x="1232" y="80" />
+		<entity schema="dbo" name="users" color="C1D8EE" x="656" y="656" />
 		<entity schema="dbo" name="movementGoods" color="BED3F4" x="272" y="80" />
 		<group name="counterparties" color="EEF7EC" >
 			<entity schema="dbo" name="counterparties" />

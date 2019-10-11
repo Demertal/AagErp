@@ -16,7 +16,7 @@ namespace ModelModul
         /// </summary>
         public COMBarcodeScaner()
         {
-            Port = new SerialPort("COM4");
+            Port = new SerialPort("COM3");
             Initialize();
         }
 

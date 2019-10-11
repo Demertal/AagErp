@@ -2,7 +2,8 @@
                         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                         xmlns:prism="http://prismlibrary.com/"
-                        xmlns:aagClient="clr-namespace:AagClient.Views">
+                        xmlns:aagClient="clr-namespace:AagClient.Views"
+                        xmlns:mvvm="clr-namespace:ModelModul.MVVM;assembly=ModelModul">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -11,6 +12,9 @@
                 <ResourceDictionary Source="/CustomControlLibrary;component/CustomControl/Generic.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <Style TargetType="{x:Type aagClient:Shell}" BasedOn="{StaticResource {x:Type Window}}"/>
+            <Style TargetType="{x:Type mvvm:DialogWindow}" BasedOn="{StaticResource {x:Type Window}}">
+                <Setter Property="SizeToContent" Value="WidthAndHeight"/>
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </prism:PrismApplication>

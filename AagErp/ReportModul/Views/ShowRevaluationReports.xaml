@@ -4,8 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:interactivity="http://prismlibrary.com/"
-             xmlns:customControlLibrary="clr-namespace:CustomControlLibrary;assembly=CustomControlLibrary"
              xmlns:converters="clr-namespace:ModelModul.Converters;assembly=ModelModul"
+             xmlns:customControlLibrary="clr-namespace:CustomControlLibrary;assembly=CustomControlLibrary"
              interactivity:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" VerticalAlignment="Top">
 

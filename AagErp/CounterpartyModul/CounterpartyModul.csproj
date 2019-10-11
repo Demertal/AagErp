@@ -35,6 +35,9 @@
     <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.2.0.4\lib\net47\CommonServiceLocator.dll</HintPath>
     </Reference>
+    <Reference Include="CustomControlLibrary">
+      <HintPath>..\..\..\Project\CustomControlLibrary\CustomControlLibrary\bin\Debug\CustomControlLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="Prism, Version=7.2.0.1367, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
@@ -89,10 +92,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CustomControlLibrary\CustomControlLibrary.csproj">
-      <Project>{BA906062-87B9-41E7-B1EE-A44007EB8933}</Project>
-      <Name>CustomControlLibrary</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ModelModul\ModelModul.csproj">
       <Project>{C1088933-3223-41A0-A687-8D34C8A1E104}</Project>
       <Name>ModelModul</Name>
